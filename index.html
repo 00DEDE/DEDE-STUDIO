@@ -39,18 +39,54 @@
     align-items: center;
     justify-content: center;
   }
+  .logo-stage {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: breathe 5s ease-in-out infinite;
+  }
   .logo {
-    width: 100vw;
-    height: 100vh;
-    background-color: #00dede;
-    -webkit-mask-image: url("ASSETS/LOGO/DEDE_FINAL%20LOGO_BLACK.png");
-            mask-image: url("ASSETS/LOGO/DEDE_FINAL%20LOGO_BLACK.png");
-    -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-            mask-position: center;
-    -webkit-mask-size: contain;
-            mask-size: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    animation: crossfade 14s ease-in-out infinite;
+  }
+  .logo--horizontal {
+    animation-delay: 0s;
+  }
+  .logo--stacked {
+    animation-delay: -7s;
+  }
+  @keyframes crossfade {
+    0%, 45%   { opacity: 1; }
+    55%, 95%  { opacity: 0; }
+    100%      { opacity: 1; }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+  }
+
+  .wip {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    padding: 0.5rem 1rem;
+    pointer-events: none;
+    user-select: none;
   }
   .contact-wrap {
     position: fixed;
@@ -101,7 +137,11 @@
 </style>
 </head>
 <body>
-  <div class="logo" role="img" aria-label="DEDE STUDIO"></div>
+  <div class="wip">WORK IN PROGRESS</div>
+  <div class="logo-stage" role="img" aria-label="DEDE STUDIO">
+    <img class="logo logo--horizontal" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
+    <img class="logo logo--stacked" src="ASSETS/LOGO/logo_stacked_cyan.png" alt="DEDE STUDIO stacked" />
+  </div>
   <div class="contact-wrap" id="contactWrap">
     <div class="contact-options">
       <a class="contact-option" href="mailto:00dede@bllcrw.com">MAIL APP</a>
