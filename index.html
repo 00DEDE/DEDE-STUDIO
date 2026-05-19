@@ -32,23 +32,49 @@
     -webkit-mask-size: contain;
             mask-size: contain;
   }
-  .contact {
+  .contact-wrap {
     position: fixed;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+  .contact-options {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .contact-wrap.open .contact-options {
+    display: flex;
+  }
+  .contact,
+  .contact-option {
     color: #ffffff;
     text-decoration: none;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
     font-weight: 700;
     font-size: 1rem;
     letter-spacing: 0.3em;
-    padding: 0.75rem 1.5rem;
+    padding: 0.5rem 1rem;
     transition: color 0.2s ease;
+  }
+  .contact-option {
+    font-size: 0.85rem;
   }
   .contact:hover,
   .contact:active,
-  .contact:focus {
+  .contact:focus,
+  .contact-option:hover,
+  .contact-option:active,
+  .contact-option:focus {
     color: #00dede;
     outline: none;
   }
@@ -56,6 +82,33 @@
 </head>
 <body>
   <div class="logo" role="img" aria-label="DEDE STUDIO"></div>
-  <a class="contact" href="mailto:00dede@bllcrw.com">CONTACT</a>
+  <div class="contact-wrap" id="contactWrap">
+    <div class="contact-options">
+      <a class="contact-option" href="mailto:00dede@bllcrw.com">MAIL APP</a>
+      <a class="contact-option" href="https://mail.google.com/mail/?view=cm&fs=1&to=00dede@bllcrw.com" target="_blank" rel="noopener">GMAIL</a>
+    </div>
+    <button class="contact" type="button" id="contactBtn" aria-expanded="false">CONTACT</button>
+  </div>
+  <script>
+    const wrap = document.getElementById('contactWrap');
+    const btn = document.getElementById('contactBtn');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = wrap.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen);
+    });
+    document.addEventListener('click', (e) => {
+      if (!wrap.contains(e.target)) {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
 </body>
 </html>
