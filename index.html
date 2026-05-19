@@ -45,14 +45,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: breathe 5s ease-in-out infinite;
+    animation: breathe 10s ease-in-out infinite;
   }
   .logo {
     position: absolute;
     top: 50%;
     left: 50%;
-    max-width: 90vw;
-    max-height: 90vh;
+    max-width: 54vw;
+    max-height: 54vh;
     object-fit: contain;
     opacity: 0;
     transform: translate(-50%, -50%);
@@ -65,9 +65,11 @@
     animation-delay: -7s;
   }
   @keyframes crossfade {
-    0%, 45%   { opacity: 1; }
-    55%, 95%  { opacity: 0; }
-    100%      { opacity: 1; }
+    0%   { opacity: 0; }
+    7%   { opacity: 1; }
+    43%  { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 0; }
   }
   @keyframes breathe {
     0%, 100% { transform: scale(1); }
