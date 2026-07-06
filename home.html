@@ -100,11 +100,13 @@
     white-space: nowrap;
   }
   .menu-line:hover .line-img,
-  .menu-line:focus-visible .line-img {
+  .menu-line:focus-visible .line-img,
+  .menu-line.is-active .line-img {
     opacity: 0;
   }
   .menu-line:hover .line-word,
-  .menu-line:focus-visible .line-word {
+  .menu-line:focus-visible .line-word,
+  .menu-line.is-active .line-word {
     opacity: 1;
   }
 </style>
@@ -130,5 +132,34 @@
       <span class="line-word">CONTACT</span>
     </a>
   </nav>
+  <script>
+    // Touch devices don't do hover; use tap-to-reveal, tap-again-to-navigate.
+    if (window.matchMedia('(hover: none)').matches) {
+      let activeLine = null;
+      let timer = null;
+
+      function reset() {
+        if (activeLine) activeLine.classList.remove('is-active');
+        activeLine = null;
+        if (timer) { clearTimeout(timer); timer = null; }
+      }
+
+      document.querySelectorAll('.menu-line').forEach((line) => {
+        line.addEventListener('click', (e) => {
+          if (activeLine === line) {
+            // Second tap on the active line -> allow default navigation.
+            reset();
+            return;
+          }
+          // First tap, or tap on a different line -> reveal the word.
+          e.preventDefault();
+          reset();
+          activeLine = line;
+          line.classList.add('is-active');
+          timer = setTimeout(reset, 2000);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
