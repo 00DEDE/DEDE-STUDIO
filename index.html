@@ -157,7 +157,7 @@
   }
   .welcome-cta__word {
     display: inline-block;
-    transition: opacity 0.25s ease;
+    transition: opacity 1s ease;
   }
   .welcome-cta:hover,
   .welcome-cta:focus {
@@ -219,8 +219,8 @@
         idx = (idx + 1) % words.length;
         wordEl.textContent = words[idx];
         wordEl.style.opacity = '1';
-      }, 250);
-    }, 1000);
+      }, 1000);
+    }, 4000);
   </script>
 </body>
 </html>

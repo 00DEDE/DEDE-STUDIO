@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="theme-color" content="#121212" />
 <script>
   // If this page loads as a refresh (or the user opens it directly),
   // send them back through the splash instead.
@@ -23,9 +23,22 @@
     padding: 0;
     height: 100%;
     width: 100%;
-    background: #ffffff;
+    background: #121212;
+  }
+  .header-logo {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22vw;
+    max-width: 320px;
+    min-width: 180px;
+    height: auto;
+    display: block;
   }
 </style>
 </head>
-<body></body>
+<body>
+  <img class="header-logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
+</body>
 </html>
