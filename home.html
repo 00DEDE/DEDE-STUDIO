@@ -9,6 +9,14 @@
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#ffffff" />
+<script>
+  // If this page loads as a refresh (or the user opens it directly),
+  // send them back through the splash instead.
+  const nav = performance.getEntriesByType('navigation')[0];
+  if (nav && nav.type === 'reload') {
+    window.location.replace('index.html');
+  }
+</script>
 <style>
   html, body {
     margin: 0;
