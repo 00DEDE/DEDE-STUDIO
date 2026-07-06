@@ -99,15 +99,24 @@
     pointer-events: none;
     white-space: nowrap;
   }
-  .menu-line:hover .line-img,
+  @media (max-width: 640px) {
+    .line-word {
+      font-size: clamp(1.125rem, 3vw, 1.875rem);
+    }
+  }
   .menu-line:focus-visible .line-img,
   .menu-line.is-active .line-img {
     opacity: 0;
   }
-  .menu-line:hover .line-word,
   .menu-line:focus-visible .line-word,
   .menu-line.is-active .line-word {
     opacity: 1;
+  }
+  /* Only apply :hover on real hover-capable devices — otherwise iOS
+     "sticky hover" keeps the word visible after tap, breaking the 2s reset. */
+  @media (hover: hover) {
+    .menu-line:hover .line-img { opacity: 0; }
+    .menu-line:hover .line-word { opacity: 1; }
   }
 </style>
 </head>
@@ -115,21 +124,21 @@
   <img class="header-logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
 
   <nav class="hamburger" aria-label="Main menu">
-    <a class="menu-line" href="#about" style="--y: 2.68%">
+    <a class="menu-line" href="selections.html" style="--y: 2.68%">
       <img class="line-img" src="ASSETS/LOGO/hamburger_line_1.png" alt="" aria-hidden="true" />
-      <span class="line-word">ABOUT</span>
+      <span class="line-word">SELECTIONS</span>
     </a>
-    <a class="menu-line" href="#work" style="--y: 22.44%">
+    <a class="menu-line" href="concepts.html" style="--y: 22.44%">
       <img class="line-img" src="ASSETS/LOGO/hamburger_line_2.png" alt="" aria-hidden="true" />
-      <span class="line-word">WORK</span>
-    </a>
-    <a class="menu-line" href="#concepts" style="--y: 59.84%">
-      <img class="line-img" src="ASSETS/LOGO/hamburger_line_3.png" alt="" aria-hidden="true" />
       <span class="line-word">CONCEPTS</span>
     </a>
-    <a class="menu-line" href="#contact" style="--y: 97.23%">
+    <a class="menu-line" href="introductions.html" style="--y: 59.84%">
+      <img class="line-img" src="ASSETS/LOGO/hamburger_line_3.png" alt="" aria-hidden="true" />
+      <span class="line-word">INTRODUCTIONS</span>
+    </a>
+    <a class="menu-line" href="connections.html" style="--y: 97.23%">
       <img class="line-img" src="ASSETS/LOGO/hamburger_line_4.png" alt="" aria-hidden="true" />
-      <span class="line-word">CONTACT</span>
+      <span class="line-word">CONNECTIONS</span>
     </a>
   </nav>
   <script>
