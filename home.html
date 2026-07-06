@@ -25,10 +25,12 @@
     width: 100%;
     background: #121212;
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   }
   a, button, [role="button"] {
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
+
   .header-logo {
     position: absolute;
     top: 2rem;
@@ -40,9 +42,93 @@
     height: auto;
     display: block;
   }
+  @media (max-width: 640px) {
+    .header-logo {
+      width: 13.75vw;
+      max-width: 200px;
+      min-width: 112px;
+    }
+  }
+
+  /* ----- Hamburger nav (4 stacked bars from DEDE_ICON LOGO_BLACK) ----- */
+  .hamburger {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 933 / 1083;
+    width: min(38vw, 340px);
+    opacity: 0;
+    animation: hamburger-fade-in 1.4s cubic-bezier(0.25, 0.8, 0.4, 1) 0.4s forwards;
+  }
+  @media (max-width: 640px) {
+    .hamburger {
+      width: min(58vw, 260px);
+    }
+  }
+  @keyframes hamburger-fade-in {
+    to { opacity: 1; }
+  }
+
+  .menu-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 12%;
+    top: var(--y);
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    outline: none;
+  }
+  .line-img {
+    width: 100%;
+    display: block;
+    transition: opacity 0.6s ease;
+  }
+  .line-word {
+    position: absolute;
+    color: #00dede;
+    font-weight: 700;
+    font-size: clamp(0.9rem, 2.4vw, 1.5rem);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .menu-line:hover .line-img,
+  .menu-line:focus-visible .line-img {
+    opacity: 0;
+  }
+  .menu-line:hover .line-word,
+  .menu-line:focus-visible .line-word {
+    opacity: 1;
+  }
 </style>
 </head>
 <body>
   <img class="header-logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
+
+  <nav class="hamburger" aria-label="Main menu">
+    <a class="menu-line" href="#about" style="--y: 2.68%">
+      <img class="line-img" src="ASSETS/LOGO/hamburger_line_1.png" alt="" aria-hidden="true" />
+      <span class="line-word">ABOUT</span>
+    </a>
+    <a class="menu-line" href="#work" style="--y: 22.44%">
+      <img class="line-img" src="ASSETS/LOGO/hamburger_line_2.png" alt="" aria-hidden="true" />
+      <span class="line-word">WORK</span>
+    </a>
+    <a class="menu-line" href="#concepts" style="--y: 59.84%">
+      <img class="line-img" src="ASSETS/LOGO/hamburger_line_3.png" alt="" aria-hidden="true" />
+      <span class="line-word">CONCEPTS</span>
+    </a>
+    <a class="menu-line" href="#contact" style="--y: 97.23%">
+      <img class="line-img" src="ASSETS/LOGO/hamburger_line_4.png" alt="" aria-hidden="true" />
+      <span class="line-word">CONTACT</span>
+    </a>
+  </nav>
 </body>
 </html>
