@@ -139,6 +139,32 @@
     color: #00dede;
     outline: none;
   }
+
+  .welcome-cta {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffffff;
+    text-decoration: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .welcome-cta__word {
+    display: inline-block;
+    transition: opacity 0.25s ease;
+  }
+  .welcome-cta:hover,
+  .welcome-cta:focus {
+    color: #00dede;
+    outline: none;
+    transform: translateX(-50%) scale(1.06);
+  }
 </style>
 </head>
 <body>
@@ -147,33 +173,58 @@
     <img class="logo logo--horizontal" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
     <img class="logo logo--stacked" src="ASSETS/LOGO/logo_stacked_cyan.png" alt="DEDE STUDIO stacked" />
   </div>
-  <div class="contact-wrap" id="contactWrap">
-    <div class="contact-options">
-      <a class="contact-option" href="mailto:iamdede@bllcrw.com">MAIL APP</a>
-      <a class="contact-option" href="https://mail.google.com/mail/?view=cm&fs=1&to=iamdede@bllcrw.com" target="_blank" rel="noopener">GMAIL</a>
+  <!--
+    CONTACT BUTTON — hidden during splash transition; keep code intact for later.
+    <div class="contact-wrap" id="contactWrap">
+      <div class="contact-options">
+        <a class="contact-option" href="mailto:iamdede@bllcrw.com">MAIL APP</a>
+        <a class="contact-option" href="https://mail.google.com/mail/?view=cm&fs=1&to=iamdede@bllcrw.com" target="_blank" rel="noopener">GMAIL</a>
+      </div>
+      <button class="contact" type="button" id="contactBtn" aria-expanded="false">CONTACT</button>
     </div>
-    <button class="contact" type="button" id="contactBtn" aria-expanded="false">CONTACT</button>
-  </div>
+    <script>
+      const wrap = document.getElementById('contactWrap');
+      const btn = document.getElementById('contactBtn');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = wrap.classList.toggle('open');
+        btn.setAttribute('aria-expanded', isOpen);
+      });
+      document.addEventListener('click', (e) => {
+        if (!wrap.contains(e.target)) {
+          wrap.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          wrap.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    </script>
+  -->
+
+  <a class="welcome-cta" id="welcomeCta" href="home.html">
+    <span class="welcome-cta__word" id="welcomeWord">WELCOME</span>
+  </a>
+
   <script>
-    const wrap = document.getElementById('contactWrap');
-    const btn = document.getElementById('contactBtn');
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isOpen = wrap.classList.toggle('open');
-      btn.setAttribute('aria-expanded', isOpen);
-    });
-    document.addEventListener('click', (e) => {
-      if (!wrap.contains(e.target)) {
-        wrap.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        wrap.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
+    const words = ['WELCOME', 'BIENVENIDOS', 'BIENVENUE'];
+    const wordEl = document.getElementById('welcomeWord');
+    let idx = 0;
+    setInterval(() => {
+      wordEl.style.opacity = '0';
+      setTimeout(() => {
+        idx = (idx + 1) % words.length;
+        wordEl.textContent = words[idx];
+        wordEl.style.opacity = '1';
+      }, 250);
+    }, 1000);
+
+    setTimeout(() => {
+      window.location.href = 'home.html';
+    }, 3000);
   </script>
 </body>
 </html>
