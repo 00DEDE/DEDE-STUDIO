@@ -11,18 +11,20 @@
 <meta name="theme-color" content="#121212" />
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
+<link rel="stylesheet" href="site-bg.css" />
 <style>
+  html { background: #050505; }
   html, body {
     margin: 0;
     padding: 0;
     min-height: 100%;
     width: 100%;
-    background: #121212;
     color: #ffffff;
     overflow-x: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
   }
+  body { background: transparent; }
   a, button, [role="button"] {
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
@@ -126,6 +128,12 @@
 </style>
 </head>
 <body>
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+    <div class="site-bg__blob site-bg__blob--dark-1"></div>
+    <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
   <div class="selections">
     <div class="bg-layer is-active" id="bgA"></div>
     <div class="bg-layer is-idle"   id="bgB"></div>
@@ -226,8 +234,7 @@
     let active = bgA;
     let idle = bgB;
 
-    // Default idle background (soft dark) so first cells have something behind them.
-    active.style.backgroundImage = 'linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%)';
+    // No initial background — let the shared site-bg show through until a cell is hovered.
 
     function setBackground(image) {
       idle.style.backgroundImage = image;

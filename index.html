@@ -26,15 +26,19 @@
 <meta name="twitter:title" content="I AM DĒDĒ.STUDIO" />
 <meta name="twitter:description" content="I AM DĒDĒ design studio — graphic design, brand identity, and packaging experience. An Intentional existence in between the digital and the analog. Based in East LA. Define Expression. Design Existence." />
 <meta name="twitter:image" content="https://iamdede.com/ASSETS/LOGO/og_image.png" />
+<link rel="stylesheet" href="site-bg.css" />
 <style>
+  html {
+    background: #050505;
+  }
   html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
-    background: #000000;
     overflow: hidden;
   }
+  body { background: transparent; }
   body {
     display: flex;
     align-items: center;
@@ -168,6 +172,12 @@
 </style>
 </head>
 <body>
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+    <div class="site-bg__blob site-bg__blob--dark-1"></div>
+    <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
   <div class="wip">WORK IN PROGRESS</div>
   <div class="logo-stage" role="img" aria-label="DEDE STUDIO">
     <img class="logo logo--horizontal" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />

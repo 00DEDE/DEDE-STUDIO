@@ -1,0 +1,89 @@
+/* Fluid animated backdrop — blurred blobs of black + cyan drifting slowly.
+   Include on every page and add:
+     <div class="site-bg" aria-hidden="true">
+       <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+       <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+       <div class="site-bg__blob site-bg__blob--dark-1"></div>
+       <div class="site-bg__blob site-bg__blob--dark-2"></div>
+     </div>
+   Body/html should have `background: transparent` for it to show through. */
+
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: #050505;
+  pointer-events: none;
+}
+.site-bg__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+.site-bg__blob--cyan-1 {
+  width: 55vmin;
+  height: 55vmin;
+  top: -15%;
+  left: -10%;
+  background: radial-gradient(circle at center,
+              rgba(0, 222, 222, 0.55) 0%,
+              rgba(0, 222, 222, 0) 65%);
+  animation: bg-drift-1 36s ease-in-out infinite;
+}
+.site-bg__blob--cyan-2 {
+  width: 50vmin;
+  height: 50vmin;
+  bottom: -10%;
+  right: -10%;
+  background: radial-gradient(circle at center,
+              rgba(0, 170, 170, 0.42) 0%,
+              rgba(0, 170, 170, 0) 65%);
+  animation: bg-drift-2 44s ease-in-out infinite;
+}
+.site-bg__blob--dark-1 {
+  width: 65vmin;
+  height: 65vmin;
+  top: 25%;
+  left: 35%;
+  background: radial-gradient(circle at center,
+              #1a1a1a 0%,
+              transparent 65%);
+  animation: bg-drift-3 40s ease-in-out infinite;
+}
+.site-bg__blob--dark-2 {
+  width: 70vmin;
+  height: 70vmin;
+  bottom: 15%;
+  left: 15%;
+  background: radial-gradient(circle at center,
+              #0f0f14 0%,
+              transparent 65%);
+  animation: bg-drift-4 48s ease-in-out infinite;
+}
+
+@keyframes bg-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%      { transform: translate(30vw, 20vh) scale(1.1); }
+  50%      { transform: translate(50vw, 55vh) scale(0.95); }
+  75%      { transform: translate(10vw, 40vh) scale(1.05); }
+}
+@keyframes bg-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-40vw, -25vh) scale(1.08); }
+  66%      { transform: translate(-20vw, -50vh) scale(0.92); }
+}
+@keyframes bg-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-30vw, 20vh) scale(1.15); }
+}
+@keyframes bg-drift-4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%      { transform: translate(28vw, -18vh) scale(1.1); }
+  70%      { transform: translate(-15vw, -35vh) scale(0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-bg__blob { animation: none; }
+}

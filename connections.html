@@ -11,16 +11,18 @@
 <meta name="theme-color" content="#121212" />
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
+<link rel="stylesheet" href="site-bg.css" />
 <style>
+  html { background: #050505; }
   html, body {
     margin: 0;
     padding: 0;
     min-height: 100%;
     width: 100%;
-    background: #121212;
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   }
+  body { background: transparent; }
   .page-hero {
     min-height: 100vh;
   }
@@ -30,6 +32,12 @@
 </style>
 </head>
 <body>
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+    <div class="site-bg__blob site-bg__blob--dark-1"></div>
+    <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
   <header class="site-header">
     <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
       <img src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
