@@ -68,20 +68,19 @@
     transition: opacity 0.3s ease;
   }
   .intro p:last-child { margin-bottom: 0; }
-  /* Desktop: hover any paragraph → that one stays fully white, siblings fade to 50%.
-     Uses :has() so gaps between paragraphs don't trigger the dim. */
+  /* Every paragraph is interactive. cursor + tabindex + will-change make
+     iOS treat them as tappable AND promote them onto their own compositor
+     layer so opacity flips actually repaint. */
+  .intro p {
+    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+    -webkit-tap-highlight-color: transparent;
+    will-change: opacity;
+    outline: none;
+  }
+  /* Desktop: hover any paragraph → that one stays fully white, siblings fade to 50%. */
   @media (hover: hover) {
     .intro:has(p:hover) > p:not(:hover) {
       opacity: 0.5;
-    }
-  }
-  /* Touch: JS writes inline opacity directly (see script). Inline styles have
-     the highest specificity, so this dodges any iOS quirks around class-based
-     recalcs on flow content. */
-  @media (hover: none), (pointer: coarse) {
-    .intro p {
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
     }
   }
   /* Line-by-line reveal: JS wraps each word in .word, groups them by
@@ -363,26 +362,33 @@
       // Attach listeners directly to the paragraphs (not just document) — iOS
       // Safari sometimes swallows click events on non-interactive elements
       // when only a document-level listener is used.
-      const touchQuery = window.matchMedia('(hover: none), (pointer: coarse)');
-      if (touchQuery.matches) {
+      // ---- Paragraph focus + DĒDĒ image toggle.
+      // Attach handlers unconditionally (not gated by matchMedia). On desktop
+      // the CSS hover rule still works; on any device, tap/click also works.
+      // Both `click` and `touchend` are bound with a debounce so iOS Safari
+      // can't miss the input regardless of which one it delivers.
+      (function () {
         const dedeImage = document.querySelector('.dede-image');
         const paragraphs = Array.prototype.slice.call(
           document.querySelectorAll('.intro p')
         );
 
+        // Signal to iOS that these are interactive.
+        paragraphs.forEach((p) => p.setAttribute('tabindex', '0'));
+
         function clearFocus() {
-          paragraphs.forEach(p => {
-            p.style.opacity = '';           // remove inline dim
+          paragraphs.forEach((p) => {
+            p.style.opacity = '';
             p.removeAttribute('data-focused');
           });
         }
         function focusOn(paragraph) {
-          paragraphs.forEach(p => {
+          paragraphs.forEach((p) => {
             if (p === paragraph) {
-              p.style.opacity = '1';        // fully white
+              p.style.opacity = '1';
               p.setAttribute('data-focused', '');
             } else {
-              p.style.opacity = '0.5';      // dim the others
+              p.style.opacity = '0.5';
               p.removeAttribute('data-focused');
             }
           });
@@ -391,45 +397,56 @@
           if (dedeImage) dedeImage.classList.remove('is-shown');
         }
 
+        // Debounce: if both `touchend` and `click` fire for the same tap,
+        // only the first one wins.
+        let lastHandled = 0;
+        function handleParagraph(paragraph, e) {
+          const now = Date.now();
+          if (now - lastHandled < 400) return;
+          lastHandled = now;
+
+          // DĒDĒ link: toggle the profile image.
+          if (e.target.closest('.dede-link')) {
+            if (e.cancelable) e.preventDefault();
+            const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
+            if (imageShown) hideDedeImage();
+            else if (dedeImage) dedeImage.classList.add('is-shown');
+            return;
+          }
+          // BLLCRW link: dismiss the profile image; let default navigation run.
+          if (e.target.closest('.bllcrw-link')) {
+            hideDedeImage();
+            return;
+          }
+          // Image up? Dismiss it and stop — the same tap won't also focus.
+          if (dedeImage && dedeImage.classList.contains('is-shown')) {
+            hideDedeImage();
+            return;
+          }
+          // Toggle focus.
+          if (paragraph.hasAttribute('data-focused')) {
+            clearFocus();
+          } else {
+            focusOn(paragraph);
+          }
+        }
+
         paragraphs.forEach((paragraph) => {
-          paragraph.addEventListener('click', (e) => {
-            // DĒDĒ link: swallow the click, toggle the profile image.
-            if (e.target.closest('.dede-link')) {
-              e.preventDefault();
-              const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
-              if (imageShown) hideDedeImage();
-              else if (dedeImage) dedeImage.classList.add('is-shown');
-              return;
-            }
-            // BLLCRW link: dismiss the profile image on the way to Instagram.
-            if (e.target.closest('.bllcrw-link')) {
-              hideDedeImage();
-              return;
-            }
-
-            // Any other tap on a paragraph: if the image is up, dismiss it and
-            // stop (so a tap anywhere really does dismiss).
-            if (dedeImage && dedeImage.classList.contains('is-shown')) {
-              hideDedeImage();
-              return;
-            }
-
-            // Toggle focus: same paragraph twice → clear; otherwise switch to it.
-            if (paragraph.hasAttribute('data-focused')) {
-              clearFocus();
-            } else {
-              focusOn(paragraph);
-            }
-          });
+          paragraph.addEventListener('click', (e) => handleParagraph(paragraph, e));
+          paragraph.addEventListener('touchend', (e) => handleParagraph(paragraph, e), { passive: true });
         });
 
-        // Any tap outside the paragraphs clears focus and dismisses the image.
-        document.addEventListener('click', (e) => {
+        function handleOutside(e) {
+          const now = Date.now();
+          if (now - lastHandled < 400) return;
+          lastHandled = now;
           if (e.target.closest('.intro p')) return;
           hideDedeImage();
           clearFocus();
-        });
-      }
+        }
+        document.addEventListener('click', handleOutside);
+        document.addEventListener('touchend', handleOutside, { passive: true });
+      })();
     })();
   </script>
 </body>
