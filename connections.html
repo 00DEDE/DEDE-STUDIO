@@ -8,11 +8,18 @@
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#121212" />
+<meta name="theme-color" content="#050505" />
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
 <style>
+  @font-face {
+    font-family: "Akzidenz Grotesk";
+    src: url("ASSETS/FONTS/AKZIDENZGROTESK-REGULAR.OTF") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
   html { background: #050505; }
   html, body {
     margin: 0;
@@ -21,13 +28,75 @@
     width: 100%;
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
   }
   body { background: transparent; }
-  .page-hero {
-    min-height: 100vh;
-  }
   a, button, [role="button"] {
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+  }
+
+  /* Say-hello block: same font, weight, size and rhythm as the intro
+     paragraphs, so both pages read from the same voice. */
+  .hello {
+    padding: 6rem 5vw 6rem;
+    max-width: 90rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  @media (max-width: 640px) {
+    .hello { padding-top: 10rem; }
+  }
+  .hello p {
+    color: #ffffff;
+    font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 4.5vw, 5.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .hello__contact {
+    margin-top: 2.5rem;
+  }
+
+  /* Email link: same radiating cyan glow used for DĒDĒ + BLLCRW on the
+     introductions page, so interactive words have a consistent language. */
+  .email-link {
+    color: inherit;
+    text-decoration: none;
+    animation: link-glow 2.5s ease-in-out infinite;
+    transition: color 0.3s ease;
+  }
+  .email-link:hover,
+  .email-link:focus-visible {
+    color: #00dede;
+  }
+  @keyframes link-glow {
+    0%, 100% {
+      text-shadow:
+        0 0 0.15em rgba(0, 222, 222, 0.45),
+        0 0 0.4em  rgba(0, 222, 222, 0.25),
+        0 0 0.7em  rgba(0, 222, 222, 0.12);
+    }
+    50% {
+      text-shadow:
+        0 0 0.3em rgba(0, 222, 222, 0.95),
+        0 0 0.7em rgba(0, 222, 222, 0.55),
+        0 0 1.2em rgba(0, 222, 222, 0.3);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .email-link {
+      animation: none;
+      text-shadow:
+        0 0 0.25em rgba(0, 222, 222, 0.7),
+        0 0 0.6em  rgba(0, 222, 222, 0.4);
+    }
   }
 </style>
 </head>
@@ -50,7 +119,16 @@
     </nav>
   </header>
   <script src="site-header.js" defer></script>
-  <div class="page-hero"></div>
+
+  <section class="hello" aria-label="Contact">
+    <p>Say hello</p>
+    <div class="hello__contact">
+      <p>DAVID GOMEZ</p>
+      <p>Head of Dēdē.Studio</p>
+      <p><a class="email-link" href="mailto:iamdede@bllcrw.com">iamdede@bllcrw.com</a></p>
+    </div>
+  </section>
+
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
       <img src="ASSETS/LOGO/logo_horizontal_white.png" alt="DEDE STUDIO" />
