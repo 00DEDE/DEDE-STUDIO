@@ -76,10 +76,18 @@
     }
   }
   /* Touch: JS toggles .has-focus on the container + .is-focused on the tapped
-     paragraph. Using a container class here (not :has()) makes this work
-     reliably across all mobile browsers. */
+     paragraph. Container class (not :has()) makes it reliable across
+     mobile browsers. */
   .intro.has-focus > p:not(.is-focused) {
     opacity: 0.5;
+  }
+  /* Touch: mark paragraphs as interactive so iOS reliably fires clicks and
+     doesn't slap a gray tap-highlight over the type. */
+  @media (hover: none), (pointer: coarse) {
+    .intro p {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
   }
   /* Line-by-line reveal: JS wraps each word in .word, groups them by
      offsetTop after layout, and fades in one whole line at a time. Parent
@@ -95,14 +103,13 @@
     display: inline;
   }
 
-  /* Inline links carry a cyan underline that pulses so users know
-     they're interactive — subtle, but never static. */
+  /* Inline links carry a radiating cyan glow behind the word that pulses,
+     so users can see they're interactive without an underline chopping the
+     line of type. */
   .dede-link,
   .bllcrw-link {
     color: inherit;
     text-decoration: none;
-    border-bottom: 0.08em solid #00dede;
-    padding-bottom: 0.02em;
     animation: link-glow 2.5s ease-in-out infinite;
     transition: color 0.3s ease;
   }
@@ -113,14 +120,26 @@
     color: #00dede;
   }
   @keyframes link-glow {
-    0%, 100% { border-bottom-color: rgba(0, 222, 222, 0.35); }
-    50%      { border-bottom-color: rgba(0, 222, 222, 1); }
+    0%, 100% {
+      text-shadow:
+        0 0 0.15em rgba(0, 222, 222, 0.45),
+        0 0 0.4em  rgba(0, 222, 222, 0.25),
+        0 0 0.7em  rgba(0, 222, 222, 0.12);
+    }
+    50% {
+      text-shadow:
+        0 0 0.3em rgba(0, 222, 222, 0.95),
+        0 0 0.7em rgba(0, 222, 222, 0.55),
+        0 0 1.2em rgba(0, 222, 222, 0.3);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .dede-link,
     .bllcrw-link {
       animation: none;
-      border-bottom-color: rgba(0, 222, 222, 0.8);
+      text-shadow:
+        0 0 0.25em rgba(0, 222, 222, 0.7),
+        0 0 0.6em  rgba(0, 222, 222, 0.4);
     }
   }
 
@@ -130,8 +149,9 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    width: min(48vw, 560px);
-    max-height: 78vh;
+    /* 30% larger than before (48vw → 62.4vw, 560px → 728px, 78vh → 92vh). */
+    width: min(62.4vw, 728px);
+    max-height: 92vh;
     height: auto;
     object-fit: contain;
     transform: translate(-50%, -50%) scale(0.35);
@@ -192,7 +212,7 @@
     <p class="intro__first">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span> <span class="reveal-words" id="firstBody">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</span></p>
     <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and stronger still for the emotion that story stirs within us all.</p>
     <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
-    <p class="reveal-words">Life is complicated by my existence is simple. Make work that resonates, inspires, and communicates with intent.</p>
+    <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
   </section>
 
   <footer class="site-footer">
@@ -345,49 +365,54 @@
       }
 
       // ---- Touch interactions: paragraph tap-to-focus + DĒDĒ tap-to-toggle image.
-      if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+      // Attach listeners directly to the paragraphs (not just document) — iOS
+      // Safari sometimes swallows click events on non-interactive elements
+      // when only a document-level listener is used.
+      const touchQuery = window.matchMedia('(hover: none), (pointer: coarse)');
+      if (touchQuery.matches) {
         const dedeImage = document.querySelector('.dede-image');
         const intro = document.querySelector('.intro');
+        const paragraphs = document.querySelectorAll('.intro p');
 
         function clearFocus() {
-          document
-            .querySelectorAll('.intro p.is-focused')
-            .forEach(p => p.classList.remove('is-focused'));
+          paragraphs.forEach(p => p.classList.remove('is-focused'));
           if (intro) intro.classList.remove('has-focus');
         }
         function hideDedeImage() {
           if (dedeImage) dedeImage.classList.remove('is-shown');
         }
 
-        document.addEventListener('click', (e) => {
-          const dedeLink = e.target.closest('.dede-link');
-          const paragraph = e.target.closest('.intro p');
-          const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
-
-          // --- DĒDĒ image toggle
-          if (dedeLink) {
-            e.preventDefault();
-            if (imageShown) {
-              hideDedeImage();
-            } else {
-              dedeImage && dedeImage.classList.add('is-shown');
+        paragraphs.forEach((paragraph) => {
+          paragraph.addEventListener('click', (e) => {
+            // DĒDĒ link: swallow the click, toggle the profile image.
+            if (e.target.closest('.dede-link')) {
+              e.preventDefault();
+              const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
+              if (imageShown) {
+                hideDedeImage();
+              } else if (dedeImage) {
+                dedeImage.classList.add('is-shown');
+              }
+              return;
             }
-          } else if (imageShown) {
-            // A tap anywhere else dismisses the image.
-            hideDedeImage();
-          }
+            // BLLCRW link: let default navigation run.
+            if (e.target.closest('.bllcrw-link')) return;
 
-          // --- Paragraph focus toggle
-          if (paragraph) {
+            // Toggle focus on this paragraph, dim the others.
             const alreadyFocused = paragraph.classList.contains('is-focused');
             clearFocus();
             if (!alreadyFocused) {
               paragraph.classList.add('is-focused');
               if (intro) intro.classList.add('has-focus');
             }
-          } else {
-            clearFocus();
-          }
+          });
+        });
+
+        // Any tap outside the paragraphs clears focus and dismisses the image.
+        document.addEventListener('click', (e) => {
+          if (e.target.closest('.intro p')) return;
+          hideDedeImage();
+          clearFocus();
         });
       }
     })();
