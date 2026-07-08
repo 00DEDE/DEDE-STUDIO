@@ -50,6 +50,10 @@
     margin: 0 auto;
     box-sizing: border-box;
   }
+  @media (max-width: 640px) {
+    /* Mobile header stacks to 3 rows (~100px tall), so bump top padding. */
+    .intro { padding-top: 8.5rem; }
+  }
   .intro p {
     color: #ffffff;
     font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
@@ -68,13 +72,13 @@
   .intro:has(p:hover) > p:not(:hover) {
     opacity: 0.5;
   }
-  /* Word-by-word reveal: JS wraps each word in .word, then fades them in
-     one at a time to mimic real-time reading. Parent stays visibility:hidden
-     until wrapping finishes so the raw text never flashes in. */
+  /* Line-by-line reveal: JS wraps each word in .word, groups them by
+     offsetTop after layout, and fades in one whole line at a time. Parent
+     stays visibility:hidden until wrapping finishes so raw text never flashes in. */
   .reveal-words:not(.is-ready) { visibility: hidden; }
   .word {
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 1.4s ease-out;
   }
   .word.is-visible { opacity: 1; }
   .statement__predicate {
@@ -125,11 +129,11 @@
   @media (hover: none) {
     .dede-image { display: none; }
   }
-  /* Mobile: the paragraph dim-on-hover uses :has() which repaints the whole
-     block. On touch it doesn't fire anyway, so drop the transition. */
+  /* Mobile: dim-on-hover never fires on touch, so drop that transition.
+     Keep the line-reveal transition length the same so the reveal reads
+     as calm on both platforms. */
   @media (max-width: 768px), (pointer: coarse) {
     .intro p { transition: none; }
-    .word { transition: opacity 0.4s ease; }
     .statement__predicate { transition: opacity 0.35s ease; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -193,16 +197,28 @@
 
   <script>
     (function () {
-      // --- Word-wrap all reveal-words blocks so each word can fade in on its own.
+      // --- Wrap each word in a .word span so we can reveal them per line.
+      // Also tie the first two words of every sentence with a non-breaking
+      // space so a sentence-opener never ends up alone at the end of a line.
       function escapeHtml(s) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
       function wrapWords(el) {
         const text = el.textContent.replace(/\s+/g, ' ').trim();
         const words = text.split(' ');
-        el.innerHTML = words
-          .map(w => '<span class="word">' + escapeHtml(w) + '</span>')
-          .join(' ');
+        const parts = [];
+        words.forEach((word, idx) => {
+          parts.push('<span class="word">' + escapeHtml(word) + '</span>');
+          if (idx < words.length - 1) {
+            // If word[idx] is the first word of a new sentence (start of block
+            // or previous word ended with . ? or !), tie it to word[idx+1]
+            // with a non-breaking space so they never split across lines.
+            const isSentenceStart =
+              idx === 0 || /[.?!]$/.test(words[idx - 1]);
+            parts.push(isSentenceStart ? '&nbsp;' : ' ');
+          }
+        });
+        el.innerHTML = parts.join('');
         el.classList.add('is-ready');
       }
       document.querySelectorAll('.reveal-words').forEach(wrapWords);
@@ -233,8 +249,8 @@
       const HOLD_MS = 2500;
       const FADE_MS = 500;
       const REVEAL_PAUSE_MS = 900;
-      const WORD_MS = 110;
-      const PARA_PAUSE_MS = 450;
+      const LINE_MS = 500;   // stagger between lines (calm cascade)
+      const PARA_PAUSE_MS = 350; // extra breath at paragraph boundaries
       let i = 0;
 
       function paint(variant) {
@@ -252,7 +268,7 @@
 
       function scheduleNext() {
         if (i >= variants.length - 1) {
-          setTimeout(startWordCascade, REVEAL_PAUSE_MS);
+          setTimeout(startLineCascade, REVEAL_PAUSE_MS);
           return;
         }
         setTimeout(() => {
@@ -266,14 +282,37 @@
         }, HOLD_MS);
       }
 
-      function startWordCascade() {
+      // Group word spans by their offsetTop (== line) at current layout.
+      function groupByLine(container) {
+        const words = Array.from(container.querySelectorAll('.word'));
+        const lines = [];
+        let current = [];
+        let currentTop = null;
+        words.forEach((word) => {
+          const top = word.offsetTop;
+          if (currentTop === null || Math.abs(top - currentTop) < 3) {
+            current.push(word);
+            currentTop = top;
+          } else {
+            if (current.length) lines.push(current);
+            current = [word];
+            currentTop = top;
+          }
+        });
+        if (current.length) lines.push(current);
+        return lines;
+      }
+
+      function startLineCascade() {
         const blocks = document.querySelectorAll('.reveal-words');
         let clock = 0;
         blocks.forEach((block) => {
-          const words = block.querySelectorAll('.word');
-          words.forEach((word) => {
-            setTimeout(() => word.classList.add('is-visible'), clock);
-            clock += WORD_MS;
+          const lines = groupByLine(block);
+          lines.forEach((line) => {
+            setTimeout(() => {
+              line.forEach((w) => w.classList.add('is-visible'));
+            }, clock);
+            clock += LINE_MS;
           });
           clock += PARA_PAUSE_MS;
         });

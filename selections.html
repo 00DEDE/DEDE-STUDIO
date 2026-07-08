@@ -63,7 +63,8 @@
     grid-template-rows: repeat(3, 1fr);
   }
   @media (max-width: 640px) {
-    .selections-grid { top: 48px; }
+    /* Header stacks into 3 rows on mobile — grid starts below it. */
+    .selections-grid { top: 108px; }
   }
 
   .cell {
