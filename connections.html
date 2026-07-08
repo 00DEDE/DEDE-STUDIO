@@ -71,10 +71,43 @@
     text-decoration: none;
     animation: link-glow 2.5s ease-in-out infinite;
     transition: color 0.3s ease;
+    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
   .email-link:hover,
   .email-link:focus-visible {
     color: #00dede;
+  }
+
+  /* Mail-app chooser — appears below the email on click. */
+  .email-options {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    margin-top: 0.75rem;
+    font-size: clamp(0.85rem, 2.25vw, 2.75rem); /* ~half the paragraph size */
+    letter-spacing: -0.01em;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
+  }
+  .email-options.is-open {
+    max-height: 6em;
+    opacity: 1;
+  }
+  .email-option {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    animation: link-glow 2.5s ease-in-out infinite;
+  }
+  .email-option:hover,
+  .email-option:focus-visible {
+    color: #00dede;
+  }
+  .email-options__sep {
+    opacity: 0.5;
+    animation: none;
   }
   @keyframes link-glow {
     0%, 100% {
@@ -125,9 +158,50 @@
     <div class="hello__contact">
       <p>DAVID GOMEZ</p>
       <p>Head of Dēdē.Studio</p>
-      <p><a class="email-link" href="mailto:iamdede@bllcrw.com">iamdede@bllcrw.com</a></p>
+      <p>
+        <a class="email-link"
+           href="#"
+           id="emailToggle"
+           role="button"
+           aria-expanded="false"
+           aria-controls="emailOptions">iamdede@bllcrw.com</a>
+      </p>
+      <div class="email-options" id="emailOptions">
+        <a class="email-option" href="mailto:iamdede@bllcrw.com">mail app</a>
+        <span class="email-options__sep" aria-hidden="true">·</span>
+        <a class="email-option" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=iamdede@bllcrw.com" target="_blank" rel="noopener">gmail</a>
+      </div>
     </div>
   </section>
+
+  <script>
+    (function () {
+      const toggle = document.getElementById('emailToggle');
+      const options = document.getElementById('emailOptions');
+      if (!toggle || !options) return;
+
+      function setOpen(open) {
+        options.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        setOpen(!options.classList.contains('is-open'));
+      });
+
+      // Any tap outside the chooser closes it.
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('#emailOptions') || e.target === toggle) return;
+        setOpen(false);
+      });
+
+      // Escape closes it too.
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+      });
+    })();
+  </script>
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
