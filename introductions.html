@@ -229,7 +229,7 @@
         if (variant.type === 'link') {
           el.innerHTML =
             variant.prefix +
-            '<a href="home.html" class="dede-link" aria-label="DĒDĒ — home">' +
+            '<a href="#" class="dede-link" onclick="event.preventDefault()">' +
             variant.word +
             '</a>' +
             variant.suffix;
