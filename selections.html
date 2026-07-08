@@ -45,6 +45,12 @@
   }
   .bg-layer.is-active { opacity: 1; }
   .bg-layer.is-idle   { opacity: 0; }
+  /* Hovering the header or footer clears the cell gradient so the shared
+     animated site-bg shows through underneath. */
+  body:has(.site-header:hover) .bg-layer,
+  body:has(.site-footer:hover) .bg-layer {
+    opacity: 0;
+  }
 
   .selections-grid {
     position: absolute;
