@@ -395,10 +395,21 @@
               }
               return;
             }
-            // BLLCRW link: let default navigation run.
-            if (e.target.closest('.bllcrw-link')) return;
+            // BLLCRW link: dismiss the profile image on the way to Instagram.
+            if (e.target.closest('.bllcrw-link')) {
+              hideDedeImage();
+              return;
+            }
 
-            // Toggle focus on this paragraph, dim the others.
+            // Any other tap on a paragraph: if the profile image is currently
+            // shown, this tap dismisses it (and doesn't do anything else) so
+            // "tap anywhere to dismiss" holds true even inside .intro.
+            if (dedeImage && dedeImage.classList.contains('is-shown')) {
+              hideDedeImage();
+              return;
+            }
+
+            // Otherwise, toggle focus on this paragraph and dim the others.
             const alreadyFocused = paragraph.classList.contains('is-focused');
             clearFocus();
             if (!alreadyFocused) {
