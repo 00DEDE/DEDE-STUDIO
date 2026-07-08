@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#121212" />
+<meta name="theme-color" content="#050505" />
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
@@ -17,6 +17,13 @@
     font-family: "Akzidenz Grotesk";
     src: url("ASSETS/FONTS/AKZIDENZGROTESK-EXTRABOLD.OTF") format("opentype");
     font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Akzidenz Grotesk";
+    src: url("ASSETS/FONTS/AKZIDENZGROTESK-REGULAR.OTF") format("opentype");
+    font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
@@ -57,11 +64,38 @@
     transition: opacity 0.5s ease;
     display: inline;
   }
-  .statement__logo {
-    height: 0.78em;
-    width: auto;
-    vertical-align: -0.02em;
-    display: inline-block;
+
+  /* Long-form intro copy under the statement */
+  .about {
+    padding: 4rem 5vw 6rem;
+    max-width: 60rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .about p {
+    color: #ffffff;
+    font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1rem, 1.35vw, 1.375rem);
+    line-height: 1.65;
+    letter-spacing: 0.005em;
+    margin: 0 0 1.75rem;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1s ease, transform 1s ease;
+    will-change: opacity, transform;
+  }
+  .about p:last-child { margin-bottom: 0; }
+  .about p.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .about p {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 </style>
 </head>
@@ -87,6 +121,14 @@
   <div class="page-hero">
     <h1 class="statement">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span></h1>
   </div>
+
+  <section class="about" aria-label="About DĒDĒ">
+    <p>Its great to meet you here. Out of all possibilties, we are here, together. As you have seen (or are about to see) my work thrives across packaging, brand identity, and visual communication. All projects should begin with the need to find the narrative. An entity, an object, a system is only as strong as the story it tells and even more so, the manner in which that story creates emotion within us all.</p>
+    <p>My methods and processes are due to a big factor in my life. I am co-owner of BLLCRW. I lead our visual identity, garment design, manufacturer relations, and brand storytelling. Bringing to life a creative label has given me the possibility to turn sketches and ideas into shared moments for my team and I, as well as, mold an entity that will exist far after I am no longer here. I create because there will always be a story worth telling, emotions worth discovering, and ideas worth sharing.</p>
+    <p>I believe it is my purpose is to create with my existence work that resonates, inspires, and communicates with intent.</p>
+    <p>Tools: Adobe Illustrator, InDesign, Photoshop, Premiere Pro, After Effects, Lightroom, Procreate, SolidWorks, Keyshot, and Cinema 4D.</p>
+  </section>
+
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
       <img src="ASSETS/LOGO/logo_horizontal_white.png" alt="DEDE STUDIO" />
@@ -104,37 +146,52 @@
       </div>
     </div>
   </footer>
+
   <script>
+    // Cycle "I AM ___" through 5 variants, then stop on DĒDĒ.
     (function () {
       const variants = [
-        ' A STORY TELLER.',
-        ' A CREATIVE.',
-        ' A DESIGNER.',
-        ' A HUMAN BEING.',
-        '__LOGO__'
+        ' A STORY TELLER.',
+        ' A CREATIVE.',
+        ' A DESIGNER.',
+        ' A HUMAN BEING.',
+        ' DĒDĒ.'
       ];
-      const logoHtml = ' <img class="statement__logo" src="ASSETS/LOGO/logo_dede_only_white.png" alt="DĒDĒ" />.';
       const el = document.getElementById('statementPred');
       let i = 0;
       const HOLD_MS = 2500;
       const FADE_MS = 500;
 
-      function paint(variant) {
-        if (variant === '__LOGO__') {
-          el.innerHTML = logoHtml;
-        } else {
-          el.textContent = variant;
+      const intervalId = setInterval(() => {
+        if (i >= variants.length - 1) {
+          clearInterval(intervalId);
+          return;
         }
-      }
-
-      setInterval(() => {
         el.style.opacity = '0';
         setTimeout(() => {
-          i = (i + 1) % variants.length;
-          paint(variants[i]);
+          i++;
+          el.textContent = variants[i];
           el.style.opacity = '1';
         }, FADE_MS);
       }, HOLD_MS + FADE_MS);
+    })();
+
+    // Reveal each paragraph as it enters the viewport.
+    (function () {
+      const paras = document.querySelectorAll('.about p');
+      if (!('IntersectionObserver' in window)) {
+        paras.forEach(p => p.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+      paras.forEach(p => io.observe(p));
     })();
   </script>
 </body>
