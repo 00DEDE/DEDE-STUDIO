@@ -38,61 +38,46 @@
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
   }
   body { background: transparent; }
-  .page-hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 6rem 5vw 4rem;
-    box-sizing: border-box;
-  }
   a, button, [role="button"] {
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
-  .statement {
-    margin: 0;
-    color: #ffffff;
-    font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;
-    font-size: clamp(2.75rem, 9vw, 11rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    text-align: left;
-    max-width: 100%;
-  }
-  .statement__predicate {
-    transition: opacity 0.5s ease;
-    display: inline;
-  }
 
-  /* Long-form intro copy under the statement — big bold display style
-     matching the "Sibling Rivalry" reference paragraph. */
-  .about {
-    padding: 4rem 5vw 6rem;
+  /* One continuous block — cycling statement flows into the first paragraph,
+     all subsequent paragraphs cascade below at the same weight and size. */
+  .intro {
+    padding: 6rem 5vw 6rem;
     max-width: 90rem;
     margin: 0 auto;
     box-sizing: border-box;
   }
-  .about p {
+  .intro p {
     color: #ffffff;
     font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;
+    font-weight: 400;
     font-size: clamp(1.5rem, 4.5vw, 5.5rem);
     line-height: 1.1;
     letter-spacing: -0.015em;
     margin: 0 0 2.5rem;
+  }
+  .intro p:last-child { margin-bottom: 0; }
+  /* Reveal-on-scroll for every paragraph except the first (which holds
+     the cycling statement and stays visible from load). */
+  .intro p:not(.intro__first) {
     opacity: 0;
     transform: translateY(28px);
     transition: opacity 1s ease, transform 1s ease;
     will-change: opacity, transform;
   }
-  .about p:last-child { margin-bottom: 0; }
-  .about p.is-visible {
+  .intro p:not(.intro__first).is-visible {
     opacity: 1;
     transform: translateY(0);
   }
+  .statement__predicate {
+    transition: opacity 0.5s ease;
+    display: inline;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .about p {
+    .intro p:not(.intro__first) {
       opacity: 1;
       transform: none;
       transition: none;
@@ -119,12 +104,8 @@
     </nav>
   </header>
   <script src="site-header.js" defer></script>
-  <div class="page-hero">
-    <h1 class="statement">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span></h1>
-  </div>
-
-  <section class="about" aria-label="About DĒDĒ">
-    <p>It&rsquo;s great to meet you here. Out of all possibilities, we are here, together. As you have seen (or are about to see) my work thrives across packaging, brand identity, and visual communication. All projects should begin with the need to find the narrative. An entity, an object, a system is only as strong as the story it tells and even more so, the manner in which that story creates emotion within us all.</p>
+  <section class="intro" aria-label="Introduction">
+    <p class="intro__first">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span> It&rsquo;s great to meet you here. Out of all possibilities, we are here, together. As you have seen (or are about to see) my work thrives across packaging, brand identity, and visual communication. All projects should begin with the need to find the narrative. An entity, an object, a system is only as strong as the story it tells and even more so, the manner in which that story creates emotion within us all.</p>
     <p>My methods and processes are due to a big factor in my life. I am co-owner of BLLCRW. I lead our visual identity, garment design, manufacturer relations, and brand storytelling. Bringing to life a creative label has given me the possibility to turn sketches and ideas into shared moments for my team and I, as well as, mold an entity that will exist far after I am no longer here. I create because there will always be a story worth telling, emotions worth discovering, and ideas worth sharing.</p>
     <p>I believe it is my purpose to create with my existence work that resonates, inspires, and communicates with intent.</p>
     <p>Tools: Adobe Illustrator, InDesign, Photoshop, Premiere Pro, After Effects, Lightroom, Procreate, SolidWorks, Keyshot, and Cinema 4D.</p>
@@ -177,9 +158,9 @@
       }, HOLD_MS + FADE_MS);
     })();
 
-    // Reveal each paragraph as it enters the viewport.
+    // Reveal each paragraph (after the first) as it enters the viewport.
     (function () {
-      const paras = document.querySelectorAll('.about p');
+      const paras = document.querySelectorAll('.intro p:not(.intro__first)');
       if (!('IntersectionObserver' in window)) {
         paras.forEach(p => p.classList.add('is-visible'));
         return;
