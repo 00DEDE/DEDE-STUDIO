@@ -63,6 +63,11 @@
   .hello__contact {
     margin-top: 2.5rem;
   }
+  /* Cycling greeting fades gracefully between languages. */
+  .greeting-word {
+    display: inline-block;
+    transition: opacity 1s ease;
+  }
 
   /* Email link: same radiating cyan glow used for DĒDĒ + BLLCRW on the
      introductions page, so interactive words have a consistent language. */
@@ -154,7 +159,7 @@
   <script src="site-header.js" defer></script>
 
   <section class="hello" aria-label="Contact">
-    <p>Say hello</p>
+    <p><span class="greeting-word" id="greetingWord">Say hello</span></p>
     <div class="hello__contact">
       <p>DAVID GOMEZ</p>
       <p>Head of Dēdē.Studio</p>
@@ -175,6 +180,25 @@
   </section>
 
   <script>
+    // Cycle the greeting through English → Spanish → French.
+    (function () {
+      const el = document.getElementById('greetingWord');
+      if (!el) return;
+      const greetings = ['Say hello', 'Mandame un saludito', 'Dis-moi bonjour'];
+      let idx = 0;
+      const HOLD_MS = 2500;
+      const FADE_MS = 1000;
+      setInterval(() => {
+        el.style.opacity = '0';
+        setTimeout(() => {
+          idx = (idx + 1) % greetings.length;
+          el.textContent = greetings[idx];
+          el.style.opacity = '1';
+        }, FADE_MS);
+      }, HOLD_MS + FADE_MS);
+    })();
+
+    // Email chooser: click to reveal mail app / gmail options.
     (function () {
       const toggle = document.getElementById('emailToggle');
       const options = document.getElementById('emailOptions');
