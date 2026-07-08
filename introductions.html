@@ -58,8 +58,16 @@
     line-height: 1.1;
     letter-spacing: -0.015em;
     margin: 0 0 2.5rem;
+    /* Prevent orphans + widows on browsers that support it (Chrome 117+, Safari 17.4+, FF 129+). */
+    text-wrap: pretty;
+    transition: opacity 0.3s ease;
   }
   .intro p:last-child { margin-bottom: 0; }
+  /* Hover any paragraph → that one stays fully white, siblings fade to 50%.
+     Uses :has() so gaps between paragraphs don't trigger the dim. */
+  .intro:has(p:hover) > p:not(:hover) {
+    opacity: 0.5;
+  }
   /* Word-by-word reveal: JS wraps each word in .word, then fades them in
      one at a time to mimic real-time reading. Parent stays visibility:hidden
      until wrapping finishes so the raw text never flashes in. */
@@ -73,12 +81,53 @@
     transition: opacity 0.5s ease;
     display: inline;
   }
+
+  /* Inline links inside the copy inherit color and stay clean. */
+  .dede-link,
+  .bllcrw-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .bllcrw-link {
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease;
+  }
+  .bllcrw-link:hover,
+  .bllcrw-link:focus-visible {
+    border-bottom-color: currentColor;
+  }
+
+  /* Hovering DĒDĒ blows the profile image up from a contracted state.
+     Cubic-bezier gives it a subtle spring at the tail of the expansion. */
+  .dede-image {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(48vw, 560px);
+    max-height: 78vh;
+    height: auto;
+    object-fit: contain;
+    transform: translate(-50%, -50%) scale(0.35);
+    opacity: 0;
+    transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 200;
+    will-change: transform, opacity;
+  }
+  body:has(.dede-link:hover) .dede-image,
+  body:has(.dede-link:focus-visible) .dede-image {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
   @media (prefers-reduced-motion: reduce) {
     .reveal-words:not(.is-ready) { visibility: visible; }
     .word {
       opacity: 1;
       transition: none;
     }
+    .intro p { transition: none; }
+    .dede-image { transition: opacity 0.2s ease; }
   }
 </style>
 </head>
@@ -101,6 +150,10 @@
     </nav>
   </header>
   <script src="site-header.js" defer></script>
+
+  <!-- Hover overlay: appears when the user hovers DĒDĒ in the statement. -->
+  <img class="dede-image" src="ASSETS/IMAGES/DEDE_PROFILE_IMAGE 2.png" alt="" aria-hidden="true" />
+
   <section class="intro" aria-label="Introduction">
     <p class="intro__first">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span> <span class="reveal-words" id="firstBody">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</span></p>
     <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and stronger still for the emotion that story stirs within us all.</p>
@@ -142,21 +195,48 @@
       }
       document.querySelectorAll('.reveal-words').forEach(wrapWords);
 
-      // --- Cycling statement: "I AM ___", locks on DĒDĒ.
+      // Convert BLLCRW. into an external link to Instagram.
+      document.querySelectorAll('.word').forEach((w) => {
+        if (w.textContent === 'BLLCRW.') {
+          const a = document.createElement('a');
+          a.href = 'https://www.instagram.com/bllcrw/';
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'bllcrw-link';
+          a.textContent = 'BLLCRW.';
+          w.textContent = '';
+          w.appendChild(a);
+        }
+      });
+
+      // --- Cycling statement: "I AM ___", locks on DĒDĒ (as a link).
       const variants = [
-        ' A STORY TELLER.',
-        ' A CREATIVE.',
-        ' A DESIGNER.',
-        ' A HUMAN BEING.',
-        ' DĒDĒ.'
+        { type: 'text', value: ' A STORY TELLER.' },
+        { type: 'text', value: ' A CREATIVE.' },
+        { type: 'text', value: ' A DESIGNER.' },
+        { type: 'text', value: ' A HUMAN BEING.' },
+        { type: 'link', prefix: ' ', word: 'DĒDĒ', suffix: '.' }
       ];
       const el = document.getElementById('statementPred');
       const HOLD_MS = 2500;
       const FADE_MS = 500;
-      const REVEAL_PAUSE_MS = 900;    // pause after DĒDĒ settles before words start
-      const WORD_MS = 110;            // ms between each word reveal (~545 wpm reading pace)
-      const PARA_PAUSE_MS = 450;      // extra pause at paragraph boundaries
+      const REVEAL_PAUSE_MS = 900;
+      const WORD_MS = 110;
+      const PARA_PAUSE_MS = 450;
       let i = 0;
+
+      function paint(variant) {
+        if (variant.type === 'link') {
+          el.innerHTML =
+            variant.prefix +
+            '<a href="home.html" class="dede-link" aria-label="DĒDĒ — home">' +
+            variant.word +
+            '</a>' +
+            variant.suffix;
+        } else {
+          el.textContent = variant.value;
+        }
+      }
 
       function scheduleNext() {
         if (i >= variants.length - 1) {
@@ -167,7 +247,7 @@
           el.style.opacity = '0';
           setTimeout(() => {
             i++;
-            el.textContent = variants[i];
+            paint(variants[i]);
             el.style.opacity = '1';
             scheduleNext();
           }, FADE_MS);
@@ -189,7 +269,7 @@
 
       // Reduced motion: skip the cycle and show everything.
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        el.textContent = ' DĒDĒ.';
+        paint(variants[variants.length - 1]);
         document.querySelectorAll('.word').forEach(w => w.classList.add('is-visible'));
       } else {
         scheduleNext();
