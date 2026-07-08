@@ -8,16 +8,273 @@
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="theme-color" content="#121212" />
 <style>
   html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
+    background: #121212;
+    color: #ffffff;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
+  }
+  a, button, [role="button"] {
+    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+  }
+
+  .selections {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* Two stacked background layers so we can crossfade */
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.6s ease;
+  }
+  .bg-layer.is-active { opacity: 1; }
+  .bg-layer.is-idle   { opacity: 0; }
+
+  .selections-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .selections-header > * { pointer-events: auto; }
+
+  .brand-pill {
+    color: #ffffff;
+    text-decoration: none;
+    border: 1px solid #ffffff;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+  .menu-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+
+  .selections-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .cell {
+    position: relative;
+    color: #ffffff;
+    text-decoration: none;
+    box-sizing: border-box;
+    border-right: 1px solid rgba(255, 255, 255, 0.35);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+  .cell:nth-child(3n) { border-right: none; }
+  .cell:nth-last-child(-n+3) { border-bottom: none; }
+
+  .cell-title,
+  .cell-duration,
+  .cell-view,
+  .cell-year {
+    position: absolute;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+  }
+  .cell-title    { top: 1rem;    left: 1.25rem;   font-weight: 700; }
+  .cell-duration { top: 1rem;    right: 1.25rem;  font-variant-numeric: tabular-nums; }
+  .cell-view     { top: 50%;     left: 50%;       transform: translate(-50%, -50%); }
+  .cell-year     { bottom: 1rem; right: 1.25rem;  font-variant-numeric: tabular-nums; }
+
+  /* By default only the title is visible; other bits fade in on hover */
+  .cell-duration,
+  .cell-view,
+  .cell-year {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  @media (hover: hover) {
+    .cell:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+    .cell:hover .cell-duration,
+    .cell:hover .cell-view,
+    .cell:hover .cell-year {
+      opacity: 1;
+    }
+  }
+  /* Touch: mirror the same states via .is-active (JS-controlled). */
+  .cell.is-active {
     background: #ffffff;
+    color: #000000;
+  }
+  .cell.is-active .cell-duration,
+  .cell.is-active .cell-view,
+  .cell.is-active .cell-year {
+    opacity: 1;
+  }
+
+  @media (max-width: 640px) {
+    .cell-title,
+    .cell-duration,
+    .cell-view,
+    .cell-year { font-size: 0.72rem; }
+    .cell-title    { top: 0.6rem;    left: 0.75rem; }
+    .cell-duration { top: 0.6rem;    right: 0.75rem; }
+    .cell-year     { bottom: 0.6rem; right: 0.75rem; }
   }
 </style>
 </head>
-<body></body>
+<body>
+  <div class="selections">
+    <div class="bg-layer is-active" id="bgA"></div>
+    <div class="bg-layer is-idle"   id="bgB"></div>
+
+    <header class="selections-header">
+      <a class="brand-pill" href="home.html" aria-label="Back to home">DĒDĒ.</a>
+      <a class="menu-link" href="home.html">Menu</a>
+    </header>
+
+    <div class="selections-grid">
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#7a1f1f 0%,#0d0d0d 100%)">
+        <span class="cell-title">Placeholder Project 01</span>
+        <span class="cell-duration">00:02:15</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2024</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#1a2a44 0%,#0b0b0b 100%)">
+        <span class="cell-title">Placeholder Project 02</span>
+        <span class="cell-duration">00:01:45</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2024</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)">
+        <span class="cell-title">Placeholder Project 03</span>
+        <span class="cell-duration">00:03:02</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2025</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#4b1e3a 0%,#0b0b0b 100%)">
+        <span class="cell-title">Placeholder Project 04</span>
+        <span class="cell-duration">00:00:58</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2025</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#5a3a10 0%,#0a0a0a 100%)">
+        <span class="cell-title">Placeholder Project 05</span>
+        <span class="cell-duration">00:04:20</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2025</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#0f3a3a 0%,#0a0a0a 100%)">
+        <span class="cell-title">Placeholder Project 06</span>
+        <span class="cell-duration">00:02:40</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2025</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#3d1a1a 0%,#0a0a0a 100%)">
+        <span class="cell-title">Placeholder Project 07</span>
+        <span class="cell-duration">00:01:12</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2023</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#1a3d2a 0%,#0a0a0a 100%)">
+        <span class="cell-title">Placeholder Project 08</span>
+        <span class="cell-duration">00:05:08</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2023</span>
+      </a>
+      <a class="cell" href="#" data-bg="linear-gradient(135deg,#2a1a4b 0%,#0a0a0a 100%)">
+        <span class="cell-title">Placeholder Project 09</span>
+        <span class="cell-duration">00:03:37</span>
+        <span class="cell-view">View Case</span>
+        <span class="cell-year">2024</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Crossfade between two bg layers so background swaps aren't a hard cut.
+    const bgA = document.getElementById('bgA');
+    const bgB = document.getElementById('bgB');
+    let active = bgA;
+    let idle = bgB;
+
+    // Default idle background (soft dark) so first cells have something behind them.
+    active.style.backgroundImage = 'linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%)';
+
+    function setBackground(image) {
+      idle.style.backgroundImage = image;
+      idle.classList.remove('is-idle');
+      idle.classList.add('is-active');
+      active.classList.remove('is-active');
+      active.classList.add('is-idle');
+      [active, idle] = [idle, active];
+    }
+
+    const isTouch = window.matchMedia('(hover: none)').matches;
+
+    if (isTouch) {
+      // Tap-to-reveal, tap-again-to-navigate (same pattern as the hamburger).
+      let activeCell = null;
+      let timer = null;
+      const RESET_MS = 2000;
+
+      function reset() {
+        if (activeCell) activeCell.classList.remove('is-active');
+        activeCell = null;
+        if (timer) { clearTimeout(timer); timer = null; }
+      }
+
+      document.querySelectorAll('.cell').forEach((cell) => {
+        cell.addEventListener('click', (e) => {
+          if (activeCell === cell) {
+            reset();
+            return; // allow default navigation
+          }
+          e.preventDefault();
+          reset();
+          activeCell = cell;
+          cell.classList.add('is-active');
+          const grad = cell.getAttribute('data-bg');
+          if (grad) setBackground(grad);
+          timer = setTimeout(reset, RESET_MS);
+        });
+      });
+    } else {
+      document.querySelectorAll('.cell').forEach((cell) => {
+        cell.addEventListener('mouseenter', () => {
+          const grad = cell.getAttribute('data-bg');
+          if (grad) setBackground(grad);
+        });
+      });
+    }
+  </script>
+</body>
 </html>
