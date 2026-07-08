@@ -51,8 +51,8 @@
     box-sizing: border-box;
   }
   @media (max-width: 640px) {
-    /* Mobile header stacks to 3 rows with a larger logo — bump top padding. */
-    .intro { padding-top: 9.5rem; }
+    /* Mobile header is 3 rows with bigger logo + 25% more padding — bump. */
+    .intro { padding-top: 10rem; }
   }
   .intro p {
     color: #ffffff;
@@ -62,8 +62,9 @@
     line-height: 1.1;
     letter-spacing: -0.015em;
     margin: 0 0 2.5rem;
-    /* Prevent orphans + widows on browsers that support it (Chrome 117+, Safari 17.4+, FF 129+). */
-    text-wrap: pretty;
+    /* Balance line lengths so the right rag looks intentional, not chaotic.
+       Browsers that don't support balance for long text quietly fall back. */
+    text-wrap: balance;
     transition: opacity 0.3s ease;
   }
   .intro p:last-child { margin-bottom: 0; }
@@ -74,8 +75,10 @@
       opacity: 0.5;
     }
   }
-  /* Touch: JS toggles .is-focused on tap; same visual effect. */
-  .intro:has(p.is-focused) > p:not(.is-focused) {
+  /* Touch: JS toggles .has-focus on the container + .is-focused on the tapped
+     paragraph. Using a container class here (not :has()) makes this work
+     reliably across all mobile browsers. */
+  .intro.has-focus > p:not(.is-focused) {
     opacity: 0.5;
   }
   /* Line-by-line reveal: JS wraps each word in .word, groups them by
@@ -92,19 +95,33 @@
     display: inline;
   }
 
-  /* Inline links inside the copy inherit color and stay clean. */
+  /* Inline links carry a cyan underline that pulses so users know
+     they're interactive — subtle, but never static. */
   .dede-link,
   .bllcrw-link {
     color: inherit;
     text-decoration: none;
+    border-bottom: 0.08em solid #00dede;
+    padding-bottom: 0.02em;
+    animation: link-glow 2.5s ease-in-out infinite;
+    transition: color 0.3s ease;
   }
-  .bllcrw-link {
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.25s ease;
-  }
+  .dede-link:hover,
+  .dede-link:focus-visible,
   .bllcrw-link:hover,
   .bllcrw-link:focus-visible {
-    border-bottom-color: currentColor;
+    color: #00dede;
+  }
+  @keyframes link-glow {
+    0%, 100% { border-bottom-color: rgba(0, 222, 222, 0.35); }
+    50%      { border-bottom-color: rgba(0, 222, 222, 1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dede-link,
+    .bllcrw-link {
+      animation: none;
+      border-bottom-color: rgba(0, 222, 222, 0.8);
+    }
   }
 
   /* Hovering DĒDĒ blows the profile image up from a contracted state.
@@ -328,13 +345,15 @@
       }
 
       // ---- Touch interactions: paragraph tap-to-focus + DĒDĒ tap-to-toggle image.
-      if (window.matchMedia('(hover: none)').matches) {
+      if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
         const dedeImage = document.querySelector('.dede-image');
+        const intro = document.querySelector('.intro');
 
         function clearFocus() {
           document
             .querySelectorAll('.intro p.is-focused')
             .forEach(p => p.classList.remove('is-focused'));
+          if (intro) intro.classList.remove('has-focus');
         }
         function hideDedeImage() {
           if (dedeImage) dedeImage.classList.remove('is-shown');
@@ -362,7 +381,10 @@
           if (paragraph) {
             const alreadyFocused = paragraph.classList.contains('is-focused');
             clearFocus();
-            if (!alreadyFocused) paragraph.classList.add('is-focused');
+            if (!alreadyFocused) {
+              paragraph.classList.add('is-focused');
+              if (intro) intro.classList.add('has-focus');
+            }
           } else {
             clearFocus();
           }
