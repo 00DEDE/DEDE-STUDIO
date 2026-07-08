@@ -75,14 +75,9 @@
       opacity: 0.5;
     }
   }
-  /* Touch: JS toggles .has-focus on the container + .is-focused on the tapped
-     paragraph. Container class (not :has()) makes it reliable across
-     mobile browsers. */
-  .intro.has-focus > p:not(.is-focused) {
-    opacity: 0.5;
-  }
-  /* Touch: mark paragraphs as interactive so iOS reliably fires clicks and
-     doesn't slap a gray tap-highlight over the type. */
+  /* Touch: JS writes inline opacity directly (see script). Inline styles have
+     the highest specificity, so this dodges any iOS quirks around class-based
+     recalcs on flow content. */
   @media (hover: none), (pointer: coarse) {
     .intro p {
       cursor: pointer;
@@ -371,12 +366,26 @@
       const touchQuery = window.matchMedia('(hover: none), (pointer: coarse)');
       if (touchQuery.matches) {
         const dedeImage = document.querySelector('.dede-image');
-        const intro = document.querySelector('.intro');
-        const paragraphs = document.querySelectorAll('.intro p');
+        const paragraphs = Array.prototype.slice.call(
+          document.querySelectorAll('.intro p')
+        );
 
         function clearFocus() {
-          paragraphs.forEach(p => p.classList.remove('is-focused'));
-          if (intro) intro.classList.remove('has-focus');
+          paragraphs.forEach(p => {
+            p.style.opacity = '';           // remove inline dim
+            p.removeAttribute('data-focused');
+          });
+        }
+        function focusOn(paragraph) {
+          paragraphs.forEach(p => {
+            if (p === paragraph) {
+              p.style.opacity = '1';        // fully white
+              p.setAttribute('data-focused', '');
+            } else {
+              p.style.opacity = '0.5';      // dim the others
+              p.removeAttribute('data-focused');
+            }
+          });
         }
         function hideDedeImage() {
           if (dedeImage) dedeImage.classList.remove('is-shown');
@@ -388,11 +397,8 @@
             if (e.target.closest('.dede-link')) {
               e.preventDefault();
               const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
-              if (imageShown) {
-                hideDedeImage();
-              } else if (dedeImage) {
-                dedeImage.classList.add('is-shown');
-              }
+              if (imageShown) hideDedeImage();
+              else if (dedeImage) dedeImage.classList.add('is-shown');
               return;
             }
             // BLLCRW link: dismiss the profile image on the way to Instagram.
@@ -401,20 +407,18 @@
               return;
             }
 
-            // Any other tap on a paragraph: if the profile image is currently
-            // shown, this tap dismisses it (and doesn't do anything else) so
-            // "tap anywhere to dismiss" holds true even inside .intro.
+            // Any other tap on a paragraph: if the image is up, dismiss it and
+            // stop (so a tap anywhere really does dismiss).
             if (dedeImage && dedeImage.classList.contains('is-shown')) {
               hideDedeImage();
               return;
             }
 
-            // Otherwise, toggle focus on this paragraph and dim the others.
-            const alreadyFocused = paragraph.classList.contains('is-focused');
-            clearFocus();
-            if (!alreadyFocused) {
-              paragraph.classList.add('is-focused');
-              if (intro) intro.classList.add('has-focus');
+            // Toggle focus: same paragraph twice → clear; otherwise switch to it.
+            if (paragraph.hasAttribute('data-focused')) {
+              clearFocus();
+            } else {
+              focusOn(paragraph);
             }
           });
         });
