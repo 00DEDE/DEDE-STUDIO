@@ -51,8 +51,8 @@
     box-sizing: border-box;
   }
   @media (max-width: 640px) {
-    /* Mobile header stacks to 3 rows (~100px tall), so bump top padding. */
-    .intro { padding-top: 8.5rem; }
+    /* Mobile header stacks to 3 rows with a larger logo — bump top padding. */
+    .intro { padding-top: 9.5rem; }
   }
   .intro p {
     color: #ffffff;
@@ -67,9 +67,15 @@
     transition: opacity 0.3s ease;
   }
   .intro p:last-child { margin-bottom: 0; }
-  /* Hover any paragraph → that one stays fully white, siblings fade to 50%.
+  /* Desktop: hover any paragraph → that one stays fully white, siblings fade to 50%.
      Uses :has() so gaps between paragraphs don't trigger the dim. */
-  .intro:has(p:hover) > p:not(:hover) {
+  @media (hover: hover) {
+    .intro:has(p:hover) > p:not(:hover) {
+      opacity: 0.5;
+    }
+  }
+  /* Touch: JS toggles .is-focused on tap; same visual effect. */
+  .intro:has(p.is-focused) > p:not(.is-focused) {
     opacity: 0.5;
   }
   /* Line-by-line reveal: JS wraps each word in .word, groups them by
@@ -120,20 +126,15 @@
     will-change: transform, opacity;
   }
   body:has(.dede-link:hover) .dede-image,
-  body:has(.dede-link:focus-visible) .dede-image {
+  body:has(.dede-link:focus-visible) .dede-image,
+  .dede-image.is-shown {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
-  /* No hover on touch — the profile image can never fire, so skip it entirely
-     (removes an unnecessary large image from mobile paint + layout). */
-  @media (hover: none) {
-    .dede-image { display: none; }
-  }
-  /* Mobile: dim-on-hover never fires on touch, so drop that transition.
-     Keep the line-reveal transition length the same so the reveal reads
-     as calm on both platforms. */
+  /* Mobile: line-reveal transition stays calm; drop the paragraph-dim
+     transition (it fires from JS class flips, not hover, but the base
+     .intro p transition already handles it smoothly). */
   @media (max-width: 768px), (pointer: coarse) {
-    .intro p { transition: none; }
     .statement__predicate { transition: opacity 0.35s ease; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -324,6 +325,48 @@
         document.querySelectorAll('.word').forEach(w => w.classList.add('is-visible'));
       } else {
         scheduleNext();
+      }
+
+      // ---- Touch interactions: paragraph tap-to-focus + DĒDĒ tap-to-toggle image.
+      if (window.matchMedia('(hover: none)').matches) {
+        const dedeImage = document.querySelector('.dede-image');
+
+        function clearFocus() {
+          document
+            .querySelectorAll('.intro p.is-focused')
+            .forEach(p => p.classList.remove('is-focused'));
+        }
+        function hideDedeImage() {
+          if (dedeImage) dedeImage.classList.remove('is-shown');
+        }
+
+        document.addEventListener('click', (e) => {
+          const dedeLink = e.target.closest('.dede-link');
+          const paragraph = e.target.closest('.intro p');
+          const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
+
+          // --- DĒDĒ image toggle
+          if (dedeLink) {
+            e.preventDefault();
+            if (imageShown) {
+              hideDedeImage();
+            } else {
+              dedeImage && dedeImage.classList.add('is-shown');
+            }
+          } else if (imageShown) {
+            // A tap anywhere else dismisses the image.
+            hideDedeImage();
+          }
+
+          // --- Paragraph focus toggle
+          if (paragraph) {
+            const alreadyFocused = paragraph.classList.contains('is-focused');
+            clearFocus();
+            if (!alreadyFocused) paragraph.classList.add('is-focused');
+          } else {
+            clearFocus();
+          }
+        });
       }
     })();
   </script>
