@@ -42,6 +42,9 @@
 }
 .site-footer__meta-right {
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 .site-footer__meta a,
 .site-footer__meta span {
@@ -53,6 +56,11 @@
 .site-footer__meta a:focus-visible { opacity: 1; }
 @media (hover: hover) {
   .site-footer__meta a:hover { opacity: 1; }
+}
+/* Tagline in brand cyan, full opacity. */
+.site-footer__meta-center span {
+  color: #00dede;
+  opacity: 1;
 }
 
 @media (max-width: 640px) {
