@@ -120,6 +120,18 @@
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
+  /* No hover on touch — the profile image can never fire, so skip it entirely
+     (removes an unnecessary large image from mobile paint + layout). */
+  @media (hover: none) {
+    .dede-image { display: none; }
+  }
+  /* Mobile: the paragraph dim-on-hover uses :has() which repaints the whole
+     block. On touch it doesn't fire anyway, so drop the transition. */
+  @media (max-width: 768px), (pointer: coarse) {
+    .intro p { transition: none; }
+    .word { transition: opacity 0.4s ease; }
+    .statement__predicate { transition: opacity 0.35s ease; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .reveal-words:not(.is-ready) { visibility: visible; }
     .word {
@@ -152,7 +164,7 @@
   <script src="site-header.js" defer></script>
 
   <!-- Hover overlay: appears when the user hovers DĒDĒ in the statement. -->
-  <img class="dede-image" src="ASSETS/IMAGES/DEDE_PROFILE_IMAGE 2.png" alt="" aria-hidden="true" />
+  <img class="dede-image" src="ASSETS/IMAGES/DEDE_PROFILE_IMAGE 2.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
 
   <section class="intro" aria-label="Introduction">
     <p class="intro__first">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span> <span class="reveal-words" id="firstBody">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</span></p>

@@ -101,3 +101,20 @@
 @media (prefers-reduced-motion: reduce) {
   .site-bg__blob { animation: none; }
 }
+
+/* Mobile: giant blurs + mix-blend-mode + continuous transform animations
+   tank framerate. Swap the whole thing for a static painted radial gradient
+   that lands as one paint call and doesn't animate. */
+@media (max-width: 768px), (pointer: coarse) {
+  .site-bg {
+    background:
+      radial-gradient(60% 45% at 12% 18%, rgba(0, 222, 222, 0.22) 0%, rgba(0, 222, 222, 0) 70%),
+      radial-gradient(55% 40% at 88% 82%, rgba(0, 170, 170, 0.14) 0%, rgba(0, 170, 170, 0) 70%),
+      radial-gradient(70% 50% at 55% 55%, rgba(30, 30, 30, 0.55) 0%, rgba(30, 30, 30, 0) 70%),
+      #050505;
+  }
+  .site-bg__blob,
+  .site-bg::after {
+    display: none;
+  }
+}
