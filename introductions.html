@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#121212" />
+<link rel="stylesheet" href="site-header.css" />
 <style>
   @font-face {
     font-family: "Akzidenz Grotesk";
@@ -30,33 +31,6 @@
   a, button, [role="button"] {
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
-  .header-home-link {
-    position: absolute;
-    top: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: block;
-    outline: none;
-    transition: opacity 0.2s ease;
-  }
-  .header-home-link:hover,
-  .header-home-link:focus-visible {
-    opacity: 0.7;
-  }
-  .header-logo {
-    width: 11vw;
-    max-width: 160px;
-    min-width: 90px;
-    height: auto;
-    display: block;
-  }
-  @media (max-width: 640px) {
-    .header-logo {
-      width: 13.75vw;
-      max-width: 200px;
-      min-width: 112px;
-    }
-  }
   .big-title {
     position: absolute;
     left: 0;
@@ -76,9 +50,18 @@
 </style>
 </head>
 <body>
-  <a class="header-home-link" href="home.html" aria-label="Back to home">
-    <img class="header-logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
-  </a>
+  <header class="site-header">
+    <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
+      <img src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
+    </a>
+    <nav class="site-header__nav" aria-label="Primary">
+      <a href="selections.html">SELECTIONS</a>
+      <a href="concepts.html">CONCEPTS</a>
+      <a href="introductions.html">INTRODUCTIONS</a>
+      <a href="connections.html">CONNECTIONS</a>
+    </nav>
+  </header>
+  <script src="site-header.js" defer></script>
   <h1 class="big-title"><span id="titleText">INTRODUCTIONS</span></h1>
   <script>
     function fitTitle() {

@@ -1,0 +1,58 @@
+/* Shared top nav — included on every content page. */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+.site-header > * { pointer-events: auto; }
+
+.site-header__brand {
+  display: block;
+  outline: none;
+  transition: opacity 0.2s ease;
+}
+.site-header__brand:hover,
+.site-header__brand:focus-visible {
+  opacity: 0.75;
+}
+.site-header__brand img {
+  display: block;
+  height: 28px;
+  width: auto;
+}
+
+.site-header__nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.site-header__nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+  outline: none;
+}
+.site-header__nav a.is-current { opacity: 1; }
+.site-header__nav a:focus-visible { opacity: 1; }
+@media (hover: hover) {
+  .site-header__nav a:hover { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .site-header { padding: 0.75rem 1rem; }
+  .site-header__brand img { height: 22px; }
+  .site-header__nav { gap: 0.6rem; }
+  .site-header__nav a { font-size: 0.62rem; }
+}

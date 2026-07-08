@@ -8,16 +8,35 @@
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="theme-color" content="#121212" />
+<link rel="stylesheet" href="site-header.css" />
 <style>
   html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
-    background: #ffffff;
+    background: #121212;
+    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+  a, button, [role="button"] {
+    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
 </style>
 </head>
-<body></body>
+<body>
+  <header class="site-header">
+    <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
+      <img src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
+    </a>
+    <nav class="site-header__nav" aria-label="Primary">
+      <a href="selections.html">SELECTIONS</a>
+      <a href="concepts.html">CONCEPTS</a>
+      <a href="introductions.html">INTRODUCTIONS</a>
+      <a href="connections.html">CONNECTIONS</a>
+    </nav>
+  </header>
+  <script src="site-header.js" defer></script>
+</body>
 </html>

@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#121212" />
+<link rel="stylesheet" href="site-header.css" />
 <style>
   html, body {
     margin: 0;
@@ -42,46 +43,18 @@
   .bg-layer.is-active { opacity: 1; }
   .bg-layer.is-idle   { opacity: 0; }
 
-  .selections-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 10;
-    pointer-events: none;
-  }
-  .selections-header > * { pointer-events: auto; }
-
-  .brand-pill {
-    color: #ffffff;
-    text-decoration: none;
-    border: 1px solid #ffffff;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.85rem;
-    letter-spacing: 0.02em;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-  }
-  .menu-link {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
-  }
-
   .selections-grid {
     position: absolute;
-    inset: 0;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
+  }
+  @media (max-width: 640px) {
+    .selections-grid { top: 48px; }
   }
 
   .cell {
@@ -156,10 +129,18 @@
     <div class="bg-layer is-active" id="bgA"></div>
     <div class="bg-layer is-idle"   id="bgB"></div>
 
-    <header class="selections-header">
-      <a class="brand-pill" href="home.html" aria-label="Back to home">DĒDĒ.</a>
-      <a class="menu-link" href="home.html">Menu</a>
+    <header class="site-header">
+      <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
+        <img src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
+      </a>
+      <nav class="site-header__nav" aria-label="Primary">
+        <a href="selections.html">SELECTIONS</a>
+        <a href="concepts.html">CONCEPTS</a>
+        <a href="introductions.html">INTRODUCTIONS</a>
+        <a href="connections.html">CONNECTIONS</a>
+      </nav>
     </header>
+    <script src="site-header.js" defer></script>
 
     <div class="selections-grid">
       <a class="cell" href="#" data-bg="linear-gradient(135deg,#7a1f1f 0%,#0d0d0d 100%)">
