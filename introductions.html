@@ -60,33 +60,23 @@
     margin: 0 0 2.5rem;
   }
   .intro p:last-child { margin-bottom: 0; }
-  /* Cascade reveal — the rest of the first paragraph (inline after the
-     statement) and each subsequent paragraph fade in one at a time
-     once the cycling statement locks on "I AM DĒDĒ." */
-  .reveal-inline {
+  /* Word-by-word reveal: JS wraps each word in .word, then fades them in
+     one at a time to mimic real-time reading. Parent stays visibility:hidden
+     until wrapping finishes so the raw text never flashes in. */
+  .reveal-words:not(.is-ready) { visibility: hidden; }
+  .word {
     opacity: 0;
-    transition: opacity 1s ease;
+    transition: opacity 0.5s ease;
   }
-  .reveal-inline.is-visible { opacity: 1; }
-  .reveal-block {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 1s ease, transform 1s ease;
-    will-change: opacity, transform;
-  }
-  .reveal-block.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .word.is-visible { opacity: 1; }
   .statement__predicate {
     transition: opacity 0.5s ease;
     display: inline;
   }
   @media (prefers-reduced-motion: reduce) {
-    .reveal-inline,
-    .reveal-block {
+    .reveal-words:not(.is-ready) { visibility: visible; }
+    .word {
       opacity: 1;
-      transform: none;
       transition: none;
     }
   }
@@ -112,10 +102,10 @@
   </header>
   <script src="site-header.js" defer></script>
   <section class="intro" aria-label="Introduction">
-    <p class="intro__first">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span><span class="reveal-inline" id="firstBody"> It&rsquo;s great to meet you here. Out of all possibilities, we are here, together. As you have seen (or are about to see) my work thrives across packaging, brand identity, and visual communication. All projects should begin with the need to find the narrative. An entity, an object, a system is only as strong as the story it tells and even more so, the manner in which that story creates emotion within us all.</span></p>
-    <p class="reveal-block">My methods and processes are due to a big factor in my life. I am co-owner of BLLCRW. I lead our visual identity, garment design, manufacturer relations, and brand storytelling. Bringing to life a creative label has given me the possibility to turn sketches and ideas into shared moments for my team and I, as well as, mold an entity that will exist far after I am no longer here. I create because there will always be a story worth telling, emotions worth discovering, and ideas worth sharing.</p>
-    <p class="reveal-block">I believe it is my purpose to create with my existence work that resonates, inspires, and communicates with intent.</p>
-    <p class="reveal-block">Tools: Adobe Illustrator, InDesign, Photoshop, Premiere Pro, After Effects, Lightroom, Procreate, SolidWorks, Keyshot, and Cinema 4D.</p>
+    <p class="intro__first">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span> <span class="reveal-words" id="firstBody">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</span></p>
+    <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and stronger still for the emotion that story stirs within us all.</p>
+    <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
+    <p class="reveal-words">Life is complicated by my existence is simple. Make work that resonates, inspires, and communicates with intent.</p>
   </section>
 
   <footer class="site-footer">
@@ -138,6 +128,21 @@
 
   <script>
     (function () {
+      // --- Word-wrap all reveal-words blocks so each word can fade in on its own.
+      function escapeHtml(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function wrapWords(el) {
+        const text = el.textContent.replace(/\s+/g, ' ').trim();
+        const words = text.split(' ');
+        el.innerHTML = words
+          .map(w => '<span class="word">' + escapeHtml(w) + '</span>')
+          .join(' ');
+        el.classList.add('is-ready');
+      }
+      document.querySelectorAll('.reveal-words').forEach(wrapWords);
+
+      // --- Cycling statement: "I AM ___", locks on DĒDĒ.
       const variants = [
         ' A STORY TELLER.',
         ' A CREATIVE.',
@@ -148,14 +153,14 @@
       const el = document.getElementById('statementPred');
       const HOLD_MS = 2500;
       const FADE_MS = 500;
-      const REVEAL_PAUSE_MS = 1000;   // wait after DĒDĒ settles before cascading paragraphs
-      const REVEAL_STAGGER_MS = 1000; // gap between each paragraph reveal
+      const REVEAL_PAUSE_MS = 900;    // pause after DĒDĒ settles before words start
+      const WORD_MS = 110;            // ms between each word reveal (~545 wpm reading pace)
+      const PARA_PAUSE_MS = 450;      // extra pause at paragraph boundaries
       let i = 0;
 
       function scheduleNext() {
         if (i >= variants.length - 1) {
-          // Cycling has locked on DĒDĒ. Cascade the paragraphs.
-          setTimeout(startCascade, REVEAL_PAUSE_MS);
+          setTimeout(startWordCascade, REVEAL_PAUSE_MS);
           return;
         }
         setTimeout(() => {
@@ -169,20 +174,23 @@
         }, HOLD_MS);
       }
 
-      function startCascade() {
-        const revealables = [
-          document.getElementById('firstBody'),
-          ...document.querySelectorAll('.reveal-block')
-        ].filter(Boolean);
-        revealables.forEach((node, idx) => {
-          setTimeout(() => node.classList.add('is-visible'), idx * REVEAL_STAGGER_MS);
+      function startWordCascade() {
+        const blocks = document.querySelectorAll('.reveal-words');
+        let clock = 0;
+        blocks.forEach((block) => {
+          const words = block.querySelectorAll('.word');
+          words.forEach((word) => {
+            setTimeout(() => word.classList.add('is-visible'), clock);
+            clock += WORD_MS;
+          });
+          clock += PARA_PAUSE_MS;
         });
       }
 
-      // Users who prefer reduced motion: skip the cycle and show everything at once.
+      // Reduced motion: skip the cycle and show everything.
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         el.textContent = ' DĒDĒ.';
-        startCascade();
+        document.querySelectorAll('.word').forEach(w => w.classList.add('is-visible'));
       } else {
         scheduleNext();
       }
