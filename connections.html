@@ -10,15 +10,19 @@
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#121212" />
 <link rel="stylesheet" href="site-header.css" />
+<link rel="stylesheet" href="site-footer.css" />
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     background: #121212;
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+  .page-hero {
+    min-height: 100vh;
   }
   a, button, [role="button"] {
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
@@ -38,5 +42,17 @@
     </nav>
   </header>
   <script src="site-header.js" defer></script>
+  <div class="page-hero"></div>
+  <footer class="site-footer">
+    <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
+      <img src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-footer__meta">
+      <span>© 2026 ALL RIGHTS RESERVED.</span>
+      <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">BACK TO TOP</a>
+      <span>DEFINE EXPRESSION. DESIGN EXISTENCE.</span>
+      <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LINKEDIN</a>
+    </div>
+  </footer>
 </body>
 </html>
