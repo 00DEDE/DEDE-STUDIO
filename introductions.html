@@ -34,25 +34,34 @@
   .page-hero {
     position: relative;
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 6rem 5vw 4rem;
+    box-sizing: border-box;
   }
   a, button, [role="button"] {
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
-  .big-title {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 22vh;
+  .statement {
     margin: 0;
-    text-align: center;
     color: #ffffff;
     font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 700;
-    line-height: 1;
+    font-size: clamp(2.75rem, 9vw, 11rem);
+    line-height: 1.05;
     letter-spacing: -0.02em;
-    white-space: nowrap;
-    /* Fallback while JS auto-fits; JS overrides to exact viewport width. */
-    font-size: 15vw;
+    text-align: left;
+    max-width: 100%;
+  }
+  .statement__predicate {
+    transition: opacity 0.5s ease;
+    display: inline;
+  }
+  .statement__logo {
+    height: 0.78em;
+    width: auto;
+    vertical-align: -0.02em;
+    display: inline-block;
   }
 </style>
 </head>
@@ -76,7 +85,7 @@
   </header>
   <script src="site-header.js" defer></script>
   <div class="page-hero">
-    <h1 class="big-title"><span id="titleText">INTRODUCTIONS</span></h1>
+    <h1 class="statement">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span></h1>
   </div>
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
@@ -96,19 +105,37 @@
     </div>
   </footer>
   <script>
-    function fitTitle() {
-      const span = document.getElementById('titleText');
-      const h1 = span && span.parentElement;
-      if (!span || !h1) return;
-      h1.style.fontSize = '100px';
-      const scale = document.documentElement.clientWidth / span.offsetWidth;
-      h1.style.fontSize = (100 * scale) + 'px';
-    }
-    window.addEventListener('load', fitTitle);
-    window.addEventListener('resize', fitTitle);
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(fitTitle);
-    }
+    (function () {
+      const variants = [
+        ' A STORY TELLER.',
+        ' A CREATIVE.',
+        ' A DESIGNER.',
+        ' A HUMAN BEING.',
+        '__LOGO__'
+      ];
+      const logoHtml = ' <img class="statement__logo" src="ASSETS/LOGO/logo_dede_only_white.png" alt="DĒDĒ" />.';
+      const el = document.getElementById('statementPred');
+      let i = 0;
+      const HOLD_MS = 2500;
+      const FADE_MS = 500;
+
+      function paint(variant) {
+        if (variant === '__LOGO__') {
+          el.innerHTML = logoHtml;
+        } else {
+          el.textContent = variant;
+        }
+      }
+
+      setInterval(() => {
+        el.style.opacity = '0';
+        setTimeout(() => {
+          i = (i + 1) % variants.length;
+          paint(variants[i]);
+          el.style.opacity = '1';
+        }, FADE_MS);
+      }, HOLD_MS + FADE_MS);
+    })();
   </script>
 </body>
 </html>
