@@ -38,8 +38,8 @@
   }
   body { background: transparent; }
 
-  /* Splash loader: DĒDĒ logo centered, DĒDĒ_ICON's 4 horizontal lines
-     load in one by one, filling from 75% white to a glowing cyan. */
+  /* Splash loader: DĒDĒ logo centered, 4 horizontal bars beneath that load
+     in one by one, filling from 75% white to a glowing cyan. */
   .loader {
     position: fixed;
     top: 50%;
@@ -57,20 +57,17 @@
     display: block;
   }
   .loader__icon {
-    position: relative;
-    width: clamp(90px, 13vw, 190px);
-    aspect-ratio: 933 / 1083;   /* matches DEDE_ICON's content bbox */
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.7rem, 1.4vw, 1.4rem);
+    width: clamp(130px, 16vw, 240px);
   }
-  /* Each bar is placed at the exact y-position of its counterpart in the icon.
-     Base is 75% white; the cyan ::after slides in from the left to "fill" it. */
   .loader__line {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: var(--y);
-    height: 5.5%;
+    width: 100%;
+    height: clamp(5px, 0.7vw, 9px);
     background: rgba(255, 255, 255, 0.75);
     border-radius: 999px;
+    position: relative;
     overflow: hidden;
   }
   .loader__line::after {
@@ -109,12 +106,11 @@
   <div class="loader" role="status" aria-label="Loading DĒDĒ.STUDIO">
     <img class="loader__logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DĒDĒ STUDIO" />
     <div class="loader__icon" aria-hidden="true">
-      <!-- Positions and delays: y-values match the 4 line centers in DEDE_ICON;
-           delays step 1s so lines load sequentially over 4s total. -->
-      <div class="loader__line" style="--y: 0%;      --delay: 0s"></div>
-      <div class="loader__line" style="--y: 19.76%;  --delay: 1s"></div>
-      <div class="loader__line" style="--y: 57.16%;  --delay: 2s"></div>
-      <div class="loader__line" style="--y: 94.55%;  --delay: 3s"></div>
+      <!-- 4 stacked bars; delays step 1s so lines load sequentially over 4s total. -->
+      <div class="loader__line" style="--delay: 0s"></div>
+      <div class="loader__line" style="--delay: 1s"></div>
+      <div class="loader__line" style="--delay: 2s"></div>
+      <div class="loader__line" style="--delay: 3s"></div>
     </div>
   </div>
 
@@ -124,7 +120,7 @@
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const NAV_MS = reduced ? 400 : 4500;
     setTimeout(() => {
-      window.location.href = 'selections.html';
+      window.location.href = 'home.html';
     }, NAV_MS);
   </script>
 </body>
