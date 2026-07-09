@@ -7,7 +7,7 @@
 <meta name="description" content="I AM DĒDĒ design studio — graphic design, brand identity, and packaging experience. An Intentional existence in between the digital and the analog. Based in East LA. Define Expression. Design Existence." />
 <meta name="author" content="DĒDĒ STUDIO" />
 <meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#000000" />
+<meta name="theme-color" content="#050505" />
 <link rel="canonical" href="https://iamdede.com/" />
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
@@ -28,9 +28,7 @@
 <meta name="twitter:image" content="https://iamdede.com/ASSETS/LOGO/og_image.png" />
 <link rel="stylesheet" href="site-bg.css" />
 <style>
-  html {
-    background: #050505;
-  }
+  html { background: #050505; }
   html, body {
     margin: 0;
     padding: 0;
@@ -39,135 +37,64 @@
     overflow: hidden;
   }
   body { background: transparent; }
-  body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .logo-stage {
+
+  /* Splash loader: DĒDĒ logo centered, DĒDĒ_ICON's 4 horizontal lines
+     load in one by one, filling from 75% white to a glowing cyan. */
+  .loader {
     position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: breathe 10s ease-in-out infinite;
-  }
-  .logo {
-    position: absolute;
     top: 50%;
     left: 50%;
-    max-width: 54vw;
-    max-height: 54vh;
-    object-fit: contain;
-    opacity: 0;
     transform: translate(-50%, -50%);
-    animation: crossfade 14s ease-in-out infinite;
-  }
-  .logo--horizontal {
-    animation-delay: 0s;
-  }
-  .logo--stacked {
-    animation-delay: -7s;
-    max-width: 43.2vw;
-    max-height: 43.2vh;
-  }
-  @keyframes crossfade {
-    0%   { opacity: 0; }
-    7%   { opacity: 1; }
-    43%  { opacity: 1; }
-    50%  { opacity: 0; }
-    100% { opacity: 0; }
-  }
-  @keyframes breathe {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.04); }
-  }
-
-  .wip {
-    position: fixed;
-    top: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.02em;
-    padding: 0.5rem 1rem;
-    pointer-events: none;
-    user-select: none;
-  }
-  .contact-wrap {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    gap: 2.5rem;
   }
-  .contact-options {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
+  .loader__logo {
+    /* 60% smaller than the previous 54vw hero logo → 21.6vw, capped for large/small. */
+    width: clamp(160px, 21.6vw, 380px);
+    height: auto;
+    display: block;
   }
-  .contact-wrap.open .contact-options {
-    display: flex;
+  .loader__icon {
+    position: relative;
+    width: clamp(90px, 13vw, 190px);
+    aspect-ratio: 933 / 1083;   /* matches DEDE_ICON's content bbox */
   }
-  .contact,
-  .contact-option {
-    color: #ffffff;
-    text-decoration: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.02em;
-    padding: 0.5rem 1rem;
-    transition: color 0.2s ease;
+  /* Each bar is placed at the exact y-position of its counterpart in the icon.
+     Base is 75% white; the cyan ::after slides in from the left to "fill" it. */
+  .loader__line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--y);
+    height: 5.5%;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 999px;
+    overflow: hidden;
   }
-  .contact-option {
-    font-size: 0.85rem;
+  .loader__line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #00dede;
+    box-shadow:
+      0 0 8px  rgba(0, 222, 222, 0.7),
+      0 0 18px rgba(0, 222, 222, 0.45),
+      0 0 32px rgba(0, 222, 222, 0.25);
+    border-radius: 999px;
+    transform: translateX(-101%);
+    animation: line-fill 1s ease-out forwards;
+    animation-delay: var(--delay);
   }
-  .contact:hover,
-  .contact:active,
-  .contact:focus,
-  .contact-option:hover,
-  .contact-option:active,
-  .contact-option:focus {
-    color: #00dede;
-    outline: none;
+  @keyframes line-fill {
+    to { transform: translateX(0); }
   }
-
-  .welcome-cta {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #ffffff;
-    text-decoration: none;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.02em;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: color 0.2s ease, transform 0.2s ease;
-  }
-  .welcome-cta__word {
-    display: inline-block;
-    transition: opacity 1s ease;
-  }
-  .welcome-cta:hover,
-  .welcome-cta:focus {
-    color: #00dede;
-    outline: none;
-    transform: translateX(-50%) scale(1.06);
+  @media (prefers-reduced-motion: reduce) {
+    .loader__line::after {
+      animation: none;
+      transform: translateX(0);
+    }
   }
 </style>
 </head>
@@ -178,59 +105,27 @@
     <div class="site-bg__blob site-bg__blob--dark-1"></div>
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
   </div>
-  <div class="wip">WORK IN PROGRESS</div>
-  <div class="logo-stage" role="img" aria-label="DEDE STUDIO">
-    <img class="logo logo--horizontal" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
-    <img class="logo logo--stacked" src="ASSETS/LOGO/logo_stacked_cyan.png" alt="DEDE STUDIO stacked" />
-  </div>
-  <!--
-    CONTACT BUTTON — hidden during splash transition; keep code intact for later.
-    <div class="contact-wrap" id="contactWrap">
-      <div class="contact-options">
-        <a class="contact-option" href="mailto:iamdede@bllcrw.com">MAIL APP</a>
-        <a class="contact-option" href="https://mail.google.com/mail/?view=cm&fs=1&to=iamdede@bllcrw.com" target="_blank" rel="noopener">GMAIL</a>
-      </div>
-      <button class="contact" type="button" id="contactBtn" aria-expanded="false">CONTACT</button>
-    </div>
-    <script>
-      const wrap = document.getElementById('contactWrap');
-      const btn = document.getElementById('contactBtn');
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = wrap.classList.toggle('open');
-        btn.setAttribute('aria-expanded', isOpen);
-      });
-      document.addEventListener('click', (e) => {
-        if (!wrap.contains(e.target)) {
-          wrap.classList.remove('open');
-          btn.setAttribute('aria-expanded', 'false');
-        }
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          wrap.classList.remove('open');
-          btn.setAttribute('aria-expanded', 'false');
-        }
-      });
-    </script>
-  -->
 
-  <a class="welcome-cta" id="welcomeCta" href="home.html">
-    <span class="welcome-cta__word" id="welcomeWord">WELCOME</span>
-  </a>
+  <div class="loader" role="status" aria-label="Loading DĒDĒ.STUDIO">
+    <img class="loader__logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DĒDĒ STUDIO" />
+    <div class="loader__icon" aria-hidden="true">
+      <!-- Positions and delays: y-values match the 4 line centers in DEDE_ICON;
+           delays step 1s so lines load sequentially over 4s total. -->
+      <div class="loader__line" style="--y: 0%;      --delay: 0s"></div>
+      <div class="loader__line" style="--y: 19.76%;  --delay: 1s"></div>
+      <div class="loader__line" style="--y: 57.16%;  --delay: 2s"></div>
+      <div class="loader__line" style="--y: 94.55%;  --delay: 3s"></div>
+    </div>
+  </div>
 
   <script>
-    const words = ['WELCOME', 'BIENVENIDOS', 'BIENVENUE'];
-    const wordEl = document.getElementById('welcomeWord');
-    let idx = 0;
-    setInterval(() => {
-      wordEl.style.opacity = '0';
-      setTimeout(() => {
-        idx = (idx + 1) % words.length;
-        wordEl.textContent = words[idx];
-        wordEl.style.opacity = '1';
-      }, 1000);
-    }, 4000);
+    // Cascade takes 4s (4 lines × 1s each). Give a brief settle beat, then
+    // hand off to selections. Reduced-motion users skip the wait.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const NAV_MS = reduced ? 400 : 4500;
+    setTimeout(() => {
+      window.location.href = 'selections.html';
+    }, NAV_MS);
   </script>
 </body>
 </html>
