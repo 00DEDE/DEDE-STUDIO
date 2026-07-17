@@ -18,14 +18,20 @@
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
           backdrop-filter: blur(14px) saturate(1.4);
   border-radius: 0;
+  /* Promote to its own compositor layer BEFORE the class flips, so the
+     first frame of the animation isn't the one where the layer is created
+     (that first-frame stutter is a big chunk of the perceived jank). */
+  will-change: top, left, right, padding, background, border-radius;
+  /* Shortened from 0.4s so the expensive layout+backdrop-filter animation
+     window is smaller. The visual still reads as a smooth transition. */
   transition:
-    top 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    left 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    right 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.4s ease,
-    box-shadow 0.4s ease;
+    top 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    left 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    right 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.25s ease,
+    box-shadow 0.25s ease;
 }
 /* Once the page has scrolled past a small threshold, the header lifts off
    the top edge and rounds into a floating pill. JS toggles .is-scrolled. */
