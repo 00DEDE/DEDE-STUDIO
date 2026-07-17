@@ -59,13 +59,21 @@
      12-col track with per-cell grid-column spans; grid grows past viewport
      and the page scrolls (the fixed bg-layer stays behind everything). */
   .selections-grid {
+    --grid-row:      clamp(320px, 44vh, 640px);
+    /* Hero rows are 15% shorter than the previous 2× stack (2 × row × 0.85). */
+    --grid-hero-row: clamp(544px, 74.8vh, 1088px);
+
     position: relative;
     z-index: 1;
     padding-top: 64px;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    /* Row height doubled — hero rows span 2 of these so they end up ~4× tall. */
-    grid-auto-rows: clamp(320px, 44vh, 640px);
+    grid-template-rows:
+      var(--grid-hero-row)
+      var(--grid-row)
+      var(--grid-row)
+      var(--grid-row)
+      var(--grid-hero-row);
     gap: 1px;
   }
   @media (max-width: 640px) {
@@ -73,6 +81,7 @@
       padding-top: 152px;
       /* Simpler single-column stack on mobile so each cell still reads. */
       grid-template-columns: 1fr;
+      grid-template-rows: none;
       grid-auto-rows: 64vh;
     }
   }
@@ -96,11 +105,12 @@
     transform: translateY(24px);
   }
 
-  /* Cell placements: HERO / thin+long / long+thin / thin+long / HERO. */
+  /* Cell placements: HERO / thin+long / long+thin / thin+long / HERO.
+     Hero cells span the full row; their height comes from the explicit
+     --grid-hero-row track, not from spanning two rows. */
   .cell:nth-child(1),
   .cell:nth-child(8) {
-    grid-column: 1 / -1;   /* full row */
-    grid-row: span 2;      /* twice as tall */
+    grid-column: 1 / -1;
   }
   .cell:nth-child(2) { grid-column: span 4; }   /* thin */
   .cell:nth-child(3) { grid-column: span 8; }   /* long */
