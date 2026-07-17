@@ -17,100 +17,50 @@
     padding: 0;
     height: 100%;
     width: 100%;
+    overflow: hidden;
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   }
-  body { background: transparent; }
-  a, button, [role="button"] {
-    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+  body {
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .header-logo {
-    position: absolute;
-    top: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 11vw;
-    max-width: 160px;
-    min-width: 90px;
-    height: auto;
-    display: block;
+  /* Two DĒDĒ logos stacked in the same spot; JS toggles is-visible to
+     cycle between them. Progressively faster over ~3s, then handoff. */
+  .logo-cycle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(60vw, 560px);
+    height: min(60vh, 500px);
   }
-  @media (max-width: 640px) {
-    .header-logo {
-      width: 13.75vw;
-      max-width: 200px;
-      min-width: 112px;
-    }
-  }
-
-  /* ----- Hamburger nav (4 stacked bars from DEDE_ICON LOGO_BLACK) ----- */
-  .hamburger {
+  .logo {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    aspect-ratio: 933 / 1083;
-    width: min(38vw, 340px);
     opacity: 0;
-    animation: hamburger-fade-in 1.4s cubic-bezier(0.25, 0.8, 0.4, 1) 0.4s forwards;
+    transition: opacity 0.15s ease-out;
+    display: block;
   }
-  @media (max-width: 640px) {
-    .hamburger {
-      width: min(58vw, 260px);
-    }
+  .logo.is-visible { opacity: 1; }
+
+  .logo--horizontal {
+    /* Sized to occupy comparable visual footprint to the stacked variant. */
+    width: clamp(280px, 34vw, 520px);
+    height: auto;
   }
-  @keyframes hamburger-fade-in {
-    to { opacity: 1; }
+  .logo--stacked {
+    width: clamp(200px, 24vw, 360px);
+    height: auto;
   }
 
-  .menu-line {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 12%;
-    top: var(--y);
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    outline: none;
-  }
-  .line-img {
-    width: 100%;
-    display: block;
-    transition: opacity 0.6s ease;
-  }
-  .line-word {
-    position: absolute;
-    color: #00dede;
-    font-weight: 700;
-    font-size: clamp(0.9rem, 2.4vw, 1.5rem);
-    letter-spacing: 0.02em;
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  @media (max-width: 640px) {
-    .line-word {
-      font-size: clamp(1.125rem, 3vw, 1.875rem);
-    }
-  }
-  .menu-line:focus-visible .line-img,
-  .menu-line.is-active .line-img {
-    opacity: 0;
-  }
-  .menu-line:focus-visible .line-word,
-  .menu-line.is-active .line-word {
-    opacity: 1;
-  }
-  /* Only apply :hover on real hover-capable devices — otherwise iOS
-     "sticky hover" keeps the word visible after tap, breaking the 2s reset. */
-  @media (hover: hover) {
-    .menu-line:hover .line-img { opacity: 0; }
-    .menu-line:hover .line-word { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .logo { transition: none; }
   }
 </style>
 </head>
@@ -121,54 +71,55 @@
     <div class="site-bg__blob site-bg__blob--dark-1"></div>
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
   </div>
-  <img class="header-logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" />
 
-  <nav class="hamburger" aria-label="Main menu">
-    <a class="menu-line" href="selections.html" style="--y: 2.68%">
-      <img class="line-img" src="ASSETS/LOGO/hamburger_line_1.png" alt="" aria-hidden="true" />
-      <span class="line-word">SELECTIONS</span>
-    </a>
-    <a class="menu-line" href="concepts.html" style="--y: 22.44%">
-      <img class="line-img" src="ASSETS/LOGO/hamburger_line_2.png" alt="" aria-hidden="true" />
-      <span class="line-word">CONCEPTS</span>
-    </a>
-    <a class="menu-line" href="introductions.html" style="--y: 59.84%">
-      <img class="line-img" src="ASSETS/LOGO/hamburger_line_3.png" alt="" aria-hidden="true" />
-      <span class="line-word">INTRODUCTIONS</span>
-    </a>
-    <a class="menu-line" href="connections.html" style="--y: 97.23%">
-      <img class="line-img" src="ASSETS/LOGO/hamburger_line_4.png" alt="" aria-hidden="true" />
-      <span class="line-word">CONNECTIONS</span>
-    </a>
-  </nav>
+  <div class="logo-cycle" role="status" aria-label="Loading DĒDĒ.STUDIO">
+    <img class="logo logo--horizontal is-visible"
+         src="ASSETS/LOGO/logo_horizontal_cyan.png"
+         alt="DĒDĒ STUDIO" />
+    <img class="logo logo--stacked"
+         src="ASSETS/LOGO/logo_stacked_cyan.png"
+         alt="DĒDĒ STUDIO" />
+  </div>
+
   <script>
-    // Touch devices don't do hover; use tap-to-reveal, tap-again-to-navigate.
-    if (window.matchMedia('(hover: none)').matches) {
-      let activeLine = null;
-      let timer = null;
+    (function () {
+      const logos = document.querySelectorAll('.logo-cycle .logo');
+      const DURATION_MS      = 3000;   // total cycle window
+      const START_INTERVAL   = 420;    // graceful cadence at t=0
+      const END_INTERVAL     = 40;     // rapid cadence at t=3s
+      let active = 0;                  // logos[0] starts visible
+      const start = performance.now();
 
-      function reset() {
-        if (activeLine) activeLine.classList.remove('is-active');
-        activeLine = null;
-        if (timer) { clearTimeout(timer); timer = null; }
+      // Reduced motion: skip the animation and go straight through.
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        window.location.replace('selections.html');
+        return;
       }
 
-      document.querySelectorAll('.menu-line').forEach((line) => {
-        line.addEventListener('click', (e) => {
-          if (activeLine === line) {
-            // Second tap on the active line -> allow default navigation.
-            reset();
-            return;
-          }
-          // First tap, or tap on a different line -> reveal the word.
-          e.preventDefault();
-          reset();
-          activeLine = line;
-          line.classList.add('is-active');
-          timer = setTimeout(reset, 2000);
-        });
-      });
-    }
+      function tick() {
+        const elapsed = performance.now() - start;
+
+        // Swap which logo is visible.
+        logos[active].classList.remove('is-visible');
+        active = (active + 1) % logos.length;
+        logos[active].classList.add('is-visible');
+
+        if (elapsed >= DURATION_MS) {
+          // Let the final frame paint, then hand off.
+          setTimeout(() => window.location.replace('selections.html'), 80);
+          return;
+        }
+
+        // Interval shrinks from START to END with a squared curve — accelerates
+        // gently at first, ramps up hard toward the end (rapid succession).
+        const progress = elapsed / DURATION_MS;
+        const nextInterval = START_INTERVAL
+          - (START_INTERVAL - END_INTERVAL) * (progress * progress);
+        setTimeout(tick, nextInterval);
+      }
+
+      setTimeout(tick, START_INTERVAL);
+    })();
   </script>
 </body>
 </html>
