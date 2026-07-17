@@ -17,20 +17,26 @@
   background: rgba(5, 5, 5, 0.25);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
           backdrop-filter: blur(14px) saturate(1.4);
-  /* Pill state is done via clip-path (a paint-time op) instead of animating
-     top/left/right/padding (all layout ops). That's the whole optimization —
-     the header never relayouts on scroll, only its visible clip changes. */
-  clip-path: inset(0 0 0 0 round 0);
+  border-radius: 0;
   transition:
-    clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.35s ease;
-  will-change: clip-path;
+    top 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    left 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    right 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.4s ease,
+    box-shadow 0.4s ease;
 }
-/* Once the page has scrolled past a small threshold, the visible header
-   clips into a floating pill. Layout doesn't move — no reflow cost. */
+/* Once the page has scrolled past a small threshold, the header lifts off
+   the top edge and rounds into a floating pill. JS toggles .is-scrolled. */
 .site-header.is-scrolled {
-  clip-path: inset(0.75rem 1rem 0.5rem 1rem round 999px);
+  top: 0.75rem;
+  left: 1rem;
+  right: 1rem;
+  border-radius: 999px;
+  padding: 0.75rem 1.75rem;
   background: rgba(5, 5, 5, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 .site-header > * { pointer-events: auto; }
 
@@ -79,11 +85,14 @@
     padding: 0.94rem 1.25rem;
     gap: 0.75rem;
   }
-  /* Mobile pill: smaller inset + a smaller radius. clip-path still keeps
-     this as a paint-only change so mobile GPUs (already carrying the
-     backdrop-filter cost) don't also have to relayout. */
+  /* Mobile pill uses a smaller radius (a full 999px on the tall stacked
+     header would render as an oval that looks wrong for a 3-row layout). */
   .site-header.is-scrolled {
-    clip-path: inset(0.5rem 0.5rem 0.5rem 0.5rem round 1.5rem);
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    border-radius: 1.5rem;
+    padding: 0.75rem 1rem;
   }
   /* Match the home-page mobile logo sizing exactly. */
   .site-header__brand img {

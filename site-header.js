@@ -7,18 +7,19 @@
     }
   });
 
-  // Toggle the pill state on scroll. Two perf choices here:
-  // 1. requestAnimationFrame throttles the check to ≤60 checks/sec regardless
-  //    of how fast the scroll event fires (some browsers dispatch it many
-  //    times per frame).
-  // 2. We only touch the DOM when the state actually flips, so classList.toggle
-  //    isn't invalidating styles every scroll pixel.
   var header = document.querySelector('.site-header');
   if (!header) return;
   var THRESHOLD = 20;
   var isScrolled = false;
   var ticking = false;
 
+  // Two wins over the naive version:
+  // 1. requestAnimationFrame throttles the check to ≤60 checks/sec regardless
+  //    of how fast the scroll event fires (some browsers dispatch it many
+  //    times per frame).
+  // 2. Only touch the DOM when the state actually flips — so classList.toggle
+  //    doesn't invalidate styles on every scroll pixel while we're above (or
+  //    below) the threshold.
   function update() {
     var shouldBeScrolled = window.scrollY > THRESHOLD;
     if (shouldBeScrolled !== isScrolled) {
