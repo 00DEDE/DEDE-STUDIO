@@ -8,7 +8,7 @@
 <meta name="author" content="DĒDĒ STUDIO" />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#050505" />
-<link rel="canonical" href="https://iamdede.com/" />
+<link rel="canonical" href="https://iamdede.com/home.html" />
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
@@ -26,114 +26,12 @@
 <meta name="twitter:title" content="I AM DĒDĒ.STUDIO" />
 <meta name="twitter:description" content="I AM DĒDĒ design studio — graphic design, brand identity, and packaging experience. An Intentional existence in between the digital and the analog. Based in East LA. Define Expression. Design Existence." />
 <meta name="twitter:image" content="https://iamdede.com/ASSETS/LOGO/og_image.png" />
-<link rel="stylesheet" href="site-bg.css" />
-<style>
-  html { background: #050505; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    width: 100%;
-    overflow: hidden;
-  }
-  body {
-    background: transparent;
-    /* Flex-center on the body itself — more reliable than transform:translate
-       on both mobile and desktop (no URL-bar hh quirks, no rounding drift). */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
-  /* Splash loader: DĒDĒ logo centered, 4 horizontal bars beneath that load
-     in one by one, filling from 75% white to a glowing cyan. */
-  .loader {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2.5rem;
-  }
-  .loader__logo {
-    /* 60% smaller than the previous 54vw hero logo → 21.6vw, capped for large/small. */
-    width: clamp(180px, 21.6vw, 380px);
-    height: auto;
-    display: block;
-  }
-  .loader__icon {
-    display: flex;
-    flex-direction: column;
-    /* Match the logo width so the bars line up beneath it. */
-    width: clamp(180px, 21.6vw, 380px);
-  }
-  .loader__line {
-    width: 100%;
-    /* 20% thinner than the previous 5→9px range. */
-    height: clamp(4px, 0.56vw, 7.2px);
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 999px;
-    position: relative;
-    overflow: hidden;
-  }
-  /* Gaps follow the DEDE_ICON's proportions (14.4% : 32.04% : 32.04%),
-     so lines 1-2 sit close (top pair), then 2-3 and 3-4 spread wider.
-     Ratio 1 : 2.225 : 2.225. */
-  .loader__line:nth-child(2) { margin-top: clamp(10px, 2.5vw, 30px); }
-  .loader__line:nth-child(3) { margin-top: clamp(22px, 5.6vw, 67px); }
-  .loader__line:nth-child(4) { margin-top: clamp(22px, 5.6vw, 67px); }
-  .loader__line::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: #00dede;
-    box-shadow:
-      0 0 8px  rgba(0, 222, 222, 0.7),
-      0 0 18px rgba(0, 222, 222, 0.45),
-      0 0 32px rgba(0, 222, 222, 0.25);
-    border-radius: 999px;
-    transform: translateX(-101%);
-    /* 25% slower than the previous 1s duration. */
-    animation: line-fill 1.25s ease-out forwards;
-    animation-delay: var(--delay);
-  }
-  @keyframes line-fill {
-    to { transform: translateX(0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .loader__line::after {
-      animation: none;
-      transform: translateX(0);
-    }
-  }
-</style>
+<!-- Splash/loading page deleted: go straight to the home page. JS handles
+     the redirect before body renders (no flash). Meta refresh is a no-JS fallback. -->
+<script>window.location.replace('home.html');</script>
+<meta http-equiv="refresh" content="0; url=home.html" />
+<style>html, body { margin: 0; background: #050505; }</style>
 </head>
-<body>
-  <div class="site-bg" aria-hidden="true">
-    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
-    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
-    <div class="site-bg__blob site-bg__blob--dark-1"></div>
-    <div class="site-bg__blob site-bg__blob--dark-2"></div>
-  </div>
-
-  <div class="loader" role="status" aria-label="Loading DĒDĒ.STUDIO">
-    <img class="loader__logo" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DĒDĒ STUDIO" />
-    <div class="loader__icon" aria-hidden="true">
-      <!-- Sequential delays (0, 1.25s, 2.5s, 3.75s) match the animation
-           duration so each bar finishes before the next begins. Total 5s. -->
-      <div class="loader__line" style="--delay: 0s"></div>
-      <div class="loader__line" style="--delay: 1.25s"></div>
-      <div class="loader__line" style="--delay: 2.5s"></div>
-      <div class="loader__line" style="--delay: 3.75s"></div>
-    </div>
-  </div>
-
-  <script>
-    // Cascade takes 5s (4 lines × 1.25s each, sequential). Small settle beat
-    // after line 4 lands, then hand off. Reduced-motion users skip the wait.
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const NAV_MS = reduced ? 400 : 5500;
-    setTimeout(() => {
-      window.location.href = 'home.html';
-    }, NAV_MS);
-  </script>
-</body>
+<body></body>
 </html>

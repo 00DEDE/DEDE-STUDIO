@@ -10,14 +10,6 @@
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#050505" />
 <link rel="stylesheet" href="site-bg.css" />
-<script>
-  // If this page loads as a refresh (or the user opens it directly),
-  // send them back through the splash instead.
-  const nav = performance.getEntriesByType('navigation')[0];
-  if (nav && nav.type === 'reload') {
-    window.location.replace('index.html');
-  }
-</script>
 <style>
   html { background: #050505; }
   html, body {
