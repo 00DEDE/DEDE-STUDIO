@@ -64,7 +64,8 @@
     padding-top: 64px;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    grid-auto-rows: clamp(160px, 22vh, 320px);
+    /* Row height doubled — hero rows span 2 of these so they end up ~4× tall. */
+    grid-auto-rows: clamp(320px, 44vh, 640px);
     gap: 1px;
   }
   @media (max-width: 640px) {
@@ -72,7 +73,7 @@
       padding-top: 152px;
       /* Simpler single-column stack on mobile so each cell still reads. */
       grid-template-columns: 1fr;
-      grid-auto-rows: 32vh;
+      grid-auto-rows: 64vh;
     }
   }
 
