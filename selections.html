@@ -84,7 +84,16 @@
     box-sizing: border-box;
     background: transparent;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-    transition: background 0.35s ease, color 0.35s ease;
+    transition: background 0.35s ease, color 0.35s ease,
+                opacity 0.9s ease-out, transform 0.9s ease-out;
+  }
+  /* "Arrival" — cells below the initial viewport sit slightly lower and
+     dimmer, then rise + fade to full when they scroll into view. JS toggles
+     .needs-reveal on below-fold cells and .is-in-view when they cross the
+     threshold. */
+  .cell.needs-reveal:not(.is-in-view) {
+    opacity: 0.35;
+    transform: translateY(24px);
   }
 
   /* Cell placements: HERO / thin+long / long+thin / thin+long / HERO. */
@@ -158,6 +167,45 @@
     .cell-title    { top: 0.6rem;    left: 0.75rem; }
     .cell-duration { top: 0.6rem;    right: 0.75rem; }
     .cell-year     { bottom: 0.6rem; right: 0.75rem; }
+  }
+
+  /* Subtle scroll cue — pinned to bottom-center, gently bouncing to imply
+     "there's more below". Fades out once the user has actually scrolled. */
+  .scroll-cue {
+    position: fixed;
+    bottom: 1.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    animation: scroll-cue-bounce 2.4s ease-in-out infinite;
+  }
+  .scroll-cue.is-hidden { opacity: 0; }
+  .scroll-cue__arrow {
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+  @keyframes scroll-cue-bounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50%      { transform: translate(-50%, 8px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cell.needs-reveal:not(.is-in-view) {
+      opacity: 1;
+      transform: none;
+    }
+    .scroll-cue { animation: none; }
   }
 </style>
 </head>
@@ -235,6 +283,11 @@
         <span class="cell-year">2023</span>
       </a>
     </div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <span class="scroll-cue__text">SCROLL</span>
+      <span class="scroll-cue__arrow">↓</span>
+    </div>
   </div>
 
   <footer class="site-footer">
@@ -310,6 +363,54 @@
         });
       });
     }
+
+    // "Walking through" reveal: below-fold cells arrive as they scroll into view.
+    (function () {
+      const cells = document.querySelectorAll('.cell');
+      if (!('IntersectionObserver' in window)) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+      cells.forEach((cell) => {
+        const rect = cell.getBoundingClientRect();
+        // Cells already visible on load render at full opacity from the start.
+        if (rect.top < window.innerHeight * 0.9) {
+          cell.classList.add('is-in-view');
+        } else {
+          cell.classList.add('needs-reveal');
+          io.observe(cell);
+        }
+      });
+    })();
+
+    // Scroll cue: fade out once the user has actually scrolled a bit.
+    (function () {
+      const cue = document.querySelector('.scroll-cue');
+      if (!cue) return;
+      let hidden = false;
+      let ticking = false;
+      const HIDE_AFTER = 80; // px scrolled
+      function update() {
+        const shouldHide = window.scrollY > HIDE_AFTER;
+        if (shouldHide !== hidden) {
+          hidden = shouldHide;
+          cue.classList.toggle('is-hidden', hidden);
+        }
+        ticking = false;
+      }
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
   </script>
 </body>
 </html>
