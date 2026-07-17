@@ -50,12 +50,13 @@
   .logo.is-visible { opacity: 1; }
 
   .logo--horizontal {
-    /* Sized to occupy comparable visual footprint to the stacked variant. */
-    width: clamp(280px, 34vw, 520px);
+    /* 60% smaller than the previous sizing (×0.4). */
+    width: clamp(112px, 13.6vw, 208px);
     height: auto;
   }
   .logo--stacked {
-    width: clamp(200px, 24vw, 360px);
+    /* 60% smaller than the previous sizing (×0.4). */
+    width: clamp(80px, 9.6vw, 144px);
     height: auto;
   }
 
@@ -84,7 +85,7 @@
   <script>
     (function () {
       const logos = document.querySelectorAll('.logo-cycle .logo');
-      const DURATION_MS      = 3000;   // total cycle window
+      const DURATION_MS      = 5000;   // total cycle window
       const START_INTERVAL   = 420;    // graceful cadence at t=0
       const END_INTERVAL     = 40;     // rapid cadence at t=3s
       let active = 0;                  // logos[0] starts visible
