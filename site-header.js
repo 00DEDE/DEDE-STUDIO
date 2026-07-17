@@ -7,15 +7,33 @@
     }
   });
 
-  // Once the user scrolls a little, the header lifts off the top and rounds
-  // into a floating pill. Passive scroll listener so it never blocks paint.
+  // Toggle the pill state on scroll. Two perf choices here:
+  // 1. requestAnimationFrame throttles the check to ≤60 checks/sec regardless
+  //    of how fast the scroll event fires (some browsers dispatch it many
+  //    times per frame).
+  // 2. We only touch the DOM when the state actually flips, so classList.toggle
+  //    isn't invalidating styles every scroll pixel.
   var header = document.querySelector('.site-header');
   if (!header) return;
   var THRESHOLD = 20;
+  var isScrolled = false;
+  var ticking = false;
+
   function update() {
-    if (window.scrollY > THRESHOLD) header.classList.add('is-scrolled');
-    else header.classList.remove('is-scrolled');
+    var shouldBeScrolled = window.scrollY > THRESHOLD;
+    if (shouldBeScrolled !== isScrolled) {
+      isScrolled = shouldBeScrolled;
+      header.classList.toggle('is-scrolled', isScrolled);
+    }
+    ticking = false;
   }
-  window.addEventListener('scroll', update, { passive: true });
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
   update();
 })();
