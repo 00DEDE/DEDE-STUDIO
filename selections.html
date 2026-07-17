@@ -32,16 +32,19 @@
   .selections {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
   }
 
-  /* Two stacked background layers so we can crossfade */
+  /* Two stacked background layers so we can crossfade. Fixed so the
+     hover-swap backdrop stays behind the grid regardless of scroll. */
   .bg-layer {
-    position: absolute;
+    position: fixed;
     inset: 0;
     background-size: cover;
     background-position: center;
     transition: opacity 0.6s ease;
+    z-index: 0;
+    pointer-events: none;
   }
   .bg-layer.is-active { opacity: 1; }
   .bg-layer.is-idle   { opacity: 0; }
@@ -52,19 +55,25 @@
     opacity: 0;
   }
 
+  /* Editorial grid: hero at top and bottom, thin+long pairs in between.
+     12-col track with per-cell grid-column spans; grid grows past viewport
+     and the page scrolls (the fixed bg-layer stays behind everything). */
   .selections-grid {
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
+    z-index: 1;
+    padding-top: 64px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: clamp(160px, 22vh, 320px);
+    gap: 1px;
   }
   @media (max-width: 640px) {
-    /* Header stacks into 3 rows with a larger logo + 25% more padding. */
-    .selections-grid { top: 152px; }
+    .selections-grid {
+      padding-top: 152px;
+      /* Simpler single-column stack on mobile so each cell still reads. */
+      grid-template-columns: 1fr;
+      grid-auto-rows: 32vh;
+    }
   }
 
   .cell {
@@ -72,13 +81,30 @@
     color: #ffffff;
     text-decoration: none;
     box-sizing: border-box;
-    border-right: 1px solid rgba(255, 255, 255, 0.35);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
     background: transparent;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
     transition: background 0.35s ease, color 0.35s ease;
   }
-  .cell:nth-child(3n) { border-right: none; }
-  .cell:nth-last-child(-n+3) { border-bottom: none; }
+
+  /* Cell placements: HERO / thin+long / long+thin / thin+long / HERO. */
+  .cell:nth-child(1),
+  .cell:nth-child(8) {
+    grid-column: 1 / -1;   /* full row */
+    grid-row: span 2;      /* twice as tall */
+  }
+  .cell:nth-child(2) { grid-column: span 4; }   /* thin */
+  .cell:nth-child(3) { grid-column: span 8; }   /* long */
+  .cell:nth-child(4) { grid-column: span 8; }   /* long */
+  .cell:nth-child(5) { grid-column: span 4; }   /* thin */
+  .cell:nth-child(6) { grid-column: span 4; }   /* thin */
+  .cell:nth-child(7) { grid-column: span 8; }   /* long */
+  /* Mobile flattens all spans — every cell fills the single column. */
+  @media (max-width: 640px) {
+    .cell:nth-child(n) {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
 
   .cell-title,
   .cell-duration,
@@ -206,12 +232,6 @@
         <span class="cell-duration">00:05:08</span>
         <span class="cell-view">View Case</span>
         <span class="cell-year">2023</span>
-      </a>
-      <a class="cell" href="#" data-bg="linear-gradient(135deg,#2a1a4b 0%,#0a0a0a 100%)">
-        <span class="cell-title">Placeholder Project 09</span>
-        <span class="cell-duration">00:03:37</span>
-        <span class="cell-view">View Case</span>
-        <span class="cell-year">2024</span>
       </a>
     </div>
   </div>
