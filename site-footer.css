@@ -3,7 +3,7 @@
   /* Reduced by 150% from 72rem baseline (÷2.5 → 28.8rem). */
   padding: 28.8rem 1.5rem 1.25rem;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  color: #ffffff;
+  color: var(--fg);
   background: transparent;
 }
 .site-footer__logo {
@@ -49,7 +49,7 @@
 }
 .site-footer__meta a,
 .site-footer__meta span {
-  color: #ffffff;
+  color: var(--fg);
   text-decoration: none;
   opacity: 0.65;
   transition: opacity 0.2s ease;
@@ -60,7 +60,7 @@
 }
 /* Tagline in brand cyan, full opacity. */
 .site-footer__meta-center span {
-  color: #00dede;
+  color: var(--accent);
   opacity: 1;
 }
 

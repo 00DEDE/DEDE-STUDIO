@@ -14,7 +14,9 @@
   /* Frosted-glass effect: soft gaussian blur applied to whatever sits behind
      the header. A thin dark tint holds the "glass" together; saturation is
      nudged up so cyan reads through. Prefixed for older Safari. */
-  background: rgba(5, 5, 5, 0.25);
+  /* Frosted tint follows the theme — dark tint on dark bg, light on light. */
+  background: rgba(var(--accent-rgb, 5, 5, 5), 0);   /* placeholder, real color below */
+  background: color-mix(in srgb, var(--bg) 25%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
           backdrop-filter: blur(14px) saturate(1.4);
   border-radius: 0;
@@ -41,7 +43,7 @@
   right: 1rem;
   border-radius: 999px;
   padding: 0.75rem 1.75rem;
-  background: rgba(5, 5, 5, 0.45);
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 .site-header > * { pointer-events: auto; }
@@ -57,8 +59,17 @@
 }
 .site-header__brand img {
   display: block;
-  height: 28px;
+  /* Desktop-only: 10% bigger (28px → 31px). Mobile uses width-based sizing. */
+  height: 31px;
   width: auto;
+}
+
+/* Right-side group holds nav + theme toggle so `justify-content: space-between`
+   keeps the brand on the left and the whole group on the right. */
+.site-header__end {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 
 .site-header__nav {
@@ -67,19 +78,54 @@
   align-items: center;
 }
 .site-header__nav a {
-  color: #ffffff;
+  color: var(--fg);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   opacity: 0.45;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, color 0.3s ease;
   outline: none;
 }
 .site-header__nav a.is-current { opacity: 1; }
 .site-header__nav a:focus-visible { opacity: 1; }
 @media (hover: hover) {
   .site-header__nav a:hover { opacity: 1; }
+}
+
+/* Theme toggle — a small pill at the far right of the header.
+   Thumb sits left in dark mode, slides right in light mode. */
+.site-header__theme-toggle {
+  position: relative;
+  width: 44px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--fg);
+  background: transparent;
+  border-radius: 999px;
+  cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+  outline: none;
+  transition: border-color 0.3s ease, opacity 0.2s ease;
+  opacity: 0.75;
+  flex: none;
+}
+.site-header__theme-toggle:hover,
+.site-header__theme-toggle:focus-visible {
+  opacity: 1;
+}
+.site-header__theme-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.3s ease;
+}
+[data-theme="light"] .site-header__theme-toggle-thumb {
+  transform: translateX(22px);
 }
 
 @media (max-width: 640px) {

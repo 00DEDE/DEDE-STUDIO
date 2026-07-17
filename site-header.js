@@ -7,19 +7,27 @@
     }
   });
 
+  // ---- Theme toggle ------------------------------------------------------
+  // The theme is applied inline in <head> before render (see the small
+  // early-theme script on each page) so we never see a flash. This handler
+  // just flips it on click and remembers the choice.
+  var toggle = document.querySelector('.site-header__theme-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var current = document.documentElement.getAttribute('data-theme') || 'dark';
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+  }
+
+  // ---- Pill state on scroll ---------------------------------------------
   var header = document.querySelector('.site-header');
   if (!header) return;
   var THRESHOLD = 20;
   var isScrolled = false;
   var ticking = false;
 
-  // Two wins over the naive version:
-  // 1. requestAnimationFrame throttles the check to ≤60 checks/sec regardless
-  //    of how fast the scroll event fires (some browsers dispatch it many
-  //    times per frame).
-  // 2. Only touch the DOM when the state actually flips — so classList.toggle
-  //    doesn't invalidate styles on every scroll pixel while we're above (or
-  //    below) the threshold.
   function update() {
     var shouldBeScrolled = window.scrollY > THRESHOLD;
     if (shouldBeScrolled !== isScrolled) {

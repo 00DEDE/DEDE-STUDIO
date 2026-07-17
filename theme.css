@@ -1,0 +1,44 @@
+/* Theme variables — dark by default, light when [data-theme="light"] is on
+   the <html> element. All shared colors point at these vars, so page CSS
+   automatically adapts. */
+
+:root {
+  --bg:            #050505;
+  --bg-tint:       #1a1a1a;              /* neutral panel/blob tone */
+  --bg-tint-rgb:   26, 26, 26;
+  --fg:            #ffffff;
+  --fg-rgb:        255, 255, 255;
+  --fg-dim:        rgba(255, 255, 255, 0.65);
+  --accent:        #00dede;              /* brand cyan */
+  --accent-rgb:    0, 222, 222;          /* for rgba() interpolation */
+  --line:          rgba(255, 255, 255, 0.35);
+}
+
+[data-theme="light"] {
+  --bg:            #ffffff;
+  --bg-tint:       #eaeaea;              /* light grey */
+  --bg-tint-rgb:   234, 234, 234;
+  --fg:            #050505;
+  --fg-rgb:        5, 5, 5;
+  --fg-dim:        rgba(5, 5, 5, 0.55);
+  --accent:        #de0000;              /* light-mode accent — red */
+  --accent-rgb:    222, 0, 0;
+  --line:          rgba(0, 0, 0, 0.15);
+}
+
+/* Baseline that carries the theme everywhere pages don't override it. */
+html { background: var(--bg); }
+
+/* Cyan-tinted brand images (header, home logos, cursor) flip to red in
+   light mode. hue-rotate(180°) turns pure cyan into pure red exactly
+   (HSL 180° → 0°). Doesn't touch black/white pixels. */
+[data-theme="light"] .theme-tint,
+[data-theme="light"] .site-header__brand img,
+[data-theme="light"] img[src*="_cyan"] {
+  filter: hue-rotate(180deg);
+}
+/* White-tinted assets (footer logo) invert to dark on light backgrounds. */
+[data-theme="light"] .site-footer__logo img,
+[data-theme="light"] img[src*="_white"] {
+  filter: invert(1);
+}

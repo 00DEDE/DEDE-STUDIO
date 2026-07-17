@@ -13,7 +13,7 @@
   inset: 0;
   z-index: -1;
   overflow: hidden;
-  background: #050505;
+  background: var(--bg);
   pointer-events: none;
 }
 .site-bg__blob {
@@ -28,8 +28,8 @@
   top: -15%;
   left: -10%;
   background: radial-gradient(circle at center,
-              rgba(0, 222, 222, 0.55) 0%,
-              rgba(0, 222, 222, 0) 65%);
+              rgba(var(--accent-rgb), 0.55) 0%,
+              rgba(var(--accent-rgb), 0) 65%);
   animation: bg-drift-1 36s ease-in-out infinite;
 }
 .site-bg__blob--cyan-2 {
@@ -38,8 +38,8 @@
   bottom: -10%;
   right: -10%;
   background: radial-gradient(circle at center,
-              rgba(0, 170, 170, 0.42) 0%,
-              rgba(0, 170, 170, 0) 65%);
+              rgba(var(--accent-rgb), 0.42) 0%,
+              rgba(var(--accent-rgb), 0) 65%);
   animation: bg-drift-2 44s ease-in-out infinite;
 }
 .site-bg__blob--dark-1 {
@@ -48,7 +48,7 @@
   top: 25%;
   left: 35%;
   background: radial-gradient(circle at center,
-              #1a1a1a 0%,
+              var(--bg-tint) 0%,
               transparent 65%);
   animation: bg-drift-3 40s ease-in-out infinite;
 }
@@ -58,7 +58,7 @@
   bottom: 15%;
   left: 15%;
   background: radial-gradient(circle at center,
-              #0f0f14 0%,
+              var(--bg-tint) 0%,
               transparent 65%);
   animation: bg-drift-4 48s ease-in-out infinite;
 }
@@ -108,9 +108,9 @@
 @media (max-width: 768px), (pointer: coarse) {
   .site-bg {
     background:
-      radial-gradient(60% 45% at 12% 18%, rgba(0, 222, 222, 0.22) 0%, rgba(0, 222, 222, 0) 70%),
-      radial-gradient(55% 40% at 88% 82%, rgba(0, 170, 170, 0.14) 0%, rgba(0, 170, 170, 0) 70%),
-      radial-gradient(70% 50% at 55% 55%, rgba(30, 30, 30, 0.55) 0%, rgba(30, 30, 30, 0) 70%),
+      radial-gradient(60% 45% at 12% 18%, rgba(var(--accent-rgb), 0.22) 0%, rgba(var(--accent-rgb), 0) 70%),
+      radial-gradient(55% 40% at 88% 82%, rgba(var(--accent-rgb), 0.14) 0%, rgba(var(--accent-rgb), 0) 70%),
+      radial-gradient(70% 50% at 55% 55%, rgba(var(--bg-tint-rgb, 30, 30, 30), 0.55) 0%, rgba(30, 30, 30, 0) 70%),
       #050505;
   }
   .site-bg__blob,
