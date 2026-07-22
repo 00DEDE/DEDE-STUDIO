@@ -159,6 +159,10 @@
     pointer-events: none;
     z-index: 4;
   }
+  @media (hover: hover) {
+    .cell:hover .cell__view { opacity: 1; }
+  }
+  /* Touch has no hover — .is-active (added on tap) surfaces the label. */
   .cell.is-active .cell__view { opacity: 1; }
   /* Over the cover image the label reads white with a soft shadow. */
   .cell--cover .cell__view {
@@ -428,33 +432,14 @@
         });
       });
     } else {
-      // Desktop: mouseenter swaps the bg-layer. Click reveals VIEW CASE on
-      // first press; a second click on the same cell navigates. Clicking
-      // outside any cell (or hitting Escape) dismisses.
-      let activeCell = null;
-      function clearActive() {
-        if (activeCell) activeCell.classList.remove('is-active');
-        activeCell = null;
-      }
+      // Desktop: mouseenter swaps the bg-layer + CSS :hover surfaces the
+      // VIEW CASE label. Click flows straight to navigation.
       document.querySelectorAll('.cell').forEach((cell) => {
         cell.addEventListener('mouseenter', () => {
           lastCell = cell;
           const grad = gradFor(cell);
           if (grad) setBackground(grad);
         });
-        cell.addEventListener('click', (e) => {
-          if (activeCell === cell) return; // second click: navigate
-          e.preventDefault();
-          clearActive();
-          activeCell = cell;
-          cell.classList.add('is-active');
-        });
-      });
-      document.addEventListener('click', (e) => {
-        if (activeCell && !e.target.closest('.cell')) clearActive();
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') clearActive();
       });
     }
 
