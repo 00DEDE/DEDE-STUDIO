@@ -68,9 +68,10 @@
 
     position: relative;
     z-index: 1;
-    /* Padding-top clears the fixed header (~71px tall at rest) — 96px gives
-       comfortable breathing room so hero cell content isn't slid under it. */
-    padding-top: 96px;
+    /* No top padding — the hero image butts against the top of the viewport
+       and passes UNDER the frosted header, which blurs the top strip of the
+       image. Tags sit at the bottom-left, well clear of the header. */
+    padding-top: 0;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows:
@@ -83,7 +84,7 @@
   }
   @media (max-width: 640px) {
     .selections-grid {
-      padding-top: 152px;
+      padding-top: 0;
       /* Simpler single-column stack on mobile so each cell still reads. */
       grid-template-columns: 1fr;
       grid-template-rows: none;
@@ -104,30 +105,65 @@
                 opacity 0.9s ease-out, transform 0.9s ease-out;
   }
   /* Hero cell 1 — carries the UNESCO cover photo permanently.
-     The hover swap uses background-color only (not the shorthand) so this
-     background-image is preserved when other cells' bg swaps to a solid fill. */
+     Image lives on ::before (not the cell's own background) so we can dim
+     it to 40% on hover without affecting the tags or the VIEW CASE overlay,
+     and so per-cell hover-swap of `background-color` still applies. */
   .cell--cover {
-    background-image: url("ASSETS/IMAGES/UNESCO_REBRAND.jpg");
+    overflow: hidden;
   }
-  /* Bottom-left tag stack — shows only on cells that carry cover images. */
+  .cell--cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("ASSETS/IMAGES/UNESCO_REBRAND.jpg");
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.35s ease;
+    z-index: 0;
+  }
+  /* Bottom-left tag — single horizontal line, regular weight with UNESCO bold. */
   .cell-tags {
     position: absolute;
     left: 1.25rem;
     bottom: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
     color: #ffffff;
-    font-weight: 700;
+    font-weight: 400;
     font-size: clamp(0.72rem, 1vw, 0.95rem);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
-    z-index: 2;
+    z-index: 3;
     pointer-events: none;
+    white-space: nowrap;
   }
+  .cell-tags strong { font-weight: 700; }
   @media (max-width: 640px) {
     .cell-tags { left: 0.75rem; bottom: 0.75rem; font-size: 0.72rem; }
+  }
+
+  /* VIEW CASE overlay — hidden by default, appears only when a cell is
+     clicked (.is-active). Sits above the tags so the label reads clearly. */
+  .cell__view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    font-weight: 700;
+    font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .cell.is-active .cell__view { opacity: 1; }
+  /* Over the cover image the label reads white with a soft shadow. */
+  .cell--cover .cell__view {
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
   }
   /* "Arrival" — cells below the initial viewport sit slightly lower and
      dimmer, then rise + fade to full when they scroll into view. JS toggles
@@ -159,9 +195,9 @@
     }
   }
 
-  /* Hover / active: swap the cell to the fg color as a solid fill (dark on
-     light theme, light on dark theme). Cells with a cover image keep the
-     image visible — a subtle overlay shows on hover instead. */
+  /* Hover / active: non-cover cells swap to the fg color as a solid fill
+     (dark on light theme, light on dark theme). Cover cells keep the image
+     visible; hover dims that image to 40% via the ::before opacity below. */
   @media (hover: hover) {
     .cell:hover {
       background-color: var(--fg);
@@ -170,29 +206,29 @@
   .cell.is-active {
     background-color: var(--fg);
   }
-  /* Cover-image cells (like the UNESCO hero) don't get the solid-fill hover —
-     the image would be occluded. A translucent overlay shows interactivity. */
-  .cell--cover::after {
+  /* Cover cells: preserve the image on hover / active — never fg-fill it. */
+  @media (hover: hover) {
+    .cell--cover:hover { background-color: transparent; }
+    .cell--cover:hover::before { opacity: 0.4; }
+  }
+  .cell--cover.is-active { background-color: transparent; }
+  .cell--cover.is-active::before { opacity: 0.4; }
+
+  /* Static scrim at the bottom of every cell — subtle black gradient so the
+     bottom-left tag reads cleanly over any image or gradient underneath.
+     Sits above the cover image (::before) but below the tags (z-index: 3). */
+  .cell::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: transparent;
-    transition: background 0.35s ease;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 40%;
+    background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0) 100%);
     pointer-events: none;
-  }
-  @media (hover: hover) {
-    .cell--cover:hover {
-      background-color: transparent;
-    }
-    .cell--cover:hover::after {
-      background: rgba(0, 0, 0, 0.15);
-    }
-  }
-  .cell--cover.is-active {
-    background-color: transparent;
-  }
-  .cell--cover.is-active::after {
-    background: rgba(0, 0, 0, 0.15);
+    z-index: 2;
   }
 
   /* Subtle scroll cue — pinned to bottom-center, gently bouncing to imply
@@ -268,33 +304,44 @@
       <a class="cell cell--cover" href="#"
          data-bg="linear-gradient(135deg,#7a1f1f 0%,#0d0d0d 100%)"
          data-bg-light="linear-gradient(135deg,#ffe0e0 0%,#f5f5f5 100%)">
-        <div class="cell-tags">
-          <span>UNESCO</span>
-          <span>REBRAND</span>
-          <span>STUDENT</span>
-        </div>
+        <div class="cell-tags"><strong>UNESCO</strong> BRANDING EXPLORATION &amp; INTERACTION</div>
+        <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell" href="#"
          data-bg="linear-gradient(135deg,#1a2a44 0%,#0b0b0b 100%)"
-         data-bg-light="linear-gradient(135deg,#dae5f5 0%,#f5f5f5 100%)"></a>
+         data-bg-light="linear-gradient(135deg,#dae5f5 0%,#f5f5f5 100%)">
+        <div class="cell__view">VIEW CASE</div>
+      </a>
       <a class="cell" href="#"
          data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)"></a>
+         data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
+        <div class="cell__view">VIEW CASE</div>
+      </a>
       <a class="cell" href="#"
          data-bg="linear-gradient(135deg,#4b1e3a 0%,#0b0b0b 100%)"
-         data-bg-light="linear-gradient(135deg,#eadaea 0%,#f5f5f5 100%)"></a>
+         data-bg-light="linear-gradient(135deg,#eadaea 0%,#f5f5f5 100%)">
+        <div class="cell__view">VIEW CASE</div>
+      </a>
       <a class="cell" href="#"
          data-bg="linear-gradient(135deg,#5a3a10 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#f5ead5 0%,#f5f5f5 100%)"></a>
+         data-bg-light="linear-gradient(135deg,#f5ead5 0%,#f5f5f5 100%)">
+        <div class="cell__view">VIEW CASE</div>
+      </a>
       <a class="cell" href="#"
          data-bg="linear-gradient(135deg,#0f3a3a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#d5eaea 0%,#f5f5f5 100%)"></a>
+         data-bg-light="linear-gradient(135deg,#d5eaea 0%,#f5f5f5 100%)">
+        <div class="cell__view">VIEW CASE</div>
+      </a>
       <a class="cell" href="#"
          data-bg="linear-gradient(135deg,#3d1a1a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#f5dada 0%,#f5f5f5 100%)"></a>
+         data-bg-light="linear-gradient(135deg,#f5dada 0%,#f5f5f5 100%)">
+        <div class="cell__view">VIEW CASE</div>
+      </a>
       <a class="cell" href="#"
          data-bg="linear-gradient(135deg,#1a3d2a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#daeada 0%,#f5f5f5 100%)"></a>
+         data-bg-light="linear-gradient(135deg,#daeada 0%,#f5f5f5 100%)">
+        <div class="cell__view">VIEW CASE</div>
+      </a>
     </div>
 
     <div class="scroll-cue" aria-hidden="true">
@@ -381,12 +428,33 @@
         });
       });
     } else {
+      // Desktop: mouseenter swaps the bg-layer. Click reveals VIEW CASE on
+      // first press; a second click on the same cell navigates. Clicking
+      // outside any cell (or hitting Escape) dismisses.
+      let activeCell = null;
+      function clearActive() {
+        if (activeCell) activeCell.classList.remove('is-active');
+        activeCell = null;
+      }
       document.querySelectorAll('.cell').forEach((cell) => {
         cell.addEventListener('mouseenter', () => {
           lastCell = cell;
           const grad = gradFor(cell);
           if (grad) setBackground(grad);
         });
+        cell.addEventListener('click', (e) => {
+          if (activeCell === cell) return; // second click: navigate
+          e.preventDefault();
+          clearActive();
+          activeCell = cell;
+          cell.classList.add('is-active');
+        });
+      });
+      document.addEventListener('click', (e) => {
+        if (activeCell && !e.target.closest('.cell')) clearActive();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') clearActive();
       });
     }
 
