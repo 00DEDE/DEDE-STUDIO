@@ -390,12 +390,11 @@
       [active, idle] = [idle, active];
     }
 
-    // Cell gradients are theme-aware — dark grads in dark mode, light grads
-    // in light mode. Each cell carries both variants; this picks the right one.
+    // Light mode: swap the bg-layer to the cell's light gradient on hover.
+    // Dark mode: no colored gradient — the shared site-bg blobs stay visible.
     function gradFor(cell) {
       const light = document.documentElement.getAttribute('data-theme') === 'light';
-      return cell.getAttribute(light ? 'data-bg-light' : 'data-bg')
-          || cell.getAttribute('data-bg');
+      return light ? cell.getAttribute('data-bg-light') : null;
     }
     // Track the last-activated cell so we can refresh the backdrop when the
     // user flips the theme toggle mid-hover.
@@ -444,10 +443,17 @@
     }
 
     // Re-swap the current cell's gradient when the theme toggle flips.
+    // Flipping into dark mode clears the bg-layer entirely — no colored grads
+    // are used in dark mode, only the shared site-bg blobs.
     new MutationObserver(() => {
       if (!lastCell) return;
       const grad = gradFor(lastCell);
-      if (grad) setBackground(grad);
+      if (grad) {
+        setBackground(grad);
+      } else {
+        active.classList.remove('is-active');
+        active.classList.add('is-idle');
+      }
     }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     // "Walking through" reveal: below-fold cells arrive as they scroll into view.
