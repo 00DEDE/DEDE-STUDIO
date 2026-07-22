@@ -118,7 +118,10 @@
     inset: 0;
     background-image: var(--cover);
     background-size: cover;
-    background-position: center;
+    /* --cover-y lets a cell nudge its image vertically without extra CSS.
+       50% = default center. Higher % shows more of the bottom (image reads
+       as shifted UP inside the cell). */
+    background-position: 50% var(--cover-y, 50%);
     transform: scale(1);
     transform-origin: center;
     /* Opacity dim is quick (0.35s); the 2% zoom is a very slow ken-burns —
@@ -332,7 +335,7 @@
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/SUN_RISES.jpg')"
+         style="--cover: url('ASSETS/IMAGES/SUN_RISES.jpg'); --cover-y: 65%"
          data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
