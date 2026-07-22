@@ -104,10 +104,11 @@
     transition: background-color 0.35s ease, color 0.35s ease,
                 opacity 0.9s ease-out, transform 0.9s ease-out;
   }
-  /* Hero cell 1 — carries the UNESCO cover photo permanently.
-     Image lives on ::before (not the cell's own background) so we can dim
-     it to 40% on hover without affecting the tags or the VIEW CASE overlay,
-     and so per-cell hover-swap of `background-color` still applies. */
+  /* Cover-image cells carry a photo on ::before (not the cell's own
+     background) so we can dim it to 40% on hover without touching the tags
+     or the VIEW CASE overlay, and so per-cell hover-swap of `background-color`
+     still applies. Each cover cell sets its own image via the --cover custom
+     property inline: style="--cover: url('...')". */
   .cell--cover {
     overflow: hidden;
   }
@@ -115,7 +116,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url("ASSETS/IMAGES/UNESCO_REBRAND.jpg");
+    background-image: var(--cover);
     background-size: cover;
     background-position: center;
     transition: opacity 0.35s ease;
@@ -150,9 +151,9 @@
     align-items: center;
     justify-content: center;
     color: var(--bg);
-    font-weight: 700;
+    font-weight: 400;
     font-size: clamp(0.95rem, 1.5vw, 1.35rem);
-    letter-spacing: 0.32em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     opacity: 0;
     transition: opacity 0.35s ease;
@@ -306,9 +307,10 @@
 
     <div class="selections-grid">
       <a class="cell cell--cover" href="#"
+         style="--cover: url('ASSETS/IMAGES/UNESCO_REBRAND.jpg')"
          data-bg="linear-gradient(135deg,#7a1f1f 0%,#0d0d0d 100%)"
          data-bg-light="linear-gradient(135deg,#ffe0e0 0%,#f5f5f5 100%)">
-        <div class="cell-tags"><strong>UNESCO</strong> BRANDING EXPLORATION &amp; INTERACTION</div>
+        <div class="cell-tags"><strong>UNESCO</strong> BRANDING &amp; INTERACTION EXPLORATION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell" href="#"
@@ -316,9 +318,11 @@
          data-bg-light="linear-gradient(135deg,#dae5f5 0%,#f5f5f5 100%)">
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell" href="#"
+      <a class="cell cell--cover" href="#"
+         style="--cover: url('ASSETS/IMAGES/SUN_RISES.jpg')"
          data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
+        <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell" href="#"
