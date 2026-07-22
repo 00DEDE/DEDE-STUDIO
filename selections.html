@@ -119,7 +119,13 @@
     background-image: var(--cover);
     background-size: cover;
     background-position: center;
-    transition: opacity 0.35s ease;
+    transform: scale(1);
+    transform-origin: center;
+    /* Opacity dim is quick (0.35s); the 2% zoom is a very slow ken-burns —
+       barely-noticeable motion while the cursor rests, gently unwinds back
+       to 100% when the cursor leaves. `overflow: hidden` on .cell--cover
+       clips the 2% overflow so nothing bleeds into neighbouring cells. */
+    transition: opacity 0.35s ease, transform 6s ease-out;
     z-index: 0;
   }
   /* Bottom-left tag — single horizontal line, regular weight with UNESCO bold. */
@@ -211,13 +217,20 @@
   .cell.is-active {
     background-color: var(--fg);
   }
-  /* Cover cells: preserve the image on hover / active — never fg-fill it. */
+  /* Cover cells: preserve the image on hover / active — never fg-fill it.
+     Hover / active also triggers the slow zoom to 102%. */
   @media (hover: hover) {
     .cell--cover:hover { background-color: transparent; }
-    .cell--cover:hover::before { opacity: 0.4; }
+    .cell--cover:hover::before {
+      opacity: 0.4;
+      transform: scale(1.02);
+    }
   }
   .cell--cover.is-active { background-color: transparent; }
-  .cell--cover.is-active::before { opacity: 0.4; }
+  .cell--cover.is-active::before {
+    opacity: 0.4;
+    transform: scale(1.02);
+  }
 
   /* Static scrim at the bottom of every cell — subtle black gradient so the
      bottom-left tag reads cleanly over any image or gradient underneath.
