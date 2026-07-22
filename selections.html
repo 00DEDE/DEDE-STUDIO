@@ -68,7 +68,9 @@
 
     position: relative;
     z-index: 1;
-    padding-top: 64px;
+    /* Padding-top clears the fixed header (~71px tall at rest) — 96px gives
+       comfortable breathing room so hero cell content isn't slid under it. */
+    padding-top: 96px;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows:

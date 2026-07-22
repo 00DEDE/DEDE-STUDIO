@@ -32,11 +32,14 @@ html { background: var(--bg); }
 /* Theme-swappable logos: pages render two <img>s per logo (dark variant +
    light variant), and CSS toggles which is visible. Pure pixel color per
    theme — no filter hacks, no faded edges from hue-rotating anti-aliased
-   cyan. Cyan/white assets serve the dark theme; the red asset serves light. */
-.theme-img { display: none; }
+   cyan. Cyan/white assets serve the dark theme; the red asset serves light.
+   Each rule is prefixed with :root so the specificity (0,2,0) beats
+   .site-header__brand img and .site-footer__logo img (0,1,1) — otherwise
+   both variants render together in dark mode. */
+:root .theme-img { display: none; }
 :root .theme-img--dark { display: block; }
-[data-theme="light"] .theme-img--dark { display: none; }
-[data-theme="light"] .theme-img--light { display: block; }
+:root[data-theme="light"] .theme-img--dark { display: none; }
+:root[data-theme="light"] .theme-img--light { display: block; }
 
 /* Non-theme-swapped cyan-tinted images (home cycle, per-page brand marks
    without a light variant) fall back to hue-rotate. Pure #00dede → #de0000
