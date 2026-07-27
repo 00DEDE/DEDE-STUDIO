@@ -128,7 +128,7 @@
     text-transform: uppercase;
   }
   .selections__band--marquee {
-    padding: 6rem 0;
+    padding: 4.5rem 0;         /* 6rem × 0.75 — 25% less top / bottom */
     overflow: hidden;
     font-size: clamp(2.5rem, 12vw, 20rem);
   }
@@ -203,7 +203,7 @@
      centered on the cap line rather than the descender line. */
   .marquee__mark {
     display: inline-block;
-    height: 3.6em;              /* 0.72em × 5 — 5× larger than the caps */
+    height: 2.7em;              /* 3.6em × 0.75 — 25% smaller */
     width: auto;
     margin: 0 0.35em;           /* evenly spaced left and right */
     vertical-align: middle;     /* optically centred on the caps line */
