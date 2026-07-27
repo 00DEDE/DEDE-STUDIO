@@ -65,9 +65,14 @@
     line-height: 1.1;
     letter-spacing: -0.015em;
     margin: 0 0 2.5rem;
-    /* Balance line lengths so the right rag looks intentional, not chaotic.
-       Browsers that don't support balance for long text quietly fall back. */
-    text-wrap: balance;
+    /* Justify + auto hyphenation gives a straight right edge without ugly
+       word gaps — the browser hyphenates long words at syllable boundaries
+       to fill each line. Last line of every paragraph stays flush-left
+       (default text-align-last: auto). Requires lang on <html> — set to
+       "en". */
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
     transition: opacity 0.3s ease;
   }
   .intro p:last-child { margin-bottom: 0; }
