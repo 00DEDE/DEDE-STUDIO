@@ -112,12 +112,8 @@
 
   /* Full-bleed statement bands sit between / before the grids.
 
-     Parallax: `--parallax-y` is set by JS on scroll and shifts the band
-     vertically at ~30% of the scroll speed, so cells scroll past faster
-     than the text does — reads as cells sliding over the band.
-
      Legibility effect (hover-capable devices only): the text is heavily
-     blurred; a radial mask on a sharp copy reveals ~250px around the
+     blurred; a radial mask on a sharp copy reveals ~260px around the
      cursor. Touch devices skip the blur entirely (base sharp layer). */
   .selections__band {
     position: relative;
@@ -130,8 +126,6 @@
     line-height: 0.95;
     letter-spacing: -0.03em;
     text-transform: uppercase;
-    will-change: transform;
-    transform: translate3d(0, var(--parallax-y, 0px), 0);
   }
   .selections__band--marquee {
     padding: 6rem 0;
@@ -168,7 +162,10 @@
       #000 0%, #000 25%, transparent 90%);
   }
   @media (hover: hover) {
-    .band__blur { filter: blur(24px); }
+    .band__blur { filter: blur(20px); }
+    /* The quote sits at a smaller size, so it needs less blur to keep
+       the same visual intensity — 30% lighter than the marquee. */
+    .selections__band--stacked .band__blur { filter: blur(14px); }
   }
   /* Touch / no-hover devices: skip the blur, hide the sharp overlay so
      screen text isn't rendered twice. */
@@ -188,13 +185,23 @@
     display: inline-block;
     padding-right: 0.5em;
   }
+  /* Cyan DĒDĒ icon sits between statements — same height as the caps,
+     uniform aspect so it never distorts. Slight horizontal margin for
+     breathing room, and a small negative baseline nudge to sit optically
+     centered on the cap line rather than the descender line. */
+  .marquee__mark {
+    display: inline-block;
+    height: 0.72em;
+    width: auto;
+    margin: 0 0.35em 0 0.2em;
+    vertical-align: 0.06em;
+  }
   @keyframes marquee {
     from { transform: translate3d(0, 0, 0); }
     to   { transform: translate3d(-50%, 0, 0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .selections__band { transform: none; will-change: auto; }
     .marquee__track { animation: none; }
   }
 
@@ -429,14 +436,14 @@
       <span class="band__layers" aria-hidden="true">
         <span class="band__blur">
           <span class="marquee__track">
-            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
-            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
           </span>
         </span>
         <span class="band__sharp">
           <span class="marquee__track">
-            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
-            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
           </span>
         </span>
       </span>
@@ -503,8 +510,8 @@
 
     <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, in return will one day live for us.">
       <span class="band__layers" aria-hidden="true">
-        <span class="band__blur">What we choose to give life to,<br>in return will one day live for us.</span>
-        <span class="band__sharp">What we choose to give life to,<br>in return will one day live for us.</span>
+        <span class="band__blur">What we choose to give life to,<br>in return will one day<br>live for us.</span>
+        <span class="band__sharp">What we choose to give life to,<br>in return will one day<br>live for us.</span>
       </span>
     </h2>
 
@@ -667,38 +674,6 @@
           sharp.style.setProperty('--my', '-1000px');
         });
       });
-    }
-
-    /* ─── parallax on statement bands ────────────────────────────────── */
-    // Bands translate at ~30% of scroll speed relative to their natural
-    // position, so cells scroll faster and read as sliding past them.
-    // rAF-throttled; disabled when reduced motion is requested.
-    const bands = document.querySelectorAll('.selections__band');
-    if (bands.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const PARALLAX = 0.3;
-      const anchors = new Map();
-      function measure() {
-        bands.forEach((b) => {
-          const top = b.getBoundingClientRect().top + window.scrollY;
-          anchors.set(b, top);
-        });
-      }
-      measure();
-      window.addEventListener('resize', measure, { passive: true });
-
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          const y = window.scrollY;
-          bands.forEach((b) => {
-            const anchor = anchors.get(b);
-            b.style.setProperty('--parallax-y', ((y - anchor) * PARALLAX) + 'px');
-          });
-          ticking = false;
-        });
-      }, { passive: true });
     }
 
     /* ─── scroll cue fade-out ────────────────────────────────────────── */
