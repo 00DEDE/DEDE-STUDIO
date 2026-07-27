@@ -9,7 +9,7 @@
 .site-footer__logo {
   display: block;
   outline: none;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--dur-quick) var(--ease-standard);
   line-height: 0;
 }
 .site-footer__logo:hover,
@@ -52,7 +52,7 @@
   color: var(--fg);
   text-decoration: none;
   opacity: 0.65;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--dur-quick) var(--ease-standard);
 }
 .site-footer__meta a:focus-visible { opacity: 1; }
 @media (hover: hover) {

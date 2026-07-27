@@ -73,7 +73,7 @@
     text-align: justify;
     hyphens: auto;
     -webkit-hyphens: auto;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--dur-medium) var(--ease-standard);
   }
   .intro p:last-child { margin-bottom: 0; }
   /* Every paragraph is interactive. cursor + tabindex + will-change make
@@ -97,11 +97,11 @@
   .reveal-words:not(.is-ready) { visibility: hidden; }
   .word {
     opacity: 0;
-    transition: opacity 1.4s ease-out;
+    transition: opacity var(--dur-cinematic) var(--ease-out-expo);
   }
   .word.is-visible { opacity: 1; }
   .statement__predicate {
-    transition: opacity 0.5s ease;
+    transition: opacity var(--dur-long) var(--ease-out-expo);
     display: inline;
   }
   /* Phonetic gloss beside DĒDĒ — smaller and slightly raised so it reads
@@ -121,7 +121,7 @@
     color: inherit;
     text-decoration: none;
     animation: link-glow 2.5s ease-in-out infinite;
-    transition: color 0.3s ease;
+    transition: color var(--dur-medium) var(--ease-standard);
   }
   .dede-link:hover,
   .dede-link:focus-visible,
@@ -166,8 +166,10 @@
     object-fit: contain;
     transform: translate(-50%, -50%) scale(0.35);
     opacity: 0;
-    transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
-                opacity 0.35s ease;
+    /* Deliberate spring on the DĒDĒ image scale — a slight overshoot
+       gives the reveal weight without feeling bouncy. */
+    transition: transform var(--dur-long)   cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity   var(--dur-medium) var(--ease-out-expo);
     pointer-events: none;
     z-index: 200;
     will-change: transform, opacity;
@@ -182,7 +184,7 @@
      transition (it fires from JS class flips, not hover, but the base
      .intro p transition already handles it smoothly). */
   @media (max-width: 768px), (pointer: coarse) {
-    .statement__predicate { transition: opacity 0.35s ease; }
+    .statement__predicate { transition: opacity var(--dur-medium) var(--ease-out-expo); }
   }
   @media (prefers-reduced-motion: reduce) {
     .reveal-words:not(.is-ready) { visibility: visible; }
@@ -191,7 +193,7 @@
       transition: none;
     }
     .intro p { transition: none; }
-    .dede-image { transition: opacity 0.2s ease; }
+    .dede-image { transition: opacity var(--dur-quick) var(--ease-standard); }
   }
 </style>
 </head>

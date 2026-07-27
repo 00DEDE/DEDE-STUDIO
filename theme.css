@@ -12,6 +12,31 @@
   --accent:        #00dede;              /* brand cyan */
   --accent-rgb:    0, 222, 222;          /* for rgba() interpolation */
   --line:          rgba(255, 255, 255, 0.35);
+
+  /* ─── motion system ──────────────────────────────────────────────────
+     One source-of-truth for every duration and easing across the site.
+     Pages import these instead of hard-coding times / curves, so the
+     whole feel can be re-tuned centrally.
+
+     Cinematic principles baked in:
+       • no linear easings (except continuous loops)
+       • slight overshoot avoided — no bouncy ends
+       • entrances decelerate (ease-out family), exits accelerate
+         (ease-in) — motion arrives softly and leaves briskly
+       • larger movements use longer durations + more dramatic curves
+     ─────────────────────────────────────────────────────────────────── */
+  --dur-instant:      120ms;   /* micro state (button press, focus ring) */
+  --dur-quick:        240ms;   /* small transitions (hover fg-fill)      */
+  --dur-medium:       480ms;   /* theme flip, header pill                */
+  --dur-long:         900ms;   /* dramatic reveals, layer swaps          */
+  --dur-cinematic:    1600ms;  /* atmospheric crossfades                 */
+  --dur-atmospheric:  6000ms;  /* ultra-slow ken-burns, background drift */
+
+  --ease-standard:  cubic-bezier(0.4, 0, 0.2, 1);      /* general purpose  */
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);     /* soft landing     */
+  --ease-in-expo:   cubic-bezier(0.7, 0, 0.84, 0);     /* firm departure   */
+  --ease-in-out:    cubic-bezier(0.77, 0, 0.175, 1);   /* dramatic S-curve */
+  --ease-linear:    linear;                            /* continuous loops */
 }
 
 [data-theme="light"] {

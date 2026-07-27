@@ -30,7 +30,7 @@
   background: radial-gradient(circle at center,
               rgba(var(--accent-rgb), 0.55) 0%,
               rgba(var(--accent-rgb), 0) 65%);
-  animation: bg-drift-1 36s ease-in-out infinite;
+  animation: bg-drift-1 36s var(--ease-in-out) infinite;
 }
 .site-bg__blob--cyan-2 {
   width: 75vmin;
@@ -40,7 +40,7 @@
   background: radial-gradient(circle at center,
               rgba(var(--accent-rgb), 0.42) 0%,
               rgba(var(--accent-rgb), 0) 65%);
-  animation: bg-drift-2 44s ease-in-out infinite;
+  animation: bg-drift-2 44s var(--ease-in-out) infinite;
 }
 .site-bg__blob--dark-1 {
   width: 97vmin;
@@ -50,7 +50,7 @@
   background: radial-gradient(circle at center,
               var(--bg-tint) 0%,
               transparent 65%);
-  animation: bg-drift-3 40s ease-in-out infinite;
+  animation: bg-drift-3 40s var(--ease-in-out) infinite;
 }
 .site-bg__blob--dark-2 {
   width: 105vmin;
@@ -60,7 +60,7 @@
   background: radial-gradient(circle at center,
               var(--bg-tint) 0%,
               transparent 65%);
-  animation: bg-drift-4 48s ease-in-out infinite;
+  animation: bg-drift-4 48s var(--ease-in-out) infinite;
 }
 
 /* Grain overlay — breaks up the 8-bit banding you get from soft gradients.

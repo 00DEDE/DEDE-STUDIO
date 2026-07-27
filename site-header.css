@@ -24,16 +24,14 @@
      first frame of the animation isn't the one where the layer is created
      (that first-frame stutter is a big chunk of the perceived jank). */
   will-change: top, left, right, padding, background, border-radius;
-  /* Shortened from 0.4s so the expensive layout+backdrop-filter animation
-     window is smaller. The visual still reads as a smooth transition. */
   transition:
-    top 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    left 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    right 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    padding 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    border-radius 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.25s ease,
-    box-shadow 0.25s ease;
+    top             var(--dur-quick) var(--ease-standard),
+    left            var(--dur-quick) var(--ease-standard),
+    right           var(--dur-quick) var(--ease-standard),
+    padding         var(--dur-quick) var(--ease-standard),
+    border-radius   var(--dur-quick) var(--ease-standard),
+    background      var(--dur-quick) var(--ease-standard),
+    box-shadow      var(--dur-quick) var(--ease-standard);
 }
 /* Once the page has scrolled past a small threshold, the header lifts off
    the top edge and rounds into a floating pill. JS toggles .is-scrolled. */
@@ -51,7 +49,7 @@
 .site-header__brand {
   display: block;
   outline: none;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--dur-quick) var(--ease-standard);
 }
 .site-header__brand:hover,
 .site-header__brand:focus-visible {
@@ -84,7 +82,8 @@
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   opacity: 0.45;
-  transition: opacity 0.2s ease, color 0.3s ease;
+  transition: opacity var(--dur-quick) var(--ease-standard),
+              color   var(--dur-medium) var(--ease-standard);
   outline: none;
 }
 .site-header__nav a.is-current { opacity: 1; }
@@ -105,7 +104,8 @@
   border-radius: 999px;
   cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   outline: none;
-  transition: border-color 0.3s ease, opacity 0.2s ease;
+  transition: border-color var(--dur-medium) var(--ease-standard),
+              opacity       var(--dur-quick)  var(--ease-standard);
   opacity: 0.75;
   flex: none;
 }
@@ -121,8 +121,8 @@
   height: 16px;
   border-radius: 50%;
   background: var(--accent);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              background 0.3s ease;
+  transition: transform  var(--dur-medium) var(--ease-standard),
+              background  var(--dur-medium) var(--ease-standard);
 }
 [data-theme="light"] .site-header__theme-toggle-thumb {
   transform: translateX(22px);

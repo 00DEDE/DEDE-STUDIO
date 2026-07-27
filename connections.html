@@ -68,7 +68,7 @@
   /* Cycling greeting fades gracefully between languages. */
   .greeting-word {
     display: inline-block;
-    transition: opacity 1s ease;
+    transition: opacity var(--dur-cinematic) var(--ease-out-expo);
   }
 
   /* Email link: same radiating cyan glow used for DĒDĒ + BLLCRW on the
@@ -76,8 +76,8 @@
   .email-link {
     color: inherit;
     text-decoration: none;
-    animation: link-glow 2.5s ease-in-out infinite;
-    transition: color 0.3s ease;
+    animation: link-glow 2.5s var(--ease-in-out) infinite;
+    transition: color var(--dur-medium) var(--ease-standard);
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
   .email-link:hover,
@@ -96,7 +96,9 @@
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
+    transition: max-height var(--dur-medium) var(--ease-out-expo),
+                opacity    var(--dur-medium) var(--ease-out-expo),
+                margin-top var(--dur-medium) var(--ease-out-expo);
   }
   .email-options.is-open {
     max-height: 6em;
@@ -105,10 +107,10 @@
   .email-option {
     color: var(--fg);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color var(--dur-medium) var(--ease-standard);
     /* Same radiating glow as the email itself so all three interactive
        words carry a single visual language. */
-    animation: link-glow 2.5s ease-in-out infinite;
+    animation: link-glow 2.5s var(--ease-in-out) infinite;
   }
   .email-option:hover,
   .email-option:focus-visible {
