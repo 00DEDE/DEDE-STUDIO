@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
 <style>
+  /* ─── page reset ─────────────────────────────────────────────────── */
   html { background: #050505; }
   html, body {
     margin: 0;
@@ -32,14 +33,15 @@
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
 
+  /* ─── page container + hover-swap backdrop ───────────────────────── */
   .selections {
     position: relative;
     width: 100vw;
     min-height: 100vh;
   }
-
-  /* Two stacked background layers so we can crossfade. Fixed so the
-     hover-swap backdrop stays behind the grid regardless of scroll. */
+  /* Two fixed layers crossfade the per-cell hover gradient (light mode
+     only — see JS). Header/footer hover clears them so the shared
+     site-bg blobs read through. */
   .bg-layer {
     position: fixed;
     inset: 0;
@@ -51,27 +53,20 @@
   }
   .bg-layer.is-active { opacity: 1; }
   .bg-layer.is-idle   { opacity: 0; }
-  /* Hovering the header or footer clears the cell gradient so the shared
-     animated site-bg shows through underneath. */
   body:has(.site-header:hover) .bg-layer,
   body:has(.site-footer:hover) .bg-layer {
     opacity: 0;
   }
 
-  /* Editorial grid: hero at top and bottom, thin+long pairs in between.
-     12-col track with per-cell grid-column spans; grid grows past viewport
-     and the page scrolls (the fixed bg-layer stays behind everything). */
+  /* ─── editorial grid ─────────────────────────────────────────────── */
+  /* HERO / thin+long / long+thin / thin+long / HERO. Grid grows past
+     the viewport; the fixed bg-layer stays behind it. Hero rows are
+     15% shorter than the previous 2× stack (2 × row × 0.85). */
   .selections-grid {
     --grid-row:      clamp(320px, 44vh, 640px);
-    /* Hero rows are 15% shorter than the previous 2× stack (2 × row × 0.85). */
     --grid-hero-row: clamp(544px, 74.8vh, 1088px);
-
     position: relative;
     z-index: 1;
-    /* No top padding — the hero image butts against the top of the viewport
-       and passes UNDER the frosted header, which blurs the top strip of the
-       image. Tags sit at the bottom-left, well clear of the header. */
-    padding-top: 0;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows:
@@ -84,88 +79,91 @@
   }
   @media (max-width: 640px) {
     .selections-grid {
-      padding-top: 0;
-      /* Simpler single-column stack on mobile so each cell still reads. */
       grid-template-columns: 1fr;
       grid-template-rows: none;
       grid-auto-rows: 64vh;
     }
   }
+  .cell:nth-child(1),
+  .cell:nth-child(8) { grid-column: 1 / -1; }        /* heroes */
+  .cell:nth-child(2) { grid-column: span 4; }
+  .cell:nth-child(3) { grid-column: span 8; }
+  .cell:nth-child(4) { grid-column: span 8; }
+  .cell:nth-child(5) { grid-column: span 4; }
+  .cell:nth-child(6) { grid-column: span 4; }
+  .cell:nth-child(7) { grid-column: span 8; }
+  @media (max-width: 640px) {
+    .cell:nth-child(n) { grid-column: 1 / -1; grid-row: auto; }
+  }
 
+  /* ─── cell base + hover fg-fill ──────────────────────────────────── */
   .cell {
     position: relative;
     color: var(--fg);
     text-decoration: none;
     box-sizing: border-box;
     background-color: transparent;
-    background-size: cover;
-    background-position: center;
     box-shadow: inset 0 0 0 1px var(--line);
     transition: background-color 0.35s ease, color 0.35s ease,
                 opacity 0.9s ease-out, transform 0.9s ease-out;
   }
-  /* Cover-image cells carry a photo on ::before (not the cell's own
-     background) so we can dim it to 40% on hover without touching the tags
-     or the VIEW CASE overlay, and so per-cell hover-swap of `background-color`
-     still applies. Each cover cell sets its own image via the --cover custom
-     property inline: style="--cover: url('...')". */
-  .cell--cover {
-    overflow: hidden;
+  @media (hover: hover) {
+    .cell:hover { background-color: var(--fg); }
   }
+  .cell.is-active { background-color: var(--fg); }
+
+  /* Below-fold cells arrive shifted+dimmed, rise into place on scroll
+     (JS toggles .needs-reveal → .is-in-view via IntersectionObserver). */
+  .cell.needs-reveal:not(.is-in-view) {
+    opacity: 0.35;
+    transform: translateY(24px);
+  }
+
+  /* Bottom scrim so the tag reads over any imagery below. */
+  .cell::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 40%;
+    background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ─── cover cells (single-image variant) ─────────────────────────── */
+  /* Image lives on ::before, not the cell's own background, so hover
+     can dim it to 40% without touching the tag or VIEW CASE overlay,
+     and the fg-fill hover from .cell is suppressed. Each cover cell
+     sets its image inline via `style="--cover: url('...')"`. */
+  .cell--cover { overflow: hidden; }
   .cell--cover::before {
     content: '';
     position: absolute;
     inset: 0;
     background-image: var(--cover);
     background-size: cover;
-    /* --cover-y lets a cell nudge its image vertically without extra CSS.
-       50% = default center. Higher % shows more of the bottom (image reads
-       as shifted UP inside the cell). */
-    background-position: 50% var(--cover-y, 50%);
+    background-repeat: no-repeat;
+    /* --cover-x / --cover-y nudge the image within the cell.
+       Higher --cover-y shows more of the bottom of the source. */
+    background-position: var(--cover-x, 50%) var(--cover-y, 50%);
     transform: scale(1);
     transform-origin: center;
-    /* Opacity dim is quick (0.35s); the 2% zoom is a very slow ken-burns —
-       barely-noticeable motion while the cursor rests, gently unwinds back
-       to 100% when the cursor leaves. `overflow: hidden` on .cell--cover
-       clips the 2% overflow so nothing bleeds into neighbouring cells. */
+    /* Quick opacity dim + slow ken-burns zoom on hover. */
     transition: opacity 0.35s ease, transform 6s ease-out;
     z-index: 0;
-  }
-
-  /* Video cover cells (like cell 3 / ECCLESIASTES): replace the ::before
-     image layer with a real <video> element so the clip can autoplay and
-     loop. All other cover-cell behaviour (transparent hover background,
-     dim-to-40% on hover, slow ken-burns zoom) is preserved by mirroring the
-     ::before rules against .cell-video. */
-  .cell--video::before { display: none; }
-  .cell-video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: var(--cover-x, 50%) var(--cover-y, 50%);
-    transform: scale(1);
-    transform-origin: center;
-    transition: opacity 0.35s ease, transform 6s ease-out;
-    z-index: 0;
-    pointer-events: none;
   }
   @media (hover: hover) {
-    .cell--video:hover .cell-video {
-      opacity: 0.4;
-      transform: scale(1.02);
-    }
+    .cell--cover:hover { background-color: transparent; }
+    .cell--cover:hover::before { opacity: 0.4; transform: scale(1.02); }
   }
-  .cell--video.is-active .cell-video {
-    opacity: 0.4;
-    transform: scale(1.02);
-  }
+  .cell--cover.is-active { background-color: transparent; }
+  .cell--cover.is-active::before { opacity: 0.4; transform: scale(1.02); }
 
-  /* Carousel cover cells (like cell 1 / UNESCO) stack multiple slides in
-     place of the single ::before image. JS toggles .is-active to crossfade
-     between them; all other cover-cell rules (hover-dim, ken-burns zoom,
-     transparent hover background) continue to apply. */
+  /* ─── carousel cells (multi-slide variant) ───────────────────────── */
+  /* Slides stack in a .cover-carousel container that takes over from
+     the ::before layer. JS toggles .is-active to crossfade between
+     them; each slide can be a <div> (background-image) or a <video>. */
   .cell--carousel::before { display: none; }
   .cover-carousel {
     position: absolute;
@@ -178,15 +176,13 @@
     inset: 0;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     opacity: 0;
     transform: scale(1);
     transform-origin: center;
-    /* Long crossfade; matched ken-burns duration on transform so hover zoom
-       reads the same as it does on single-image cover cells. */
     transition: opacity 1.5s ease-in-out, transform 6s ease-out;
     will-change: opacity;
   }
-  /* Video slides use the same layout + fade but need object-fit to crop. */
   video.cover-slide {
     width: 100%;
     height: 100%;
@@ -196,8 +192,8 @@
     pointer-events: none;
   }
   .cover-slide.is-active { opacity: 1; }
-  /* Hover / active dims + zooms the currently-visible slide (inactive
-     slides stay at opacity 0 — the hover rule doesn't reach them). */
+  /* Only the currently-visible slide dims + zooms on hover; inactive
+     slides stay at opacity 0. */
   @media (hover: hover) {
     .cell--carousel:hover .cover-slide.is-active {
       opacity: 0.4;
@@ -209,7 +205,7 @@
     transform: scale(1.02);
   }
 
-  /* Bottom-left tag — single horizontal line, regular weight with UNESCO bold. */
+  /* ─── overlays: tag + VIEW CASE label ────────────────────────────── */
   .cell-tags {
     position: absolute;
     left: 1.25rem;
@@ -229,8 +225,6 @@
     .cell-tags { left: 0.75rem; bottom: 0.75rem; font-size: 0.72rem; }
   }
 
-  /* VIEW CASE overlay — hidden by default, appears only when a cell is
-     clicked (.is-active). Sits above the tags so the label reads clearly. */
   .cell__view {
     position: absolute;
     inset: 0;
@@ -250,88 +244,13 @@
   @media (hover: hover) {
     .cell:hover .cell__view { opacity: 1; }
   }
-  /* Touch has no hover — .is-active (added on tap) surfaces the label. */
   .cell.is-active .cell__view { opacity: 1; }
-  /* Over the cover image the label reads white with a soft shadow. */
   .cell--cover .cell__view {
     color: #ffffff;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
   }
-  /* "Arrival" — cells below the initial viewport sit slightly lower and
-     dimmer, then rise + fade to full when they scroll into view. JS toggles
-     .needs-reveal on below-fold cells and .is-in-view when they cross the
-     threshold. */
-  .cell.needs-reveal:not(.is-in-view) {
-    opacity: 0.35;
-    transform: translateY(24px);
-  }
 
-  /* Cell placements: HERO / thin+long / long+thin / thin+long / HERO.
-     Hero cells span the full row; their height comes from the explicit
-     --grid-hero-row track, not from spanning two rows. */
-  .cell:nth-child(1),
-  .cell:nth-child(8) {
-    grid-column: 1 / -1;
-  }
-  .cell:nth-child(2) { grid-column: span 4; }   /* thin */
-  .cell:nth-child(3) { grid-column: span 8; }   /* long */
-  .cell:nth-child(4) { grid-column: span 8; }   /* long */
-  .cell:nth-child(5) { grid-column: span 4; }   /* thin */
-  .cell:nth-child(6) { grid-column: span 4; }   /* thin */
-  .cell:nth-child(7) { grid-column: span 8; }   /* long */
-  /* Mobile flattens all spans — every cell fills the single column. */
-  @media (max-width: 640px) {
-    .cell:nth-child(n) {
-      grid-column: 1 / -1;
-      grid-row: auto;
-    }
-  }
-
-  /* Hover / active: non-cover cells swap to the fg color as a solid fill
-     (dark on light theme, light on dark theme). Cover cells keep the image
-     visible; hover dims that image to 40% via the ::before opacity below. */
-  @media (hover: hover) {
-    .cell:hover {
-      background-color: var(--fg);
-    }
-  }
-  .cell.is-active {
-    background-color: var(--fg);
-  }
-  /* Cover cells: preserve the image on hover / active — never fg-fill it.
-     Hover / active also triggers the slow zoom to 102%. */
-  @media (hover: hover) {
-    .cell--cover:hover { background-color: transparent; }
-    .cell--cover:hover::before {
-      opacity: 0.4;
-      transform: scale(1.02);
-    }
-  }
-  .cell--cover.is-active { background-color: transparent; }
-  .cell--cover.is-active::before {
-    opacity: 0.4;
-    transform: scale(1.02);
-  }
-
-  /* Static scrim at the bottom of every cell — subtle black gradient so the
-     bottom-left tag reads cleanly over any image or gradient underneath.
-     Sits above the cover image (::before) but below the tags (z-index: 3). */
-  .cell::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 40%;
-    background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.45) 0%,
-      rgba(0, 0, 0, 0) 100%);
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  /* Subtle scroll cue — pinned to bottom-center, gently bouncing to imply
-     "there's more below". Fades out once the user has actually scrolled. */
+  /* ─── scroll cue ─────────────────────────────────────────────────── */
   .scroll-cue {
     position: fixed;
     bottom: 1.75rem;
@@ -353,19 +272,13 @@
     animation: scroll-cue-bounce 2.4s ease-in-out infinite;
   }
   .scroll-cue.is-hidden { opacity: 0; }
-  .scroll-cue__arrow {
-    font-size: 1rem;
-    letter-spacing: 0;
-  }
+  .scroll-cue__arrow { font-size: 1rem; letter-spacing: 0; }
   @keyframes scroll-cue-bounce {
     0%, 100% { transform: translate(-50%, 0); }
     50%      { transform: translate(-50%, 8px); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cell.needs-reveal:not(.is-in-view) {
-      opacity: 1;
-      transform: none;
-    }
+    .cell.needs-reveal:not(.is-in-view) { opacity: 1; transform: none; }
     .scroll-cue { animation: none; }
   }
 </style>
@@ -422,13 +335,12 @@
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell cell--cover cell--carousel" href="#"
-         style="background-color:#050505"
          data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active"
                data-duration="4000"
-               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:cover; background-repeat:no-repeat"></div>
+               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
           <video class="cover-slide"
                  data-duration="10000"
                  style="--cover-y: 100%"
@@ -438,7 +350,7 @@
           </video>
           <div class="cover-slide"
                data-duration="4000"
-               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-size:cover; background-position:50% 35%; background-repeat:no-repeat"></div>
+               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
         </div>
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
@@ -505,93 +417,79 @@
   </footer>
 
   <script>
-    // Crossfade between two bg layers so background swaps aren't a hard cut.
-    const bgA = document.getElementById('bgA');
-    const bgB = document.getElementById('bgB');
-    let active = bgA;
-    let idle = bgB;
+  (function () {
+    'use strict';
 
-    // No initial background — let the shared site-bg show through until a cell is hovered.
-
-    function setBackground(image) {
-      idle.style.backgroundImage = image;
-      idle.classList.remove('is-idle');
-      idle.classList.add('is-active');
-      active.classList.remove('is-active');
-      active.classList.add('is-idle');
-      [active, idle] = [idle, active];
-    }
-
-    // Light mode: swap the bg-layer to the cell's light gradient on hover.
-    // Dark mode: no colored gradient — the shared site-bg blobs stay visible.
-    function gradFor(cell) {
-      const light = document.documentElement.getAttribute('data-theme') === 'light';
-      return light ? cell.getAttribute('data-bg-light') : null;
-    }
-    // Track the last-activated cell so we can refresh the backdrop when the
-    // user flips the theme toggle mid-hover.
-    let lastCell = null;
-
+    const html = document.documentElement;
+    const cells = document.querySelectorAll('.cell');
     const isTouch = window.matchMedia('(hover: none)').matches;
 
-    if (isTouch) {
-      // Tap-to-reveal, tap-again-to-navigate (same pattern as the hamburger).
-      let activeCell = null;
-      let timer = null;
-      const RESET_MS = 2000;
+    /* ─── crossfading backdrop (light-mode gradient behind the grid) ── */
+    // Two <div class="bg-layer"> stack; we ping-pong the active class so
+    // the gradient swap fades instead of hard-cutting. Dark mode returns
+    // null (no colored backdrop — the site-bg blobs show through).
+    const [bgA, bgB] = [document.getElementById('bgA'), document.getElementById('bgB')];
+    let active = bgA, idle = bgB, lastCell = null;
 
+    function gradFor(cell) {
+      return html.getAttribute('data-theme') === 'light'
+        ? cell.getAttribute('data-bg-light')
+        : null;
+    }
+    function setBackground(grad) {
+      if (grad) {
+        idle.style.backgroundImage = grad;
+        idle.classList.replace('is-idle', 'is-active');
+        active.classList.replace('is-active', 'is-idle');
+        [active, idle] = [idle, active];
+      } else {
+        // Fade whatever is showing back out (used when theme flips to dark).
+        active.classList.replace('is-active', 'is-idle');
+      }
+    }
+    function activateBackdrop(cell) {
+      lastCell = cell;
+      setBackground(gradFor(cell));
+    }
+
+    // Refresh the backdrop when the theme toggles mid-hover.
+    new MutationObserver(() => lastCell && setBackground(gradFor(lastCell)))
+      .observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+
+    /* ─── per-cell interaction ───────────────────────────────────────── */
+    if (isTouch) {
+      // Touch has no hover: first tap adds .is-active (revealing VIEW
+      // CASE + swapping backdrop); a second tap on the same cell falls
+      // through to navigation. Auto-clears after 2s of inactivity.
+      let activeCell = null, timer = null;
+      const RESET_MS = 2000;
       function reset() {
         if (activeCell) activeCell.classList.remove('is-active');
         activeCell = null;
-        if (timer) { clearTimeout(timer); timer = null; }
+        clearTimeout(timer);
+        timer = null;
       }
-
-      document.querySelectorAll('.cell').forEach((cell) => {
+      cells.forEach((cell) => {
         cell.addEventListener('click', (e) => {
-          if (activeCell === cell) {
-            reset();
-            return; // allow default navigation
-          }
+          if (activeCell === cell) { reset(); return; } // 2nd tap → navigate
           e.preventDefault();
           reset();
           activeCell = cell;
           cell.classList.add('is-active');
-          lastCell = cell;
-          const grad = gradFor(cell);
-          if (grad) setBackground(grad);
+          activateBackdrop(cell);
           timer = setTimeout(reset, RESET_MS);
         });
       });
     } else {
-      // Desktop: mouseenter swaps the bg-layer + CSS :hover surfaces the
-      // VIEW CASE label. Click flows straight to navigation.
-      document.querySelectorAll('.cell').forEach((cell) => {
-        cell.addEventListener('mouseenter', () => {
-          lastCell = cell;
-          const grad = gradFor(cell);
-          if (grad) setBackground(grad);
-        });
+      // Desktop: mouseenter swaps the backdrop; CSS :hover reveals the
+      // VIEW CASE overlay and click flows straight to navigation.
+      cells.forEach((cell) => {
+        cell.addEventListener('mouseenter', () => activateBackdrop(cell));
       });
     }
 
-    // Re-swap the current cell's gradient when the theme toggle flips.
-    // Flipping into dark mode clears the bg-layer entirely — no colored grads
-    // are used in dark mode, only the shared site-bg blobs.
-    new MutationObserver(() => {
-      if (!lastCell) return;
-      const grad = gradFor(lastCell);
-      if (grad) {
-        setBackground(grad);
-      } else {
-        active.classList.remove('is-active');
-        active.classList.add('is-idle');
-      }
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
-    // "Walking through" reveal: below-fold cells arrive as they scroll into view.
-    (function () {
-      const cells = document.querySelectorAll('.cell');
-      if (!('IntersectionObserver' in window)) return;
+    /* ─── scroll-in reveal for below-fold cells ──────────────────────── */
+    if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -602,69 +500,59 @@
       }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
 
       cells.forEach((cell) => {
-        const rect = cell.getBoundingClientRect();
-        // Cells already visible on load render at full opacity from the start.
-        if (rect.top < window.innerHeight * 0.9) {
-          cell.classList.add('is-in-view');
+        if (cell.getBoundingClientRect().top < window.innerHeight * 0.9) {
+          cell.classList.add('is-in-view'); // already visible on load
         } else {
           cell.classList.add('needs-reveal');
           io.observe(cell);
         }
       });
-    })();
+    }
 
-    // Scroll cue: fade out once the user has actually scrolled a bit.
-    (function () {
-      const cue = document.querySelector('.scroll-cue');
-      if (!cue) return;
-      let hidden = false;
-      let ticking = false;
-      const HIDE_AFTER = 80; // px scrolled
-      function update() {
-        const shouldHide = window.scrollY > HIDE_AFTER;
-        if (shouldHide !== hidden) {
-          hidden = shouldHide;
-          cue.classList.toggle('is-hidden', hidden);
-        }
-        ticking = false;
-      }
+    /* ─── scroll cue fade-out ────────────────────────────────────────── */
+    const cue = document.querySelector('.scroll-cue');
+    if (cue) {
+      const HIDE_AFTER = 80;
+      let hidden = false, ticking = false;
       window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(update);
-          ticking = true;
-        }
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const shouldHide = window.scrollY > HIDE_AFTER;
+          if (shouldHide !== hidden) {
+            hidden = shouldHide;
+            cue.classList.toggle('is-hidden', hidden);
+          }
+          ticking = false;
+        });
       }, { passive: true });
-    })();
+    }
 
-    // Auto-advancing carousel(s): cycle .is-active across .cover-slide
-    // children. CSS handles the crossfade. Each slide can set its own hold
-    // time via data-duration (ms); a <video> slide is reset to 0 and played
-    // when it becomes active, paused when it becomes inactive.
-    (function () {
-      const DEFAULT_MS = 5000;
-      document.querySelectorAll('.cover-carousel').forEach((carousel) => {
-        const slides = Array.from(carousel.querySelectorAll('.cover-slide'));
-        if (slides.length < 2) return;
-        let timer = null;
-        function activate(idx) {
-          slides.forEach((s, si) => {
-            const on = si === idx;
-            s.classList.toggle('is-active', on);
-            if (s.tagName === 'VIDEO') {
-              if (on) {
-                try { s.currentTime = 0; s.play(); } catch (e) {}
-              } else {
-                s.pause();
-              }
-            }
-          });
-          const dur = parseInt(slides[idx].dataset.duration, 10) || DEFAULT_MS;
-          clearTimeout(timer);
-          timer = setTimeout(() => activate((idx + 1) % slides.length), dur);
-        }
-        activate(0);
-      });
-    })();
+    /* ─── auto-advancing carousel(s) ─────────────────────────────────── */
+    // Cycle .is-active across .cover-slide children on a per-slide timer
+    // (data-duration ms, default 5s). Video slides reset to 0 and play
+    // when they become active, pause when they don't.
+    const DEFAULT_MS = 5000;
+    document.querySelectorAll('.cover-carousel').forEach((carousel) => {
+      const slides = Array.from(carousel.querySelectorAll('.cover-slide'));
+      if (slides.length < 2) return;
+      let timer = null;
+      function activate(idx) {
+        slides.forEach((s, si) => {
+          const on = si === idx;
+          s.classList.toggle('is-active', on);
+          if (s.tagName === 'VIDEO') {
+            if (on) { s.currentTime = 0; s.play().catch(() => {}); }
+            else    { s.pause(); }
+          }
+        });
+        const dur = parseInt(slides[idx].dataset.duration, 10) || DEFAULT_MS;
+        clearTimeout(timer);
+        timer = setTimeout(() => activate((idx + 1) % slides.length), dur);
+      }
+      activate(0);
+    });
+  })();
   </script>
 </body>
 </html>
