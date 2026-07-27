@@ -37,20 +37,16 @@
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
 
-  /* Say-hello block: same font, weight, size and rhythm as the intro
-     paragraphs, so both pages read from the same voice. */
+  /* Say-hello block matches the introductions section exactly — same
+     padding (aligned to the header's 1.5rem), same typography, same
+     justified rag. Layout is a plain flow (no max-width, no flex-center)
+     so both pages read from the same voice. */
   .hello {
-    padding: 6rem 5vw 6rem;
-    max-width: 90rem;
-    margin: 0 auto;
+    padding: 6rem 1.5rem;
     box-sizing: border-box;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
   }
   @media (max-width: 640px) {
-    .hello { padding-top: 10rem; }
+    .hello { padding: 10rem 1.25rem 6rem; }
   }
   .hello p {
     color: var(--fg);
@@ -59,9 +55,12 @@
     font-size: clamp(1.5rem, 4.5vw, 5.5rem);
     line-height: 1.1;
     letter-spacing: -0.015em;
-    margin: 0;
-    text-wrap: balance;
+    margin: 0 0 2.5rem;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
   }
+  .hello p:last-child { margin-bottom: 0; }
   .hello__contact {
     margin-top: 2.5rem;
   }

@@ -203,12 +203,10 @@
      centered on the cap line rather than the descender line. */
   .marquee__mark {
     display: inline-block;
-    /* Same visual height as the caps — sits at the same optical size as
-       the letters and rests naturally on the baseline. */
-    height: 0.72em;
+    height: 3.6em;              /* 0.72em × 5 — 5× larger than the caps */
     width: auto;
-    margin: 0 0.35em;   /* evenly spaced left and right */
-    vertical-align: baseline;
+    margin: 0 0.35em;           /* evenly spaced left and right */
+    vertical-align: middle;     /* optically centred on the caps line */
   }
   @keyframes marquee {
     from { transform: translate3d(0, 0, 0); }
