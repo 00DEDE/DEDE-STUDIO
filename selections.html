@@ -132,6 +132,36 @@
     z-index: 0;
   }
 
+  /* Video cover cells (like cell 3 / ECCLESIASTES): replace the ::before
+     image layer with a real <video> element so the clip can autoplay and
+     loop. All other cover-cell behaviour (transparent hover background,
+     dim-to-40% on hover, slow ken-burns zoom) is preserved by mirroring the
+     ::before rules against .cell-video. */
+  .cell--video::before { display: none; }
+  .cell-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--cover-x, 50%) var(--cover-y, 50%);
+    transform: scale(1);
+    transform-origin: center;
+    transition: opacity 0.35s ease, transform 6s ease-out;
+    z-index: 0;
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .cell--video:hover .cell-video {
+      opacity: 0.4;
+      transform: scale(1.02);
+    }
+  }
+  .cell--video.is-active .cell-video {
+    opacity: 0.4;
+    transform: scale(1.02);
+  }
+
   /* Carousel cover cells (like cell 1 / UNESCO) stack multiple slides in
      place of the single ::before image. JS toggles .is-active to crossfade
      between them; all other cover-cell rules (hover-dim, ken-burns zoom,
@@ -382,10 +412,15 @@
         <div class="cell-tags"><strong>BLLCRW.</strong> MELANGE CAPSULE</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/SUN_RISES.jpg'); --cover-y: 65%"
+      <a class="cell cell--cover cell--video" href="#"
          data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
+        <video class="cell-video"
+               autoplay muted loop playsinline preload="metadata"
+               poster="ASSETS/IMAGES/ECCLESIASTES/poster.jpg"
+               aria-hidden="true">
+          <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+        </video>
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
