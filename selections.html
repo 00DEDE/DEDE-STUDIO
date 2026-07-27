@@ -131,6 +131,45 @@
     transition: opacity 0.35s ease, transform 6s ease-out;
     z-index: 0;
   }
+
+  /* Carousel cover cells (like cell 1 / UNESCO) stack multiple slides in
+     place of the single ::before image. JS toggles .is-active to crossfade
+     between them; all other cover-cell rules (hover-dim, ken-burns zoom,
+     transparent hover background) continue to apply. */
+  .cell--carousel::before { display: none; }
+  .cover-carousel {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .cover-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transform: scale(1);
+    transform-origin: center;
+    /* Long crossfade; matched ken-burns duration on transform so hover zoom
+       reads the same as it does on single-image cover cells. */
+    transition: opacity 1.5s ease-in-out, transform 6s ease-out;
+    will-change: opacity;
+  }
+  .cover-slide.is-active { opacity: 1; }
+  /* Hover / active dims + zooms the currently-visible slide (inactive
+     slides stay at opacity 0 — the hover rule doesn't reach them). */
+  @media (hover: hover) {
+    .cell--carousel:hover .cover-slide.is-active {
+      opacity: 0.4;
+      transform: scale(1.02);
+    }
+  }
+  .cell--carousel.is-active .cover-slide.is-active {
+    opacity: 0.4;
+    transform: scale(1.02);
+  }
+
   /* Bottom-left tag — single horizontal line, regular weight with UNESCO bold. */
   .cell-tags {
     position: absolute;
@@ -322,10 +361,17 @@
     <script src="site-header.js" defer></script>
 
     <div class="selections-grid">
-      <a class="cell cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/UNESCO_REBRAND.jpg')"
+      <a class="cell cell--cover cell--carousel" href="#"
          data-bg="linear-gradient(135deg,#7a1f1f 0%,#0d0d0d 100%)"
          data-bg-light="linear-gradient(135deg,#ffe0e0 0%,#f5f5f5 100%)">
+        <div class="cover-carousel" aria-hidden="true">
+          <div class="cover-slide is-active" style="background-image:url('ASSETS/IMAGES/UNESCO/01.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/02.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/03.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/04.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/05.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/06.jpg')"></div>
+        </div>
         <div class="cell-tags"><strong>UNESCO</strong> BRANDING &amp; INTERACTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -534,6 +580,23 @@
           ticking = true;
         }
       }, { passive: true });
+    })();
+
+    // Auto-advancing carousel(s): cycle .is-active across .cover-slide
+    // children on a fixed interval so cell 1 (and any future carousel cell)
+    // rotates through its images. CSS handles the crossfade.
+    (function () {
+      const SLIDE_MS = 5000; // hold time per slide
+      document.querySelectorAll('.cover-carousel').forEach((carousel) => {
+        const slides = carousel.querySelectorAll('.cover-slide');
+        if (slides.length < 2) return;
+        let i = 0;
+        setInterval(() => {
+          slides[i].classList.remove('is-active');
+          i = (i + 1) % slides.length;
+          slides[i].classList.add('is-active');
+        }, SLIDE_MS);
+      });
     })();
   </script>
 </body>
