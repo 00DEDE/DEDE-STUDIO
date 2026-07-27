@@ -170,6 +170,9 @@
     inset: 0;
     z-index: 0;
     overflow: hidden;
+    /* Isolate so plus-lighter on slides only composites within the
+       carousel, not against the cell / page below. */
+    isolation: isolate;
   }
   .cover-slide {
     position: absolute;
@@ -182,13 +185,21 @@
     transform-origin: center;
     transition: opacity 1.5s ease-in-out, transform 6s ease-out;
     will-change: opacity;
+    /* Additive blend: two overlapping slides at 50% each sum to 100%
+       so the crossfade never dips through the black cell background. */
+    mix-blend-mode: plus-lighter;
   }
   video.cover-slide {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: var(--cover-x, 50%) var(--cover-y, 50%);
-    background: none;
+    /* Paint the poster underneath the <video> element so the crossfade
+       never reveals a black frame while the video decodes / seeks. */
+    background-image: var(--poster);
+    background-size: cover;
+    background-position: var(--cover-x, 50%) var(--cover-y, 50%);
+    background-repeat: no-repeat;
     pointer-events: none;
   }
   .cover-slide.is-active { opacity: 1; }
@@ -343,8 +354,8 @@
                style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
           <video class="cover-slide"
                  data-duration="10000"
-                 style="--cover-y: 100%"
-                 muted playsinline preload="metadata"
+                 style="--cover-y: 100%; --poster: url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"
+                 muted playsinline preload="auto"
                  poster="ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
             <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
           </video>

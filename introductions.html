@@ -45,16 +45,17 @@
   }
 
   /* One continuous block — cycling statement flows into the first paragraph,
-     all subsequent paragraphs cascade below at the same weight and size. */
+     all subsequent paragraphs cascade below at the same weight and size.
+     Horizontal padding matches the floating header (1.5rem) so the text's
+     left edge lines up with the DĒDĒ logo and right edge with the theme
+     toggle. Mobile drops to 1.25rem to match the mobile header. */
   .intro {
-    padding: 6rem 5vw 6rem;
-    max-width: 90rem;
-    margin: 0 auto;
+    padding: 6rem 1.5rem;
     box-sizing: border-box;
   }
   @media (max-width: 640px) {
     /* Mobile header is 3 rows with bigger logo + 25% more padding — bump. */
-    .intro { padding-top: 10rem; }
+    .intro { padding: 10rem 1.25rem 6rem; }
   }
   .intro p {
     color: var(--fg);
