@@ -161,37 +161,24 @@
             mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
       #000 0%, #000 25%, transparent 90%);
   }
-  /* Second overlay stacked on top of the base blur, softer blur, masked
-     to the horizontal centre. Result: text at the edges reads at the
-     heavy 24px blur; the middle ~40% of the band reads at 16px. */
-  .band__blur--soft {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    -webkit-mask-image: linear-gradient(to right,
-      transparent 0%, #000 30%, #000 70%, transparent 100%);
-            mask-image: linear-gradient(to right,
-      transparent 0%, #000 30%, #000 70%, transparent 100%);
-  }
   @media (hover: hover) {
-    /* Marquee: heavy edge blur (24px) + soft centre overlay (16px). */
-    .selections__band--marquee .band__blur       { filter: blur(24px); }
-    .selections__band--marquee .band__blur--soft { filter: blur(16px); }
-    /* Quote: per-word blur so JS can reveal individual words in sequence
-       (reading motion). Container carries no blur itself. */
-    .selections__band--stacked .band__blur { filter: none; }
-    .selections__band--stacked .word       { filter: blur(14px); }
+    /* Marquee: uniform blur across the band. */
+    .selections__band--marquee .band__blur { filter: blur(20px); }
+    /* Quote: per-word blur so hovering a word can permanently reveal
+       just that word. Container itself carries no blur. */
+    .selections__band--stacked .band__blur    { filter: none; }
+    .selections__band--stacked .word          { filter: blur(14px); }
     .selections__band--stacked .word.is-clear { filter: none; }
   }
   .selections__band--stacked .word {
     display: inline-block;
     transition: filter 0.55s ease;
+    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
-  /* Touch / no-hover devices: skip the blur, hide sharp + soft overlays
-     so screen text isn't rendered twice. */
+  /* Touch / no-hover devices: no blur applied, so hide the sharp overlay
+     to avoid rendering the marquee text twice. */
   @media not all and (hover: hover) {
-    .band__sharp,
-    .band__blur--soft { display: none; }
+    .band__sharp { display: none; }
   }
 
   /* Marquee — right-to-left ticker. Track has two identical phrases; the
@@ -212,10 +199,10 @@
      centered on the cap line rather than the descender line. */
   .marquee__mark {
     display: inline-block;
-    height: 0.72em;
+    height: 1.26em;         /* 0.72em × 1.75 — 75% bigger than before */
     width: auto;
     margin: 0 0.35em 0 0.2em;
-    vertical-align: 0.06em;
+    vertical-align: -0.18em;
   }
   @keyframes marquee {
     from { transform: translate3d(0, 0, 0); }
@@ -461,12 +448,6 @@
             <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
           </span>
         </span>
-        <span class="band__blur band__blur--soft">
-          <span class="marquee__track">
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-          </span>
-        </span>
         <span class="band__sharp">
           <span class="marquee__track">
             <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
@@ -535,14 +516,13 @@
       </a>
     </div>
 
-    <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, in return will one day live for us.">
+    <h2 class="selections__band selections__band--stacked" aria-label="What we chose to give life to, will in return give life to us.">
       <span class="band__layers" aria-hidden="true">
         <span class="band__blur">
-          <span class="word">What</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span><br>
-          <span class="word">in</span> <span class="word">return</span> <span class="word">will</span> <span class="word">one</span> <span class="word">day</span><br>
-          <span class="word">live</span> <span class="word">for</span> <span class="word">us.</span>
+          <span class="word">what</span> <span class="word">we</span> <span class="word">chose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span><br>
+          <span class="word">will</span> <span class="word">in</span> <span class="word">return</span><br>
+          <span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span>
         </span>
-        <span class="band__sharp">What we choose to give life to,<br>in return will one day<br>live for us.</span>
       </span>
     </h2>
 
@@ -707,35 +687,13 @@
       });
     }
 
-    /* ─── reading-motion on the quote band ───────────────────────────── */
-    // A 3-word "clear window" slides through the quote as if being read:
-    // the current word plus the previous two are unblurred, everything
-    // else is blurred. Blur returns to a word 3 slots after it was first
-    // revealed. Runs on any device; hover overlay still works on top.
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll('.selections__band--stacked').forEach((band) => {
-        const words = band.querySelectorAll('.band__blur .word');
-        if (!words.length) return;
-        const READ_MS = 600;
-        const PAUSE_MS = 2200;
-        const WINDOW = 3;
-        const total = words.length;
-        let idx = 0;
-        (function step() {
-          const start = idx - WINDOW + 1;
-          words.forEach((w, i) => {
-            w.classList.toggle('is-clear', i >= start && i <= idx);
-          });
-          idx++;
-          if (idx < total + WINDOW - 1) {
-            setTimeout(step, READ_MS);
-          } else {
-            idx = 0;
-            setTimeout(step, PAUSE_MS);
-          }
-        })();
-      });
-    }
+    /* ─── per-word reveal on the quote band ──────────────────────────── */
+    // Each word stays blurred until the cursor first touches it, then
+    // clears and stays clear. As the user's cursor drifts over the quote,
+    // the sentence is progressively unveiled word by word.
+    document.querySelectorAll('.selections__band--stacked .word').forEach((word) => {
+      word.addEventListener('mouseenter', () => word.classList.add('is-clear'));
+    });
 
     /* ─── scroll cue fade-out ────────────────────────────────────────── */
     const cue = document.querySelector('.scroll-cue');
