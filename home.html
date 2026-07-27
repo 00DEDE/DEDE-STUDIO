@@ -12,6 +12,7 @@
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <link rel="stylesheet" href="theme.css" />
 <link rel="stylesheet" href="site-bg.css" />
+<link rel="prefetch" href="selections.html" />
 <style>
   html { background: #050505; }
   html, body {
@@ -62,8 +63,22 @@
     height: auto;
   }
 
+  /* Final beat: the stacked logo bursts outward, filling and then
+     overshooting the viewport, before fading. Ends the splash with a
+     dynamic reveal that hands off to the selections page. */
+  .logo.is-scaling-out {
+    animation: logo-scale-out 720ms var(--ease-out-expo) forwards;
+    z-index: 10;
+  }
+  @keyframes logo-scale-out {
+    0%   { transform: translate(-50%, -50%) scale(1);  opacity: 1; }
+    55%  { opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(32); opacity: 0; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .logo { transition: none; }
+    .logo.is-scaling-out { animation: none; }
   }
 </style>
 </head>
@@ -87,38 +102,59 @@
   <script>
     (function () {
       const logos = document.querySelectorAll('.logo-cycle .logo');
+      const STACKED_INDEX    = 1;      // .logo--stacked is the second img
       const DURATION_MS      = 5000;   // total cycle window
       const START_INTERVAL   = 420;    // graceful cadence at t=0
-      const END_INTERVAL     = 40;     // rapid cadence at t=3s
-      let active = 0;                  // logos[0] starts visible
-      const start = performance.now();
+      const END_INTERVAL     = 40;     // rapid cadence at t=DURATION
+      const HOLD_MS          = 220;    // pause on the final stacked frame
+      const SCALE_OUT_MS     = 720;    // matches the CSS animation
+      const REDIRECT_AT_MS   = 480;    // navigate while logo still covers viewport
 
-      // Reduced motion: skip the animation and go straight through.
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         window.location.replace('selections.html');
         return;
       }
 
+      let active = 0;
+      const start = performance.now();
+
+      function show(idx) {
+        logos[active].classList.remove('is-visible');
+        active = idx;
+        logos[active].classList.add('is-visible');
+      }
+
       function tick() {
         const elapsed = performance.now() - start;
 
-        // Swap which logo is visible.
-        logos[active].classList.remove('is-visible');
-        active = (active + 1) % logos.length;
-        logos[active].classList.add('is-visible');
+        // Standard swap during the cycling window.
+        show((active + 1) % logos.length);
 
         if (elapsed >= DURATION_MS) {
-          // Let the final frame paint, then hand off.
-          setTimeout(() => window.location.replace('selections.html'), 80);
+          // Force the last frame onto the stacked logo, hold it briefly,
+          // then start the scale-out reveal.
+          if (active !== STACKED_INDEX) {
+            setTimeout(() => { show(STACKED_INDEX); scaleOut(); }, END_INTERVAL);
+          } else {
+            setTimeout(scaleOut, HOLD_MS);
+          }
           return;
         }
 
-        // Interval shrinks from START to END with a squared curve — accelerates
+        // Interval shrinks from START → END with a squared curve — accelerates
         // gently at first, ramps up hard toward the end (rapid succession).
         const progress = elapsed / DURATION_MS;
         const nextInterval = START_INTERVAL
           - (START_INTERVAL - END_INTERVAL) * (progress * progress);
         setTimeout(tick, nextInterval);
+      }
+
+      function scaleOut() {
+        logos[STACKED_INDEX].classList.add('is-scaling-out');
+        // Hand off while the logo is at its most-covering point, so the
+        // page swap happens under cover of the animation rather than as
+        // a hard cut afterwards.
+        setTimeout(() => window.location.replace('selections.html'), REDIRECT_AT_MS);
       }
 
       setTimeout(tick, START_INTERVAL);
