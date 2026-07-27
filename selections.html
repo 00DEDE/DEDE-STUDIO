@@ -110,52 +110,92 @@
     .cell { grid-column: 1 / -1; grid-row: auto; }
   }
 
-  /* Full-bleed statement bands sit between / before the grids. Font
-     scales aggressively (up to 14vw) so a short statement like
-     "OUR HANDPRINT" fills the viewport width; longer statements wrap.
+  /* Full-bleed statement bands sit between / before the grids.
 
-     `mix-blend-mode: difference` makes the text interact with whatever
-     composites behind it — the cyan site-bg blobs "eat" into the text
-     as they drift past, appearing to erase / reveal it over time.
+     Parallax: `--parallax-y` is set by JS on scroll and shifts the band
+     vertically at ~30% of the scroll speed, so cells scroll past faster
+     than the text does — reads as cells sliding over the band.
 
-     `--parallax-y` is set by JS on scroll and shifts the band vertically
-     at ~30% of the scroll speed, so cells scroll past faster than the
-     text does — they read as sliding over the band. */
+     Legibility effect (hover-capable devices only): the text is heavily
+     blurred; a radial mask on a sharp copy reveals ~250px around the
+     cursor. Touch devices skip the blur entirely (base sharp layer). */
   .selections__band {
     position: relative;
     z-index: 1;
     margin: 0;
-    padding: 6rem 1.5rem;
     color: var(--fg);
     font-family: "Akzidenz Grotesk",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 900;
-    line-height: 0.95;   /* tight leading — lines nearly touch */
+    line-height: 0.95;
     letter-spacing: -0.03em;
     text-transform: uppercase;
-    mix-blend-mode: difference;
     will-change: transform;
     transform: translate3d(0, var(--parallax-y, 0px), 0);
   }
-  /* "OUR HANDPRINT" — one line, forced to fill the viewport width.
-     Font-size is sized to the viewport minus padding so a 12-char string
-     at SUPER weight lands edge-to-edge without overflowing. */
-  .selections__band--tight {
-    font-size: clamp(2.5rem, 12.5vw, 20rem);
-    white-space: nowrap;
-    text-wrap: nowrap;
+  .selections__band--marquee {
+    padding: 6rem 0;
+    overflow: hidden;
+    font-size: clamp(2.5rem, 12vw, 20rem);
   }
-  /* Two-line statement, manual <br> in the markup. Font-size sized so
-     the longer of the two lines lands near the right edge at SUPER weight. */
   .selections__band--stacked {
+    padding: 6rem 1.5rem;
     font-size: clamp(1.2rem, 5vw, 8rem);
     text-wrap: balance;
   }
+
+  /* Dual-layer legibility trick: identical blurred + sharp copies stack;
+     the sharp copy has a radial-gradient mask centered on the cursor. */
+  .band__layers {
+    position: relative;
+    display: block;
+  }
+  .band__blur,
+  .band__sharp {
+    display: block;
+  }
+  .band__sharp {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* Default centre is off-screen so the sharp copy is invisible until
+       the user actually hovers over the band. */
+    --mx: -1000px;
+    --my: -1000px;
+    -webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
+      #000 0%, #000 25%, transparent 90%);
+            mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
+      #000 0%, #000 25%, transparent 90%);
+  }
+  @media (hover: hover) {
+    .band__blur { filter: blur(24px); }
+  }
+  /* Touch / no-hover devices: skip the blur, hide the sharp overlay so
+     screen text isn't rendered twice. */
+  @media not all and (hover: hover) {
+    .band__sharp { display: none; }
+  }
+
+  /* Marquee — right-to-left ticker. Track has two identical phrases; the
+     animation translates it -50% of its own width, exactly one phrase's
+     worth, so the loop is seamless. */
+  .marquee__track {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 48s linear infinite;
+  }
+  .marquee__phrase {
+    display: inline-block;
+    padding-right: 0.5em;
+  }
+  @keyframes marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .selections__band {
-      transform: none;
-      will-change: auto;
-    }
+    .selections__band { transform: none; will-change: auto; }
+    .marquee__track { animation: none; }
   }
 
   /* ─── cell base + hover fg-fill ──────────────────────────────────── */
@@ -385,7 +425,22 @@
     </header>
     <script src="site-header.js" defer></script>
 
-    <h2 class="selections__band selections__band--tight">SELECTED WORK</h2>
+    <h2 class="selections__band selections__band--marquee" aria-label="Our handprint. Our voice. Our mind.">
+      <span class="band__layers" aria-hidden="true">
+        <span class="band__blur">
+          <span class="marquee__track">
+            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
+            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
+          </span>
+        </span>
+        <span class="band__sharp">
+          <span class="marquee__track">
+            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
+            <span class="marquee__phrase">OUR HANDPRINT. OUR VOICE. OUR MIND.</span>
+          </span>
+        </span>
+      </span>
+    </h2>
 
     <div class="selections-grid selections-grid--top">
       <a class="cell cell--hero cell--cover cell--carousel" href="#"
@@ -446,7 +501,12 @@
       </a>
     </div>
 
-    <h2 class="selections__band selections__band--stacked">What we choose to give life to,<br>in return will one day live for us.</h2>
+    <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, in return will one day live for us.">
+      <span class="band__layers" aria-hidden="true">
+        <span class="band__blur">What we choose to give life to,<br>in return will one day live for us.</span>
+        <span class="band__sharp">What we choose to give life to,<br>in return will one day live for us.</span>
+      </span>
+    </h2>
 
     <div class="selections-grid selections-grid--bottom">
       <a class="cell cell--thin cell--cover" href="#"
@@ -586,6 +646,26 @@
           cell.classList.add('needs-reveal');
           io.observe(cell);
         }
+      });
+    }
+
+    /* ─── cursor-tracking spotlight on statement bands ───────────────── */
+    // Update --mx / --my on each .band__sharp so its radial mask centres
+    // on the pointer, revealing the sharp copy locally over the blurred
+    // base. Skipped on touch — the CSS keeps .band__sharp hidden there.
+    if (!isTouch) {
+      document.querySelectorAll('.selections__band').forEach((band) => {
+        const sharp = band.querySelector('.band__sharp');
+        if (!sharp) return;
+        band.addEventListener('mousemove', (e) => {
+          const rect = band.getBoundingClientRect();
+          sharp.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+          sharp.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+        });
+        band.addEventListener('mouseleave', () => {
+          sharp.style.setProperty('--mx', '-1000px');
+          sharp.style.setProperty('--my', '-1000px');
+        });
       });
     }
 
