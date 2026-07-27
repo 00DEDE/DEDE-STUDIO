@@ -152,8 +152,8 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    /* Default centre is off-screen so the sharp copy is invisible until
-       the user actually hovers over the band. */
+    /* Default centre off-screen — the sharp copy is invisible until the
+       user actually hovers over the band. */
     --mx: -1000px;
     --my: -1000px;
     -webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
@@ -161,16 +161,37 @@
             mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
       #000 0%, #000 25%, transparent 90%);
   }
-  @media (hover: hover) {
-    .band__blur { filter: blur(20px); }
-    /* The quote sits at a smaller size, so it needs less blur to keep
-       the same visual intensity — 30% lighter than the marquee. */
-    .selections__band--stacked .band__blur { filter: blur(14px); }
+  /* Second overlay stacked on top of the base blur, softer blur, masked
+     to the horizontal centre. Result: text at the edges reads at the
+     heavy 24px blur; the middle ~40% of the band reads at 16px. */
+  .band__blur--soft {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right,
+      transparent 0%, #000 30%, #000 70%, transparent 100%);
+            mask-image: linear-gradient(to right,
+      transparent 0%, #000 30%, #000 70%, transparent 100%);
   }
-  /* Touch / no-hover devices: skip the blur, hide the sharp overlay so
-     screen text isn't rendered twice. */
+  @media (hover: hover) {
+    /* Marquee: heavy edge blur (24px) + soft centre overlay (16px). */
+    .selections__band--marquee .band__blur       { filter: blur(24px); }
+    .selections__band--marquee .band__blur--soft { filter: blur(16px); }
+    /* Quote: per-word blur so JS can reveal individual words in sequence
+       (reading motion). Container carries no blur itself. */
+    .selections__band--stacked .band__blur { filter: none; }
+    .selections__band--stacked .word       { filter: blur(14px); }
+    .selections__band--stacked .word.is-clear { filter: none; }
+  }
+  .selections__band--stacked .word {
+    display: inline-block;
+    transition: filter 0.55s ease;
+  }
+  /* Touch / no-hover devices: skip the blur, hide sharp + soft overlays
+     so screen text isn't rendered twice. */
   @media not all and (hover: hover) {
-    .band__sharp { display: none; }
+    .band__sharp,
+    .band__blur--soft { display: none; }
   }
 
   /* Marquee — right-to-left ticker. Track has two identical phrases; the
@@ -436,14 +457,20 @@
       <span class="band__layers" aria-hidden="true">
         <span class="band__blur">
           <span class="marquee__track">
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          </span>
+        </span>
+        <span class="band__blur band__blur--soft">
+          <span class="marquee__track">
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
           </span>
         </span>
         <span class="band__sharp">
           <span class="marquee__track">
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_ICON_CYAN.png" alt="" /></span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
           </span>
         </span>
       </span>
@@ -510,7 +537,11 @@
 
     <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, in return will one day live for us.">
       <span class="band__layers" aria-hidden="true">
-        <span class="band__blur">What we choose to give life to,<br>in return will one day<br>live for us.</span>
+        <span class="band__blur">
+          <span class="word">What</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span><br>
+          <span class="word">in</span> <span class="word">return</span> <span class="word">will</span> <span class="word">one</span> <span class="word">day</span><br>
+          <span class="word">live</span> <span class="word">for</span> <span class="word">us.</span>
+        </span>
         <span class="band__sharp">What we choose to give life to,<br>in return will one day<br>live for us.</span>
       </span>
     </h2>
@@ -659,7 +690,7 @@
     /* ─── cursor-tracking spotlight on statement bands ───────────────── */
     // Update --mx / --my on each .band__sharp so its radial mask centres
     // on the pointer, revealing the sharp copy locally over the blurred
-    // base. Skipped on touch — the CSS keeps .band__sharp hidden there.
+    // base. Skipped on touch — CSS keeps .band__sharp hidden there.
     if (!isTouch) {
       document.querySelectorAll('.selections__band').forEach((band) => {
         const sharp = band.querySelector('.band__sharp');
@@ -673,6 +704,36 @@
           sharp.style.setProperty('--mx', '-1000px');
           sharp.style.setProperty('--my', '-1000px');
         });
+      });
+    }
+
+    /* ─── reading-motion on the quote band ───────────────────────────── */
+    // A 3-word "clear window" slides through the quote as if being read:
+    // the current word plus the previous two are unblurred, everything
+    // else is blurred. Blur returns to a word 3 slots after it was first
+    // revealed. Runs on any device; hover overlay still works on top.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.selections__band--stacked').forEach((band) => {
+        const words = band.querySelectorAll('.band__blur .word');
+        if (!words.length) return;
+        const READ_MS = 600;
+        const PAUSE_MS = 2200;
+        const WINDOW = 3;
+        const total = words.length;
+        let idx = 0;
+        (function step() {
+          const start = idx - WINDOW + 1;
+          words.forEach((w, i) => {
+            w.classList.toggle('is-clear', i >= start && i <= idx);
+          });
+          idx++;
+          if (idx < total + WINDOW - 1) {
+            setTimeout(step, READ_MS);
+          } else {
+            idx = 0;
+            setTimeout(step, PAUSE_MS);
+          }
+        })();
       });
     }
 
