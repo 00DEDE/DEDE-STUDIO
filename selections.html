@@ -186,6 +186,15 @@
     transition: opacity 1.5s ease-in-out, transform 6s ease-out;
     will-change: opacity;
   }
+  /* Video slides use the same layout + fade but need object-fit to crop. */
+  video.cover-slide {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--cover-x, 50%) var(--cover-y, 50%);
+    background: none;
+    pointer-events: none;
+  }
   .cover-slide.is-active { opacity: 1; }
   /* Hover / active dims + zooms the currently-visible slide (inactive
      slides stay at opacity 0 — the hover rule doesn't reach them). */
@@ -412,15 +421,20 @@
         <div class="cell-tags"><strong>BLLCRW.</strong> MELANGE CAPSULE</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover cell--video" href="#"
+      <a class="cell cell--cover cell--carousel" href="#"
          data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
-        <video class="cell-video"
-               autoplay muted loop playsinline preload="metadata"
-               poster="ASSETS/IMAGES/ECCLESIASTES/poster.jpg"
-               aria-hidden="true">
-          <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
-        </video>
+        <div class="cover-carousel" aria-hidden="true">
+          <div class="cover-slide is-active"
+               data-duration="4000"
+               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"></div>
+          <video class="cover-slide"
+                 data-duration="10000"
+                 muted playsinline preload="metadata"
+                 poster="ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
+            <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+          </video>
+        </div>
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -618,19 +632,32 @@
     })();
 
     // Auto-advancing carousel(s): cycle .is-active across .cover-slide
-    // children on a fixed interval so cell 1 (and any future carousel cell)
-    // rotates through its images. CSS handles the crossfade.
+    // children. CSS handles the crossfade. Each slide can set its own hold
+    // time via data-duration (ms); a <video> slide is reset to 0 and played
+    // when it becomes active, paused when it becomes inactive.
     (function () {
-      const SLIDE_MS = 5000; // hold time per slide
+      const DEFAULT_MS = 5000;
       document.querySelectorAll('.cover-carousel').forEach((carousel) => {
-        const slides = carousel.querySelectorAll('.cover-slide');
+        const slides = Array.from(carousel.querySelectorAll('.cover-slide'));
         if (slides.length < 2) return;
-        let i = 0;
-        setInterval(() => {
-          slides[i].classList.remove('is-active');
-          i = (i + 1) % slides.length;
-          slides[i].classList.add('is-active');
-        }, SLIDE_MS);
+        let timer = null;
+        function activate(idx) {
+          slides.forEach((s, si) => {
+            const on = si === idx;
+            s.classList.toggle('is-active', on);
+            if (s.tagName === 'VIDEO') {
+              if (on) {
+                try { s.currentTime = 0; s.play(); } catch (e) {}
+              } else {
+                s.pause();
+              }
+            }
+          });
+          const dur = parseInt(slides[idx].dataset.duration, 10) || DEFAULT_MS;
+          clearTimeout(timer);
+          timer = setTimeout(() => activate((idx + 1) % slides.length), dur);
+        }
+        activate(0);
       });
     })();
   </script>
