@@ -16,6 +16,14 @@
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
 <style>
+  @font-face {
+    font-family: "Akzidenz Grotesk";
+    src: url("ASSETS/FONTS/AKZIDENZGROTESK-REGULAR.OTF") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
   /* ─── page reset ─────────────────────────────────────────────────── */
   html { background: #050505; }
   html, body {
@@ -59,9 +67,9 @@
   }
 
   /* ─── editorial grid ─────────────────────────────────────────────── */
-  /* HERO / thin+long / long+thin / thin+long / HERO. Grid grows past
-     the viewport; the fixed bg-layer stays behind it. Hero rows are
-     15% shorter than the previous 2× stack (2 × row × 0.85). */
+  /* Two grids stacked with a text band between them. Cell placement is
+     driven by explicit modifier classes (.cell--hero / --thin / --long)
+     rather than nth-child, so a split doesn't reset positions. */
   .selections-grid {
     --grid-row:      clamp(320px, 44vh, 640px);
     --grid-hero-row: clamp(544px, 74.8vh, 1088px);
@@ -69,31 +77,66 @@
     z-index: 1;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
+    gap: 1px;
+  }
+  .selections-grid--top {
     grid-template-rows:
       var(--grid-hero-row)
       var(--grid-row)
-      var(--grid-row)
+      var(--grid-row);
+  }
+  .selections-grid--bottom {
+    grid-template-rows:
       var(--grid-row)
       var(--grid-hero-row);
-    gap: 1px;
   }
+  .cell--hero { grid-column: 1 / -1; }
+  .cell--thin { grid-column: span 4; }
+  .cell--long { grid-column: span 8; }
   @media (max-width: 640px) {
-    .selections-grid {
+    .selections-grid--top,
+    .selections-grid--bottom {
       grid-template-columns: 1fr;
       grid-template-rows: none;
       grid-auto-rows: 64vh;
     }
+    .cell { grid-column: 1 / -1; grid-row: auto; }
   }
-  .cell:nth-child(1),
-  .cell:nth-child(8) { grid-column: 1 / -1; }        /* heroes */
-  .cell:nth-child(2) { grid-column: span 4; }
-  .cell:nth-child(3) { grid-column: span 8; }
-  .cell:nth-child(4) { grid-column: span 8; }
-  .cell:nth-child(5) { grid-column: span 4; }
-  .cell:nth-child(6) { grid-column: span 4; }
-  .cell:nth-child(7) { grid-column: span 8; }
-  @media (max-width: 640px) {
-    .cell:nth-child(n) { grid-column: 1 / -1; grid-row: auto; }
+
+  /* Full-bleed statement bands sit between / before the grids. Font
+     scales aggressively (up to 14vw) so a short statement like
+     "OUR HANDPRINT" fills the viewport width; longer statements wrap.
+
+     `mix-blend-mode: difference` makes the text interact with whatever
+     composites behind it — the cyan site-bg blobs "eat" into the text
+     as they drift past, appearing to erase / reveal it over time.
+
+     `--parallax-y` is set by JS on scroll and shifts the band vertically
+     at ~30% of the scroll speed, so cells scroll past faster than the
+     text does — they read as sliding over the band. */
+  .selections__band {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 6rem 1.5rem;
+    color: var(--fg);
+    font-family: "Akzidenz Grotesk",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 14vw, 22rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    mix-blend-mode: difference;
+    will-change: transform;
+    transform: translate3d(0, var(--parallax-y, 0px), 0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .selections__band {
+      transform: none;
+      will-change: auto;
+    }
   }
 
   /* ─── cell base + hover fg-fill ──────────────────────────────────── */
@@ -323,8 +366,10 @@
     </header>
     <script src="site-header.js" defer></script>
 
-    <div class="selections-grid">
-      <a class="cell cell--cover cell--carousel" href="#"
+    <h2 class="selections__band">OUR HANDPRINT</h2>
+
+    <div class="selections-grid selections-grid--top">
+      <a class="cell cell--hero cell--cover cell--carousel" href="#"
          data-bg="linear-gradient(135deg,#7a1f1f 0%,#0d0d0d 100%)"
          data-bg-light="linear-gradient(135deg,#ffe0e0 0%,#f5f5f5 100%)">
         <div class="cover-carousel" aria-hidden="true">
@@ -338,14 +383,14 @@
         <div class="cell-tags"><strong>UNESCO</strong> BRANDING &amp; INTERACTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover" href="#"
+      <a class="cell cell--thin cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%"
          data-bg="linear-gradient(135deg,#1a2a44 0%,#0b0b0b 100%)"
          data-bg-light="linear-gradient(135deg,#dae5f5 0%,#f5f5f5 100%)">
         <div class="cell-tags"><strong>BLLCRW.</strong> MELANGE CAPSULE</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover cell--carousel" href="#"
+      <a class="cell cell--long cell--cover cell--carousel" href="#"
          data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
         <div class="cover-carousel" aria-hidden="true">
@@ -366,35 +411,40 @@
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover" href="#"
+      <a class="cell cell--long cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/NANAS_BAKERY.jpg'); --cover-y: 20%"
          data-bg="linear-gradient(135deg,#4b1e3a 0%,#0b0b0b 100%)"
          data-bg-light="linear-gradient(135deg,#eadaea 0%,#f5f5f5 100%)">
         <div class="cell-tags"><strong>NANA&rsquo;S BAKERY</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover" href="#"
+      <a class="cell cell--thin cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/MEMOIRS.jpg')"
          data-bg="linear-gradient(135deg,#5a3a10 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#f5ead5 0%,#f5f5f5 100%)">
         <div class="cell-tags"><strong>MEMOIRS</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover" href="#"
+    </div>
+
+    <h2 class="selections__band">What we create, will be what creates us.</h2>
+
+    <div class="selections-grid selections-grid--bottom">
+      <a class="cell cell--thin cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/THE_REVENANT.jpg')"
          data-bg="linear-gradient(135deg,#0f3a3a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#d5eaea 0%,#f5f5f5 100%)">
         <div class="cell-tags"><strong>THE REVENANT</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover" href="#"
+      <a class="cell cell--long cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/TRADER_JOES.jpg')"
          data-bg="linear-gradient(135deg,#3d1a1a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#f5dada 0%,#f5f5f5 100%)">
         <div class="cell-tags"><strong>TRADER JOE&rsquo;S</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--cover" href="#"
+      <a class="cell cell--hero cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/POSTER_MOCKUP.jpg')"
          data-bg="linear-gradient(135deg,#1a3d2a 0%,#0a0a0a 100%)"
          data-bg-light="linear-gradient(135deg,#daeada 0%,#f5f5f5 100%)">
@@ -518,6 +568,38 @@
           io.observe(cell);
         }
       });
+    }
+
+    /* ─── parallax on statement bands ────────────────────────────────── */
+    // Bands translate at ~30% of scroll speed relative to their natural
+    // position, so cells scroll faster and read as sliding past them.
+    // rAF-throttled; disabled when reduced motion is requested.
+    const bands = document.querySelectorAll('.selections__band');
+    if (bands.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const PARALLAX = 0.3;
+      const anchors = new Map();
+      function measure() {
+        bands.forEach((b) => {
+          const top = b.getBoundingClientRect().top + window.scrollY;
+          anchors.set(b, top);
+        });
+      }
+      measure();
+      window.addEventListener('resize', measure, { passive: true });
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          bands.forEach((b) => {
+            const anchor = anchors.get(b);
+            b.style.setProperty('--parallax-y', ((y - anchor) * PARALLAX) + 'px');
+          });
+          ticking = false;
+        });
+      }, { passive: true });
     }
 
     /* ─── scroll cue fade-out ────────────────────────────────────────── */
