@@ -47,7 +47,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: opacity var(--dur-instant) var(--ease-out-expo);
+    /* Slow, graceful crossfade between the two logos. */
+    transition: opacity 1200ms ease-in-out;
     display: block;
   }
   .logo.is-visible { opacity: 1; }
@@ -115,74 +116,43 @@
 
   <script>
     (function () {
-      const logos = document.querySelectorAll('.logo-cycle .logo');
-      const STACKED_INDEX    = 1;      // .logo--stacked is the second img
-      const DURATION_MS      = 5000;   // total cycle window
-      const START_INTERVAL   = 420;    // graceful cadence at t=0
-      const END_INTERVAL     = 40;     // rapid cadence at t=DURATION
-      const FLOAT_MS         = 8000;   // two full 4s breath cycles
-      const FADE_MS          = 700;    // matches the CSS logo-fade-out
-      const REDIRECT_AT_MS   = 500;    // navigate mid-fade for a smooth hand-off
+      const horizontal = document.querySelector('.logo--horizontal');
+      const stacked    = document.querySelector('.logo--stacked');
+
+      const HORIZONTAL_HOLD_MS = 1800;  // horizontal visible before crossfade
+      const CROSSFADE_MS       = 1200;  // matches the CSS opacity transition
+      const FLOAT_MS           = 8000;  // two full 4s breath cycles
+      const REDIRECT_AT_MS     = 500;   // hand off mid-fade for smooth exit
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         window.location.replace('selections.html');
         return;
       }
 
-      let active = 0;
-      const start = performance.now();
-
-      function show(idx) {
-        logos[active].classList.remove('is-visible');
-        active = idx;
-        logos[active].classList.add('is-visible');
-      }
-
-      function tick() {
-        const elapsed = performance.now() - start;
-
-        // Standard swap during the cycling window.
-        show((active + 1) % logos.length);
-
-        if (elapsed >= DURATION_MS) {
-          // Force the last frame onto the stacked logo, then start the
-          // organic breathing before the gentle fade-out hand-off.
-          if (active !== STACKED_INDEX) {
-            setTimeout(() => { show(STACKED_INDEX); startFloat(); }, END_INTERVAL);
-          } else {
-            startFloat();
-          }
-          return;
-        }
-
-        // Interval shrinks from START → END with a squared curve — accelerates
-        // gently at first, ramps up hard toward the end (rapid succession).
-        const progress = elapsed / DURATION_MS;
-        const nextInterval = START_INTERVAL
-          - (START_INTERVAL - END_INTERVAL) * (progress * progress);
-        setTimeout(tick, nextInterval);
-      }
+      // 1. Crossfade horizontal → stacked (horizontal is visible at load
+      //    via .is-visible in the HTML).
+      setTimeout(() => {
+        horizontal.classList.remove('is-visible');
+        stacked.classList.add('is-visible');
+        // 2. Once the crossfade completes, start the breathing.
+        setTimeout(startFloat, CROSSFADE_MS);
+      }, HORIZONTAL_HOLD_MS);
 
       function startFloat() {
-        // Organic jellyfish-style pulse — two full 3s cycles. Each
-        // cycle lands at scale(1) / translateY(0), matching the base
-        // transform, so removing the class at t=FLOAT_MS is a clean
-        // hand-off with no visual snap.
-        logos[STACKED_INDEX].classList.add('is-breathing');
+        // Two full 4s jellyfish breath cycles. Each cycle ends at
+        // scale(1) — matching the base transform — so removing the
+        // class after FLOAT_MS hands off cleanly with no snap.
+        stacked.classList.add('is-breathing');
         setTimeout(fadeOut, FLOAT_MS);
       }
 
       function fadeOut() {
-        const stacked = logos[STACKED_INDEX];
         stacked.classList.remove('is-breathing');
         stacked.classList.add('is-fading');
-        // Redirect mid-fade so the page swap happens while the logo is
-        // still partially visible — smooths the transition into
-        // selections.
+        // Redirect mid-fade so the page swap happens while the logo
+        // is still partially visible — smooths the transition.
         setTimeout(() => window.location.replace('selections.html'), REDIRECT_AT_MS);
       }
-
-      setTimeout(tick, START_INTERVAL);
     })();
   </script>
 </body>
