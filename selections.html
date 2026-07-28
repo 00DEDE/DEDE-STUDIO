@@ -200,39 +200,50 @@
       inset: 0;
       pointer-events: none;
       z-index: 1;
-      /* Circle mask travels via `mask-position` (natively interpolable
-         across browsers — no @property needed). Mask-size defines the
-         circle's diameter (55vw); position slides the whole disc. */
-      -webkit-mask-image: radial-gradient(circle,
-        #000 30%, transparent 65%);
-              mask-image: radial-gradient(circle,
-        #000 30%, transparent 65%);
+      /* Cumulative top-down reveal — a linear-gradient mask that grows
+         its opaque area downward over the animation. Once a line has
+         been uncovered it stays visible for the rest of the cycle, so
+         the user can actually read the full quote as it progresses:
+         line 1 → 1+2 → 1+2+3, hold, fade out, restart from top. */
+      -webkit-mask-image: linear-gradient(to bottom,
+        #000 0%, #000 85%, transparent 100%);
+              mask-image: linear-gradient(to bottom,
+        #000 0%, #000 85%, transparent 100%);
       -webkit-mask-repeat: no-repeat;
               mask-repeat: no-repeat;
-      -webkit-mask-size: 68.75vw 68.75vw;    /* 55vw × 1.25 — 25% bigger */
-              mask-size: 68.75vw 68.75vw;
-      -webkit-mask-position: 15% 20%;
-              mask-position: 15% 20%;
-      animation: quote-spotlight 12s ease-in-out infinite;  /* 15s × 0.8 — 20% faster */
+      -webkit-mask-position: 0 0;
+              mask-position: 0 0;
+      -webkit-mask-size: 100% 0%;
+              mask-size: 100% 0%;
+      opacity: 0;
+      animation: quote-reveal 12s ease-in-out infinite;
     }
     @media (prefers-reduced-motion: reduce) {
-      .selections__band--stacked .band__sharp { animation: none; }
+      .selections__band--stacked .band__sharp {
+        animation: none;
+        opacity: 1;
+        -webkit-mask-size: 100% 100%;
+                mask-size: 100% 100%;
+      }
     }
   }
-  /* Reading motion — spotlight starts at the top of the quote and
-     descends line by line, wobbling left/right so it doesn't feel
-     mechanical. At the bottom it fades to 0 opacity, invisibly jumps
-     back to the top, then fades in — the loop reads as a fresh
-     re-read rather than a visible sweep-back. */
-  @keyframes quote-spotlight {
-    0%   { -webkit-mask-position: 30% 8%;  mask-position: 30% 8%;  opacity: 1; }
-    18%  { -webkit-mask-position: 65% 26%; mask-position: 65% 26%; opacity: 1; }
-    36%  { -webkit-mask-position: 25% 44%; mask-position: 25% 44%; opacity: 1; }
-    54%  { -webkit-mask-position: 70% 62%; mask-position: 70% 62%; opacity: 1; }
-    72%  { -webkit-mask-position: 30% 82%; mask-position: 30% 82%; opacity: 1; }
-    85%  { -webkit-mask-position: 30% 92%; mask-position: 30% 92%; opacity: 0; }
-    86%  { -webkit-mask-position: 30% 8%;  mask-position: 30% 8%;  opacity: 0; }
-    100% { -webkit-mask-position: 30% 8%;  mask-position: 30% 8%;  opacity: 1; }
+  /* Cycle timing across 12s:
+       0–8%:   fade in + first line starts to appear
+       8–30%:  line 1 fully clear
+       30–55%: line 2 uncovering (line 1 stays clear)
+       55–75%: line 3 uncovering (lines 1+2 stay clear)
+       75–90%: whole quote held fully clear
+       90–100%: fade out (mask + position reset while invisible)
+     The soft 15% falloff at the bottom of the mask gradient means each
+     new line eases in rather than snapping in. */
+  @keyframes quote-reveal {
+    0%   { -webkit-mask-size: 100% 0%;   mask-size: 100% 0%;   opacity: 0; }
+    8%   { -webkit-mask-size: 100% 22%;  mask-size: 100% 22%;  opacity: 1; }
+    30%  { -webkit-mask-size: 100% 40%;  mask-size: 100% 40%;  opacity: 1; }
+    55%  { -webkit-mask-size: 100% 72%;  mask-size: 100% 72%;  opacity: 1; }
+    75%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 1; }
+    90%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 1; }
+    100% { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 0; }
   }
 
   /* Marquee styles + cursor-tracking JS live in site-marquee.{css,js} —
