@@ -45,4 +45,24 @@
 
   window.addEventListener('scroll', onScroll, { passive: true });
   update();
+
+  // ---- Scroll-to-top button ---------------------------------------------
+  // Shown on mobile (via CSS) once the page has scrolled past a threshold.
+  // Clicking it smooth-scrolls back to y=0, which re-expands the collapsed
+  // mobile header so the nav list is visible again.
+  var scrollTop = document.querySelector('.scroll-top');
+  if (scrollTop) {
+    scrollTop.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    var stTicking = false;
+    window.addEventListener('scroll', function () {
+      if (stTicking) return;
+      stTicking = true;
+      requestAnimationFrame(function () {
+        scrollTop.classList.toggle('is-visible', window.scrollY > 400);
+        stTicking = false;
+      });
+    }, { passive: true });
+  }
 })();
