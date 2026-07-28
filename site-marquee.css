@@ -1,3 +1,16 @@
+/* Akzidenz Grotesk SUPER (weight 900) — declared here so every page
+   that includes site-marquee.css gets the same face for the marquee.
+   Without this, pages that hadn't declared their own SUPER @font-face
+   fell back to whichever weight they had available (extrabold, regular,
+   or system), which is why the marquee looked different across pages. */
+@font-face {
+  font-family: "Akzidenz Grotesk";
+  src: url("ASSETS/FONTS/AKZIDENZGROTESK-SUPER.OTF") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Shared full-bleed marquee band — used on selections + introductions.
 
    Structure:
