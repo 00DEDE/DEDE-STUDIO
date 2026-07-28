@@ -54,22 +54,15 @@
     font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(1.5rem, 4.5vw, 5.5rem);
-    line-height: 1.1;
-    letter-spacing: -0.015em;
+    line-height: 0.99;              /* 10% tighter than the previous 1.1 */
+    letter-spacing: -0.022em;       /* nudged tighter to feel optically
+                                       even with the tighter leading */
     margin: 0 0 2.5rem;
     text-align: justify;
     hyphens: auto;
     -webkit-hyphens: auto;
   }
   .hello p:last-child { margin-bottom: 0; }
-  .hello__contact {
-    margin-top: 2.5rem;
-  }
-  /* Cycling greeting fades gracefully between languages. */
-  .greeting-word {
-    display: inline-block;
-    transition: opacity var(--dur-cinematic) var(--ease-out-expo);
-  }
 
   /* Email link: same radiating cyan glow used for DĒDĒ + BLLCRW on the
      introductions page, so interactive words have a consistent language. */
@@ -191,7 +184,6 @@
   </h2>
 
   <section class="hello" aria-label="Contact">
-    <p><span class="greeting-word" id="greetingWord">Say hello</span></p>
     <div class="hello__contact">
       <p>DAVID GOMEZ</p>
       <p>Head of Dēdē.Studio</p>
@@ -212,24 +204,6 @@
   </section>
 
   <script>
-    // Cycle the greeting through English → Spanish → French.
-    (function () {
-      const el = document.getElementById('greetingWord');
-      if (!el) return;
-      const greetings = ['Say hello', 'Mandame un saludito', 'Dis-moi bonjour'];
-      let idx = 0;
-      const HOLD_MS = 2500;
-      const FADE_MS = 1000;
-      setInterval(() => {
-        el.style.opacity = '0';
-        setTimeout(() => {
-          idx = (idx + 1) % greetings.length;
-          el.textContent = greetings[idx];
-          el.style.opacity = '1';
-        }, FADE_MS);
-      }, HOLD_MS + FADE_MS);
-    })();
-
     // Email chooser: click to reveal mail app / gmail options.
     (function () {
       const toggle = document.getElementById('emailToggle');

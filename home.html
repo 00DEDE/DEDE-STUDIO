@@ -119,40 +119,47 @@
       const horizontal = document.querySelector('.logo--horizontal');
       const stacked    = document.querySelector('.logo--stacked');
 
-      const HORIZONTAL_HOLD_MS = 1800;  // horizontal visible before crossfade
-      const CROSSFADE_MS       = 1200;  // matches the CSS opacity transition
-      const FLOAT_MS           = 8000;  // two full 4s breath cycles
-      const REDIRECT_AT_MS     = 500;   // hand off mid-fade for smooth exit
+      // Slow graceful ping-pong between the two logos, ending on the
+      // horizontal DĒDĒ STUDIO wordmark, then a soft fade into
+      // selections. All timings expressed in ms.
+      const INITIAL_HOLD_MS = 900;   // horizontal visible before first swap
+      const CROSSFADE_MS    = 1200;  // matches the CSS opacity transition
+      const HOLD_MS         = 700;   // pause between crossfades
+      const SWAPS           = 4;     // even count → ends on horizontal
+      const FINAL_HOLD_MS   = 1200;  // let the wordmark settle before fade
+      const REDIRECT_AT_MS  = 500;   // hand off mid-fade for smooth exit
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         window.location.replace('selections.html');
         return;
       }
 
-      // 1. Crossfade horizontal → stacked (horizontal is visible at load
-      //    via .is-visible in the HTML).
-      setTimeout(() => {
-        horizontal.classList.remove('is-visible');
-        stacked.classList.add('is-visible');
-        // 2. Once the crossfade completes, start the breathing.
-        setTimeout(startFloat, CROSSFADE_MS);
-      }, HORIZONTAL_HOLD_MS);
+      let step = 0; // 0-based swap counter — even = go to stacked
 
-      function startFloat() {
-        // Two full 4s jellyfish breath cycles. Each cycle ends at
-        // scale(1) — matching the base transform — so removing the
-        // class after FLOAT_MS hands off cleanly with no snap.
-        stacked.classList.add('is-breathing');
-        setTimeout(fadeOut, FLOAT_MS);
+      function swap() {
+        if (step % 2 === 0) {
+          horizontal.classList.remove('is-visible');
+          stacked.classList.add('is-visible');
+        } else {
+          stacked.classList.remove('is-visible');
+          horizontal.classList.add('is-visible');
+        }
+        step++;
+        if (step < SWAPS) {
+          setTimeout(swap, CROSSFADE_MS + HOLD_MS);
+        } else {
+          // Final swap done — sitting on horizontal, let it settle,
+          // then fade out to hand off to selections.
+          setTimeout(fadeOut, CROSSFADE_MS + FINAL_HOLD_MS);
+        }
       }
 
       function fadeOut() {
-        stacked.classList.remove('is-breathing');
-        stacked.classList.add('is-fading');
-        // Redirect mid-fade so the page swap happens while the logo
-        // is still partially visible — smooths the transition.
+        horizontal.classList.add('is-fading');
         setTimeout(() => window.location.replace('selections.html'), REDIRECT_AT_MS);
       }
+
+      setTimeout(swap, INITIAL_HOLD_MS);
     })();
   </script>
 </body>
