@@ -180,92 +180,22 @@
      the "into focus" moment. */
   .selections__band--stacked .band__sharp { display: none; }
 
-  /* Mobile: no cursor to hover, so mirror the desktop marquee spotlight
-     with an automatic drifting one. The whole blur layer stays uniformly
-     blurred; a duplicate sharp copy overlays it, revealed only through
-     a radial mask that animates its position across the quote — words
-     drift in and out of focus over ~15s. */
+  /* Mobile quote reveal — per-word. Each word blurs independently and
+     JS toggles .is-clear on them in reading order with a uniform 500ms
+     interval, so every word takes exactly the same time to fade into
+     focus. No mask, no line-scan — words simply appear one at a time. */
   @media (max-width: 640px) {
-    .selections__band--stacked .band__blur {
-      filter: blur(14px);
-    }
+    .selections__band--stacked .band__sharp { display: none; }
+    .selections__band--stacked .band__blur  { filter: none; }
     .selections__band--stacked .word {
-      filter: none;
-      transition: none;
+      filter: blur(12px);
+      transition: filter var(--dur-medium) var(--ease-out-expo);
       cursor: default;
     }
-    .selections__band--stacked .band__sharp {
-      display: block;
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      /* Cumulative top-down reveal — a linear-gradient mask that grows
-         its opaque area downward over the animation. Once a line has
-         been uncovered it stays visible for the rest of the cycle, so
-         the user can actually read the full quote as it progresses:
-         line 1 → 1+2 → 1+2+3, hold, fade out, restart from top. */
-      -webkit-mask-image: linear-gradient(to bottom,
-        #000 0%, #000 85%, transparent 100%);
-              mask-image: linear-gradient(to bottom,
-        #000 0%, #000 85%, transparent 100%);
-      -webkit-mask-repeat: no-repeat;
-              mask-repeat: no-repeat;
-      -webkit-mask-position: 0 0;
-              mask-position: 0 0;
-      -webkit-mask-size: 100% 0%;
-              mask-size: 100% 0%;
-      opacity: 0;
-      animation: quote-reveal 20s ease-in-out infinite;
-    }
+    .selections__band--stacked .word.is-clear { filter: none; }
     @media (prefers-reduced-motion: reduce) {
-      .selections__band--stacked .band__sharp {
-        animation: none;
-        opacity: 1;
-        -webkit-mask-size: 100% 100%;
-                mask-size: 100% 100%;
-      }
+      .selections__band--stacked .word { filter: none; }
     }
-  }
-  /* Organic reveal — slower (20s), irregular reveal pacing so the
-     descent doesn't feel mechanical. mask-position X wobbles ±3–6% to
-     add a lateral drift, breaking the rigid vertical march. Each line
-     stays clear once uncovered — user has time to read the whole quote
-     before it fades out and starts again. */
-  @keyframes quote-reveal {
-    0%   { -webkit-mask-size: 100% 0%;   mask-size: 100% 0%;
-           -webkit-mask-position: 2% 0;  mask-position: 2% 0;
-           opacity: 0; }
-    5%   { -webkit-mask-size: 100% 14%;  mask-size: 100% 14%;
-           -webkit-mask-position: -2% 0; mask-position: -2% 0;
-           opacity: 1; }
-    14%  { -webkit-mask-size: 100% 24%;  mask-size: 100% 24%;
-           -webkit-mask-position: 3% 0;  mask-position: 3% 0;
-           opacity: 1; }
-    22%  { -webkit-mask-size: 100% 30%;  mask-size: 100% 30%;
-           -webkit-mask-position: -1% 0; mask-position: -1% 0;
-           opacity: 1; }
-    35%  { -webkit-mask-size: 100% 48%;  mask-size: 100% 48%;
-           -webkit-mask-position: 4% 0;  mask-position: 4% 0;
-           opacity: 1; }
-    46%  { -webkit-mask-size: 100% 58%;  mask-size: 100% 58%;
-           -webkit-mask-position: -3% 0; mask-position: -3% 0;
-           opacity: 1; }
-    58%  { -webkit-mask-size: 100% 72%;  mask-size: 100% 72%;
-           -webkit-mask-position: 2% 0;  mask-position: 2% 0;
-           opacity: 1; }
-    72%  { -webkit-mask-size: 100% 92%;  mask-size: 100% 92%;
-           -webkit-mask-position: -1% 0; mask-position: -1% 0;
-           opacity: 1; }
-    82%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
-           -webkit-mask-position: 0 0;   mask-position: 0 0;
-           opacity: 1; }
-    93%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
-           -webkit-mask-position: 0 0;   mask-position: 0 0;
-           opacity: 1; }
-    100% { -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
-           -webkit-mask-position: 0 0;   mask-position: 0 0;
-           opacity: 0; }
   }
 
   /* Marquee styles + cursor-tracking JS live in site-marquee.{css,js} —
@@ -726,13 +656,39 @@
        with the introductions + connections pages). */
 
     /* ─── per-word reveal on the quote band ──────────────────────────── */
-    // Cursor / tap on a word clears it permanently. Both mouseenter and
-    // touchstart are bound so hover-devices AND touch-devices both work.
+    // Desktop / hover: cursor or tap on a word clears it permanently.
     document.querySelectorAll('.selections__band--stacked .word').forEach((word) => {
       const reveal = () => word.classList.add('is-clear');
       word.addEventListener('mouseenter', reveal);
       word.addEventListener('touchstart', reveal, { passive: true });
     });
+
+    /* Mobile: auto-cycle each word into focus at a uniform 500ms
+       interval, hold the whole quote clear for 4s, reblur all at once,
+       pause 1.4s, repeat. Every word takes the same 480ms filter
+       transition — no varying pacing between them. */
+    if (window.matchMedia('(max-width: 640px)').matches &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const qWords = document.querySelectorAll('.selections__band--stacked .word');
+      if (qWords.length) {
+        const WORD_INTERVAL = 500;
+        const HOLD_MS       = 4000;
+        const RESET_MS      = 1400;
+        (function loop() {
+          // Reblur every word (removes any lingering .is-clear).
+          qWords.forEach((w) => w.classList.remove('is-clear'));
+          // After the reblur transition settles, start uncovering words.
+          setTimeout(function reveal() {
+            qWords.forEach((w, i) => {
+              setTimeout(() => w.classList.add('is-clear'), i * WORD_INTERVAL);
+            });
+            // Once the last word has appeared, hold everyone clear
+            // for HOLD_MS, then restart the loop.
+            setTimeout(loop, qWords.length * WORD_INTERVAL + HOLD_MS);
+          }, RESET_MS);
+        })();
+      }
+    }
 
     /* ─── scroll cue fade-out ────────────────────────────────────────── */
     const cue = document.querySelector('.scroll-cue');
