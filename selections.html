@@ -219,27 +219,20 @@
       .selections__band--stacked .band__sharp { animation: none; }
     }
   }
+  /* Reading motion — spotlight starts at the top of the quote and
+     descends line by line, wobbling left/right so it doesn't feel
+     mechanical. At the bottom it fades to 0 opacity, invisibly jumps
+     back to the top, then fades in — the loop reads as a fresh
+     re-read rather than a visible sweep-back. */
   @keyframes quote-spotlight {
-    0%, 100% {
-      -webkit-mask-position: 15% 20%;
-              mask-position: 15% 20%;
-    }
-    20% {
-      -webkit-mask-position: 75% 25%;
-              mask-position: 75% 25%;
-    }
-    40% {
-      -webkit-mask-position: 85% 65%;
-              mask-position: 85% 65%;
-    }
-    60% {
-      -webkit-mask-position: 25% 75%;
-              mask-position: 25% 75%;
-    }
-    80% {
-      -webkit-mask-position: 55% 40%;
-              mask-position: 55% 40%;
-    }
+    0%   { -webkit-mask-position: 30% 8%;  mask-position: 30% 8%;  opacity: 1; }
+    18%  { -webkit-mask-position: 65% 26%; mask-position: 65% 26%; opacity: 1; }
+    36%  { -webkit-mask-position: 25% 44%; mask-position: 25% 44%; opacity: 1; }
+    54%  { -webkit-mask-position: 70% 62%; mask-position: 70% 62%; opacity: 1; }
+    72%  { -webkit-mask-position: 30% 82%; mask-position: 30% 82%; opacity: 1; }
+    85%  { -webkit-mask-position: 30% 92%; mask-position: 30% 92%; opacity: 0; }
+    86%  { -webkit-mask-position: 30% 8%;  mask-position: 30% 8%;  opacity: 0; }
+    100% { -webkit-mask-position: 30% 8%;  mask-position: 30% 8%;  opacity: 1; }
   }
 
   /* Marquee styles + cursor-tracking JS live in site-marquee.{css,js} —
