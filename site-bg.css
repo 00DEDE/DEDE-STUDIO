@@ -107,19 +107,29 @@
    and --accent-rgb becomes 222,0,0 under [data-theme="light"]. Nothing
    is hidden or overridden here on purpose. */
 
-/* Mobile: giant blurs + mix-blend-mode + continuous transform animations
-   tank framerate. Swap the whole thing for a static painted radial gradient
-   that lands as one paint call and doesn't animate. */
+/* Mobile: keep motion, but halve the cost. Only the two accent blobs
+   run (the two neutral dark blobs are the visually cheapest to drop),
+   blur drops from 90 → 40px, the grain overlay + mix-blend-mode are
+   removed entirely, and the accent blobs get their alpha nudged up
+   slightly so they still read at the smaller blur radius. GPU load
+   per frame ends up ~1/4 of the desktop setup while the ambient
+   motion is preserved. */
 @media (max-width: 768px), (pointer: coarse) {
-  .site-bg {
-    background:
-      radial-gradient(60% 45% at 12% 18%, rgba(var(--accent-rgb), 0.22) 0%, rgba(var(--accent-rgb), 0) 70%),
-      radial-gradient(55% 40% at 88% 82%, rgba(var(--accent-rgb), 0.14) 0%, rgba(var(--accent-rgb), 0) 70%),
-      radial-gradient(70% 50% at 55% 55%, rgba(var(--bg-tint-rgb, 30, 30, 30), 0.55) 0%, rgba(30, 30, 30, 0) 70%),
-      #050505;
-  }
-  .site-bg__blob,
+  .site-bg { background: var(--bg); }
+  .site-bg__blob--dark-1,
+  .site-bg__blob--dark-2,
   .site-bg::after {
     display: none;
+  }
+  .site-bg__blob { filter: blur(40px); }
+  .site-bg__blob--cyan-1 {
+    background: radial-gradient(circle at center,
+                rgba(var(--accent-rgb), 0.7) 0%,
+                rgba(var(--accent-rgb), 0)  65%);
+  }
+  .site-bg__blob--cyan-2 {
+    background: radial-gradient(circle at center,
+                rgba(var(--accent-rgb), 0.55) 0%,
+                rgba(var(--accent-rgb), 0)   65%);
   }
 }
