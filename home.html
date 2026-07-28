@@ -106,18 +106,31 @@
   </div>
 
   <div class="logo-cycle" role="status" aria-label="Loading DĒDĒ.STUDIO">
-    <img class="logo logo--horizontal is-visible"
+    <!-- Each logo has dedicated cyan (dark) + red (light) files rather than
+         relying on hue-rotate — that filter fades anti-aliased edges. The
+         theme-img classes in theme.css hide the wrong-theme copy. -->
+    <img class="logo logo--horizontal theme-img theme-img--dark is-visible"
          src="ASSETS/LOGO/logo_horizontal_cyan.png"
          alt="DĒDĒ STUDIO" />
-    <img class="logo logo--stacked"
+    <img class="logo logo--horizontal theme-img theme-img--light is-visible"
+         src="ASSETS/LOGO/logo_horizontal_red.png"
+         alt="DĒDĒ STUDIO" />
+    <img class="logo logo--stacked theme-img theme-img--dark"
          src="ASSETS/LOGO/logo_stacked_cyan.png"
+         alt="DĒDĒ STUDIO" />
+    <img class="logo logo--stacked theme-img theme-img--light"
+         src="ASSETS/LOGO/logo_stacked_red.png"
          alt="DĒDĒ STUDIO" />
   </div>
 
   <script>
     (function () {
-      const horizontal = document.querySelector('.logo--horizontal');
-      const stacked    = document.querySelector('.logo--stacked');
+      // Two <img> per logo (dark + light theme variants) — apply / remove
+      // .is-visible on ALL variants; theme-img CSS shows only the right one.
+      const horizontals = document.querySelectorAll('.logo--horizontal');
+      const stackeds    = document.querySelectorAll('.logo--stacked');
+      const show = (nodes) => nodes.forEach((n) => n.classList.add('is-visible'));
+      const hide = (nodes) => nodes.forEach((n) => n.classList.remove('is-visible'));
 
       // Slow graceful ping-pong between the two logos, ending on the
       // horizontal DĒDĒ STUDIO wordmark, then a soft fade into
@@ -138,11 +151,9 @@
 
       function swap() {
         if (step % 2 === 0) {
-          horizontal.classList.remove('is-visible');
-          stacked.classList.add('is-visible');
+          hide(horizontals); show(stackeds);
         } else {
-          stacked.classList.remove('is-visible');
-          horizontal.classList.add('is-visible');
+          hide(stackeds); show(horizontals);
         }
         step++;
         if (step < SWAPS) {
@@ -155,7 +166,7 @@
       }
 
       function fadeOut() {
-        horizontal.classList.add('is-fading');
+        horizontals.forEach((h) => h.classList.add('is-fading'));
         setTimeout(() => window.location.replace('selections.html'), REDIRECT_AT_MS);
       }
 

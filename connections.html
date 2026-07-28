@@ -31,7 +31,7 @@
     width: 100%;
     cursor: var(--cursor-url) 16 16, auto;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   body { background: transparent; }
   a, button, [role="button"] {
@@ -45,6 +45,9 @@
   .hello {
     padding: 0 1.5rem 6rem;
     box-sizing: border-box;
+    /* Raise content ~15% of viewport height so it tucks up under the
+       top marquee's bottom edge — matches the sit on selections. */
+    margin-top: -15vh;
   }
   @media (max-width: 640px) {
     .hello { padding: 0 1.25rem 6rem; }
@@ -170,14 +173,14 @@
     <span class="marquee-band__layers" aria-hidden="true">
       <span class="marquee-band__blur">
         <span class="marquee-track">
-          <span class="marquee-phrase">SAY HELLO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />HEY DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />MANDAME UN SALUDITO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />¡HOLA DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-          <span class="marquee-phrase">SAY HELLO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />HEY DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />MANDAME UN SALUDITO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />¡HOLA DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">SAY HELLO<span class="marquee-mark" aria-hidden="true"></span>HEY DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span>MANDAME UN SALUDITO<span class="marquee-mark" aria-hidden="true"></span>¡HOLA DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span></span>
+          <span class="marquee-phrase">SAY HELLO<span class="marquee-mark" aria-hidden="true"></span>HEY DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span>MANDAME UN SALUDITO<span class="marquee-mark" aria-hidden="true"></span>¡HOLA DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span></span>
         </span>
       </span>
       <span class="marquee-band__sharp">
         <span class="marquee-track">
-          <span class="marquee-phrase">SAY HELLO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />HEY DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />MANDAME UN SALUDITO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />¡HOLA DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-          <span class="marquee-phrase">SAY HELLO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />HEY DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />MANDAME UN SALUDITO<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />¡HOLA DĒDĒ!<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">SAY HELLO<span class="marquee-mark" aria-hidden="true"></span>HEY DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span>MANDAME UN SALUDITO<span class="marquee-mark" aria-hidden="true"></span>¡HOLA DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span></span>
+          <span class="marquee-phrase">SAY HELLO<span class="marquee-mark" aria-hidden="true"></span>HEY DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span>MANDAME UN SALUDITO<span class="marquee-mark" aria-hidden="true"></span>¡HOLA DĒDĒ!<span class="marquee-mark" aria-hidden="true"></span></span>
         </span>
       </span>
     </span>

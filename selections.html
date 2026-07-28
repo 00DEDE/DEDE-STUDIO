@@ -34,7 +34,7 @@
     min-height: 100%;
     width: 100%;
     color: var(--fg);
-    overflow-x: hidden;
+    overflow-x: clip;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     cursor: var(--cursor-url) 16 16, auto;
   }
@@ -49,25 +49,6 @@
     width: 100vw;
     min-height: 100vh;
   }
-  /* Two fixed layers crossfade the per-cell hover gradient (light mode
-     only — see JS). Header/footer hover clears them so the shared
-     site-bg blobs read through. */
-  .bg-layer {
-    position: fixed;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    transition: opacity var(--dur-long) var(--ease-out-expo);
-    z-index: 0;
-    pointer-events: none;
-  }
-  .bg-layer.is-active { opacity: 1; }
-  .bg-layer.is-idle   { opacity: 0; }
-  body:has(.site-header:hover) .bg-layer,
-  body:has(.site-footer:hover) .bg-layer {
-    opacity: 0;
-  }
-
   /* ─── editorial grid ─────────────────────────────────────────────── */
   /* Two grids stacked with a text band between them. Cell placement is
      driven by explicit modifier classes (.cell--hero / --thin / --long)
@@ -115,6 +96,10 @@
   .selections__scene {
     position: relative;
   }
+  /* Raise everything below the top marquee ~15% of viewport height so
+     the grid tucks up under the marquee's bottom edge. */
+  .selections__scene:first-of-type .selections-grid { margin-top: -15vh; }
+  .selections__scene + .selections__scene            { margin-top: -15vh; }
   .selections__scene > .marquee-band,
   .selections__scene > .selections__band--stacked {
     position: sticky;
@@ -408,9 +393,7 @@
     <div class="site-bg__blob site-bg__blob--dark-1"></div>
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
   </div>
-  <div class="selections">
-    <div class="bg-layer is-active" id="bgA"></div>
-    <div class="bg-layer is-idle"   id="bgB"></div>
+  <div class="selections">    <div class="bg-layer is-idle"   id="bgB"></div>
 
     <header class="site-header">
       <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
@@ -436,23 +419,21 @@
       <span class="marquee-band__layers" aria-hidden="true">
         <span class="marquee-band__blur">
           <span class="marquee-track">
-            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
           </span>
         </span>
         <span class="marquee-band__sharp">
           <span class="marquee-track">
-            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
           </span>
         </span>
       </span>
     </h2>
 
     <div class="selections-grid selections-grid--top">
-      <a class="cell cell--hero cell--cover cell--carousel" href="#"
-         data-bg="linear-gradient(135deg,#7a1f1f 0%,#0d0d0d 100%)"
-         data-bg-light="linear-gradient(135deg,#ffe0e0 0%,#f5f5f5 100%)">
+      <a class="cell cell--hero cell--cover cell--carousel" href="#">
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active" style="background-image:url('ASSETS/IMAGES/UNESCO/01.jpg')"></div>
           <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/02.jpg')"></div>
@@ -465,15 +446,11 @@
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell cell--thin cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%"
-         data-bg="linear-gradient(135deg,#1a2a44 0%,#0b0b0b 100%)"
-         data-bg-light="linear-gradient(135deg,#dae5f5 0%,#f5f5f5 100%)">
+         style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%">
         <div class="cell-tags"><strong>BLLCRW.</strong> MELANGE CAPSULE</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--long cell--cover cell--carousel" href="#"
-         data-bg="linear-gradient(135deg,#1e3a2a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#daeadd 0%,#f5f5f5 100%)">
+      <a class="cell cell--long cell--cover cell--carousel" href="#">
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active"
                data-duration="4000"
@@ -493,16 +470,12 @@
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell cell--long cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/NANAS_BAKERY.jpg'); --cover-y: 20%"
-         data-bg="linear-gradient(135deg,#4b1e3a 0%,#0b0b0b 100%)"
-         data-bg-light="linear-gradient(135deg,#eadaea 0%,#f5f5f5 100%)">
+         style="--cover: url('ASSETS/IMAGES/NANAS_BAKERY.jpg'); --cover-y: 20%">
         <div class="cell-tags"><strong>NANA&rsquo;S BAKERY</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell cell--thin cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/MEMOIRS.jpg')"
-         data-bg="linear-gradient(135deg,#5a3a10 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#f5ead5 0%,#f5f5f5 100%)">
+         style="--cover: url('ASSETS/IMAGES/MEMOIRS.jpg')">
         <div class="cell-tags"><strong>MEMOIRS</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -520,23 +493,17 @@
 
     <div class="selections-grid selections-grid--bottom">
       <a class="cell cell--thin cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/THE_REVENANT.jpg')"
-         data-bg="linear-gradient(135deg,#0f3a3a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#d5eaea 0%,#f5f5f5 100%)">
+         style="--cover: url('ASSETS/IMAGES/THE_REVENANT.jpg')">
         <div class="cell-tags"><strong>THE REVENANT</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell cell--long cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/TRADER_JOES.jpg')"
-         data-bg="linear-gradient(135deg,#3d1a1a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#f5dada 0%,#f5f5f5 100%)">
+         style="--cover: url('ASSETS/IMAGES/TRADER_JOES.jpg')">
         <div class="cell-tags"><strong>TRADER JOE&rsquo;S</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
       <a class="cell cell--hero cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/POSTER_MOCKUP.jpg')"
-         data-bg="linear-gradient(135deg,#1a3d2a 0%,#0a0a0a 100%)"
-         data-bg-light="linear-gradient(135deg,#daeada 0%,#f5f5f5 100%)">
+         style="--cover: url('ASSETS/IMAGES/POSTER_MOCKUP.jpg')">
         <div class="cell-tags"><strong>SAN DIEGO FOOTBALL CLUB</strong> BRANDING &amp; MOTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -575,43 +542,12 @@
     const cells = document.querySelectorAll('.cell');
     const isTouch = window.matchMedia('(hover: none)').matches;
 
-    /* ─── crossfading backdrop (light-mode gradient behind the grid) ── */
-    // Two <div class="bg-layer"> stack; we ping-pong the active class so
-    // the gradient swap fades instead of hard-cutting. Dark mode returns
-    // null (no colored backdrop — the site-bg blobs show through).
-    const [bgA, bgB] = [document.getElementById('bgA'), document.getElementById('bgB')];
-    let active = bgA, idle = bgB, lastCell = null;
-
-    function gradFor(cell) {
-      return html.getAttribute('data-theme') === 'light'
-        ? cell.getAttribute('data-bg-light')
-        : null;
-    }
-    function setBackground(grad) {
-      if (grad) {
-        idle.style.backgroundImage = grad;
-        idle.classList.replace('is-idle', 'is-active');
-        active.classList.replace('is-active', 'is-idle');
-        [active, idle] = [idle, active];
-      } else {
-        // Fade whatever is showing back out (used when theme flips to dark).
-        active.classList.replace('is-active', 'is-idle');
-      }
-    }
-    function activateBackdrop(cell) {
-      lastCell = cell;
-      setBackground(gradFor(cell));
-    }
-
-    // Refresh the backdrop when the theme toggles mid-hover.
-    new MutationObserver(() => lastCell && setBackground(gradFor(lastCell)))
-      .observe(html, { attributes: true, attributeFilter: ['data-theme'] });
-
     /* ─── per-cell interaction ───────────────────────────────────────── */
+    // The per-cell hover backdrop gradient is gone in both modes — the
+    // site-bg (single ambient gradient in light, animated blobs in dark)
+    // is the only page background. Touch keeps its tap-to-activate flow
+    // so VIEW CASE surfaces before navigation.
     if (isTouch) {
-      // Touch has no hover: first tap adds .is-active (revealing VIEW
-      // CASE + swapping backdrop); a second tap on the same cell falls
-      // through to navigation. Auto-clears after 2s of inactivity.
       let activeCell = null, timer = null;
       const RESET_MS = 2000;
       function reset() {
@@ -627,15 +563,8 @@
           reset();
           activeCell = cell;
           cell.classList.add('is-active');
-          activateBackdrop(cell);
           timer = setTimeout(reset, RESET_MS);
         });
-      });
-    } else {
-      // Desktop: mouseenter swaps the backdrop; CSS :hover reveals the
-      // VIEW CASE overlay and click flows straight to navigation.
-      cells.forEach((cell) => {
-        cell.addEventListener('mouseenter', () => activateBackdrop(cell));
       });
     }
 
