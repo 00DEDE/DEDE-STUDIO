@@ -40,14 +40,14 @@
 
   /* Say-hello block matches the introductions section exactly — same
      padding (aligned to the header's 1.5rem), same typography, same
-     justified rag. Layout is a plain flow (no max-width, no flex-center)
-     so both pages read from the same voice. */
+     justified rag. No top padding — the .marquee-band directly above
+     provides the exact same breathing room the selections grid gets. */
   .hello {
-    padding: 6rem 1.5rem;
+    padding: 0 1.5rem 6rem;
     box-sizing: border-box;
   }
   @media (max-width: 640px) {
-    .hello { padding: 10rem 1.25rem 6rem; }
+    .hello { padding: 0 1.25rem 6rem; }
   }
   .hello p {
     color: var(--fg);

@@ -30,9 +30,6 @@
   letter-spacing: -0.03em;
   text-transform: uppercase;
 }
-/* Variant that preserves the source case (used where the copy is
-   deliberately lowercase, e.g. the iamdede.com marquee). */
-.marquee-band--lowercase { text-transform: none; }
 
 .marquee-band__layers {
   position: relative;
@@ -62,7 +59,10 @@
 .marquee-track {
   display: inline-block;
   white-space: nowrap;
-  animation: marquee 48s var(--ease-linear) infinite;
+  /* Duration is set by site-marquee.js so every marquee scrolls at the
+     same pixels-per-second regardless of phrase length. The fallback
+     value keeps a reasonable pace if JS is disabled. */
+  animation: marquee var(--marquee-duration, 48s) var(--ease-linear) infinite;
 }
 .marquee-phrase {
   display: inline-block;

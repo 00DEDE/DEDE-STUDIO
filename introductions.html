@@ -51,14 +51,14 @@
      all subsequent paragraphs cascade below at the same weight and size.
      Horizontal padding matches the floating header (1.5rem) so the text's
      left edge lines up with the DĒDĒ logo and right edge with the theme
-     toggle. Mobile drops to 1.25rem to match the mobile header. */
+     toggle. No top padding — the .marquee-band directly above already
+     provides the exact same breathing room the selections grid gets. */
   .intro {
-    padding: 6rem 1.5rem;
+    padding: 0 1.5rem 6rem;
     box-sizing: border-box;
   }
   @media (max-width: 640px) {
-    /* Mobile header is 3 rows with bigger logo + 25% more padding — bump. */
-    .intro { padding: 10rem 1.25rem 6rem; }
+    .intro { padding: 0 1.25rem 6rem; }
   }
   .intro p {
     color: var(--fg);
@@ -226,18 +226,18 @@
   <script src="site-header.js" defer></script>
   <script src="site-marquee.js" defer></script>
 
-  <h2 class="marquee-band marquee-band--lowercase" aria-label="iamdede.com iamdede.com iamdede.com">
+  <h2 class="marquee-band" aria-label="IAMDEDE.COM IAMDEDE.COM IAMDEDE.COM">
     <span class="marquee-band__layers" aria-hidden="true">
       <span class="marquee-band__blur">
         <span class="marquee-track">
-          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
         </span>
       </span>
       <span class="marquee-band__sharp">
         <span class="marquee-track">
-          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />IAMDEDE.COM<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
         </span>
       </span>
     </span>
