@@ -1,0 +1,87 @@
+/* Shared full-bleed marquee band — used on selections + introductions.
+
+   Structure:
+     .marquee-band
+       .marquee-band__layers
+         .marquee-band__blur   → heavily blurred base layer
+         .marquee-band__sharp  → sharp copy revealed by a radial mask
+                                 tracking the cursor (see site-marquee.js)
+     Each layer contains a .marquee-track with TWO identical
+     .marquee-phrase spans; translating the track by -50% loops the pair
+     seamlessly since the second phrase lands exactly where the first
+     one started.
+
+   Blur is unconditional (touch devices see it too as a stylistic
+   effect); the sharp overlay's cursor spotlight only fires on hover-
+   capable devices via JS. */
+
+.marquee-band {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 3.825rem 0;
+  overflow: hidden;
+  color: var(--fg);
+  font-family: "Akzidenz Grotesk",
+               -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 12vw, 20rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+/* Variant that preserves the source case (used where the copy is
+   deliberately lowercase, e.g. the iamdede.com marquee). */
+.marquee-band--lowercase { text-transform: none; }
+
+.marquee-band__layers {
+  position: relative;
+  display: block;
+}
+.marquee-band__blur,
+.marquee-band__sharp {
+  display: block;
+}
+.marquee-band__blur {
+  filter: blur(20px);
+}
+.marquee-band__sharp {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Default centre off-screen — sharp overlay is invisible until the
+     user actually hovers over the band. */
+  --mx: -1000px;
+  --my: -1000px;
+  -webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
+    #000 0%, #000 25%, transparent 90%);
+          mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
+    #000 0%, #000 25%, transparent 90%);
+}
+
+.marquee-track {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 48s var(--ease-linear) infinite;
+}
+.marquee-phrase {
+  display: inline-block;
+  padding-right: 0.5em;
+}
+.marquee-mark {
+  display: inline-block;
+  height: 2.295em;
+  width: auto;
+  margin: 0 0.35em;
+  vertical-align: middle;
+  transform: translateY(-5%);
+}
+
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}

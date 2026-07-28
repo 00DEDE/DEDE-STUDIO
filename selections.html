@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
+<link rel="stylesheet" href="site-marquee.css" />
 <style>
   @font-face {
     font-family: "Akzidenz Grotesk";
@@ -127,11 +128,6 @@
     letter-spacing: -0.03em;
     text-transform: uppercase;
   }
-  .selections__band--marquee {
-    padding: 3.825rem 0;       /* 4.5rem × 0.85 — another 15% less */
-    overflow: hidden;
-    font-size: clamp(2.5rem, 12vw, 20rem);
-  }
   .selections__band--stacked {
     padding: 6rem 1.5rem;
     font-size: clamp(1.6rem, 7vw, 12rem);
@@ -185,40 +181,8 @@
     cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
   }
 
-  /* Marquee — right-to-left ticker. Track has two identical phrases; the
-     animation translates it -50% of its own width, exactly one phrase's
-     worth, so the loop is seamless. */
-  .marquee__track {
-    display: inline-block;
-    white-space: nowrap;
-    animation: marquee 48s var(--ease-linear) infinite;
-  }
-  .marquee__phrase {
-    display: inline-block;
-    padding-right: 0.5em;
-  }
-  /* Cyan DĒDĒ icon sits between statements — same height as the caps,
-     uniform aspect so it never distorts. Slight horizontal margin for
-     breathing room, and a small negative baseline nudge to sit optically
-     centered on the cap line rather than the descender line. */
-  .marquee__mark {
-    display: inline-block;
-    height: 2.295em;            /* 2.7em × 0.85 — another 15% smaller */
-    width: auto;
-    margin: 0 0.35em;           /* evenly spaced left and right */
-    vertical-align: middle;     /* optically centred on the caps line */
-    /* Nudge each icon up 5% of its own height without shifting the
-       surrounding text — only the icons rise. */
-    transform: translateY(-5%);
-  }
-  @keyframes marquee {
-    from { transform: translate3d(0, 0, 0); }
-    to   { transform: translate3d(-50%, 0, 0); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .marquee__track { animation: none; }
-  }
+  /* Marquee styles + cursor-tracking JS live in site-marquee.{css,js} —
+     the marquee below uses the .marquee-band class family from there. */
 
   /* ─── cell base + hover fg-fill ──────────────────────────────────── */
   .cell {
@@ -451,19 +415,20 @@
       </div>
     </header>
     <script src="site-header.js" defer></script>
+    <script src="site-marquee.js" defer></script>
 
-    <h2 class="selections__band selections__band--marquee" aria-label="Our handprint. Our voice. Our mind.">
-      <span class="band__layers" aria-hidden="true">
-        <span class="band__blur">
-          <span class="marquee__track">
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+    <h2 class="marquee-band" aria-label="Our handprint. Our voice. Our mind.">
+      <span class="marquee-band__layers" aria-hidden="true">
+        <span class="marquee-band__blur">
+          <span class="marquee-track">
+            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
           </span>
         </span>
-        <span class="band__sharp">
-          <span class="marquee__track">
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
-            <span class="marquee__phrase">OUR HANDPRINT.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee__mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+        <span class="marquee-band__sharp">
+          <span class="marquee-track">
+            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR VOICE.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />OUR MIND.<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
           </span>
         </span>
       </span>
@@ -677,25 +642,8 @@
       });
     }
 
-    /* ─── cursor-tracking spotlight on statement bands ───────────────── */
-    // Update --mx / --my on each .band__sharp so its radial mask centres
-    // on the pointer, revealing the sharp copy locally over the blurred
-    // base. Skipped on touch — CSS keeps .band__sharp hidden there.
-    if (!isTouch) {
-      document.querySelectorAll('.selections__band').forEach((band) => {
-        const sharp = band.querySelector('.band__sharp');
-        if (!sharp) return;
-        band.addEventListener('mousemove', (e) => {
-          const rect = band.getBoundingClientRect();
-          sharp.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
-          sharp.style.setProperty('--my', (e.clientY - rect.top) + 'px');
-        });
-        band.addEventListener('mouseleave', () => {
-          sharp.style.setProperty('--mx', '-1000px');
-          sharp.style.setProperty('--my', '-1000px');
-        });
-      });
-    }
+    /* Marquee cursor-tracking spotlight lives in site-marquee.js (shared
+       with the introductions + connections pages). */
 
     /* ─── per-word reveal on the quote band ──────────────────────────── */
     // Cursor / tap on a word clears it permanently. Both mouseenter and

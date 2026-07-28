@@ -9,11 +9,14 @@
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#050505" />
+<!-- Prevent iOS from auto-linkifying "iamdede.com" in the top marquee. -->
+<meta name="format-detection" content="telephone=no,email=no,address=no,url=no" />
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <link rel="stylesheet" href="theme.css" />
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
+<link rel="stylesheet" href="site-marquee.css" />
 <style>
   @font-face {
     font-family: "Akzidenz Grotesk";
@@ -221,6 +224,24 @@
     </div>
   </header>
   <script src="site-header.js" defer></script>
+  <script src="site-marquee.js" defer></script>
+
+  <h2 class="marquee-band marquee-band--lowercase" aria-label="iamdede.com iamdede.com iamdede.com">
+    <span class="marquee-band__layers" aria-hidden="true">
+      <span class="marquee-band__blur">
+        <span class="marquee-track">
+          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+        </span>
+      </span>
+      <span class="marquee-band__sharp">
+        <span class="marquee-track">
+          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+          <span class="marquee-phrase">iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" />iamdede.com<img class="marquee-mark" src="ASSETS/LOGO/DEDE_STACKED_CYAN.png" alt="" /></span>
+        </span>
+      </span>
+    </span>
+  </h2>
 
   <!-- Hover overlay: appears when the user hovers DĒDĒ in the statement. -->
   <img class="dede-image" src="ASSETS/IMAGES/DEDE_PROFILE_IMAGE 2.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
