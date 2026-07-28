@@ -3,15 +3,16 @@
    automatically adapts. */
 
 :root {
-  --bg:            #050505;
+  --bg:            #000000;              /* pure black */
   --bg-tint:       #1a1a1a;              /* neutral panel/blob tone */
   --bg-tint-rgb:   26, 26, 26;
-  --fg:            #ffffff;
+  --fg:            #ffffff;              /* pure white */
   --fg-rgb:        255, 255, 255;
   --fg-dim:        rgba(255, 255, 255, 0.65);
   --accent:        #00dede;              /* brand cyan */
   --accent-rgb:    0, 222, 222;          /* for rgba() interpolation */
   --line:          rgba(255, 255, 255, 0.35);
+  --cursor-url:    url("ASSETS/LOGO/cursor_dede.png");
 
   /* ─── motion system ──────────────────────────────────────────────────
      One source-of-truth for every duration and easing across the site.
@@ -40,15 +41,16 @@
 }
 
 [data-theme="light"] {
-  --bg:            #ffffff;
+  --bg:            #ffffff;              /* pure white — inverse of dark */
   --bg-tint:       #eaeaea;              /* light grey */
   --bg-tint-rgb:   234, 234, 234;
-  --fg:            #050505;
-  --fg-rgb:        5, 5, 5;
-  --fg-dim:        rgba(5, 5, 5, 0.55);
+  --fg:            #000000;              /* pure black — inverse of dark */
+  --fg-rgb:        0, 0, 0;
+  --fg-dim:        rgba(0, 0, 0, 0.65);
   --accent:        #de0000;              /* light-mode accent — red */
   --accent-rgb:    222, 0, 0;
-  --line:          rgba(0, 0, 0, 0.15);
+  --line:          rgba(0, 0, 0, 0.35);
+  --cursor-url:    url("ASSETS/LOGO/cursor_dede_red.png");
 }
 
 /* Baseline that carries the theme everywhere pages don't override it. */
@@ -66,10 +68,12 @@ html { background: var(--bg); }
 :root:not([data-theme="light"]) .theme-img--dark { display: block !important; }
 :root[data-theme="light"] .theme-img--light { display: block !important; }
 
-/* Non-theme-swapped cyan-tinted images (home cycle, per-page brand marks
-   without a light variant) fall back to hue-rotate. Pure #00dede → #de0000
-   exactly, but with anti-aliasing artifacts on soft edges. */
+/* Non-theme-swapped cyan-tinted images (home cycle, marquee icons, per-page
+   brand marks without a light variant) fall back to hue-rotate. Pure #00dede
+   → #de0000 exactly, but with anti-aliasing artifacts on soft edges. The
+   `i` flag makes the attribute match case-insensitive so filenames using
+   either _cyan or _CYAN both hit. */
 [data-theme="light"] .theme-tint,
-[data-theme="light"] img[src*="_cyan"]:not(.theme-img) {
+[data-theme="light"] img[src*="_cyan" i]:not(.theme-img) {
   filter: hue-rotate(180deg);
 }

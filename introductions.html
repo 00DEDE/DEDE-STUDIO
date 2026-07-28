@@ -40,11 +40,11 @@
     width: 100%;
     overflow-x: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, auto;
+    cursor: var(--cursor-url) 16 16, auto;
   }
   body { background: transparent; }
   a, button, [role="button"] {
-    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+    cursor: var(--cursor-url) 16 16, pointer;
   }
 
   /* One continuous block — cycling statement flows into the first paragraph,
@@ -83,7 +83,7 @@
      iOS treat them as tappable AND promote them onto their own compositor
      layer so opacity flips actually repaint. */
   .intro p {
-    cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+    cursor: var(--cursor-url) 16 16, pointer;
     -webkit-tap-highlight-color: transparent;
     will-change: opacity;
     outline: none;
@@ -255,7 +255,7 @@
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
-      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_red.png" alt="DEDE STUDIO" />
+      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_black.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-footer__meta">
       <div class="site-footer__meta-left">

@@ -102,7 +102,7 @@
   border: 1px solid var(--fg);
   background: transparent;
   border-radius: 999px;
-  cursor: url("ASSETS/LOGO/cursor_dede.png") 16 16, pointer;
+  cursor: var(--cursor-url) 16 16, pointer;
   outline: none;
   transition: border-color var(--dur-medium) var(--ease-standard),
               opacity       var(--dur-quick)  var(--ease-standard);
