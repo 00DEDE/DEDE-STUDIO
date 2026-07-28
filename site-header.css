@@ -1,47 +1,33 @@
-/* Shared top nav — included on every content page. */
+/* Shared top nav — included on every content page. The header is
+   *always* the floating pill (no full-width block state), so there's
+   no jarring size flip on scroll. .is-scrolled still flips (via JS) —
+   on mobile it collapses the stacked nav; on desktop it's a no-op.
+
+   The JS in site-header.js publishes the header's live bottom-edge Y
+   as --header-safe-top; this rule uses it to inset every page's first
+   content below the pill, matching height changes as the header
+   expands / collapses. */
+body:has(.site-header) {
+  padding-top: var(--header-safe-top, 5rem);
+  transition: padding-top var(--dur-medium) var(--ease-out-expo);
+}
+
 .site-header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0.75rem;
+  left: 1rem;
+  right: 1rem;
   z-index: 100;
-  padding: 1.25rem 1.5rem;
+  padding: 0.75rem 1.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   pointer-events: none;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  /* Frosted-glass effect: soft gaussian blur applied to whatever sits behind
-     the header. A thin dark tint holds the "glass" together; saturation is
-     nudged up so cyan reads through. Prefixed for older Safari. */
-  /* Frosted tint follows the theme — dark tint on dark bg, light on light. */
-  background: rgba(var(--accent-rgb, 5, 5, 5), 0);   /* placeholder, real color below */
-  background: color-mix(in srgb, var(--bg) 25%, transparent);
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
           backdrop-filter: blur(14px) saturate(1.4);
-  border-radius: 0;
-  /* Promote to its own compositor layer BEFORE the class flips, so the
-     first frame of the animation isn't the one where the layer is created
-     (that first-frame stutter is a big chunk of the perceived jank). */
-  will-change: top, left, right, padding, background, border-radius;
-  transition:
-    top             var(--dur-quick) var(--ease-standard),
-    left            var(--dur-quick) var(--ease-standard),
-    right           var(--dur-quick) var(--ease-standard),
-    padding         var(--dur-quick) var(--ease-standard),
-    border-radius   var(--dur-quick) var(--ease-standard),
-    background      var(--dur-quick) var(--ease-standard),
-    box-shadow      var(--dur-quick) var(--ease-standard);
-}
-/* Once the page has scrolled past a small threshold, the header lifts off
-   the top edge and rounds into a floating pill. JS toggles .is-scrolled. */
-.site-header.is-scrolled {
-  top: 0.75rem;
-  left: 1rem;
-  right: 1rem;
   border-radius: 999px;
-  padding: 0.75rem 1.75rem;
-  background: color-mix(in srgb, var(--bg) 45%, transparent);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 .site-header > * { pointer-events: auto; }
@@ -130,24 +116,24 @@
 
 @media (max-width: 640px) {
   /* Mobile layout: DĒDĒ logo, then toggle directly below it, then the
-     nav pages as a vertical list. When the page scrolls past .is-scrolled,
-     the nav list hides — only the logo + toggle remain, and the
-     scroll-to-top button (see .scroll-top below) becomes the way back. */
+     nav pages as a vertical list. Full-open at top of page; on scroll
+     the nav list retracts one item at a time. */
   .site-header {
     flex-direction: column;
     align-items: center;
-    padding: 0.94rem 1.25rem 1.1rem;
-    gap: 0.6rem;
+    padding: 1rem 1.25rem 1.15rem;
+    gap: 0.65rem;
+    border-radius: 1.75rem;
+    /* Padding transitions so the pill shrinks smoothly when the nav
+       items retract below (their max-height animates to 0). */
+    transition: padding var(--dur-medium) var(--ease-out-expo),
+                border-radius var(--dur-medium) var(--ease-out-expo);
   }
   .site-header.is-scrolled {
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
-    border-radius: 1.5rem;
-    padding: 0.7rem 1rem;
+    padding: 0.75rem 1.15rem;
+    border-radius: 999px;
     gap: 0.5rem;
   }
-  /* Match the home-page mobile logo sizing exactly. */
   .site-header__brand img {
     width: 13.75vw;
     max-width: 200px;
@@ -158,7 +144,7 @@
   .site-header__end {
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.7rem;
   }
   .site-header__theme-toggle { order: 1; }
   .site-header__nav {
@@ -169,12 +155,42 @@
     gap: 0.35rem;
   }
   .site-header__nav a {
+    display: block;
     font-size: 0.95rem;
     text-align: center;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    /* Cascade in / out one item at a time. Nav items ride opacity +
+       translateY + max-height together so the pill also collapses in
+       height as they retract. Individual stagger delays below drive
+       the "one by one" reveal / retreat. */
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 2em;
+    overflow: hidden;
+    transition:
+      opacity    var(--dur-medium) var(--ease-out-expo),
+      transform  var(--dur-medium) var(--ease-out-expo),
+      max-height var(--dur-medium) var(--ease-out-expo);
   }
-  /* Collapsed on scroll — hide the nav list entirely, leave logo + toggle. */
-  .site-header.is-scrolled .site-header__nav {
-    display: none;
+  /* Expanded — items cascade IN top → bottom (first item first). */
+  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(1) { transition-delay: 120ms; }
+  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(2) { transition-delay: 220ms; }
+  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(3) { transition-delay: 320ms; }
+  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(4) { transition-delay: 420ms; }
+
+  /* Collapsed — items retract bottom → top (last item first). Retract
+     completes before the pill's own padding transition starts collapsing. */
+  .site-header.is-scrolled .site-header__nav a {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+    pointer-events: none;
   }
+  .site-header.is-scrolled .site-header__nav a:nth-child(4) { transition-delay: 0ms;   }
+  .site-header.is-scrolled .site-header__nav a:nth-child(3) { transition-delay: 90ms;  }
+  .site-header.is-scrolled .site-header__nav a:nth-child(2) { transition-delay: 180ms; }
+  .site-header.is-scrolled .site-header__nav a:nth-child(1) { transition-delay: 270ms; }
+  /* Delay the pill's own padding shrink until items are ~half-way out. */
+  .site-header.is-scrolled { transition-delay: 220ms; }
 }

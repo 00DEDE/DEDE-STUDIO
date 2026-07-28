@@ -46,6 +46,33 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   update();
 
+  // ---- Header-safe-top CSS variable -------------------------------------
+  // Publish the header's current bottom-edge Y (in px, viewport-relative)
+  // as --header-safe-top on the document root. Page CSS uses this for
+  // body padding + sticky offsets so nothing ever ends up under the pill,
+  // even as the header collapses / expands.
+  var setHeaderTop = function () {
+    var rect = header.getBoundingClientRect();
+    document.documentElement.style.setProperty(
+      '--header-safe-top', rect.bottom + 'px'
+    );
+  };
+  setHeaderTop();
+  if (window.ResizeObserver) {
+    new ResizeObserver(setHeaderTop).observe(header);
+  }
+  window.addEventListener('resize', setHeaderTop, { passive: true });
+  // CSS transitions on the header (padding / border-radius shrinking) can
+  // fire multiple sub-events; capture the final settled value too.
+  header.addEventListener('transitionend', setHeaderTop);
+  // Scroll toggles .is-scrolled → header animates → re-measure a few times
+  // during the transition so consumers stay in sync.
+  window.addEventListener('scroll', function () {
+    setTimeout(setHeaderTop, 100);
+    setTimeout(setHeaderTop, 350);
+    setTimeout(setHeaderTop, 600);
+  }, { passive: true });
+
   // ---- Scroll-to-top button ---------------------------------------------
   // Shown on mobile (via CSS) once the page has scrolled past a threshold.
   // Clicking it smooth-scrolls back to y=0, which re-expands the collapsed
