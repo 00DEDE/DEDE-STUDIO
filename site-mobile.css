@@ -1,14 +1,14 @@
-/* Mobile-only enhancements — scroll-to-top button + a horizontal
-   spotlight mask on the marquee (the desktop cursor-mask has nothing
-   to track on touch, so we auto-animate it instead). */
+/* Mobile-only enhancements. All rules below are behind the same
+   (max-width: 640px) media query — one block, so a single cascade
+   pass on mobile instead of three. Keyframes / reduced-motion
+   fallbacks live at the file root because they don't need scoping. */
 
 @media (max-width: 640px) {
-  /* Marquee mobile spotlight — same radial mask size as the quote's
-     (68.75vw), but pinned to vertical centre (mask-position Y = 50%)
-     and only the X coordinate animates. As the mask sweeps back and
-     forth, the sharp copy of the marquee text + icons appears where
-     the mask is opaque and blurs back into the base layer where it's
-     transparent. */
+  /* ─── Marquee mobile spotlight ────────────────────────────────────
+     The desktop cursor-mask has nothing to track on touch, so we
+     auto-animate a radial mask across the sharp copy instead. Mask
+     size sits centred vertically; only X animates → cheap per-frame
+     update (no gradient re-cook). */
   .marquee-band__sharp {
     -webkit-mask-image: radial-gradient(circle,
       #000 30%, transparent 65%);
@@ -21,28 +21,37 @@
     -webkit-mask-position: -20% 50%;
             mask-position: -20% 50%;
     animation: marquee-spotlight 12s ease-in-out infinite;
+    /* Isolate so the mask animation doesn't repaint the whole
+       marquee scene — sharp overlay gets its own compositor layer. */
+    will-change: mask-position;
+    contain: paint;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .marquee-band__sharp { animation: none; }
-  }
-}
-@keyframes marquee-spotlight {
-  0%, 100% {
-    -webkit-mask-position: -20% 50%;
-            mask-position: -20% 50%;
-  }
-  50% {
-    -webkit-mask-position: 120% 50%;
-            mask-position: 120% 50%;
+
+  /* Marquee: tighten the top padding another 15% on mobile only. */
+  .marquee-band { padding-top: 2.92rem; }
+  /* Mobile blur is heavy at 20px full-screen — 12px reads the same
+     out-of-focus effect for much less painting cost. */
+  .marquee-band__blur { filter: blur(12px); }
+
+  /* ─── Scroll-to-top button (shown mobile-only) ────────────────── */
+  .scroll-top { display: block; }
+
+  /* ─── Nav link tap feedback ───────────────────────────────────── */
+  /* Briefly turn accent (cyan / red per theme) while the user's
+     finger is down. Responsive tap signal before navigation. */
+  .site-header__nav a:active,
+  .site-header__nav a:focus {
+    color: var(--accent);
+    opacity: 1;
   }
 }
 
 
-/* ─── Scroll-to-top button ─────────────────────────────────────────────
+/* ─── Scroll-to-top button (base styles) ─────────────────────────────
    Bottom-center floating pill with a pulsing accent glow — cyan in
-   dark mode, red in light mode via var(--accent-rgb). Reads as an
-   ambient element rather than a chrome button. Hidden by default;
-   JS toggles .is-visible once scroll passes the threshold. */
+   dark mode, red in light mode via var(--accent-rgb). Only surfaces
+   inside the mobile @media block above; base styles here so the
+   button can be shipped in every page's HTML without cost. */
 .scroll-top {
   display: none;
   position: fixed;
@@ -55,11 +64,12 @@
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-          backdrop-filter: blur(14px) saturate(1.4);
-  /* Arrow inherits accent — pure #00dede / #de0000 depending on theme,
-     so it reads as a glowing element rather than a chrome button. */
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  /* Lighter blur than the header (8px vs 14px). The button is small
+     enough that a stronger blur is imperceptible but proportionally
+     expensive to composite behind. */
+  -webkit-backdrop-filter: blur(8px) saturate(1.3);
+          backdrop-filter: blur(8px) saturate(1.3);
   color: var(--accent);
   font-size: 1.35rem;
   line-height: 1;
@@ -77,21 +87,29 @@
   transform: translateX(-50%) scale(0.94);
 }
 
-/* Ambient pulsing glow — layered box-shadow rings expand/contract on a
-   slow 2.8s cycle. Sits above the button's frosted-glass tint so the
-   glow reads on every background. */
+/* Ambient pulsing glow — two shadow rings expand/contract on a slow
+   2.8s cycle. Two layers instead of three: cheaper to paint each
+   frame with imperceptible difference in intensity. */
 @keyframes scroll-top-pulse {
   0%, 100% {
     box-shadow:
       0 0 22px  rgba(var(--accent-rgb), 0.45),
-      0 0 55px  rgba(var(--accent-rgb), 0.22),
       0 8px 20px rgba(0, 0, 0, 0.3);
   }
   50% {
     box-shadow:
       0 0 38px  rgba(var(--accent-rgb), 0.75),
-      0 0 90px  rgba(var(--accent-rgb), 0.4),
       0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+}
+@keyframes marquee-spotlight {
+  0%, 100% {
+    -webkit-mask-position: -20% 50%;
+            mask-position: -20% 50%;
+  }
+  50% {
+    -webkit-mask-position: 120% 50%;
+            mask-position: 120% 50%;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -99,24 +117,9 @@
     animation: none;
     box-shadow:
       0 0 28px rgba(var(--accent-rgb), 0.55),
-      0 0 60px rgba(var(--accent-rgb), 0.3),
       0 8px 20px rgba(0, 0, 0, 0.3);
   }
-}
-
-@media (max-width: 640px) {
-  .scroll-top { display: block; }
-
-  /* Marquee: tighten the top padding another 15% on mobile only. */
-  .marquee-band { padding-top: 2.92rem; }
-
-  /* Nav link tap feedback — briefly turn accent (cyan / red per theme)
-     while the user's finger is down. Provides responsive tap signal
-     before the browser navigates. */
-  .site-header__nav a:active,
-  .site-header__nav a:focus {
-    color: var(--accent);
-    opacity: 1;
+  @media (max-width: 640px) {
+    .marquee-band__sharp { animation: none; }
   }
 }
-

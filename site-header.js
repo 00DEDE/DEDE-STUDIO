@@ -21,75 +21,69 @@
     });
   }
 
-  // ---- Pill state on scroll ---------------------------------------------
   var header = document.querySelector('.site-header');
   if (!header) return;
-  var THRESHOLD = 20;
-  var isScrolled = false;
-  var ticking = false;
+
+  // ---- Header-safe-top CSS variable -------------------------------------
+  // Publish the header's bottom-edge Y (px, viewport-relative) as
+  // --header-safe-top on the root. Page CSS uses it for body padding
+  // + sticky offsets so nothing ever ends up under the pill.
+  function setHeaderTop() {
+    var rect = header.getBoundingClientRect();
+    document.documentElement.style.setProperty('--header-safe-top', rect.bottom + 'px');
+  }
+  setHeaderTop();
+  if (window.ResizeObserver) new ResizeObserver(setHeaderTop).observe(header);
+  window.addEventListener('resize', setHeaderTop, { passive: true });
+  // Transitions on the header (padding / border-radius shrinking) fire
+  // multiple sub-events; capture the settled value at the end.
+  header.addEventListener('transitionend', setHeaderTop);
+
+  // ---- Unified scroll handler -------------------------------------------
+  // ONE scroll listener does everything: pill-state toggle, scroll-top
+  // visibility, and — only when the pill state actually flips — schedules
+  // a short burst of re-measures to keep --header-safe-top in sync
+  // during the pill's own padding transition. Previously each of these
+  // ran on its own listener, and the re-measure burst fired on EVERY
+  // scroll frame instead of only on the flip.
+  var THRESHOLD    = 20;
+  var TOP_VISIBLE  = 400;
+  var isScrolled   = false;
+  var ticking      = false;
+  var scrollTop    = document.querySelector('.scroll-top');
 
   function update() {
-    var shouldBeScrolled = window.scrollY > THRESHOLD;
+    var y = window.scrollY;
+
+    var shouldBeScrolled = y > THRESHOLD;
     if (shouldBeScrolled !== isScrolled) {
       isScrolled = shouldBeScrolled;
       header.classList.toggle('is-scrolled', isScrolled);
+      // Header is now animating its padding. Re-measure a few times
+      // during the transition; transitionend catches the final.
+      setTimeout(setHeaderTop, 100);
+      setTimeout(setHeaderTop, 350);
+      setTimeout(setHeaderTop, 600);
     }
+
+    if (scrollTop) scrollTop.classList.toggle('is-visible', y > TOP_VISIBLE);
+
     ticking = false;
   }
-  function onScroll() {
-    if (!ticking) {
-      requestAnimationFrame(update);
-      ticking = true;
-    }
-  }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }, { passive: true });
   update();
 
-  // ---- Header-safe-top CSS variable -------------------------------------
-  // Publish the header's current bottom-edge Y (in px, viewport-relative)
-  // as --header-safe-top on the document root. Page CSS uses this for
-  // body padding + sticky offsets so nothing ever ends up under the pill,
-  // even as the header collapses / expands.
-  var setHeaderTop = function () {
-    var rect = header.getBoundingClientRect();
-    document.documentElement.style.setProperty(
-      '--header-safe-top', rect.bottom + 'px'
-    );
-  };
-  setHeaderTop();
-  if (window.ResizeObserver) {
-    new ResizeObserver(setHeaderTop).observe(header);
-  }
-  window.addEventListener('resize', setHeaderTop, { passive: true });
-  // CSS transitions on the header (padding / border-radius shrinking) can
-  // fire multiple sub-events; capture the final settled value too.
-  header.addEventListener('transitionend', setHeaderTop);
-  // Scroll toggles .is-scrolled → header animates → re-measure a few times
-  // during the transition so consumers stay in sync.
-  window.addEventListener('scroll', function () {
-    setTimeout(setHeaderTop, 100);
-    setTimeout(setHeaderTop, 350);
-    setTimeout(setHeaderTop, 600);
-  }, { passive: true });
-
-  // ---- Scroll-to-top button ---------------------------------------------
-  // Shown on mobile (via CSS) once the page has scrolled past a threshold.
-  // Clicking it smooth-scrolls back to y=0, which re-expands the collapsed
+  // ---- Scroll-to-top button click ---------------------------------------
+  // Clicking smooth-scrolls back to y=0, which re-expands the collapsed
   // mobile header so the nav list is visible again.
-  var scrollTop = document.querySelector('.scroll-top');
   if (scrollTop) {
     scrollTop.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    var stTicking = false;
-    window.addEventListener('scroll', function () {
-      if (stTicking) return;
-      stTicking = true;
-      requestAnimationFrame(function () {
-        scrollTop.classList.toggle('is-visible', window.scrollY > 400);
-        stTicking = false;
-      });
-    }, { passive: true });
   }
 })();

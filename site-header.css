@@ -124,13 +124,19 @@ body:has(.site-header) {
     padding: 1rem 1.25rem 1.15rem;
     gap: 0.65rem;
     border-radius: 1.75rem;
+    /* Cheaper blur + slightly more opaque backdrop tint on mobile.
+       Reads the same frosted-glass at a fraction of the compositor
+       cost of the 14px + saturate(1.4) desktop version. */
+    background: color-mix(in srgb, var(--bg) 65%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
     /* Padding transitions so the pill shrinks smoothly when the nav
        items retract below (their max-height animates to 0). */
     transition: padding var(--dur-medium) var(--ease-out-expo),
                 border-radius var(--dur-medium) var(--ease-out-expo);
   }
   .site-header.is-scrolled {
-    padding: 0.75rem 1.15rem;
+    padding: 0.75rem 1.15rem 0.675rem;   /* bottom −10% below toggle */
     border-radius: 999px;
     gap: 0.5rem;
   }

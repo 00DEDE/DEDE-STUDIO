@@ -180,21 +180,22 @@
      the "into focus" moment. */
   .selections__band--stacked .band__sharp { display: none; }
 
-  /* Mobile quote reveal — per-word. Each word blurs independently and
-     JS toggles .is-clear on them in reading order with a uniform 500ms
-     interval, so every word takes exactly the same time to fade into
-     focus. No mask, no line-scan — words simply appear one at a time. */
+  /* Mobile quote reveal — line-by-line. Each of the three .line spans
+     blurs independently and JS toggles .is-clear on them top → bottom
+     at a uniform interval. Three filter targets instead of fourteen
+     (per-word) — big drop in painting cost on mobile GPUs. */
   @media (max-width: 640px) {
     .selections__band--stacked .band__sharp { display: none; }
     .selections__band--stacked .band__blur  { filter: none; }
-    .selections__band--stacked .word {
+    .selections__band--stacked .word        { filter: none; cursor: default; transition: none; }
+    .selections__band--stacked .line {
+      display: block;
       filter: blur(12px);
       transition: filter var(--dur-medium) var(--ease-out-expo);
-      cursor: default;
     }
-    .selections__band--stacked .word.is-clear { filter: none; }
+    .selections__band--stacked .line.is-clear { filter: none; }
     @media (prefers-reduced-motion: reduce) {
-      .selections__band--stacked .word { filter: none; }
+      .selections__band--stacked .line { filter: none; }
     }
   }
 
@@ -508,10 +509,14 @@
     <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, will in return give life to us.">
       <span class="band__layers" aria-hidden="true">
         <span class="band__blur">
-          <span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span> <span class="word">will</span> <span class="word">in</span> <span class="word">return</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span>
+          <span class="line"><span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span></span>
+          <span class="line"><span class="word">will</span> <span class="word">in</span> <span class="word">return</span></span>
+          <span class="line"><span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span></span>
         </span>
         <span class="band__sharp">
-          <span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span> <span class="word">will</span> <span class="word">in</span> <span class="word">return</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span>
+          <span class="line"><span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span></span>
+          <span class="line"><span class="word">will</span> <span class="word">in</span> <span class="word">return</span></span>
+          <span class="line"><span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span></span>
         </span>
       </span>
     </h2>
@@ -655,36 +660,35 @@
     /* Marquee cursor-tracking spotlight lives in site-marquee.js (shared
        with the introductions + connections pages). */
 
-    /* ─── per-word reveal on the quote band ──────────────────────────── */
-    // Desktop / hover: cursor or tap on a word clears it permanently.
-    document.querySelectorAll('.selections__band--stacked .word').forEach((word) => {
-      const reveal = () => word.classList.add('is-clear');
-      word.addEventListener('mouseenter', reveal);
-      word.addEventListener('touchstart', reveal, { passive: true });
-    });
+    /* ─── quote band reveal ──────────────────────────────────────────── */
+    const isMobile = window.matchMedia('(max-width: 640px)').matches;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* Mobile: auto-cycle each word into focus at a uniform 500ms
-       interval, hold the whole quote clear for 4s, reblur all at once,
-       pause 1.4s, repeat. Every word takes the same 480ms filter
-       transition — no varying pacing between them. */
-    if (window.matchMedia('(max-width: 640px)').matches &&
-        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const qWords = document.querySelectorAll('.selections__band--stacked .word');
-      if (qWords.length) {
-        const WORD_INTERVAL = 500;
-        const HOLD_MS       = 4000;
+    if (!isMobile) {
+      /* Desktop / hover: cursor on a word clears it permanently. Not
+         attached on mobile — mobile runs the auto-cycle instead and
+         these listeners would fight it. */
+      document.querySelectorAll('.selections__band--stacked .word').forEach((word) => {
+        const reveal = () => word.classList.add('is-clear');
+        word.addEventListener('mouseenter', reveal);
+      });
+    } else if (!reducedMotion) {
+      /* Mobile: auto-cycle each line into focus at a uniform 1.8s
+         interval — line 1, then 2, then 3 — hold the whole quote clear
+         for 3.8s, reblur all at once, pause 1.4s, repeat. Every line
+         uses the same filter-transition duration; no varying pace. */
+      const qLines = document.querySelectorAll('.selections__band--stacked .band__blur .line');
+      if (qLines.length) {
+        const LINE_INTERVAL = 1800;
+        const HOLD_MS       = 3800;
         const RESET_MS      = 1400;
         (function loop() {
-          // Reblur every word (removes any lingering .is-clear).
-          qWords.forEach((w) => w.classList.remove('is-clear'));
-          // After the reblur transition settles, start uncovering words.
+          qLines.forEach((l) => l.classList.remove('is-clear'));
           setTimeout(function reveal() {
-            qWords.forEach((w, i) => {
-              setTimeout(() => w.classList.add('is-clear'), i * WORD_INTERVAL);
+            qLines.forEach((l, i) => {
+              setTimeout(() => l.classList.add('is-clear'), i * LINE_INTERVAL);
             });
-            // Once the last word has appeared, hold everyone clear
-            // for HOLD_MS, then restart the loop.
-            setTimeout(loop, qWords.length * WORD_INTERVAL + HOLD_MS);
+            setTimeout(loop, qLines.length * LINE_INTERVAL + HOLD_MS);
           }, RESET_MS);
         })();
       }
