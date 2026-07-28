@@ -102,20 +102,10 @@
   .site-bg__blob { animation: none; }
 }
 
-/* Light mode: strip every background gradient except one. All four
-   animated blobs + the grain overlay are hidden; a single soft red
-   ambient gradient replaces them, painted directly on .site-bg. */
-[data-theme="light"] .site-bg__blob,
-[data-theme="light"] .site-bg::after {
-  display: none;
-}
-[data-theme="light"] .site-bg {
-  background:
-    radial-gradient(70% 55% at 50% 35%,
-      rgba(var(--accent-rgb), 0.06) 0%,
-      rgba(var(--accent-rgb), 0)   70%),
-    var(--bg);
-}
+/* Light mode uses the SAME blob layout as dark mode — the cyan blobs
+   auto-swap to red because their color is `rgba(var(--accent-rgb), α)`
+   and --accent-rgb becomes 222,0,0 under [data-theme="light"]. Nothing
+   is hidden or overridden here on purpose. */
 
 /* Mobile: giant blurs + mix-blend-mode + continuous transform animations
    tank framerate. Swap the whole thing for a static painted radial gradient

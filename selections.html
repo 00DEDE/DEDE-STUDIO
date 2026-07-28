@@ -412,6 +412,7 @@
       </div>
     </header>
     <script src="site-header.js" defer></script>
+    <script src="site-bg.js" defer></script>
     <script src="site-marquee.js" defer></script>
 
     <section class="selections__scene">
@@ -541,6 +542,44 @@
     const html = document.documentElement;
     const cells = document.querySelectorAll('.cell');
     const isTouch = window.matchMedia('(hover: none)').matches;
+
+    /* ─── sticky heading fade-on-scroll ──────────────────────────────── */
+    // Sticky marquee + quote fade to opacity 0 as soon as the user
+    // scrolls past their natural top position. The fade completes in
+    // 150 px of scroll, so the headings disappear quickly instead of
+    // lingering partially visible above the cells that are rising to
+    // cover them. Reverses on scroll-up so the headings reappear.
+    const stickies = [
+      document.querySelector('.selections__scene:first-of-type > .marquee-band'),
+      document.querySelector('.selections__band--stacked'),
+    ].filter(Boolean);
+    if (stickies.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const FADE_RANGE = 150;
+      const anchors = new Map();
+      function measure() {
+        stickies.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          anchors.set(el, rect.top + window.scrollY - (parseFloat(getComputedStyle(el).top) || 0));
+        });
+      }
+      measure();
+      window.addEventListener('resize', measure, { passive: true });
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          stickies.forEach((el) => {
+            const anchor = anchors.get(el);
+            const p = Math.max(0, Math.min(1, (y - anchor) / FADE_RANGE));
+            el.style.opacity = 1 - p;
+          });
+          ticking = false;
+        });
+      }, { passive: true });
+    }
 
     /* ─── per-cell interaction ───────────────────────────────────────── */
     // The per-cell hover backdrop gradient is gone in both modes — the
