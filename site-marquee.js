@@ -6,7 +6,7 @@
         for a ~9600px phrase → 200 px/s).
 */
 (function () {
-  const REFERENCE_SPEED = 200; // pixels per second
+  const REFERENCE_SPEED = 160; // pixels per second (20% slower than before)
 
   function tuneSpeed() {
     document.querySelectorAll('.marquee-band').forEach((band) => {

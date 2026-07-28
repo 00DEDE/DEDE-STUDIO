@@ -63,25 +63,19 @@
     height: auto;
   }
 
-  /* Organic jellyfish breathing — multi-key asymmetric pulse with a
-     subtle vertical drift, so the logo feels alive rather than
-     mechanically pulsing. Each cycle: quick inhale, hold, slow exhale,
-     gentle undershoot, back to rest. Cycle ends exactly at scale(1) /
-     translateY(0), matching the base transform, so removing the class
-     after N full cycles doesn't snap. */
+  /* Jellyfish breathing — one continuous, symmetric inhale-exhale.
+     Only two keyframes plus a smooth ease-in-out timing function, so
+     there are no velocity discontinuities and nothing to read as chop.
+     Each cycle ends exactly at scale(1), matching the base transform,
+     so removing the class after N full cycles hands off cleanly. */
   .logo.is-breathing {
-    animation: logo-breathe 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: logo-breathe 4s ease-in-out infinite;
     transform-origin: center center;
     will-change: transform;
   }
   @keyframes logo-breathe {
-    0%   { transform: translate(-50%, -50%) scale(1)     translateY(0px);  }
-    18%  { transform: translate(-50%, -50%) scale(1.07)  translateY(-6px); }
-    32%  { transform: translate(-50%, -50%) scale(1.11)  translateY(-9px); }
-    50%  { transform: translate(-50%, -50%) scale(1.02)  translateY(-2px); }
-    65%  { transform: translate(-50%, -50%) scale(0.965) translateY(5px);  }
-    82%  { transform: translate(-50%, -50%) scale(1.01)  translateY(1px);  }
-    100% { transform: translate(-50%, -50%) scale(1)     translateY(0px);  }
+    0%, 100% { transform: translate(-50%, -50%) scale(1);    }
+    50%      { transform: translate(-50%, -50%) scale(1.08); }
   }
 
   /* Hand-off: a gentle opacity fade instead of a scale burst. The
@@ -126,7 +120,7 @@
       const DURATION_MS      = 5000;   // total cycle window
       const START_INTERVAL   = 420;    // graceful cadence at t=0
       const END_INTERVAL     = 40;     // rapid cadence at t=DURATION
-      const FLOAT_MS         = 6000;   // two full 3s organic breath cycles
+      const FLOAT_MS         = 8000;   // two full 4s breath cycles
       const FADE_MS          = 700;    // matches the CSS logo-fade-out
       const REDIRECT_AT_MS   = 500;    // navigate mid-fade for a smooth hand-off
 
