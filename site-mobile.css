@@ -1,7 +1,42 @@
-/* Mobile-only enhancements — currently just the scroll-to-top button.
-   The marquee + quote render identically to the desktop version on
-   mobile too (via site-marquee.css + the selections page's own CSS);
-   nothing about them is overridden here. */
+/* Mobile-only enhancements — scroll-to-top button + a horizontal
+   spotlight mask on the marquee (the desktop cursor-mask has nothing
+   to track on touch, so we auto-animate it instead). */
+
+@media (max-width: 640px) {
+  /* Marquee mobile spotlight — same radial mask size as the quote's
+     (68.75vw), but pinned to vertical centre (mask-position Y = 50%)
+     and only the X coordinate animates. As the mask sweeps back and
+     forth, the sharp copy of the marquee text + icons appears where
+     the mask is opaque and blurs back into the base layer where it's
+     transparent. */
+  .marquee-band__sharp {
+    -webkit-mask-image: radial-gradient(circle,
+      #000 30%, transparent 65%);
+            mask-image: radial-gradient(circle,
+      #000 30%, transparent 65%);
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-size: 68.75vw 68.75vw;
+            mask-size: 68.75vw 68.75vw;
+    -webkit-mask-position: -20% 50%;
+            mask-position: -20% 50%;
+    animation: marquee-spotlight 12s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-band__sharp { animation: none; }
+  }
+}
+@keyframes marquee-spotlight {
+  0%, 100% {
+    -webkit-mask-position: -20% 50%;
+            mask-position: -20% 50%;
+  }
+  50% {
+    -webkit-mask-position: 120% 50%;
+            mask-position: 120% 50%;
+  }
+}
+
 
 /* ─── Scroll-to-top button ─────────────────────────────────────────────
    Bottom-center floating pill with a pulsing accent glow — cyan in

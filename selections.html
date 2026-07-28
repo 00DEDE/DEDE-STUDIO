@@ -209,11 +209,11 @@
         #000 30%, transparent 65%);
       -webkit-mask-repeat: no-repeat;
               mask-repeat: no-repeat;
-      -webkit-mask-size: 55vw 55vw;
-              mask-size: 55vw 55vw;
+      -webkit-mask-size: 68.75vw 68.75vw;    /* 55vw × 1.25 — 25% bigger */
+              mask-size: 68.75vw 68.75vw;
       -webkit-mask-position: 15% 20%;
               mask-position: 15% 20%;
-      animation: quote-spotlight 15s ease-in-out infinite;
+      animation: quote-spotlight 12s ease-in-out infinite;  /* 15s × 0.8 — 20% faster */
     }
     @media (prefers-reduced-motion: reduce) {
       .selections__band--stacked .band__sharp { animation: none; }
