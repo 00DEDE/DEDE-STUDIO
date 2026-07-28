@@ -52,6 +52,13 @@
   }
   @media (max-width: 640px) {
     .hello { padding: 0 1.25rem 6rem; }
+    /* Tighten the leading 30% on mobile — reduces the gap between
+       lines / paragraphs so the contact block reads as a tight unit. */
+    .hello p {
+      line-height: 0.7;              /* 0.99 × 0.7 */
+      margin-bottom: 1.75rem;        /* 2.5rem × 0.7 */
+    }
+    .hello p:last-child { margin-bottom: 0; }
   }
   .hello p {
     color: var(--fg);

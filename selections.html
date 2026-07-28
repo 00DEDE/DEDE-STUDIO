@@ -216,7 +216,7 @@
       -webkit-mask-size: 100% 0%;
               mask-size: 100% 0%;
       opacity: 0;
-      animation: quote-reveal 12s ease-in-out infinite;
+      animation: quote-reveal 20s ease-in-out infinite;
     }
     @media (prefers-reduced-motion: reduce) {
       .selections__band--stacked .band__sharp {
@@ -227,23 +227,45 @@
       }
     }
   }
-  /* Cycle timing across 12s:
-       0–8%:   fade in + first line starts to appear
-       8–30%:  line 1 fully clear
-       30–55%: line 2 uncovering (line 1 stays clear)
-       55–75%: line 3 uncovering (lines 1+2 stay clear)
-       75–90%: whole quote held fully clear
-       90–100%: fade out (mask + position reset while invisible)
-     The soft 15% falloff at the bottom of the mask gradient means each
-     new line eases in rather than snapping in. */
+  /* Organic reveal — slower (20s), irregular reveal pacing so the
+     descent doesn't feel mechanical. mask-position X wobbles ±3–6% to
+     add a lateral drift, breaking the rigid vertical march. Each line
+     stays clear once uncovered — user has time to read the whole quote
+     before it fades out and starts again. */
   @keyframes quote-reveal {
-    0%   { -webkit-mask-size: 100% 0%;   mask-size: 100% 0%;   opacity: 0; }
-    8%   { -webkit-mask-size: 100% 22%;  mask-size: 100% 22%;  opacity: 1; }
-    30%  { -webkit-mask-size: 100% 40%;  mask-size: 100% 40%;  opacity: 1; }
-    55%  { -webkit-mask-size: 100% 72%;  mask-size: 100% 72%;  opacity: 1; }
-    75%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 1; }
-    90%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 1; }
-    100% { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 0; }
+    0%   { -webkit-mask-size: 100% 0%;   mask-size: 100% 0%;
+           -webkit-mask-position: 2% 0;  mask-position: 2% 0;
+           opacity: 0; }
+    5%   { -webkit-mask-size: 100% 14%;  mask-size: 100% 14%;
+           -webkit-mask-position: -2% 0; mask-position: -2% 0;
+           opacity: 1; }
+    14%  { -webkit-mask-size: 100% 24%;  mask-size: 100% 24%;
+           -webkit-mask-position: 3% 0;  mask-position: 3% 0;
+           opacity: 1; }
+    22%  { -webkit-mask-size: 100% 30%;  mask-size: 100% 30%;
+           -webkit-mask-position: -1% 0; mask-position: -1% 0;
+           opacity: 1; }
+    35%  { -webkit-mask-size: 100% 48%;  mask-size: 100% 48%;
+           -webkit-mask-position: 4% 0;  mask-position: 4% 0;
+           opacity: 1; }
+    46%  { -webkit-mask-size: 100% 58%;  mask-size: 100% 58%;
+           -webkit-mask-position: -3% 0; mask-position: -3% 0;
+           opacity: 1; }
+    58%  { -webkit-mask-size: 100% 72%;  mask-size: 100% 72%;
+           -webkit-mask-position: 2% 0;  mask-position: 2% 0;
+           opacity: 1; }
+    72%  { -webkit-mask-size: 100% 92%;  mask-size: 100% 92%;
+           -webkit-mask-position: -1% 0; mask-position: -1% 0;
+           opacity: 1; }
+    82%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+           -webkit-mask-position: 0 0;   mask-position: 0 0;
+           opacity: 1; }
+    93%  { -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+           -webkit-mask-position: 0 0;   mask-position: 0 0;
+           opacity: 1; }
+    100% { -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+           -webkit-mask-position: 0 0;   mask-position: 0 0;
+           opacity: 0; }
   }
 
   /* Marquee styles + cursor-tracking JS live in site-marquee.{css,js} —
@@ -310,11 +332,14 @@
                 transform var(--dur-atmospheric) var(--ease-out-expo);
     z-index: 0;
   }
+  /* Desktop hover keeps its transparent background (blobs read through);
+     mobile TAP (.is-active, added by touch JS only) inherits the .cell
+     fg-fill instead so the sticky marquee never shows through the
+     dimmed image on a click. */
   @media (hover: hover) {
     .cell--cover:hover { background-color: transparent; }
     .cell--cover:hover::before { opacity: 0.4; transform: scale(1.02); }
   }
-  .cell--cover.is-active { background-color: transparent; }
   .cell--cover.is-active::before { opacity: 0.4; transform: scale(1.02); }
 
   /* ─── carousel cells (multi-slide variant) ───────────────────────── */

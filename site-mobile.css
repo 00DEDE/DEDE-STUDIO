@@ -106,4 +106,17 @@
 
 @media (max-width: 640px) {
   .scroll-top { display: block; }
+
+  /* Marquee: tighten the top padding another 15% on mobile only. */
+  .marquee-band { padding-top: 2.92rem; }
+
+  /* Nav link tap feedback — briefly turn accent (cyan / red per theme)
+     while the user's finger is down. Provides responsive tap signal
+     before the browser navigates. */
+  .site-header__nav a:active,
+  .site-header__nav a:focus {
+    color: var(--accent);
+    opacity: 1;
+  }
 }
+

@@ -63,6 +63,10 @@
   }
   @media (max-width: 640px) {
     .intro { padding: 0 1.25rem 6rem; }
+    /* Justify makes word-spacing dynamic — cycling the predicate
+       ("A STORY TELLER" ↔ "A CREATIVE" etc.) then shifts the "I AM"
+       spacing each swap. Left-align on mobile locks it in place. */
+    .intro__first { text-align: left; }
   }
   .intro p {
     color: var(--fg);
@@ -338,10 +342,29 @@
         if (variant.type === 'link') {
           el.innerHTML =
             variant.prefix +
-            '<a href="#" class="dede-link" onclick="event.preventDefault()">' +
+            '<a href="#" class="dede-link">' +
             variant.word +
             '</a>' +
             variant.suffix;
+          // Attach the tap handler DIRECTLY to the link — event
+          // delegation through the paragraph was intermittently missed
+          // on mobile Safari. click + touchend both bound; stopPropagation
+          // prevents the paragraph's focus-toggle from firing on top.
+          const link = el.querySelector('.dede-link');
+          if (link) {
+            let last = 0;
+            const toggle = function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              const now = Date.now();
+              if (now - last < 400) return; // click+touchend debounce
+              last = now;
+              const img = document.querySelector('.dede-image');
+              if (img) img.classList.toggle('is-shown');
+            };
+            link.addEventListener('click', toggle);
+            link.addEventListener('touchend', toggle);
+          }
         } else {
           el.textContent = variant.value;
         }
