@@ -105,6 +105,26 @@
     .cell { grid-column: 1 / -1; grid-row: auto; }
   }
 
+  /* Sticky scroll pattern — the marquee and the quote pin to the top of
+     their own scene while the cells inside that scene scroll up over
+     them. Each scene is a self-contained sticky range: when the scene
+     finishes scrolling past, its sticky heading releases and the next
+     scene's heading takes over. Cell z-index sits above the heading so
+     cells visually cover the sticky text as they pass; scrolling back
+     up reveals it again. */
+  .selections__scene {
+    position: relative;
+  }
+  .selections__scene > .marquee-band,
+  .selections__scene > .selections__band--stacked {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+  }
+  .selections__scene > .selections-grid {
+    z-index: 1;
+  }
+
   /* Full-bleed statement bands sit between / before the grids.
 
      Legibility effect (hover-capable devices only): the text is heavily
@@ -411,6 +431,7 @@
     <script src="site-header.js" defer></script>
     <script src="site-marquee.js" defer></script>
 
+    <section class="selections__scene">
     <h2 class="marquee-band" aria-label="Our handprint. Our voice. Our mind.">
       <span class="marquee-band__layers" aria-hidden="true">
         <span class="marquee-band__blur">
@@ -486,7 +507,9 @@
         <div class="cell__view">VIEW CASE</div>
       </a>
     </div>
+    </section>
 
+    <section class="selections__scene">
     <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, will in return give life to us.">
       <span class="band__layers" aria-hidden="true">
         <span class="band__blur">
@@ -518,6 +541,7 @@
         <div class="cell__view">VIEW CASE</div>
       </a>
     </div>
+    </section>
 
     <div class="scroll-cue" aria-hidden="true">
       <span class="scroll-cue__text">SCROLL</span>

@@ -32,7 +32,7 @@
   position: relative;
   z-index: 1;
   margin: 0;
-  padding: 3.825rem 0;
+  padding: 3.825rem 0 3.25rem;      /* bottom 15% tighter than top */
   overflow: hidden;
   color: var(--fg);
   font-family: "Akzidenz Grotesk",
