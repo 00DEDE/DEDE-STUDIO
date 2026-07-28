@@ -1,6 +1,7 @@
-/* Mobile-only enhancements — scroll-to-top button + roaming blur blobs
-   on the top marquee and the selections quote. Everything here is gated
-   behind (max-width: 640px) so desktop is untouched. */
+/* Mobile-only enhancements — currently just the scroll-to-top button.
+   The marquee + quote render identically to the desktop version on
+   mobile too (via site-marquee.css + the selections page's own CSS);
+   nothing about them is overridden here. */
 
 /* ─── Scroll-to-top button ─────────────────────────────────────────────
    Bottom-center floating pill with a pulsing accent glow — cyan in
@@ -70,77 +71,4 @@
 
 @media (max-width: 640px) {
   .scroll-top { display: block; }
-
-  /* ─── Marquee: roaming blur blob (mobile only) ────────────────────
-     On mobile there's no cursor to drive the sharp-mask spotlight, so
-     the previous full-blur was permanently obscuring the text. New
-     approach: text renders sharp; a single blob element drifts around
-     the band, blurring only what's under it via backdrop-filter. */
-  .marquee-band__blur { display: none; }
-  .marquee-band__sharp {
-    display: block;
-    -webkit-mask-image: none;
-            mask-image: none;
-  }
-  .marquee-band::before {
-    content: '';
-    position: absolute;
-    width: 45vw;
-    height: 45vw;
-    max-width: 260px;
-    max-height: 260px;
-    border-radius: 50%;
-    -webkit-backdrop-filter: blur(22px) saturate(1.2);
-            backdrop-filter: blur(22px) saturate(1.2);
-    pointer-events: none;
-    z-index: 5;
-    top: 20%;
-    left: 5%;
-    animation: marquee-blob-roam 14s ease-in-out infinite;
-    will-change: transform;
-  }
-
-  /* ─── Quote: roaming blur blob (mobile only) ─────────────────────── */
-  .selections__band--stacked { position: relative; }
-  .selections__band--stacked .word { filter: none; }
-  .selections__band--stacked::before {
-    content: '';
-    position: absolute;
-    width: 55vw;
-    height: 55vw;
-    max-width: 320px;
-    max-height: 320px;
-    border-radius: 50%;
-    -webkit-backdrop-filter: blur(24px) saturate(1.2);
-            backdrop-filter: blur(24px) saturate(1.2);
-    pointer-events: none;
-    z-index: 5;
-    top: 10%;
-    left: 15%;
-    animation: quote-blob-roam 18s ease-in-out infinite;
-    will-change: transform;
-  }
-}
-
-/* Non-linear roaming paths — asymmetric so the two blobs never trace
-   the same shape. Uses transform (compositor-cheap) rather than
-   animating top/left (which would trigger layout each frame). */
-@keyframes marquee-blob-roam {
-  0%   { transform: translate(0,     0);    }
-  20%  { transform: translate(120%,  30%);  }
-  40%  { transform: translate(190%,  -10%); }
-  60%  { transform: translate(60%,   50%);  }
-  80%  { transform: translate(-20%,  20%);  }
-  100% { transform: translate(0,     0);    }
-}
-@keyframes quote-blob-roam {
-  0%   { transform: translate(0,     0);    }
-  25%  { transform: translate(80%,   60%);  }
-  50%  { transform: translate(150%,  -20%); }
-  75%  { transform: translate(30%,   80%);  }
-  100% { transform: translate(0,     0);    }
-}
-@media (prefers-reduced-motion: reduce) {
-  .marquee-band::before,
-  .selections__band--stacked::before { animation: none; }
 }
