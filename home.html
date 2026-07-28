@@ -126,9 +126,9 @@
       const DURATION_MS      = 5000;   // total cycle window
       const START_INTERVAL   = 420;    // graceful cadence at t=0
       const END_INTERVAL     = 40;     // rapid cadence at t=DURATION
-      const FLOAT_MS         = 2000;   // stacked logo breathes for 2s (2 pulses)
-      const SCALE_OUT_MS     = 1400;   // matches the CSS animation
-      const REDIRECT_AT_MS   = 900;    // navigate while logo still covers viewport
+      const FLOAT_MS         = 6000;   // two full 3s organic breath cycles
+      const FADE_MS          = 700;    // matches the CSS logo-fade-out
+      const REDIRECT_AT_MS   = 500;    // navigate mid-fade for a smooth hand-off
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         window.location.replace('selections.html');
@@ -152,7 +152,7 @@
 
         if (elapsed >= DURATION_MS) {
           // Force the last frame onto the stacked logo, then start the
-          // 2-second breathing pause before the final scale-out reveal.
+          // organic breathing before the gentle fade-out hand-off.
           if (active !== STACKED_INDEX) {
             setTimeout(() => { show(STACKED_INDEX); startFloat(); }, END_INTERVAL);
           } else {
@@ -170,20 +170,21 @@
       }
 
       function startFloat() {
-        // Slow jellyfish-style pulse — two full breaths (2s at 1s per
-        // cycle). Because each cycle ends at scale(1), swapping to the
-        // scale-out below is a clean handoff with no visual snap.
+        // Organic jellyfish-style pulse — two full 3s cycles. Each
+        // cycle lands at scale(1) / translateY(0), matching the base
+        // transform, so removing the class at t=FLOAT_MS is a clean
+        // hand-off with no visual snap.
         logos[STACKED_INDEX].classList.add('is-breathing');
-        setTimeout(scaleOut, FLOAT_MS);
+        setTimeout(fadeOut, FLOAT_MS);
       }
 
-      function scaleOut() {
+      function fadeOut() {
         const stacked = logos[STACKED_INDEX];
         stacked.classList.remove('is-breathing');
-        stacked.classList.add('is-scaling-out');
-        // Hand off while the logo is at its most-covering point, so the
-        // page swap happens under cover of the animation rather than as
-        // a hard cut afterwards.
+        stacked.classList.add('is-fading');
+        // Redirect mid-fade so the page swap happens while the logo is
+        // still partially visible — smooths the transition into
+        // selections.
         setTimeout(() => window.location.replace('selections.html'), REDIRECT_AT_MS);
       }
 
