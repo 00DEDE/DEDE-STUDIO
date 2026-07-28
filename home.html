@@ -63,36 +63,42 @@
     height: auto;
   }
 
-  /* Final beat, part 1 — the stacked logo holds and breathes like a
-     jellyfish: two slow pulses in / out. Duration is 1s per pulse so
-     after 2s the animation lands cleanly back at scale(1) with no snap
-     when we swap it for the scale-out. */
+  /* Organic jellyfish breathing — multi-key asymmetric pulse with a
+     subtle vertical drift, so the logo feels alive rather than
+     mechanically pulsing. Each cycle: quick inhale, hold, slow exhale,
+     gentle undershoot, back to rest. Cycle ends exactly at scale(1) /
+     translateY(0), matching the base transform, so removing the class
+     after N full cycles doesn't snap. */
   .logo.is-breathing {
-    animation: logo-breathe 1s var(--ease-in-out) infinite;
+    animation: logo-breathe 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    transform-origin: center center;
+    will-change: transform;
   }
   @keyframes logo-breathe {
-    0%, 100% { transform: translate(-50%, -50%) scale(1);    }
-    50%      { transform: translate(-50%, -50%) scale(1.08); }
+    0%   { transform: translate(-50%, -50%) scale(1)     translateY(0px);  }
+    18%  { transform: translate(-50%, -50%) scale(1.07)  translateY(-6px); }
+    32%  { transform: translate(-50%, -50%) scale(1.11)  translateY(-9px); }
+    50%  { transform: translate(-50%, -50%) scale(1.02)  translateY(-2px); }
+    65%  { transform: translate(-50%, -50%) scale(0.965) translateY(5px);  }
+    82%  { transform: translate(-50%, -50%) scale(1.01)  translateY(1px);  }
+    100% { transform: translate(-50%, -50%) scale(1)     translateY(0px);  }
   }
 
-  /* Final beat, part 2 — after the breathing pause, the stacked logo
-     bursts outward, filling and overshooting the viewport before
-     fading. Slower + more deliberate than the previous version so the
-     scale reads as a proper reveal. */
-  .logo.is-scaling-out {
-    animation: logo-scale-out 1400ms var(--ease-out-expo) forwards;
-    z-index: 10;
+  /* Hand-off: a gentle opacity fade instead of a scale burst. The
+     breathing continues underneath until the class swap, then this
+     takes over for the exit. */
+  .logo.is-fading {
+    animation: logo-fade-out 700ms var(--ease-out-expo) forwards;
   }
-  @keyframes logo-scale-out {
-    0%   { transform: translate(-50%, -50%) scale(1);  opacity: 1; }
-    60%  { opacity: 1; }
-    100% { transform: translate(-50%, -50%) scale(32); opacity: 0; }
+  @keyframes logo-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .logo { transition: none; }
     .logo.is-breathing,
-    .logo.is-scaling-out { animation: none; }
+    .logo.is-fading { animation: none; }
   }
 </style>
 </head>
