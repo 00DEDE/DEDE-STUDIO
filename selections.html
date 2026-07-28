@@ -167,10 +167,6 @@
             mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
       #000 0%, #000 25%, transparent 90%);
   }
-  /* Blur applies on every device — the cursor-tracking spotlight on
-     the sharp overlay only fires on hover-capable devices, but the
-     stylistic blur is unconditional. Touch users tap words on the quote
-     to reveal them (see JS below). */
   .selections__band--marquee .band__blur    { filter: blur(20px); }
   .selections__band--stacked .band__blur    { filter: none; }
   .selections__band--stacked .word          { filter: blur(14px); }
@@ -179,6 +175,71 @@
     display: inline-block;
     transition: filter var(--dur-medium) var(--ease-out-expo);
     cursor: var(--cursor-url) 16 16, pointer;
+  }
+  /* Desktop: sharp overlay hidden — the per-word hover reveal handles
+     the "into focus" moment. */
+  .selections__band--stacked .band__sharp { display: none; }
+
+  /* Mobile: no cursor to hover, so mirror the desktop marquee spotlight
+     with an automatic drifting one. The whole blur layer stays uniformly
+     blurred; a duplicate sharp copy overlays it, revealed only through
+     a radial mask that animates its position across the quote — words
+     drift in and out of focus over ~15s. */
+  @media (max-width: 640px) {
+    .selections__band--stacked .band__blur {
+      filter: blur(14px);
+    }
+    .selections__band--stacked .word {
+      filter: none;
+      transition: none;
+      cursor: default;
+    }
+    .selections__band--stacked .band__sharp {
+      display: block;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      /* Circle mask travels via `mask-position` (natively interpolable
+         across browsers — no @property needed). Mask-size defines the
+         circle's diameter (55vw); position slides the whole disc. */
+      -webkit-mask-image: radial-gradient(circle,
+        #000 30%, transparent 65%);
+              mask-image: radial-gradient(circle,
+        #000 30%, transparent 65%);
+      -webkit-mask-repeat: no-repeat;
+              mask-repeat: no-repeat;
+      -webkit-mask-size: 55vw 55vw;
+              mask-size: 55vw 55vw;
+      -webkit-mask-position: 15% 20%;
+              mask-position: 15% 20%;
+      animation: quote-spotlight 15s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .selections__band--stacked .band__sharp { animation: none; }
+    }
+  }
+  @keyframes quote-spotlight {
+    0%, 100% {
+      -webkit-mask-position: 15% 20%;
+              mask-position: 15% 20%;
+    }
+    20% {
+      -webkit-mask-position: 75% 25%;
+              mask-position: 75% 25%;
+    }
+    40% {
+      -webkit-mask-position: 85% 65%;
+              mask-position: 85% 65%;
+    }
+    60% {
+      -webkit-mask-position: 25% 75%;
+              mask-position: 25% 75%;
+    }
+    80% {
+      -webkit-mask-position: 55% 40%;
+              mask-position: 55% 40%;
+    }
   }
 
   /* Marquee styles + cursor-tracking JS live in site-marquee.{css,js} —
@@ -488,6 +549,9 @@
     <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, will in return give life to us.">
       <span class="band__layers" aria-hidden="true">
         <span class="band__blur">
+          <span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span> <span class="word">will</span> <span class="word">in</span> <span class="word">return</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span>
+        </span>
+        <span class="band__sharp">
           <span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span> <span class="word">will</span> <span class="word">in</span> <span class="word">return</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span>
         </span>
       </span>
