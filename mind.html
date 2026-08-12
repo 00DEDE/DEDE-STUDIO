@@ -72,6 +72,10 @@
     .cell {
       aspect-ratio: 3 / 4;
     }
+    /* Drop the 16px reveal blur on mobile — biggest per-frame cost
+       during the transition. Translate + scale + opacity still carry
+       the reveal. */
+    .cell.needs-reveal:not(.is-in-view) { filter: none; }
   }
 
   /* ─── cell base + hover fg-fill ──────────────────────────────────── */
@@ -499,27 +503,56 @@
 
     /* ─── auto-advancing carousel(s) ─────────────────────────────────── */
     // Cycle .is-active across .cover-slide children on a per-slide timer
-    // (data-duration ms, default 5s). Video slides reset to 0 and play
-    // when they become active, pause when they don't.
+    // (data-duration ms, default 5s). Video slides play when active,
+    // pause when not. Whole carousel pauses when its cell is off-screen
+    // so we don't burn CPU + video decode on unseen content.
     const DEFAULT_MS = 5000;
     document.querySelectorAll('.cover-carousel').forEach((carousel) => {
       const slides = Array.from(carousel.querySelectorAll('.cover-slide'));
       if (slides.length < 2) return;
-      let timer = null;
-      function activate(idx) {
+      const cell = carousel.closest('.cell');
+      let timer = null, idx = 0, visible = false;
+
+      function step(i) {
+        idx = i;
         slides.forEach((s, si) => {
           const on = si === idx;
           s.classList.toggle('is-active', on);
           if (s.tagName === 'VIDEO') {
-            if (on) { s.currentTime = 0; s.play().catch(() => {}); }
-            else    { s.pause(); }
+            if (on && visible) { s.currentTime = 0; s.play().catch(() => {}); }
+            else               { s.pause(); }
           }
         });
-        const dur = parseInt(slides[idx].dataset.duration, 10) || DEFAULT_MS;
-        clearTimeout(timer);
-        timer = setTimeout(() => activate((idx + 1) % slides.length), dur);
       }
-      activate(0);
+      function schedule() {
+        clearTimeout(timer);
+        const dur = parseInt(slides[idx].dataset.duration, 10) || DEFAULT_MS;
+        timer = setTimeout(() => {
+          if (visible) step((idx + 1) % slides.length);
+          schedule();
+        }, dur);
+      }
+
+      if ('IntersectionObserver' in window && cell) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            visible = entry.isIntersecting;
+            if (visible) {
+              const s = slides[idx];
+              if (s.tagName === 'VIDEO') s.play().catch(() => {});
+              schedule();
+            } else {
+              clearTimeout(timer);
+              const s = slides[idx];
+              if (s.tagName === 'VIDEO') s.pause();
+            }
+          });
+        }, { threshold: 0.25 });
+        io.observe(cell);
+      } else {
+        visible = true;
+        schedule();
+      }
     });
   })();
   </script>

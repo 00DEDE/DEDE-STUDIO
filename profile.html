@@ -21,8 +21,8 @@
 <style>
   @font-face {
     font-family: "Akzidenz Grotesk";
-    src: url("ASSETS/FONTS/AKZIDENZGROTESK-EXTRABOLD.OTF") format("opentype");
-    font-weight: 700;
+    src: url("ASSETS/FONTS/AKZIDENZGROTESK-SUPER.OTF") format("opentype");
+    font-weight: 900;
     font-style: normal;
     font-display: swap;
   }
@@ -48,63 +48,82 @@
     cursor: var(--cursor-url) 16 16, pointer;
   }
 
-  /* One continuous block — cycling statement flows into the first paragraph,
-     all subsequent paragraphs cascade below at the same weight and size.
-     Horizontal padding matches the floating header (1.5rem) so the text's
-     left edge lines up with the DĒDĒ logo and right edge with the theme
-     toggle. No top padding — the .marquee-band directly above already
-     provides the exact same breathing room the selections grid gets. */
-  .intro {
-    padding: 0 1.5rem 6rem;
+  /* ─── Sticky hero + parallax body ────────────────────────────────
+     The cycling "I AM ___" lives in the hero as heavy-display type.
+     Hero is sticky top: 0, height 100vh — sticks in place while the
+     .profile__body panel scrolls up over it. The body panel carries
+     a frosted-glass backdrop-filter, so the big statement blurs and
+     dims underneath as the paragraphs roll over. That IS the
+     parallax — no JS scroll listener needed, pure position: sticky. */
+  .profile-scene {
+    position: relative;
+  }
+  .profile__hero {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    align-items: center;
     box-sizing: border-box;
-    /* Raise content ~5% of viewport height so it tucks up under the
-       top marquee's bottom edge — matches the sit on selections. */
+    padding: var(--header-safe-top, 5rem) 1.5rem 1.5rem;
+    z-index: 0;
+    /* Tuck up under the marquee so the hero visually tops the page. */
     margin-top: -5vh;
-  }
-  @media (max-width: 640px) {
-    .intro { padding: 0 1.25rem 6rem; }
-    /* Justify makes word-spacing dynamic — cycling the predicate
-       ("A STORY TELLER" ↔ "A CREATIVE" etc.) then shifts the "I AM"
-       spacing each swap. Left-align on mobile locks it in place. */
-    .intro__first { text-align: left; }
-  }
-  .intro p {
     color: var(--fg);
-    font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+  .profile__statement {
+    margin: 0;
+    font-family: "Akzidenz Grotesk",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 900;
+    font-size: clamp(3.5rem, 13vw, 16rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    color: var(--fg);
+  }
+  /* Frosted-glass paragraph panel that scrolls over the sticky hero.
+     55% bg-tint + 24px blur makes the big statement legible as a
+     shape / colour through the text, without competing for attention. */
+  .profile__body {
+    position: relative;
+    z-index: 1;
+    padding: clamp(4rem, 16vh, 10rem) 1.5rem clamp(4rem, 8vh, 8rem);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.15);
+            backdrop-filter: blur(24px) saturate(1.15);
+    color: var(--fg);
+  }
+  .profile__body p {
+    color: var(--fg);
+    font-family: "Akzidenz Grotesk",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(1.5rem, 4.5vw, 5.5rem);
-    line-height: 1.1;
+    /* 50% of the previous clamp(1.5rem, 4.5vw, 5.5rem). */
+    font-size: clamp(0.75rem, 2.25vw, 2.75rem);
+    line-height: 1.15;
     letter-spacing: -0.015em;
-    margin: 0 0 2.5rem;
-    /* Justify + auto hyphenation gives a straight right edge without ugly
-       word gaps — the browser hyphenates long words at syllable boundaries
-       to fill each line. Last line of every paragraph stays flush-left
-       (default text-align-last: auto). Requires lang on <html> — set to
-       "en". */
+    margin: 0 0 1.25rem;
     text-align: justify;
     hyphens: auto;
     -webkit-hyphens: auto;
-    transition: opacity var(--dur-medium) var(--ease-standard);
-  }
-  .intro p:last-child { margin-bottom: 0; }
-  /* Every paragraph is interactive. cursor + tabindex + will-change make
-     iOS treat them as tappable AND promote them onto their own compositor
-     layer so opacity flips actually repaint. */
-  .intro p {
     cursor: var(--cursor-url) 16 16, pointer;
     -webkit-tap-highlight-color: transparent;
     will-change: opacity;
     outline: none;
+    transition: opacity var(--dur-medium) var(--ease-standard);
   }
-  /* Desktop: hover any paragraph → that one stays fully white, siblings fade to 50%. */
+  .profile__body p:last-child { margin-bottom: 0; }
+
+  /* Desktop: hover a paragraph → siblings dim. */
   @media (hover: hover) {
-    .intro:has(p:hover) > p:not(:hover) {
-      opacity: 0.5;
-    }
+    .profile__body:has(p:hover) > p:not(:hover) { opacity: 0.5; }
   }
-  /* Line-by-line reveal: JS wraps each word in .word, groups them by
-     offsetTop after layout, and fades in one whole line at a time. Parent
-     stays visibility:hidden until wrapping finishes so raw text never flashes in. */
+
+  /* Per-word / per-line reveal — same mechanic as before: JS wraps
+     each word in .word, groups them by offsetTop, and fades in a
+     whole line at a time. .reveal-words stays hidden until the JS
+     has finished wrapping so raw text never flashes in. */
   .reveal-words:not(.is-ready) { visibility: hidden; }
   .word {
     opacity: 0;
@@ -115,8 +134,6 @@
     transition: opacity var(--dur-long) var(--ease-out-expo);
     display: inline;
   }
-  /* Phonetic gloss beside DĒDĒ — smaller and slightly raised so it reads
-     as a parenthetical clarification, not another word in the sentence. */
   .phonetics {
     font-size: 0.55em;
     vertical-align: 0.28em;
@@ -124,9 +141,7 @@
     opacity: 0.75;
   }
 
-  /* Inline links carry a radiating cyan glow behind the word that pulses,
-     so users can see they're interactive without an underline chopping the
-     line of type. */
+  /* Inline links (DĒDĒ / BLLCRW) — radiating accent glow. */
   .dede-link,
   .bllcrw-link {
     color: inherit;
@@ -164,21 +179,17 @@
     }
   }
 
-  /* Hovering DĒDĒ blows the profile image up from a contracted state.
-     Cubic-bezier gives it a subtle spring at the tail of the expansion. */
+  /* Hovering DĒDĒ blows the profile image up from a contracted state. */
   .dede-image {
     position: fixed;
     top: 50%;
     left: 50%;
-    /* 30% larger than before (48vw → 62.4vw, 560px → 728px, 78vh → 92vh). */
     width: min(62.4vw, 728px);
     max-height: 92vh;
     height: auto;
     object-fit: contain;
     transform: translate(-50%, -50%) scale(0.35);
     opacity: 0;
-    /* Deliberate spring on the DĒDĒ image scale — a slight overshoot
-       gives the reveal weight without feeling bouncy. */
     transition: transform var(--dur-long)   cubic-bezier(0.34, 1.56, 0.64, 1),
                 opacity   var(--dur-medium) var(--ease-out-expo);
     pointer-events: none;
@@ -191,20 +202,37 @@
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
-  /* Mobile: line-reveal transition stays calm; drop the paragraph-dim
-     transition (it fires from JS class flips, not hover, but the base
-     .intro p transition already handles it smoothly). */
-  @media (max-width: 768px), (pointer: coarse) {
-    .statement__predicate { transition: opacity var(--dur-medium) var(--ease-out-expo); }
+
+  /* ─── Mobile ─────────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .profile__hero {
+      padding: var(--header-safe-top, 5rem) 1.25rem 1.25rem;
+      margin-top: 0;   /* skip the -5vh tuck; mobile header pill has different geometry */
+    }
+    .profile__statement {
+      text-align: left;   /* lock the "I AM" spacing so cycling doesn't jitter it */
+      font-size: clamp(2.5rem, 14vw, 5.5rem);
+    }
+    .profile__body {
+      padding: 3rem 1.25rem 3rem;
+      /* Lighter blur on mobile — 24px full-viewport backdrop is
+         expensive per frame during scroll; 12px still reads frosty. */
+      -webkit-backdrop-filter: blur(12px);
+              backdrop-filter: blur(12px);
+    }
+    .profile__body p {
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .profile__body p:last-child { margin-bottom: 0; }
   }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal-words:not(.is-ready) { visibility: visible; }
-    .word {
-      opacity: 1;
-      transition: none;
-    }
-    .intro p { transition: none; }
+    .word { opacity: 1; transition: none; }
+    .profile__body p { transition: none; }
     .dede-image { transition: opacity var(--dur-quick) var(--ease-standard); }
+    .statement__predicate { transition: opacity var(--dur-medium) var(--ease-out-expo); }
   }
 </style>
 </head>
@@ -233,7 +261,7 @@
     </div>
   </header>
   <script src="site-header.js" defer></script>
-    <script src="site-bg.js" defer></script>
+  <script src="site-bg.js" defer></script>
   <script src="site-marquee.js" defer></script>
 
   <h2 class="marquee-band" aria-label="IAMDEDE.COM IAMDEDE.COM IAMDEDE.COM">
@@ -253,15 +281,21 @@
     </span>
   </h2>
 
-  <!-- Hover overlay: appears when the user hovers DĒDĒ in the statement. -->
+  <!-- Hover overlay: appears when the user hovers/taps DĒDĒ in the statement. -->
   <img class="dede-image" src="ASSETS/IMAGES/DEDE_PROFILE_IMAGE 2.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
 
-  <section class="intro" aria-label="Introduction">
-    <p class="intro__first">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span> <span class="reveal-words" id="firstBody">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</span></p>
-    <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
-    <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
-    <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
-  </section>
+  <div class="profile-scene">
+    <section class="profile__hero" aria-label="I am">
+      <h1 class="profile__statement">I&nbsp;AM<span class="statement__predicate" id="statementPred">&nbsp;A STORY TELLER.</span></h1>
+    </section>
+
+    <section class="profile__body" aria-label="Introduction">
+      <p class="reveal-words">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</p>
+      <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
+      <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
+      <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
+    </section>
+  </div>
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
@@ -284,8 +318,6 @@
   <script>
     (function () {
       // --- Wrap each word in a .word span so we can reveal them per line.
-      // Also tie the first two words of every sentence with a non-breaking
-      // space so a sentence-opener never ends up alone at the end of a line.
       function escapeHtml(s) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
@@ -296,9 +328,6 @@
         words.forEach((word, idx) => {
           parts.push('<span class="word">' + escapeHtml(word) + '</span>');
           if (idx < words.length - 1) {
-            // If word[idx] is the first word of a new sentence (start of block
-            // or previous word ended with . ? or !), tie it to word[idx+1]
-            // with a non-breaking space so they never split across lines.
             const isSentenceStart =
               idx === 0 || /[.?!]$/.test(words[idx - 1]);
             parts.push(isSentenceStart ? '&nbsp;' : ' ');
@@ -309,7 +338,7 @@
       }
       document.querySelectorAll('.reveal-words').forEach(wrapWords);
 
-      // Convert BLLCRW. into an external link to Instagram.
+      // Convert BLLCRW. into a link to Instagram.
       document.querySelectorAll('.word').forEach((w) => {
         if (w.textContent === 'BLLCRW.') {
           const a = document.createElement('a');
@@ -323,7 +352,7 @@
         }
       });
 
-      // --- Cycling statement: "I AM ___", locks on DĒDĒ (deh-deh) as a link.
+      // --- Cycling statement: "I AM ___", locks on DĒDĒ as a link.
       const variants = [
         { type: 'text', value: ' A STORY TELLER.' },
         { type: 'text', value: ' A CREATIVE.' },
@@ -335,8 +364,8 @@
       const HOLD_MS = 2500;
       const FADE_MS = 500;
       const REVEAL_PAUSE_MS = 900;
-      const LINE_MS = 500;   // stagger between lines (calm cascade)
-      const PARA_PAUSE_MS = 350; // extra breath at paragraph boundaries
+      const LINE_MS = 500;
+      const PARA_PAUSE_MS = 350;
       let i = 0;
 
       function paint(variant) {
@@ -347,10 +376,6 @@
             variant.word +
             '</a>' +
             variant.suffix;
-          // Attach the tap handler DIRECTLY to the link — event
-          // delegation through the paragraph was intermittently missed
-          // on mobile Safari. click + touchend both bound; stopPropagation
-          // prevents the paragraph's focus-toggle from firing on top.
           const link = el.querySelector('.dede-link');
           if (link) {
             let last = 0;
@@ -358,7 +383,7 @@
               e.preventDefault();
               e.stopPropagation();
               const now = Date.now();
-              if (now - last < 400) return; // click+touchend debounce
+              if (now - last < 400) return;
               last = now;
               const img = document.querySelector('.dede-image');
               if (img) img.classList.toggle('is-shown');
@@ -423,7 +448,6 @@
         });
       }
 
-      // Reduced motion: skip the cycle and show everything.
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         paint(variants[variants.length - 1]);
         document.querySelectorAll('.word').forEach(w => w.classList.add('is-visible'));
@@ -431,22 +455,12 @@
         scheduleNext();
       }
 
-      // ---- Touch interactions: paragraph tap-to-focus + DĒDĒ tap-to-toggle image.
-      // Attach listeners directly to the paragraphs (not just document) — iOS
-      // Safari sometimes swallows click events on non-interactive elements
-      // when only a document-level listener is used.
-      // ---- Paragraph focus + DĒDĒ image toggle.
-      // Attach handlers unconditionally (not gated by matchMedia). On desktop
-      // the CSS hover rule still works; on any device, tap/click also works.
-      // Both `click` and `touchend` are bound with a debounce so iOS Safari
-      // can't miss the input regardless of which one it delivers.
+      // ---- Paragraph focus + DĒDĒ image dismissal on outside tap.
       (function () {
         const dedeImage = document.querySelector('.dede-image');
         const paragraphs = Array.prototype.slice.call(
-          document.querySelectorAll('.intro p')
+          document.querySelectorAll('.profile__body p')
         );
-
-        // Signal to iOS that these are interactive.
         paragraphs.forEach((p) => p.setAttribute('tabindex', '0'));
 
         function clearFocus() {
@@ -470,15 +484,11 @@
           if (dedeImage) dedeImage.classList.remove('is-shown');
         }
 
-        // Debounce: if both `touchend` and `click` fire for the same tap,
-        // only the first one wins.
         let lastHandled = 0;
         function handleParagraph(paragraph, e) {
           const now = Date.now();
           if (now - lastHandled < 400) return;
           lastHandled = now;
-
-          // DĒDĒ link: toggle the profile image.
           if (e.target.closest('.dede-link')) {
             if (e.cancelable) e.preventDefault();
             const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
@@ -486,17 +496,14 @@
             else if (dedeImage) dedeImage.classList.add('is-shown');
             return;
           }
-          // BLLCRW link: dismiss the profile image; let default navigation run.
           if (e.target.closest('.bllcrw-link')) {
             hideDedeImage();
             return;
           }
-          // Image up? Dismiss it and stop — the same tap won't also focus.
           if (dedeImage && dedeImage.classList.contains('is-shown')) {
             hideDedeImage();
             return;
           }
-          // Toggle focus.
           if (paragraph.hasAttribute('data-focused')) {
             clearFocus();
           } else {
@@ -513,7 +520,7 @@
           const now = Date.now();
           if (now - lastHandled < 400) return;
           lastHandled = now;
-          if (e.target.closest('.intro p')) return;
+          if (e.target.closest('.profile__body p')) return;
           hideDedeImage();
           clearFocus();
         }

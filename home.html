@@ -339,19 +339,15 @@
   /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
   @media (max-width: 640px) {
     .home-work { padding: 0.5rem; }
-    .work {
-      /* Snap on mobile is nice — each project claims one screen. */
-      scroll-snap-align: start;
-    }
-    .home-work {
-      scroll-snap-type: y proximity;
-    }
+    /* Drop reveal blur on mobile. At 100vh × 100vw a 16px filter:blur()
+       animation is the dominant per-frame cost during the 1600ms
+       transition — killing it removes most of the scroll jitter.
+       Translate + scale + opacity still carry the "alive" feel. */
+    .work        { filter: none; }
+    .work.is-in-view { filter: none; }
     .work__title { font-size: clamp(2rem, 10vw, 3.5rem); }
     .work__desc  { font-size: 0.75rem; }
-    .work__meta {
-      left: 1rem;
-      bottom: 1rem;
-    }
+    .work__meta  { left: 1rem; bottom: 1rem; }
   }
 </style>
 </head>

@@ -149,6 +149,23 @@ body:has(.site-header) {
     0 1px 3px  rgba(0, 0, 0, 0.28);
 }
 
+/* Desktop: shorten the toggle track by ~25% (26px → 20px) with a
+   proportionally shrunk thumb. Reads sleeker at desktop scale where
+   the header pill is smaller / farther from thumb-touch geometry.
+   Mobile keeps the taller 26px track for tap comfort + overlay
+   alignment with the large CONTACT nav item. */
+@media (min-width: 641px) {
+  .site-header__theme-toggle { height: 20px; }
+  .site-header__theme-toggle-thumb {
+    top: 2px;
+    width: 14px;
+    height: 14px;
+  }
+  [data-theme="light"] .site-header__theme-toggle-thumb {
+    translate: 26px 0;   /* recomputed slide: 46 - 3 - 14 - 3 = 26 */
+  }
+}
+
 /* Hamburger button — mobile-only. Injected on every page by
    site-header.js so it must be hidden by default (base rule) and
    flipped on inside the mobile @media block below. Without this, the

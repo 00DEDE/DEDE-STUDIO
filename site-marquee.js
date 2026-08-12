@@ -32,6 +32,22 @@
     resizeTimer = setTimeout(tuneSpeed, 150);
   }, { passive: true });
 
+  /* Pause every marquee animation (scroll track + mobile spotlight
+     mask) when its band is off-screen. Painting a full-viewport-wide
+     blurred marquee at 60fps while it's off-screen was wasted work;
+     this cuts the wasted frames outright. Same IO for every band. */
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const state = entry.isIntersecting ? 'running' : 'paused';
+        entry.target
+          .querySelectorAll('.marquee-track, .marquee-band__sharp')
+          .forEach((el) => { el.style.animationPlayState = state; });
+      });
+    }, { threshold: 0.01 });
+    document.querySelectorAll('.marquee-band').forEach((band) => io.observe(band));
+  }
+
   /* Cursor spotlight — skipped on touch. */
   if (window.matchMedia('(hover: none)').matches) return;
   document.querySelectorAll('.marquee-band').forEach((band) => {

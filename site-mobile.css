@@ -29,9 +29,10 @@
 
   /* Marquee: tighten the top padding another 15% on mobile only. */
   .marquee-band { padding-top: 2.92rem; }
-  /* Mobile blur is heavy at 20px full-screen — 12px reads the same
-     out-of-focus effect for much less painting cost. */
-  .marquee-band__blur { filter: blur(12px); }
+  /* Mobile blur is heavy at 20px full-screen — 8px still reads
+     clearly out-of-focus while cutting the blur-radius cost roughly
+     in half (blur cost scales super-linearly with radius). */
+  .marquee-band__blur { filter: blur(8px); }
 
   /* ─── Scroll-to-top button (shown mobile-only) ────────────────── */
   .scroll-top { display: block; }
@@ -44,6 +45,21 @@
     color: var(--accent);
     opacity: 1;
   }
+
+  /* ─── Carousel crossfade — drop plus-lighter blend ─────────────
+     plus-lighter creates a GPU compositor group and does per-pixel
+     math each frame during the crossfade. Significant cost on mobile
+     GPUs. Falling back to normal blending means a barely-perceptible
+     brightness dip halfway through the fade — a trade the phone very
+     much wants to make. */
+  .cover-slide { mix-blend-mode: normal; }
+
+  /* ─── CSS containment ──────────────────────────────────────────
+     Tell the browser that layout / paint changes inside a cell or
+     work section can't affect anything outside its own box. Lets the
+     compositor treat each one as an isolated island — reveal blur,
+     hover dim, and image ken-burns stop invalidating the wider page. */
+  .cell, .work { contain: layout paint; }
 }
 
 
