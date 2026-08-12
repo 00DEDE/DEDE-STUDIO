@@ -114,6 +114,29 @@ body:has(.site-header) {
   transform: translateX(22px);
 }
 
+/* ─── Desktop scroll state ────────────────────────────────────────────
+   Once the user scrolls (site-header.js flips .is-scrolled at 20px),
+   the pill halves its length — left/right both animate from 1rem →
+   25%, so the pill sits centred at 50% of the viewport. Padding + the
+   internal gaps tighten a hair so the same brand / nav / toggle fit
+   cleanly inside the narrower pill without wrapping.
+   Scoped to (min-width: 641px) so it does not fight the mobile
+   collapse behaviour further below. */
+@media (min-width: 641px) {
+  .site-header {
+    transition: left    var(--dur-medium) var(--ease-out-expo),
+                right   var(--dur-medium) var(--ease-out-expo),
+                padding var(--dur-medium) var(--ease-out-expo);
+  }
+  .site-header.is-scrolled {
+    left: 25%;
+    right: 25%;
+    padding: 0.6rem 1.3rem;
+  }
+  .site-header.is-scrolled .site-header__nav { gap: 1rem;   }
+  .site-header.is-scrolled .site-header__end { gap: 0.9rem; }
+}
+
 @media (max-width: 640px) {
   /* Mobile layout: DĒDĒ logo, then toggle directly below it, then the
      nav pages as a vertical list. Full-open at top of page; on scroll

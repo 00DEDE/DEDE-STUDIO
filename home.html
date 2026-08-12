@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
+<link rel="stylesheet" href="site-marquee.css" />
 <link rel="stylesheet" href="site-mobile.css" />
 <style>
   @font-face {
@@ -69,12 +70,15 @@
     margin-bottom: var(--cell-gap);
     color: var(--fg);
     text-decoration: none;
-    /* Reveal state — set by JS when the section enters the viewport.
-       Subtle at fullscreen: opacity + a small scale-up is enough to
-       feel alive; large translate/blur at this size read as jarring. */
+    /* Reveal state — matches the selections grid cells exactly:
+       opacity 0, 96px lift, 0.9 scale, 16px blur. JS toggles
+       .is-in-view on scroll-into-view and applies a 180ms stagger
+       so sections that enter together cascade top → bottom. Transform
+       carries a subtle-spring cubic-bezier (y2 > 1 → hair of overshoot)
+       so each section lands with a small bounce — the "dancing" feel. */
     opacity: 0;
-    transform: scale(0.96);
-    filter: blur(6px);
+    transform: translateY(96px) scale(0.9);
+    filter: blur(16px);
     transition:
       opacity   var(--dur-cinematic) var(--ease-out-expo),
       transform var(--dur-cinematic) cubic-bezier(0.16, 1.15, 0.3, 1),
@@ -83,7 +87,7 @@
   .work:last-child { margin-bottom: 0; }
   .work.is-in-view {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0) scale(1);
     filter: none;
   }
 
@@ -245,6 +249,91 @@
     .cover-slide { transition: none; }
   }
 
+  /* ─── Between-project text bands (marquee + quote) ─────────────────
+     Both bands are inserted as direct children of .home-work. That
+     container has --cell-gap padding so the projects sit inside a
+     uniform grid margin; the marquee + quote text bands are designed
+     full-bleed, so a matching negative margin breaks them back out to
+     the viewport edges. margin-bottom keeps the same rhythm as .work
+     so the next project has proper breathing room. */
+  .home-work > .marquee-band,
+  .home-work > .selections__band--stacked {
+    margin-inline: calc(-1 * var(--cell-gap));
+    margin-bottom: var(--cell-gap);
+  }
+
+  /* ─── Quote band — exact same treatment as the selections page ─────
+     Copied verbatim so the between-projects quote uses the same dual
+     layer, per-word blur (desktop hover reveals a word), and per-line
+     mobile auto-cycle. */
+  .selections__band {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: var(--fg);
+    font-family: "Akzidenz Grotesk",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .selections__band--stacked {
+    padding: 6rem 1.5rem;
+    font-size: clamp(1.6rem, 7vw, 12rem);
+    text-wrap: balance;
+  }
+  .band__layers {
+    position: relative;
+    display: block;
+  }
+  .band__blur,
+  .band__sharp {
+    display: block;
+  }
+  .band__sharp {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    --mx: -1000px;
+    --my: -1000px;
+    -webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
+      #000 0%, #000 25%, transparent 90%);
+            mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
+      #000 0%, #000 25%, transparent 90%);
+  }
+  .selections__band--stacked .band__blur    { filter: none; }
+  .selections__band--stacked .word          { filter: blur(14px); }
+  .selections__band--stacked .word.is-clear { filter: none; }
+  .selections__band--stacked .word {
+    display: inline-block;
+    transition: filter var(--dur-medium) var(--ease-out-expo);
+    cursor: var(--cursor-url) 16 16, pointer;
+  }
+  /* Desktop: sharp overlay hidden — per-word hover handles the reveal. */
+  .selections__band--stacked .band__sharp { display: none; }
+
+  @media (max-width: 640px) {
+    .selections__band--stacked {
+      font-size: 14vw;
+      text-align: left;
+      text-wrap: initial;
+    }
+    /* Mobile: line-by-line auto-cycle (3 lines instead of 14 words). */
+    .selections__band--stacked .band__sharp { display: none; }
+    .selections__band--stacked .band__blur  { filter: none; }
+    .selections__band--stacked .word        { filter: none; cursor: default; transition: none; }
+    .selections__band--stacked .line {
+      display: block;
+      filter: blur(12px);
+      transition: filter var(--dur-medium) var(--ease-out-expo);
+    }
+    .selections__band--stacked .line.is-clear { filter: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .selections__band--stacked .line { filter: none; }
+    }
+  }
+
   /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
   @media (max-width: 640px) {
     .home-work { padding: 0.5rem; }
@@ -261,8 +350,6 @@
       left: 1rem;
       bottom: 1rem;
     }
-    /* Blur at 6px full-screen is too heavy on mobile GPUs — drop it. */
-    .work { filter: none; }
   }
 </style>
 </head>
@@ -292,6 +379,7 @@
   </header>
   <script src="site-header.js" defer></script>
   <script src="site-bg.js" defer></script>
+  <script src="site-marquee.js" defer></script>
 
   <main class="home-work">
     <!-- 1. UNESCO ─ carousel (6 stills) -->
@@ -324,6 +412,24 @@
       </div>
       <div class="work__view">VIEW CASE</div>
     </a>
+
+    <!-- Marquee band (shared with selections page) -->
+    <h2 class="marquee-band" aria-label="Our handprint. Our voice. Our mind.">
+      <span class="marquee-band__layers" aria-hidden="true">
+        <span class="marquee-band__blur">
+          <span class="marquee-track">
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
+          </span>
+        </span>
+        <span class="marquee-band__sharp">
+          <span class="marquee-track">
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
+            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
+          </span>
+        </span>
+      </span>
+    </h2>
 
     <!-- 3. ECCLESIASTES ─ carousel (image + video + poster) -->
     <a class="work" href="#">
@@ -374,6 +480,22 @@
       </div>
       <div class="work__view">VIEW CASE</div>
     </a>
+
+    <!-- Quote band (shared with selections page) -->
+    <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, will in return give life to us.">
+      <span class="band__layers" aria-hidden="true">
+        <span class="band__blur">
+          <span class="line"><span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span></span>
+          <span class="line"><span class="word">will</span> <span class="word">in</span> <span class="word">return</span></span>
+          <span class="line"><span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span></span>
+        </span>
+        <span class="band__sharp">
+          <span class="line"><span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span></span>
+          <span class="line"><span class="word">will</span> <span class="word">in</span> <span class="word">return</span></span>
+          <span class="line"><span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span></span>
+        </span>
+      </span>
+    </h2>
 
     <!-- 6. THE REVENANT ─ single cover -->
     <a class="work" href="#">
@@ -440,17 +562,31 @@
     const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /* ─── Reveal on scroll (per section) ──────────────────────────── */
-    // First section reveals immediately (it's on screen at load); the
-    // rest fade + scale in when their top edge enters the viewport.
+    // First section reveals immediately (on screen at load). The rest
+    // fade + lift + focus in when their top edge enters the viewport.
+    // Multiple sections entering in the same observer batch are sorted
+    // top → bottom and given a 180ms stagger so they cascade instead
+    // of popping in unison (same as the selections grid cells). Inline
+    // transition-delay is cleared after so it doesn't leak into future
+    // hover state changes.
     if ('IntersectionObserver' in window && !reduced) {
+      const STAGGER_MS  = 180;
+      const CLEAR_AFTER = 1800;   // > longest transition duration
       const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-in-view');
-            io.unobserve(entry.target);
+        const revealing = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        revealing.forEach((entry, i) => {
+          const el = entry.target;
+          if (i > 0) {
+            const delay = i * STAGGER_MS;
+            el.style.transitionDelay = delay + 'ms';
+            setTimeout(() => { el.style.transitionDelay = ''; }, delay + CLEAR_AFTER);
           }
+          el.classList.add('is-in-view');
+          io.unobserve(el);
         });
-      }, { threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
+      }, { threshold: 0.18, rootMargin: '0px 0px -12% 0px' });
 
       works.forEach((w, i) => {
         if (i === 0) w.classList.add('is-in-view');
@@ -479,6 +615,35 @@
           timer = setTimeout(reset, RESET_MS);
         });
       });
+    }
+
+    /* ─── Quote band reveal ───────────────────────────────────────
+       Exact same behaviour as the selections page: desktop / hover
+       devices reveal one word at a time when the cursor enters it;
+       mobile runs a per-line auto-cycle so the whole quote comes into
+       focus line 1 → 2 → 3, holds clear, then reblurs and repeats. */
+    const isMobileQuote = window.matchMedia('(max-width: 640px)').matches;
+    if (!isMobileQuote) {
+      document.querySelectorAll('.selections__band--stacked .word').forEach((word) => {
+        const reveal = () => word.classList.add('is-clear');
+        word.addEventListener('mouseenter', reveal);
+      });
+    } else if (!reduced) {
+      const qLines = document.querySelectorAll('.selections__band--stacked .band__blur .line');
+      if (qLines.length) {
+        const LINE_INTERVAL = 1800;
+        const HOLD_MS       = 3800;
+        const RESET_MS      = 1400;
+        (function loop() {
+          qLines.forEach((l) => l.classList.remove('is-clear'));
+          setTimeout(function reveal() {
+            qLines.forEach((l, i) => {
+              setTimeout(() => l.classList.add('is-clear'), i * LINE_INTERVAL);
+            });
+            setTimeout(loop, qLines.length * LINE_INTERVAL + HOLD_MS);
+          }, RESET_MS);
+        })();
+      }
     }
 
     /* ─── Auto-advancing carousels (UNESCO + ECCLESIASTES) ────────── */
