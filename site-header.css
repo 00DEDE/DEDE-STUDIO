@@ -114,6 +114,12 @@ body:has(.site-header) {
   transform: translateX(22px);
 }
 
+/* Hamburger button — mobile-only. Injected on every page by
+   site-header.js so it must be hidden by default (base rule) and
+   flipped on inside the mobile @media block below. Without this, the
+   browser's default <button> rendering leaves it visible on desktop. */
+.site-header__menu { display: none; }
+
 /* ─── Desktop scroll state ────────────────────────────────────────────
    Once the user scrolls (site-header.js flips .is-scrolled at 20px),
    the pill halves its length — left/right both animate from 1rem →
