@@ -78,40 +78,75 @@ body:has(.site-header) {
   .site-header__nav a:hover { opacity: 1; }
 }
 
-/* Theme toggle — a small pill at the far right of the header.
-   Thumb sits left in dark mode, slides right in light mode. */
+/* Theme toggle — refined pill. Softer proportions (48×26 with a
+   larger, glowing accent thumb), faint fill in the track, thin
+   hairline border. Thumb slides on a subtle-spring curve; hover
+   scales it up slightly and intensifies the accent glow. */
 .site-header__theme-toggle {
   position: relative;
-  width: 44px;
-  height: 22px;
+  width: 48px;
+  height: 26px;
   padding: 0;
-  border: 1px solid var(--fg);
-  background: transparent;
+  border: 1px solid rgba(var(--fg-rgb), 0.35);
+  background: color-mix(in srgb, var(--fg) 4%, transparent);
   border-radius: 999px;
   cursor: var(--cursor-url) 16 16, pointer;
   outline: none;
-  transition: border-color var(--dur-medium) var(--ease-standard),
-              opacity       var(--dur-quick)  var(--ease-standard);
-  opacity: 0.75;
+  opacity: 0.9;
   flex: none;
+  transition:
+    border-color var(--dur-medium) var(--ease-standard),
+    background   var(--dur-medium) var(--ease-standard),
+    opacity      var(--dur-quick)  var(--ease-standard);
 }
 .site-header__theme-toggle:hover,
 .site-header__theme-toggle:focus-visible {
   opacity: 1;
+  border-color: rgba(var(--fg-rgb), 0.6);
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
 }
+.site-header__theme-toggle:focus-visible {
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.25);
+}
+.site-header__theme-toggle:active {
+  transform: scale(0.96);
+  transition: transform var(--dur-instant) var(--ease-standard);
+}
+
 .site-header__theme-toggle-thumb {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--accent);
-  transition: transform  var(--dur-medium) var(--ease-standard),
-              background  var(--dur-medium) var(--ease-standard);
+  /* Multi-layer accent glow — reads as cyan in dark mode, red in
+     light mode via --accent-rgb. Base intensity is subtle; hover
+     bumps it. */
+  box-shadow:
+    0 0 0.55em rgba(var(--accent-rgb), 0.5),
+    0 0 1.1em  rgba(var(--accent-rgb), 0.28),
+    0 1px 3px  rgba(0, 0, 0, 0.28);
+  /* `translate` + `scale` are separate transform properties in
+     modern CSS — hover-scale doesn't fight the light-mode slide. */
+  translate: 0 0;
+  scale: 1;
+  transition:
+    translate  var(--dur-medium) cubic-bezier(0.16, 1.15, 0.3, 1),
+    scale      var(--dur-quick)  var(--ease-out-expo),
+    background var(--dur-medium) var(--ease-standard),
+    box-shadow var(--dur-medium) var(--ease-standard);
 }
 [data-theme="light"] .site-header__theme-toggle-thumb {
-  transform: translateX(22px);
+  translate: 22px 0;
+}
+.site-header__theme-toggle:hover .site-header__theme-toggle-thumb {
+  scale: 1.08;
+  box-shadow:
+    0 0 0.85em rgba(var(--accent-rgb), 0.75),
+    0 0 1.7em  rgba(var(--accent-rgb), 0.42),
+    0 1px 3px  rgba(0, 0, 0, 0.28);
 }
 
 /* Hamburger button — mobile-only. Injected on every page by
