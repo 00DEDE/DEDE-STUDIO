@@ -8,96 +8,265 @@
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#050505" />
+<meta name="theme-color" content="#121212" />
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <link rel="stylesheet" href="theme.css" />
+<link rel="stylesheet" href="site-header.css" />
+<link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
-<link rel="prefetch" href="selections.html" />
+<link rel="stylesheet" href="site-mobile.css" />
 <style>
+  @font-face {
+    font-family: "Akzidenz Grotesk";
+    src: url("ASSETS/FONTS/AKZIDENZGROTESK-SUPER.OTF") format("opentype");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Akzidenz Grotesk";
+    src: url("ASSETS/FONTS/AKZIDENZGROTESK-REGULAR.OTF") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
   html { background: var(--bg); }
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100%;
     width: 100%;
-    overflow: hidden;
-    cursor: var(--cursor-url) 16 16, auto;
+    color: var(--fg);
+    overflow-x: clip;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    cursor: var(--cursor-url) 16 16, auto;
   }
-  body {
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  body { background: transparent; }
+  a, button, [role="button"] { cursor: var(--cursor-url) 16 16, pointer; }
 
-  /* Two DĒDĒ logos stacked in the same spot; JS toggles is-visible to
-     cycle between them. Progressively faster over ~3s, then handoff. */
-  .logo-cycle {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: min(60vw, 560px);
-    height: min(60vh, 500px);
-  }
-  .logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    /* Slow, graceful crossfade between the two logos. */
-    transition: opacity 1200ms ease-in-out;
+  /* Home overrides the site-wide body:has(.site-header) padding-top so
+     the header pill can float OVER the first project's media instead
+     of pushing it down — matches the Studio Dumbar edge-to-edge feel.
+     Same specificity as the site-header.css rule; this style block loads
+     after, so it wins the cascade. */
+  body.home { padding-top: 0; }
+
+  /* ─── Work scroll — full-screen project sections ────────────────── */
+  .home-work {
+    --cell-gap: clamp(10px, 1.25vw, 20px);
     display: block;
+    padding: var(--cell-gap);
+    /* Small vertical gutter between sections comes from each section's
+       own bottom margin (below), not from grid gap — <a> can't be a
+       grid item cleanly here, and margin-collapse is fine for block. */
   }
-  .logo.is-visible { opacity: 1; }
-
-  .logo--horizontal {
-    /* Another 10% bigger on top of the previous 20% bump. */
-    width: clamp(147px, 17.95vw, 275px);
-    height: auto;
+  .work {
+    position: relative;
+    display: block;
+    height: 100vh;
+    height: 100svh;                              /* modern viewport unit */
+    margin-bottom: var(--cell-gap);
+    color: var(--fg);
+    text-decoration: none;
+    /* Reveal state — set by JS when the section enters the viewport.
+       Subtle at fullscreen: opacity + a small scale-up is enough to
+       feel alive; large translate/blur at this size read as jarring. */
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(6px);
+    transition:
+      opacity   var(--dur-cinematic) var(--ease-out-expo),
+      transform var(--dur-cinematic) cubic-bezier(0.16, 1.15, 0.3, 1),
+      filter    var(--dur-cinematic) var(--ease-out-expo);
   }
-  .logo--stacked {
-    /* 60% smaller than the previous sizing (×0.4). */
-    width: clamp(80px, 9.6vw, 144px);
-    height: auto;
-  }
-
-  /* Jellyfish breathing — one continuous, symmetric inhale-exhale.
-     Only two keyframes plus a smooth ease-in-out timing function, so
-     there are no velocity discontinuities and nothing to read as chop.
-     Each cycle ends exactly at scale(1), matching the base transform,
-     so removing the class after N full cycles hands off cleanly. */
-  .logo.is-breathing {
-    animation: logo-breathe 4s ease-in-out infinite;
-    transform-origin: center center;
-    will-change: transform;
-  }
-  @keyframes logo-breathe {
-    0%, 100% { transform: translate(-50%, -50%) scale(1);    }
-    50%      { transform: translate(-50%, -50%) scale(1.08); }
-  }
-
-  /* Hand-off: a gentle opacity fade instead of a scale burst. The
-     breathing continues underneath until the class swap, then this
-     takes over for the exit. */
-  .logo.is-fading {
-    animation: logo-fade-out 700ms var(--ease-out-expo) forwards;
-  }
-  @keyframes logo-fade-out {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+  .work:last-child { margin-bottom: 0; }
+  .work.is-in-view {
+    opacity: 1;
+    transform: scale(1);
+    filter: none;
   }
 
+  /* Rounded media container — fills the whole section. Every media
+     inside (carousel slide, cover-image, video) inherits the corner
+     radius via overflow: hidden. Background: #000 so the corners don't
+     flash the site-bg through partial image loads. */
+  .work__media {
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(12px, 1.25vw, 22px);
+    overflow: hidden;
+    background: #000;
+    isolation: isolate;
+  }
+
+  /* Single-image cover — used for projects without a carousel. */
+  .work__cover {
+    position: absolute;
+    inset: 0;
+    background-image: var(--cover);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: var(--cover-x, 50%) var(--cover-y, 50%);
+    transform: scale(1);
+    transform-origin: center;
+    transition: opacity var(--dur-medium)      var(--ease-standard),
+                transform var(--dur-atmospheric) var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .work:hover .work__cover { opacity: 0.55; transform: scale(1.02); }
+  }
+
+  /* Carousel (multi-slide variant) — same crossfade mechanic used on
+     the selections grid: JS toggles .is-active per slide, plus-lighter
+     blend keeps the crossfade from dipping through black. */
+  .cover-carousel {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .cover-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transform: scale(1);
+    transform-origin: center;
+    transition: opacity   var(--dur-cinematic)   var(--ease-in-out),
+                transform var(--dur-atmospheric) var(--ease-out-expo);
+    will-change: opacity;
+    mix-blend-mode: plus-lighter;
+  }
+  video.cover-slide {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--cover-x, 50%) var(--cover-y, 50%);
+    /* Poster paints under the video so a black frame never flashes
+       during decode/seek. */
+    background-image: var(--poster);
+    background-size: cover;
+    background-position: var(--cover-x, 50%) var(--cover-y, 50%);
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  .cover-slide.is-active { opacity: 1; }
+  @media (hover: hover) {
+    .work:hover .cover-slide.is-active { opacity: 0.55; transform: scale(1.02); }
+  }
+
+  /* Bottom scrim — ensures the meta / view-case text reads over any
+     bright imagery. Sits above the media, below the text overlays. */
+  .work__media::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ─── Meta overlay: title + tag, bottom-left ────────────────────── */
+  .work__meta {
+    position: absolute;
+    left: clamp(1.25rem, 3vw, 3rem);
+    bottom: clamp(1.25rem, 3vw, 2.5rem);
+    z-index: 3;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    /* Small enter delay after the media reveals — meta cascades in. */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity   var(--dur-cinematic) var(--ease-out-expo) 220ms,
+                transform var(--dur-cinematic) var(--ease-out-expo) 220ms;
+  }
+  .work.is-in-view .work__meta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .work__title {
+    margin: 0;
+    font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5.5vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .work__desc {
+    margin: 0.4rem 0 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.8rem, 1.1vw, 1.05rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  /* VIEW CASE hover label, matches the selections cells. */
+  .work__view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transition: opacity var(--dur-medium) var(--ease-out-expo);
+    pointer-events: none;
+    z-index: 4;
+  }
+  @media (hover: hover) {
+    .work:hover .work__view { opacity: 1; }
+  }
+  .work.is-active .work__view { opacity: 1; }
+
+  /* ─── Reduced motion ────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .logo { transition: none; }
-    .logo.is-breathing,
-    .logo.is-fading { animation: none; }
+    .work {
+      opacity: 1; transform: none; filter: none;
+      transition: none;
+    }
+    .work__meta {
+      opacity: 1; transform: none; transition: none;
+    }
+    .cover-slide { transition: none; }
+  }
+
+  /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
+  @media (max-width: 640px) {
+    .home-work { padding: 0.5rem; }
+    .work {
+      /* Snap on mobile is nice — each project claims one screen. */
+      scroll-snap-align: start;
+    }
+    .home-work {
+      scroll-snap-type: y proximity;
+    }
+    .work__title { font-size: clamp(2rem, 10vw, 3.5rem); }
+    .work__desc  { font-size: 0.75rem; }
+    .work__meta {
+      left: 1rem;
+      bottom: 1rem;
+    }
+    /* Blur at 6px full-screen is too heavy on mobile GPUs — drop it. */
+    .work { filter: none; }
   }
 </style>
 </head>
-<body>
+<body class="home">
   <div class="site-bg" aria-hidden="true">
     <div class="site-bg__blob site-bg__blob--cyan-1"></div>
     <div class="site-bg__blob site-bg__blob--cyan-2"></div>
@@ -105,73 +274,264 @@
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
   </div>
 
-  <div class="logo-cycle" role="status" aria-label="Loading DĒDĒ.STUDIO">
-    <!-- Each logo has dedicated cyan (dark) + red (light) files rather than
-         relying on hue-rotate — that filter fades anti-aliased edges. The
-         theme-img classes in theme.css hide the wrong-theme copy. -->
-    <img class="logo logo--horizontal theme-img theme-img--dark is-visible"
-         src="ASSETS/LOGO/logo_horizontal_cyan.png"
-         alt="DĒDĒ STUDIO" />
-    <img class="logo logo--horizontal theme-img theme-img--light is-visible"
-         src="ASSETS/LOGO/logo_horizontal_red.png"
-         alt="DĒDĒ STUDIO" />
-    <img class="logo logo--stacked theme-img theme-img--dark"
-         src="ASSETS/LOGO/logo_stacked_cyan.png"
-         alt="DĒDĒ STUDIO" />
-    <img class="logo logo--stacked theme-img theme-img--light"
-         src="ASSETS/LOGO/logo_stacked_red.png"
-         alt="DĒDĒ STUDIO" />
-  </div>
+  <header class="site-header">
+    <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_red.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-header__end">
+      <nav class="site-header__nav" aria-label="Primary">
+        <a href="selections.html">SELECTIONS</a>
+        <a href="concepts.html">CONCEPTS</a>
+        <a href="introductions.html">INTRODUCTIONS</a>
+        <a href="connections.html">CONNECTIONS</a>
+      </nav>
+      <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
+        <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <script src="site-header.js" defer></script>
+  <script src="site-bg.js" defer></script>
+
+  <main class="home-work">
+    <!-- 1. UNESCO ─ carousel (6 stills) -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="cover-carousel" aria-hidden="true">
+          <div class="cover-slide is-active" style="background-image:url('ASSETS/IMAGES/UNESCO/01.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/02.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/03.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/04.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/05.jpg')"></div>
+          <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/06.jpg')"></div>
+        </div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">UNESCO</h2>
+        <p class="work__desc">Branding &amp; Interaction</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 2. BLLCRW. MELANGE CAPSULE ─ single cover -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="work__cover" style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%"></div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">BLLCRW.</h2>
+        <p class="work__desc">Melange Capsule</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 3. ECCLESIASTES ─ carousel (image + video + poster) -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="cover-carousel" aria-hidden="true">
+          <div class="cover-slide is-active"
+               data-duration="4000"
+               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
+          <video class="cover-slide"
+                 data-duration="10000"
+                 style="--cover-y: 100%; --poster: url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"
+                 muted playsinline preload="auto"
+                 poster="ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
+            <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+          </video>
+          <div class="cover-slide"
+               data-duration="4000"
+               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
+        </div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">Ecclesiastes</h2>
+        <p class="work__desc">Compositional Design</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 4. NANA'S BAKERY ─ single cover -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="work__cover" style="--cover: url('ASSETS/IMAGES/NANAS_BAKERY.jpg'); --cover-y: 20%"></div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">Nana&rsquo;s Bakery</h2>
+        <p class="work__desc">Packaging &amp; Branding</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 5. MEMOIRS ─ single cover -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="work__cover" style="--cover: url('ASSETS/IMAGES/MEMOIRS.jpg')"></div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">Memoirs</h2>
+        <p class="work__desc">Motion Design</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 6. THE REVENANT ─ single cover -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="work__cover" style="--cover: url('ASSETS/IMAGES/THE_REVENANT.jpg')"></div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">The Revenant</h2>
+        <p class="work__desc">Motion Design</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 7. TRADER JOE'S ─ single cover -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="work__cover" style="--cover: url('ASSETS/IMAGES/TRADER_JOES.jpg')"></div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">Trader Joe&rsquo;s</h2>
+        <p class="work__desc">Packaging &amp; Branding</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 8. SAN DIEGO FOOTBALL CLUB ─ single cover -->
+    <a class="work" href="#">
+      <div class="work__media">
+        <div class="work__cover" style="--cover: url('ASSETS/IMAGES/POSTER_MOCKUP.jpg')"></div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">San Diego Football Club</h2>
+        <p class="work__desc">Branding &amp; Motion</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+  </main>
+
+  <footer class="site-footer">
+    <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_black.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-footer__meta">
+      <div class="site-footer__meta-left">
+        <span>© 2026 ALL RIGHTS RESERVED.</span>
+      </div>
+      <div class="site-footer__meta-center">
+        <span>DEFINE EXPRESSION. DESIGN EXISTENCE.</span>
+      </div>
+      <div class="site-footer__meta-right">
+        <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">BACK TO TOP</a>
+        <a href="https://www.linkedin.com/in/dedestudio" target="_blank" rel="noopener">LINKEDIN</a>
+      </div>
+    </div>
+  </footer>
+  <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 
   <script>
-    (function () {
-      // Two <img> per logo (dark + light theme variants) — apply / remove
-      // .is-visible on ALL variants; theme-img CSS shows only the right one.
-      const horizontals = document.querySelectorAll('.logo--horizontal');
-      const stackeds    = document.querySelectorAll('.logo--stacked');
-      const show = (nodes) => nodes.forEach((n) => n.classList.add('is-visible'));
-      const hide = (nodes) => nodes.forEach((n) => n.classList.remove('is-visible'));
+  (function () {
+    'use strict';
 
-      // Slow graceful ping-pong between the two logos, ending on the
-      // horizontal DĒDĒ STUDIO wordmark, then a soft fade into
-      // selections. All timings expressed in ms.
-      const INITIAL_HOLD_MS = 900;   // horizontal visible before first swap
-      const CROSSFADE_MS    = 1200;  // matches the CSS opacity transition
-      const HOLD_MS         = 700;   // pause between crossfades
-      const SWAPS           = 4;     // even count → ends on horizontal
-      const FINAL_HOLD_MS   = 1200;  // let the wordmark settle before fade
-      const REDIRECT_AT_MS  = 500;   // hand off mid-fade for smooth exit
+    const works    = document.querySelectorAll('.work');
+    const isTouch  = window.matchMedia('(hover: none)').matches;
+    const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        window.location.replace('selections.html');
-        return;
+    /* ─── Reveal on scroll (per section) ──────────────────────────── */
+    // First section reveals immediately (it's on screen at load); the
+    // rest fade + scale in when their top edge enters the viewport.
+    if ('IntersectionObserver' in window && !reduced) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
+
+      works.forEach((w, i) => {
+        if (i === 0) w.classList.add('is-in-view');
+        else io.observe(w);
+      });
+    } else {
+      works.forEach((w) => w.classList.add('is-in-view'));
+    }
+
+    /* ─── Touch: tap-once reveals VIEW CASE, tap-again navigates ─── */
+    if (isTouch) {
+      let active = null, timer = null;
+      const RESET_MS = 2000;
+      function reset() {
+        if (active) active.classList.remove('is-active');
+        active = null;
+        clearTimeout(timer); timer = null;
+      }
+      works.forEach((w) => {
+        w.addEventListener('click', (e) => {
+          if (active === w) { reset(); return; }  // 2nd tap → navigate
+          e.preventDefault();
+          reset();
+          active = w;
+          w.classList.add('is-active');
+          timer = setTimeout(reset, RESET_MS);
+        });
+      });
+    }
+
+    /* ─── Auto-advancing carousels (UNESCO + ECCLESIASTES) ────────── */
+    // Only cycle carousels whose section is currently in view — save
+    // battery + CPU when the user is elsewhere on the page. Video
+    // slides play/pause with their active state.
+    const DEFAULT_MS = 5000;
+    document.querySelectorAll('.cover-carousel').forEach((carousel) => {
+      const slides = Array.from(carousel.querySelectorAll('.cover-slide'));
+      if (slides.length < 2) return;
+      const section = carousel.closest('.work');
+      let timer = null, idx = 0, visible = false;
+
+      function step(i) {
+        idx = i;
+        slides.forEach((s, si) => {
+          const on = si === idx;
+          s.classList.toggle('is-active', on);
+          if (s.tagName === 'VIDEO') {
+            if (on && visible) { s.currentTime = 0; s.play().catch(() => {}); }
+            else               { s.pause(); }
+          }
+        });
+      }
+      function schedule() {
+        clearTimeout(timer);
+        const dur = parseInt(slides[idx].dataset.duration, 10) || DEFAULT_MS;
+        timer = setTimeout(() => { if (visible) step((idx + 1) % slides.length); schedule(); }, dur);
       }
 
-      let step = 0; // 0-based swap counter — even = go to stacked
-
-      function swap() {
-        if (step % 2 === 0) {
-          hide(horizontals); show(stackeds);
-        } else {
-          hide(stackeds); show(horizontals);
-        }
-        step++;
-        if (step < SWAPS) {
-          setTimeout(swap, CROSSFADE_MS + HOLD_MS);
-        } else {
-          // Final swap done — sitting on horizontal, let it settle,
-          // then fade out to hand off to selections.
-          setTimeout(fadeOut, CROSSFADE_MS + FINAL_HOLD_MS);
-        }
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            visible = entry.isIntersecting;
+            if (visible) {
+              // Kick the active slide back on if it's a video.
+              const s = slides[idx];
+              if (s.tagName === 'VIDEO') s.play().catch(() => {});
+              schedule();
+            } else {
+              clearTimeout(timer);
+              const s = slides[idx];
+              if (s.tagName === 'VIDEO') s.pause();
+            }
+          });
+        }, { threshold: 0.25 });
+        io.observe(section);
+      } else {
+        visible = true;
+        schedule();
       }
-
-      function fadeOut() {
-        horizontals.forEach((h) => h.classList.add('is-fading'));
-        setTimeout(() => window.location.replace('selections.html'), REDIRECT_AT_MS);
-      }
-
-      setTimeout(swap, INITIAL_HOLD_MS);
-    })();
+    });
+  })();
   </script>
 </body>
 </html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>I AM DĒDĒ.STUDIO</title>
+<link rel="canonical" href="https://iamdede.com/home.html" />
+<link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#050505" />
+<script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="theme.css" />
+<link rel="stylesheet" href="site-bg.css" />
+<link rel="prefetch" href="home.html" />
+<style>
+  html { background: var(--bg); }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    cursor: var(--cursor-url) 16 16, auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+  body {
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Two DĒDĒ logos stacked in the same spot; JS toggles is-visible to
+     cycle between them. Progressively faster over ~3s, then handoff. */
+  .logo-cycle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(60vw, 560px);
+    height: min(60vh, 500px);
+  }
+  .logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    /* Slow, graceful crossfade between the two logos. */
+    transition: opacity 1200ms ease-in-out;
+    display: block;
+  }
+  .logo.is-visible { opacity: 1; }
+
+  .logo--horizontal {
+    /* Another 10% bigger on top of the previous 20% bump. */
+    width: clamp(147px, 17.95vw, 275px);
+    height: auto;
+  }
+  .logo--stacked {
+    /* 60% smaller than the previous sizing (×0.4). */
+    width: clamp(80px, 9.6vw, 144px);
+    height: auto;
+  }
+
+  /* Jellyfish breathing — one continuous, symmetric inhale-exhale.
+     Only two keyframes plus a smooth ease-in-out timing function, so
+     there are no velocity discontinuities and nothing to read as chop.
+     Each cycle ends exactly at scale(1), matching the base transform,
+     so removing the class after N full cycles hands off cleanly. */
+  .logo.is-breathing {
+    animation: logo-breathe 4s ease-in-out infinite;
+    transform-origin: center center;
+    will-change: transform;
+  }
+  @keyframes logo-breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1);    }
+    50%      { transform: translate(-50%, -50%) scale(1.08); }
+  }
+
+  /* Hand-off: a gentle opacity fade instead of a scale burst. The
+     breathing continues underneath until the class swap, then this
+     takes over for the exit. */
+  .logo.is-fading {
+    animation: logo-fade-out 700ms var(--ease-out-expo) forwards;
+  }
+  @keyframes logo-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo { transition: none; }
+    .logo.is-breathing,
+    .logo.is-fading { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+    <div class="site-bg__blob site-bg__blob--dark-1"></div>
+    <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
+
+  <div class="logo-cycle" role="status" aria-label="Loading DĒDĒ.STUDIO">
+    <!-- Each logo has dedicated cyan (dark) + red (light) files rather than
+         relying on hue-rotate — that filter fades anti-aliased edges. The
+         theme-img classes in theme.css hide the wrong-theme copy. -->
+    <img class="logo logo--horizontal theme-img theme-img--dark is-visible"
+         src="ASSETS/LOGO/logo_horizontal_cyan.png"
+         alt="DĒDĒ STUDIO" />
+    <img class="logo logo--horizontal theme-img theme-img--light is-visible"
+         src="ASSETS/LOGO/logo_horizontal_red.png"
+         alt="DĒDĒ STUDIO" />
+    <img class="logo logo--stacked theme-img theme-img--dark"
+         src="ASSETS/LOGO/logo_stacked_cyan.png"
+         alt="DĒDĒ STUDIO" />
+    <img class="logo logo--stacked theme-img theme-img--light"
+         src="ASSETS/LOGO/logo_stacked_red.png"
+         alt="DĒDĒ STUDIO" />
+  </div>
+
+  <script>
+    (function () {
+      // Two <img> per logo (dark + light theme variants) — apply / remove
+      // .is-visible on ALL variants; theme-img CSS shows only the right one.
+      const horizontals = document.querySelectorAll('.logo--horizontal');
+      const stackeds    = document.querySelectorAll('.logo--stacked');
+      const show = (nodes) => nodes.forEach((n) => n.classList.add('is-visible'));
+      const hide = (nodes) => nodes.forEach((n) => n.classList.remove('is-visible'));
+
+      // Slow graceful ping-pong between the two logos, ending on the
+      // horizontal DĒDĒ STUDIO wordmark, then a soft fade into
+      // selections. All timings expressed in ms.
+      const INITIAL_HOLD_MS = 900;   // horizontal visible before first swap
+      const CROSSFADE_MS    = 1200;  // matches the CSS opacity transition
+      const HOLD_MS         = 700;   // pause between crossfades
+      const SWAPS           = 4;     // even count → ends on horizontal
+      const FINAL_HOLD_MS   = 1200;  // let the wordmark settle before fade
+      const REDIRECT_AT_MS  = 500;   // hand off mid-fade for smooth exit
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        window.location.replace('home.html');
+        return;
+      }
+
+      let step = 0; // 0-based swap counter — even = go to stacked
+
+      function swap() {
+        if (step % 2 === 0) {
+          hide(horizontals); show(stackeds);
+        } else {
+          hide(stackeds); show(horizontals);
+        }
+        step++;
+        if (step < SWAPS) {
+          setTimeout(swap, CROSSFADE_MS + HOLD_MS);
+        } else {
+          // Final swap done — sitting on horizontal, let it settle,
+          // then fade out to hand off to selections.
+          setTimeout(fadeOut, CROSSFADE_MS + FINAL_HOLD_MS);
+        }
+      }
+
+      function fadeOut() {
+        horizontals.forEach((h) => h.classList.add('is-fading'));
+        setTimeout(() => window.location.replace('home.html'), REDIRECT_AT_MS);
+      }
+
+      setTimeout(swap, INITIAL_HOLD_MS);
+    })();
+  </script>
+</body>
+</html>
