@@ -211,21 +211,26 @@
     background-color: transparent;
     box-shadow: inset 0 0 0 1px var(--line);
     transition:
-      background-color var(--dur-medium) var(--ease-standard),
-      color            var(--dur-medium) var(--ease-standard),
-      opacity          var(--dur-long)   var(--ease-out-expo),
-      transform        var(--dur-long)   var(--ease-out-expo);
+      background-color var(--dur-medium)    var(--ease-standard),
+      color            var(--dur-medium)    var(--ease-standard),
+      opacity          var(--dur-cinematic) var(--ease-out-expo),
+      transform        var(--dur-cinematic) var(--ease-out-expo),
+      filter           var(--dur-cinematic) var(--ease-out-expo);
   }
   @media (hover: hover) {
     .cell:hover { background-color: var(--fg); }
   }
   .cell.is-active { background-color: var(--fg); }
 
-  /* Below-fold cells arrive shifted+dimmed, rise into place on scroll
-     (JS toggles .needs-reveal → .is-in-view via IntersectionObserver). */
+  /* Below-fold cells arrive fully hidden — opacity 0, a 48px lift, and
+     an 8px blur so they "focus in" rather than just fading. JS toggles
+     .needs-reveal → .is-in-view via IntersectionObserver and applies a
+     short per-cell transition-delay so cells that enter together stagger
+     top → bottom instead of all popping at once. */
   .cell.needs-reveal:not(.is-in-view) {
-    opacity: 0.35;
-    transform: translateY(24px);
+    opacity: 0;
+    transform: translateY(48px);
+    filter: blur(8px);
   }
 
   /* Bottom scrim so the tag reads over any imagery below. */
@@ -403,7 +408,7 @@
     50%      { transform: translate(-50%, 8px); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cell.needs-reveal:not(.is-in-view) { opacity: 1; transform: none; }
+    .cell.needs-reveal:not(.is-in-view) { opacity: 1; transform: none; filter: none; }
     .scroll-cue { animation: none; }
   }
 </style>
@@ -637,15 +642,29 @@
     }
 
     /* ─── scroll-in reveal for below-fold cells ──────────────────────── */
+    // Cells enter fully hidden (opacity 0 + translateY + blur) and settle
+    // into place as they cross into the viewport. Multiple cells entering
+    // in the same observer batch are sorted top → bottom and given a
+    // 90ms stagger so a row doesn't pop all at once. The inline delay is
+    // cleared after the transition so it doesn't leak into future hovers.
     if ('IntersectionObserver' in window) {
+      const STAGGER_MS = 90;
+      const CLEAR_AFTER = 1600;  // > longest transition duration
       const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-in-view');
-            io.unobserve(entry.target);
+        const revealing = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        revealing.forEach((entry, i) => {
+          const el = entry.target;
+          if (i > 0) {
+            const delay = i * STAGGER_MS;
+            el.style.transitionDelay = delay + 'ms';
+            setTimeout(() => { el.style.transitionDelay = ''; }, delay + CLEAR_AFTER);
           }
+          el.classList.add('is-in-view');
+          io.unobserve(el);
         });
-      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+      }, { threshold: 0.15, rootMargin: '0px 0px -12% 0px' });
 
       cells.forEach((cell) => {
         if (cell.getBoundingClientRect().top < window.innerHeight * 0.9) {
