@@ -210,11 +210,15 @@
     box-sizing: border-box;
     background-color: transparent;
     box-shadow: inset 0 0 0 1px var(--line);
+    /* Transform gets a subtle-spring cubic-bezier (y2 > 1 → slight
+       overshoot) so cells settle with a hint of bounce — that's the
+       "dancing together" character. Opacity + filter stay on the soft
+       ease-out-expo landing so they don't oscillate. */
     transition:
       background-color var(--dur-medium)    var(--ease-standard),
       color            var(--dur-medium)    var(--ease-standard),
       opacity          var(--dur-cinematic) var(--ease-out-expo),
-      transform        var(--dur-cinematic) var(--ease-out-expo),
+      transform        var(--dur-cinematic) cubic-bezier(0.16, 1.15, 0.3, 1),
       filter           var(--dur-cinematic) var(--ease-out-expo);
   }
   @media (hover: hover) {
@@ -222,15 +226,15 @@
   }
   .cell.is-active { background-color: var(--fg); }
 
-  /* Below-fold cells arrive fully hidden — opacity 0, a 48px lift, and
-     an 8px blur so they "focus in" rather than just fading. JS toggles
-     .needs-reveal → .is-in-view via IntersectionObserver and applies a
-     short per-cell transition-delay so cells that enter together stagger
-     top → bottom instead of all popping at once. */
+  /* Below-fold cells arrive fully hidden and heavily displaced — a
+     96px lift, 16px blur, and slight scale-down. Combined with the
+     spring-ish transform curve above and the 180ms per-cell stagger
+     applied by JS, cells cascade in top → bottom with visible motion
+     rather than a whisper of a fade. */
   .cell.needs-reveal:not(.is-in-view) {
     opacity: 0;
-    transform: translateY(48px);
-    filter: blur(8px);
+    transform: translateY(96px) scale(0.9);
+    filter: blur(16px);
   }
 
   /* Bottom scrim so the tag reads over any imagery below. */
@@ -648,8 +652,8 @@
     // 90ms stagger so a row doesn't pop all at once. The inline delay is
     // cleared after the transition so it doesn't leak into future hovers.
     if ('IntersectionObserver' in window) {
-      const STAGGER_MS = 90;
-      const CLEAR_AFTER = 1600;  // > longest transition duration
+      const STAGGER_MS = 180;
+      const CLEAR_AFTER = 1800;  // > longest transition duration
       const io = new IntersectionObserver((entries) => {
         const revealing = entries
           .filter((e) => e.isIntersecting)
