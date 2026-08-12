@@ -57,11 +57,16 @@
   .selections-grid {
     --grid-row:      clamp(320px, 44vh, 640px);
     --grid-hero-row: clamp(544px, 74.8vh, 1088px);
+    --cell-gap:      clamp(10px, 1.25vw, 20px);
     position: relative;
     z-index: 1;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 1px;
+    gap: var(--cell-gap);
+    /* Horizontal padding so the leftmost / rightmost cells are inset
+       from the viewport edge — matches the gap, so cells sit inside a
+       uniform grid margin and the site-bg (blobs) reads all around. */
+    padding: 0 var(--cell-gap);
   }
   .selections-grid--top {
     grid-template-rows:
@@ -209,11 +214,13 @@
     text-decoration: none;
     box-sizing: border-box;
     background-color: transparent;
-    box-shadow: inset 0 0 0 1px var(--line);
-    /* Transform gets a subtle-spring cubic-bezier (y2 > 1 → slight
-       overshoot) so cells settle with a hint of bounce — that's the
-       "dancing together" character. Opacity + filter stay on the soft
-       ease-out-expo landing so they don't oscillate. */
+    /* Rounded rectangles with visible gaps between them so the animated
+       site-bg reads through the grid. overflow: hidden on every cell
+       (not just cover cells) so the ::before image + ::after scrim clip
+       to the corner radius. No inner box-shadow border any more — the
+       gap does the separation, and a hairline would fight the corners. */
+    border-radius: clamp(10px, 1.1vw, 18px);
+    overflow: hidden;
     transition:
       background-color var(--dur-medium)    var(--ease-standard),
       color            var(--dur-medium)    var(--ease-standard),
