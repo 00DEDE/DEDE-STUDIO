@@ -163,9 +163,10 @@ body:has(.site-header) {
       background    var(--dur-medium) var(--ease-standard);
   }
   .site-header__brand img {
-    width: 13.75vw;
-    max-width: 200px;
-    min-width: 112px;
+    /* Mobile logo −25% from the previous sizing (13.75vw / 200 / 112). */
+    width: 10.3vw;
+    max-width: 150px;
+    min-width: 84px;
     height: auto;
   }
 
@@ -232,22 +233,25 @@ body:has(.site-header) {
   }
   .site-header.is-menu-open .site-header__brand { grid-column: 1; grid-row: 1; }
   .site-header.is-menu-open .site-header__menu  { grid-column: 2; grid-row: 1; align-self: start; }
+  /* Bottom-anchored row containing nav (left) + toggle (right level
+     with the last nav item). Row occupies the full remaining height,
+     children align-items: end so both stick to the bottom edge. */
   .site-header.is-menu-open .site-header__end {
     display: flex;
     grid-column: 1 / -1;
     grid-row: 2;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: 2rem;
+    gap: 1rem;
     width: 100%;
+    height: 100%;
   }
   .site-header.is-menu-open .site-header__nav {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.35rem;
-    width: 100%;
   }
   .site-header.is-menu-open .site-header__nav a {
     display: block;
@@ -265,9 +269,13 @@ body:has(.site-header) {
     transition: opacity var(--dur-medium) var(--ease-standard);
   }
   .site-header.is-menu-open .site-header__nav a.is-current { opacity: 1; }
+  /* Toggle sits to the RIGHT of the nav column, aligned to bottom so
+     its vertical centre lines up with the last nav item (CONTACT). */
   .site-header.is-menu-open .site-header__theme-toggle {
-    align-self: flex-start;
-    order: 1;
+    align-self: flex-end;
+    margin-bottom: 0.5rem;   /* small nudge so it centers on CONTACT's cap-height */
+    order: unset;
+    flex: none;
   }
 
   /* Hamburger → X morph. Lines 1 + 4 fade out and collapse; lines
