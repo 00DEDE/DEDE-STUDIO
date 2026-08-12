@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SELECTIONS — I AM DĒDĒ.STUDIO</title>
-<link rel="canonical" href="https://iamdede.com/selections.html" />
+<title>MIND — I AM DĒDĒ.STUDIO</title>
+<link rel="canonical" href="https://iamdede.com/mind.html" />
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
@@ -15,7 +15,6 @@
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
-<link rel="stylesheet" href="site-marquee.css" />
 <link rel="stylesheet" href="site-mobile.css" />
 <style>
   @font-face {
@@ -25,7 +24,6 @@
     font-style: normal;
     font-display: swap;
   }
-  /* SUPER (weight 900) is declared in site-marquee.css. */
 
   /* ─── page reset ─────────────────────────────────────────────────── */
   html { background: var(--bg); }
@@ -44,168 +42,30 @@
     cursor: var(--cursor-url) 16 16, pointer;
   }
 
-  /* ─── page container + hover-swap backdrop ───────────────────────── */
-  .selections {
-    position: relative;
-    width: 100vw;
-    min-height: 100vh;
-  }
-  /* ─── editorial grid ─────────────────────────────────────────────── */
-  /* Two grids stacked with a text band between them. Cell placement is
-     driven by explicit modifier classes (.cell--hero / --thin / --long)
-     rather than nth-child, so a split doesn't reset positions. */
+  /* ─── editorial grid (2 × 4, all uniform) ─────────────────────────
+     Studio Dumbar-style work grid: two columns, every cell the same
+     size, generous gap so the animated site-bg reads between them.
+     No hero / thin / long modifiers any more — every project is
+     equally weighted. */
   .selections-grid {
-    --grid-row:      clamp(320px, 44vh, 640px);
-    --grid-hero-row: clamp(544px, 74.8vh, 1088px);
-    --cell-gap:      clamp(10px, 1.25vw, 20px);
+    --grid-row: clamp(300px, 46vh, 620px);
+    --cell-gap: clamp(10px, 1.25vw, 20px);
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: var(--grid-row);
     gap: var(--cell-gap);
-    /* Horizontal padding so the leftmost / rightmost cells are inset
-       from the viewport edge — matches the gap, so cells sit inside a
-       uniform grid margin and the site-bg (blobs) reads all around. */
+    /* Horizontal padding so the leftmost / rightmost cells inset from
+       the viewport edge by the same amount as the internal gap. */
     padding: 0 var(--cell-gap);
   }
-  .selections-grid--top {
-    grid-template-rows:
-      var(--grid-hero-row)
-      var(--grid-row)
-      var(--grid-row);
-  }
-  .selections-grid--bottom {
-    grid-template-rows:
-      var(--grid-row)
-      var(--grid-hero-row);
-  }
-  .cell--hero { grid-column: 1 / -1; }
-  .cell--thin { grid-column: span 4; }
-  .cell--long { grid-column: span 8; }
   @media (max-width: 640px) {
-    .selections-grid--top,
-    .selections-grid--bottom {
+    .selections-grid {
       grid-template-columns: 1fr;
-      grid-template-rows: none;
       grid-auto-rows: 64vh;
     }
-    .cell { grid-column: 1 / -1; grid-row: auto; }
   }
-
-  /* Sticky scroll pattern — the marquee and the quote pin to the top of
-     their own scene while the cells inside that scene scroll up over
-     them. Each scene is a self-contained sticky range: when the scene
-     finishes scrolling past, its sticky heading releases and the next
-     scene's heading takes over. Cell z-index sits above the heading so
-     cells visually cover the sticky text as they pass; scrolling back
-     up reveals it again. */
-  .selections__scene {
-    position: relative;
-  }
-  /* Raise everything below the top marquee ~5% of viewport height so
-     the grid tucks up under the marquee's bottom edge. */
-  .selections__scene:first-of-type .selections-grid { margin-top: -5vh; }
-  .selections__scene + .selections__scene            { margin-top: -5vh; }
-  .selections__scene > .marquee-band,
-  .selections__scene > .selections__band--stacked {
-    position: sticky;
-    top: var(--header-safe-top, 5rem);
-    z-index: 0;
-  }
-  .selections__scene > .selections-grid {
-    z-index: 1;
-  }
-
-  /* Full-bleed statement bands sit between / before the grids.
-
-     Legibility effect (hover-capable devices only): the text is heavily
-     blurred; a radial mask on a sharp copy reveals ~260px around the
-     cursor. Touch devices skip the blur entirely (base sharp layer). */
-  .selections__band {
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    color: var(--fg);
-    font-family: "Akzidenz Grotesk",
-                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-  }
-  .selections__band--stacked {
-    padding: 6rem 1.5rem;
-    font-size: clamp(1.6rem, 7vw, 12rem);
-    text-wrap: balance;
-  }
-  /* Mobile: double the pt size and left-align. `text-wrap: initial`
-     undoes the desktop `balance` so lines wrap greedily against the
-     left edge instead of being distributed for even length. */
-  @media (max-width: 640px) {
-    .selections__band--stacked {
-      font-size: 14vw;
-      text-align: left;
-      text-wrap: initial;
-    }
-  }
-
-  /* Dual-layer legibility trick: identical blurred + sharp copies stack;
-     the sharp copy has a radial-gradient mask centered on the cursor. */
-  .band__layers {
-    position: relative;
-    display: block;
-  }
-  .band__blur,
-  .band__sharp {
-    display: block;
-  }
-  .band__sharp {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    /* Default centre off-screen — the sharp copy is invisible until the
-       user actually hovers over the band. */
-    --mx: -1000px;
-    --my: -1000px;
-    -webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
-      #000 0%, #000 25%, transparent 90%);
-            mask-image: radial-gradient(circle 260px at var(--mx) var(--my),
-      #000 0%, #000 25%, transparent 90%);
-  }
-  .selections__band--marquee .band__blur    { filter: blur(20px); }
-  .selections__band--stacked .band__blur    { filter: none; }
-  .selections__band--stacked .word          { filter: blur(14px); }
-  .selections__band--stacked .word.is-clear { filter: none; }
-  .selections__band--stacked .word {
-    display: inline-block;
-    transition: filter var(--dur-medium) var(--ease-out-expo);
-    cursor: var(--cursor-url) 16 16, pointer;
-  }
-  /* Desktop: sharp overlay hidden — the per-word hover reveal handles
-     the "into focus" moment. */
-  .selections__band--stacked .band__sharp { display: none; }
-
-  /* Mobile quote reveal — line-by-line. Each of the three .line spans
-     blurs independently and JS toggles .is-clear on them top → bottom
-     at a uniform interval. Three filter targets instead of fourteen
-     (per-word) — big drop in painting cost on mobile GPUs. */
-  @media (max-width: 640px) {
-    .selections__band--stacked .band__sharp { display: none; }
-    .selections__band--stacked .band__blur  { filter: none; }
-    .selections__band--stacked .word        { filter: none; cursor: default; transition: none; }
-    .selections__band--stacked .line {
-      display: block;
-      filter: blur(12px);
-      transition: filter var(--dur-medium) var(--ease-out-expo);
-    }
-    .selections__band--stacked .line.is-clear { filter: none; }
-    @media (prefers-reduced-motion: reduce) {
-      .selections__band--stacked .line { filter: none; }
-    }
-  }
-
-  /* Marquee styles + cursor-tracking JS live in site-marquee.{css,js} —
-     the marquee below uses the .marquee-band class family from there. */
 
   /* ─── cell base + hover fg-fill ──────────────────────────────────── */
   .cell {
@@ -214,13 +74,12 @@
     text-decoration: none;
     box-sizing: border-box;
     background-color: transparent;
-    /* Rounded rectangles with visible gaps between them so the animated
-       site-bg reads through the grid. overflow: hidden on every cell
-       (not just cover cells) so the ::before image + ::after scrim clip
-       to the corner radius. No inner box-shadow border any more — the
-       gap does the separation, and a hairline would fight the corners. */
     border-radius: clamp(10px, 1.1vw, 18px);
     overflow: hidden;
+    /* Transform gets a subtle-spring cubic-bezier (y2 > 1 → slight
+       overshoot) so cells settle with a hint of bounce — the "dancing
+       together" character. Opacity + filter stay on the soft
+       ease-out-expo landing so they don't oscillate. */
     transition:
       background-color var(--dur-medium)    var(--ease-standard),
       color            var(--dur-medium)    var(--ease-standard),
@@ -233,18 +92,17 @@
   }
   .cell.is-active { background-color: var(--fg); }
 
-  /* Below-fold cells arrive fully hidden and heavily displaced — a
-     96px lift, 16px blur, and slight scale-down. Combined with the
-     spring-ish transform curve above and the 180ms per-cell stagger
-     applied by JS, cells cascade in top → bottom with visible motion
-     rather than a whisper of a fade. */
+  /* Below-fold cells arrive fully hidden — a 96px lift, 16px blur,
+     slight scale-down. JS toggles .needs-reveal → .is-in-view via
+     IntersectionObserver and applies a 180ms per-cell transition-delay
+     so cells that enter together cascade top → bottom. */
   .cell.needs-reveal:not(.is-in-view) {
     opacity: 0;
     transform: translateY(96px) scale(0.9);
     filter: blur(16px);
   }
 
-  /* Bottom scrim so the tag reads over any imagery below. */
+  /* Bottom scrim so the tag reads over any imagery. */
   .cell::after {
     content: '';
     position: absolute;
@@ -257,11 +115,6 @@
   }
 
   /* ─── cover cells (single-image variant) ─────────────────────────── */
-  /* Image lives on ::before, not the cell's own background, so hover
-     can dim it to 40% without touching the tag or VIEW CASE overlay,
-     and the fg-fill hover from .cell is suppressed. Each cover cell
-     sets its image inline via `style="--cover: url('...')"`. */
-  .cell--cover { overflow: hidden; }
   .cell--cover::before {
     content: '';
     position: absolute;
@@ -269,8 +122,6 @@
     background-image: var(--cover);
     background-size: cover;
     background-repeat: no-repeat;
-    /* --cover-x / --cover-y nudge the image within the cell.
-       Higher --cover-y shows more of the bottom of the source. */
     background-position: var(--cover-x, 50%) var(--cover-y, 50%);
     transform: scale(1);
     transform-origin: center;
@@ -279,10 +130,6 @@
                 transform var(--dur-atmospheric) var(--ease-out-expo);
     z-index: 0;
   }
-  /* Desktop hover keeps its transparent background (blobs read through);
-     mobile TAP (.is-active, added by touch JS only) inherits the .cell
-     fg-fill instead so the sticky marquee never shows through the
-     dimmed image on a click. */
   @media (hover: hover) {
     .cell--cover:hover { background-color: transparent; }
     .cell--cover:hover::before { opacity: 0.4; transform: scale(1.02); }
@@ -290,17 +137,12 @@
   .cell--cover.is-active::before { opacity: 0.4; transform: scale(1.02); }
 
   /* ─── carousel cells (multi-slide variant) ───────────────────────── */
-  /* Slides stack in a .cover-carousel container that takes over from
-     the ::before layer. JS toggles .is-active to crossfade between
-     them; each slide can be a <div> (background-image) or a <video>. */
   .cell--carousel::before { display: none; }
   .cover-carousel {
     position: absolute;
     inset: 0;
     z-index: 0;
     overflow: hidden;
-    /* Isolate so plus-lighter on slides only composites within the
-       carousel, not against the cell / page below. */
     isolation: isolate;
   }
   .cover-slide {
@@ -315,8 +157,6 @@
     transition: opacity   var(--dur-cinematic)   var(--ease-in-out),
                 transform var(--dur-atmospheric) var(--ease-out-expo);
     will-change: opacity;
-    /* Additive blend: two overlapping slides at 50% each sum to 100%
-       so the crossfade never dips through the black cell background. */
     mix-blend-mode: plus-lighter;
   }
   video.cover-slide {
@@ -324,8 +164,6 @@
     height: 100%;
     object-fit: cover;
     object-position: var(--cover-x, 50%) var(--cover-y, 50%);
-    /* Paint the poster underneath the <video> element so the crossfade
-       never reveals a black frame while the video decodes / seeks. */
     background-image: var(--poster);
     background-size: cover;
     background-position: var(--cover-x, 50%) var(--cover-y, 50%);
@@ -333,8 +171,6 @@
     pointer-events: none;
   }
   .cover-slide.is-active { opacity: 1; }
-  /* Only the currently-visible slide dims + zooms on hover; inactive
-     slides stay at opacity 0. */
   @media (hover: hover) {
     .cell--carousel:hover .cover-slide.is-active {
       opacity: 0.4;
@@ -422,6 +258,12 @@
     .cell.needs-reveal:not(.is-in-view) { opacity: 1; transform: none; filter: none; }
     .scroll-cue { animation: none; }
   }
+
+  /* Top breathing room — header floats over the top; grid tucks below
+     its bottom edge (--header-safe-top) with a small extra gap. */
+  .selections {
+    padding-top: var(--cell-gap, 1rem);
+  }
 </style>
 </head>
 <body>
@@ -431,18 +273,18 @@
     <div class="site-bg__blob site-bg__blob--dark-1"></div>
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
   </div>
-  <div class="selections">    <div class="bg-layer is-idle"   id="bgB"></div>
-
+  <div class="selections">
     <header class="site-header">
       <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
         <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_red.png" alt="DEDE STUDIO" />
       </a>
       <div class="site-header__end">
         <nav class="site-header__nav" aria-label="Primary">
-          <a href="selections.html">SELECTIONS</a>
-          <a href="concepts.html">CONCEPTS</a>
-          <a href="introductions.html">INTRODUCTIONS</a>
-          <a href="connections.html">CONNECTIONS</a>
+          <a href="home.html">HOME</a>
+          <a href="mind.html">MIND</a>
+          <a href="hands.html">HANDS</a>
+          <a href="profile.html">PROFILE</a>
+          <a href="contact.html">CONTACT</a>
         </nav>
         <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
           <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
@@ -451,28 +293,10 @@
     </header>
     <script src="site-header.js" defer></script>
     <script src="site-bg.js" defer></script>
-    <script src="site-marquee.js" defer></script>
 
-    <section class="selections__scene">
-    <h2 class="marquee-band" aria-label="Our handprint. Our voice. Our mind.">
-      <span class="marquee-band__layers" aria-hidden="true">
-        <span class="marquee-band__blur">
-          <span class="marquee-track">
-            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
-            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
-          </span>
-        </span>
-        <span class="marquee-band__sharp">
-          <span class="marquee-track">
-            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
-            <span class="marquee-phrase">OUR HANDPRINT.<span class="marquee-mark" aria-hidden="true"></span>OUR VOICE.<span class="marquee-mark" aria-hidden="true"></span>OUR MIND.<span class="marquee-mark" aria-hidden="true"></span></span>
-          </span>
-        </span>
-      </span>
-    </h2>
-
-    <div class="selections-grid selections-grid--top">
-      <a class="cell cell--hero cell--cover cell--carousel" href="#">
+    <div class="selections-grid">
+      <!-- 1. UNESCO ─ carousel (6 stills) -->
+      <a class="cell cell--cover cell--carousel" href="#">
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active" style="background-image:url('ASSETS/IMAGES/UNESCO/01.jpg')"></div>
           <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/02.jpg')"></div>
@@ -484,12 +308,16 @@
         <div class="cell-tags"><strong>UNESCO</strong> BRANDING &amp; INTERACTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--thin cell--cover" href="#"
+
+      <!-- 2. BLLCRW. MELANGE CAPSULE ─ single cover -->
+      <a class="cell cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%">
         <div class="cell-tags"><strong>BLLCRW.</strong> MELANGE CAPSULE</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--long cell--cover cell--carousel" href="#">
+
+      <!-- 3. ECCLESIASTES ─ carousel (image + video + poster) -->
+      <a class="cell cell--cover cell--carousel" href="#">
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active"
                data-duration="4000"
@@ -508,53 +336,42 @@
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--long cell--cover" href="#"
+
+      <!-- 4. NANA'S BAKERY ─ single cover -->
+      <a class="cell cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/NANAS_BAKERY.jpg'); --cover-y: 20%">
         <div class="cell-tags"><strong>NANA&rsquo;S BAKERY</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--thin cell--cover" href="#"
+
+      <!-- 5. MEMOIRS ─ single cover -->
+      <a class="cell cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/MEMOIRS.jpg')">
         <div class="cell-tags"><strong>MEMOIRS</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-    </div>
-    </section>
 
-    <section class="selections__scene">
-    <h2 class="selections__band selections__band--stacked" aria-label="What we choose to give life to, will in return give life to us.">
-      <span class="band__layers" aria-hidden="true">
-        <span class="band__blur">
-          <span class="line"><span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span></span>
-          <span class="line"><span class="word">will</span> <span class="word">in</span> <span class="word">return</span></span>
-          <span class="line"><span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span></span>
-        </span>
-        <span class="band__sharp">
-          <span class="line"><span class="word">what</span> <span class="word">we</span> <span class="word">choose</span> <span class="word">to</span> <span class="word">give</span> <span class="word">life</span> <span class="word">to,</span></span>
-          <span class="line"><span class="word">will</span> <span class="word">in</span> <span class="word">return</span></span>
-          <span class="line"><span class="word">give</span> <span class="word">life</span> <span class="word">to</span> <span class="word">us.</span></span>
-        </span>
-      </span>
-    </h2>
-
-    <div class="selections-grid selections-grid--bottom">
-      <a class="cell cell--thin cell--cover" href="#"
+      <!-- 6. THE REVENANT ─ single cover -->
+      <a class="cell cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/THE_REVENANT.jpg')">
         <div class="cell-tags"><strong>THE REVENANT</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--long cell--cover" href="#"
+
+      <!-- 7. TRADER JOE'S ─ single cover -->
+      <a class="cell cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/TRADER_JOES.jpg')">
         <div class="cell-tags"><strong>TRADER JOE&rsquo;S</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
-      <a class="cell cell--hero cell--cover" href="#"
+
+      <!-- 8. SAN DIEGO FOOTBALL CLUB ─ single cover -->
+      <a class="cell cell--cover" href="#"
          style="--cover: url('ASSETS/IMAGES/POSTER_MOCKUP.jpg')">
         <div class="cell-tags"><strong>SAN DIEGO FOOTBALL CLUB</strong> BRANDING &amp; MOTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
     </div>
-    </section>
 
     <div class="scroll-cue" aria-hidden="true">
       <span class="scroll-cue__text">SCROLL</span>
@@ -584,79 +401,14 @@
   (function () {
     'use strict';
 
-    const html = document.documentElement;
     const cells = document.querySelectorAll('.cell');
     const isTouch = window.matchMedia('(hover: none)').matches;
-
-    /* ─── sticky heading fade-on-scroll ──────────────────────────────── */
-    // Sticky marquee + quote fade to opacity 0 as soon as the user
-    // scrolls past their natural top position. The fade completes in
-    // 150 px of scroll, so the headings disappear quickly instead of
-    // lingering partially visible above the cells that are rising to
-    // cover them. Reverses on scroll-up so the headings reappear.
-    const stickies = [
-      document.querySelector('.selections__scene:first-of-type > .marquee-band'),
-      document.querySelector('.selections__band--stacked'),
-    ].filter(Boolean);
-    if (stickies.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const FADE_RANGE = 150;
-      const anchors = new Map();
-      function measure() {
-        stickies.forEach((el) => {
-          const rect = el.getBoundingClientRect();
-          anchors.set(el, rect.top + window.scrollY - (parseFloat(getComputedStyle(el).top) || 0));
-        });
-      }
-      measure();
-      window.addEventListener('resize', measure, { passive: true });
-
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          const y = window.scrollY;
-          stickies.forEach((el) => {
-            const anchor = anchors.get(el);
-            const p = Math.max(0, Math.min(1, (y - anchor) / FADE_RANGE));
-            el.style.opacity = 1 - p;
-          });
-          ticking = false;
-        });
-      }, { passive: true });
-    }
-
-    /* ─── per-cell interaction ───────────────────────────────────────── */
-    // The per-cell hover backdrop gradient is gone in both modes — the
-    // site-bg (single ambient gradient in light, animated blobs in dark)
-    // is the only page background. Touch keeps its tap-to-activate flow
-    // so VIEW CASE surfaces before navigation.
-    if (isTouch) {
-      let activeCell = null, timer = null;
-      const RESET_MS = 2000;
-      function reset() {
-        if (activeCell) activeCell.classList.remove('is-active');
-        activeCell = null;
-        clearTimeout(timer);
-        timer = null;
-      }
-      cells.forEach((cell) => {
-        cell.addEventListener('click', (e) => {
-          if (activeCell === cell) { reset(); return; } // 2nd tap → navigate
-          e.preventDefault();
-          reset();
-          activeCell = cell;
-          cell.classList.add('is-active');
-          timer = setTimeout(reset, RESET_MS);
-        });
-      });
-    }
 
     /* ─── scroll-in reveal for below-fold cells ──────────────────────── */
     // Cells enter fully hidden (opacity 0 + translateY + blur) and settle
     // into place as they cross into the viewport. Multiple cells entering
     // in the same observer batch are sorted top → bottom and given a
-    // 90ms stagger so a row doesn't pop all at once. The inline delay is
+    // 180ms stagger so a row doesn't pop all at once. The inline delay is
     // cleared after the transition so it doesn't leak into future hovers.
     if ('IntersectionObserver' in window) {
       const STAGGER_MS = 180;
@@ -687,41 +439,27 @@
       });
     }
 
-    /* Marquee cursor-tracking spotlight lives in site-marquee.js (shared
-       with the introductions + connections pages). */
-
-    /* ─── quote band reveal ──────────────────────────────────────────── */
-    const isMobile = window.matchMedia('(max-width: 640px)').matches;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!isMobile) {
-      /* Desktop / hover: cursor on a word clears it permanently. Not
-         attached on mobile — mobile runs the auto-cycle instead and
-         these listeners would fight it. */
-      document.querySelectorAll('.selections__band--stacked .word').forEach((word) => {
-        const reveal = () => word.classList.add('is-clear');
-        word.addEventListener('mouseenter', reveal);
-      });
-    } else if (!reducedMotion) {
-      /* Mobile: auto-cycle each line into focus at a uniform 1.8s
-         interval — line 1, then 2, then 3 — hold the whole quote clear
-         for 3.8s, reblur all at once, pause 1.4s, repeat. Every line
-         uses the same filter-transition duration; no varying pace. */
-      const qLines = document.querySelectorAll('.selections__band--stacked .band__blur .line');
-      if (qLines.length) {
-        const LINE_INTERVAL = 1800;
-        const HOLD_MS       = 3800;
-        const RESET_MS      = 1400;
-        (function loop() {
-          qLines.forEach((l) => l.classList.remove('is-clear'));
-          setTimeout(function reveal() {
-            qLines.forEach((l, i) => {
-              setTimeout(() => l.classList.add('is-clear'), i * LINE_INTERVAL);
-            });
-            setTimeout(loop, qLines.length * LINE_INTERVAL + HOLD_MS);
-          }, RESET_MS);
-        })();
+    /* ─── per-cell interaction (touch) ───────────────────────────────── */
+    // Touch: 1st tap reveals VIEW CASE; 2nd tap navigates.
+    if (isTouch) {
+      let activeCell = null, timer = null;
+      const RESET_MS = 2000;
+      function reset() {
+        if (activeCell) activeCell.classList.remove('is-active');
+        activeCell = null;
+        clearTimeout(timer);
+        timer = null;
       }
+      cells.forEach((cell) => {
+        cell.addEventListener('click', (e) => {
+          if (activeCell === cell) { reset(); return; }
+          e.preventDefault();
+          reset();
+          activeCell = cell;
+          cell.classList.add('is-active');
+          timer = setTimeout(reset, RESET_MS);
+        });
+      });
     }
 
     /* ─── scroll cue fade-out ────────────────────────────────────────── */

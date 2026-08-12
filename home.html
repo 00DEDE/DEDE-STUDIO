@@ -197,7 +197,9 @@
   .work__title {
     margin: 0;
     font-family: "Akzidenz Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 900;
+    /* Regular weight only — no SUPER (900). Keeps the meta reading as
+       a quiet caption rather than a display banner. */
+    font-weight: 400;
     font-size: clamp(2rem, 5.5vw, 5rem);
     line-height: 0.95;
     letter-spacing: -0.03em;
@@ -367,10 +369,11 @@
     </a>
     <div class="site-header__end">
       <nav class="site-header__nav" aria-label="Primary">
-        <a href="selections.html">SELECTIONS</a>
-        <a href="concepts.html">CONCEPTS</a>
-        <a href="introductions.html">INTRODUCTIONS</a>
-        <a href="connections.html">CONNECTIONS</a>
+        <a href="home.html">HOME</a>
+        <a href="mind.html">MIND</a>
+        <a href="hands.html">HANDS</a>
+        <a href="profile.html">PROFILE</a>
+        <a href="contact.html">CONTACT</a>
       </nav>
       <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
         <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
