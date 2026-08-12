@@ -138,30 +138,29 @@ body:has(.site-header) {
 }
 
 @media (max-width: 640px) {
-  /* Mobile layout: DĒDĒ logo, then toggle directly below it, then the
-     nav pages as a vertical list. Full-open at top of page; on scroll
-     the nav list retracts one item at a time. */
+  /* Compact pill (default state on mobile) — DĒDĒ logo far left,
+     hamburger button far right. Nav + toggle live inside
+     .site-header__end and are HIDDEN until the hamburger toggles
+     .is-menu-open. Matches the Studio Dumbar mobile shape. */
   .site-header {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    padding: 1rem 1.25rem 1.15rem;
-    gap: 0.65rem;
-    border-radius: 1.75rem;
-    /* Cheaper blur + slightly more opaque backdrop tint on mobile.
-       Reads the same frosted-glass at a fraction of the compositor
-       cost of the 14px + saturate(1.4) desktop version. */
+    justify-content: space-between;
+    padding: 0.75rem 1.15rem;
+    border-radius: 999px;
     background: color-mix(in srgb, var(--bg) 65%, transparent);
     -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
-    /* Padding transitions so the pill shrinks smoothly when the nav
-       items retract below (their max-height animates to 0). */
-    transition: padding var(--dur-medium) var(--ease-out-expo),
-                border-radius var(--dur-medium) var(--ease-out-expo);
-  }
-  .site-header.is-scrolled {
-    padding: 0.75rem 1.15rem 0.675rem;   /* bottom −10% below toggle */
-    border-radius: 999px;
-    gap: 0.5rem;
+    /* Every property that flips between compact-pill and full-screen
+       overlay is transitioned so the open/close feels like one motion. */
+    transition:
+      top           var(--dur-medium) var(--ease-out-expo),
+      left          var(--dur-medium) var(--ease-out-expo),
+      right         var(--dur-medium) var(--ease-out-expo),
+      bottom        var(--dur-medium) var(--ease-out-expo),
+      padding       var(--dur-medium) var(--ease-out-expo),
+      border-radius var(--dur-medium) var(--ease-out-expo),
+      background    var(--dur-medium) var(--ease-standard);
   }
   .site-header__brand img {
     width: 13.75vw;
@@ -169,61 +168,136 @@ body:has(.site-header) {
     min-width: 112px;
     height: auto;
   }
-  /* Right-side group stacks vertically: toggle first, then nav list. */
-  .site-header__end {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.7rem;
+
+  /* ─── Hamburger button ──────────────────────────────────────────
+     4-line motif to match the DĒDĒ cursor icon. Injected by
+     site-header.js so every existing page picks it up automatically
+     without touching per-page HTML. Absolute-positioned spans give
+     us precise control for the morph-to-X on open. */
+  .site-header__menu {
+    display: block;
+    position: relative;
+    width: 28px;
+    height: 22px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: var(--cursor-url) 16 16, pointer;
+    outline: none;
+    flex: none;
   }
-  .site-header__theme-toggle { order: 1; }
-  .site-header__nav {
-    order: 2;
+  .site-header__menu span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--fg);
+    border-radius: 1px;
+    transform-origin: center;
+    transition:
+      transform var(--dur-medium) var(--ease-out-expo),
+      opacity   var(--dur-medium) var(--ease-out-expo),
+      top       var(--dur-medium) var(--ease-out-expo);
+  }
+  .site-header__menu span:nth-child(1) { top: 0;    }
+  .site-header__menu span:nth-child(2) { top: 6px;  }
+  .site-header__menu span:nth-child(3) { top: 12px; }
+  .site-header__menu span:nth-child(4) { top: 18px; }
+
+  /* Nav + toggle group — hidden in the compact pill. */
+  .site-header__end { display: none; }
+
+  /* ─── Menu-open overlay ────────────────────────────────────────
+     .is-menu-open flips the header into a full-viewport panel:
+     brand stays top-left, hamburger morphs to an X top-right, nav
+     items stack big + left-aligned below, theme toggle sits at the
+     bottom-left. The site-bg blobs (z-index: -1) stay visible
+     through the blurred backdrop for continuity with the rest of
+     the site. */
+  .site-header.is-menu-open {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.25rem 1.5rem 2rem;
+    border-radius: 0;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            backdrop-filter: blur(20px) saturate(1.4);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    gap: 2rem 0;
+  }
+  .site-header.is-menu-open .site-header__brand { grid-column: 1; grid-row: 1; }
+  .site-header.is-menu-open .site-header__menu  { grid-column: 2; grid-row: 1; align-self: start; }
+  .site-header.is-menu-open .site-header__end {
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 100%;
+  }
+  .site-header.is-menu-open .site-header__nav {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.35rem;
+    width: 100%;
   }
-  .site-header__nav a {
+  .site-header.is-menu-open .site-header__nav a {
     display: block;
-    font-size: 0.95rem;
-    text-align: center;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    /* Cascade in / out one item at a time. Nav items ride opacity +
-       translateY + max-height together so the pill also collapses in
-       height as they retract. Individual stagger delays below drive
-       the "one by one" reveal / retreat. */
-    opacity: 1;
-    transform: translateY(0);
-    max-height: 2em;
-    overflow: hidden;
-    transition:
-      opacity    var(--dur-medium) var(--ease-out-expo),
-      transform  var(--dur-medium) var(--ease-out-expo),
-      max-height var(--dur-medium) var(--ease-out-expo);
+    font-family: "Akzidenz Grotesk",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(3rem, 13vw, 5.5rem);
+    letter-spacing: -0.02em;
+    text-transform: none;
+    line-height: 1.05;
+    opacity: 0.35;
+    transform: none;
+    max-height: none;
+    overflow: visible;
+    transition: opacity var(--dur-medium) var(--ease-standard);
   }
-  /* Expanded — items cascade IN top → bottom (first item first).
-     Increment reduced to 80ms (from 100ms) so 5 items still finish
-     inside a comparable timeframe to the previous 4-item nav. */
-  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(1) { transition-delay: 120ms; }
-  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(2) { transition-delay: 200ms; }
-  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(3) { transition-delay: 280ms; }
-  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(4) { transition-delay: 360ms; }
-  .site-header:not(.is-scrolled) .site-header__nav a:nth-child(5) { transition-delay: 440ms; }
+  .site-header.is-menu-open .site-header__nav a.is-current { opacity: 1; }
+  .site-header.is-menu-open .site-header__theme-toggle {
+    align-self: flex-start;
+    order: 1;
+  }
 
-  /* Collapsed — items retract bottom → top (last item first). Retract
-     completes before the pill's own padding transition starts collapsing. */
-  .site-header.is-scrolled .site-header__nav a {
+  /* Hamburger → X morph. Lines 1 + 4 fade out and collapse; lines
+     2 + 3 slide to centre and rotate ±45° to form the crossing X. */
+  .site-header.is-menu-open .site-header__menu span:nth-child(1),
+  .site-header.is-menu-open .site-header__menu span:nth-child(4) {
     opacity: 0;
-    transform: translateY(-8px);
-    max-height: 0;
-    pointer-events: none;
+    transform: scaleX(0);
   }
-  .site-header.is-scrolled .site-header__nav a:nth-child(5) { transition-delay: 0ms;   }
-  .site-header.is-scrolled .site-header__nav a:nth-child(4) { transition-delay: 70ms;  }
-  .site-header.is-scrolled .site-header__nav a:nth-child(3) { transition-delay: 140ms; }
-  .site-header.is-scrolled .site-header__nav a:nth-child(2) { transition-delay: 210ms; }
-  .site-header.is-scrolled .site-header__nav a:nth-child(1) { transition-delay: 280ms; }
-  /* Delay the pill's own padding shrink until items are ~half-way out. */
-  .site-header.is-scrolled { transition-delay: 220ms; }
+  .site-header.is-menu-open .site-header__menu span:nth-child(2) {
+    top: 10px;
+    transform: rotate(45deg);
+  }
+  .site-header.is-menu-open .site-header__menu span:nth-child(3) {
+    top: 10px;
+    transform: rotate(-45deg);
+  }
+
+  /* Body: lock scroll + zero out the header-safe padding while the
+     overlay covers everything. */
+  body:has(.site-header.is-menu-open) {
+    padding-top: 0;
+    overflow: hidden;
+  }
+  /* Scroll-to-top button irrelevant while the menu is open. */
+  body:has(.site-header.is-menu-open) .scroll-top { display: none; }
+
+  /* Compact-on-scroll: keep the tiny padding shrink for a bit of
+     motion, but suppress it while the overlay is open. */
+  .site-header.is-scrolled:not(.is-menu-open) {
+    padding: 0.55rem 1rem;
+  }
 }

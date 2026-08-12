@@ -24,6 +24,47 @@
   var header = document.querySelector('.site-header');
   if (!header) return;
 
+  // ---- Hamburger menu (mobile) ------------------------------------------
+  // Inject the hamburger button into the header on every page so we
+  // don't have to edit each page's HTML. CSS hides it on desktop and
+  // shows it on mobile. Clicking toggles .is-menu-open on the header,
+  // which flips the pill into a full-screen overlay with the nav +
+  // theme toggle inside. Escape + link taps close the overlay.
+  var menuBtn = header.querySelector('.site-header__menu');
+  if (!menuBtn) {
+    menuBtn = document.createElement('button');
+    menuBtn.className = 'site-header__menu';
+    menuBtn.type = 'button';
+    menuBtn.setAttribute('aria-label', 'Menu');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    menuBtn.innerHTML =
+      '<span></span><span></span><span></span><span></span>';
+    // Sits before .site-header__end so grid ordering + flex space-between
+    // both keep it on the right in the compact pill.
+    var end = header.querySelector('.site-header__end');
+    if (end) header.insertBefore(menuBtn, end);
+    else     header.appendChild(menuBtn);
+  }
+
+  function setMenu(open) {
+    header.classList.toggle('is-menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  menuBtn.addEventListener('click', function () {
+    setMenu(!header.classList.contains('is-menu-open'));
+  });
+  // Escape closes it.
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && header.classList.contains('is-menu-open')) {
+      setMenu(false);
+    }
+  });
+  // Tapping a nav link closes the overlay just before navigation —
+  // makes the close animation visible if the target is the same page.
+  header.querySelectorAll('.site-header__nav a').forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
+  });
+
   // ---- Header-safe-top CSS variable -------------------------------------
   // Publish the header's bottom-edge Y (px, viewport-relative) as
   // --header-safe-top on the root. Page CSS uses it for body padding
