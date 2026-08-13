@@ -291,7 +291,7 @@
     <section class="profile__hero" aria-label="I am">
       <h1 class="profile__statement">
         <span class="profile__statement-anchor">I&nbsp;AM</span>
-        <span class="statement__predicate" id="statementPred">A STORY TELLER.</span>
+        <span class="statement__predicate" id="statementPred">A CREATIVE.</span>
       </h1>
       <p class="profile__intro reveal-words">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</p>
     </section>
@@ -356,15 +356,14 @@
         }
       });
 
-      /* Cycling predicate. No leading space in the values — the
-         predicate lives on its own line (display: block), so the
-         "I AM" anchor above stays exactly in place regardless. */
+      /* Cycling predicate — line 2 of the statement. "I AM" (line 1)
+         is anchored above and never changes. Cycle lands on the
+         DĒDĒ.STUDIO link, which still triggers the profile image. */
       const variants = [
-        { type: 'text', value: 'A STORY TELLER.' },
         { type: 'text', value: 'A CREATIVE.' },
         { type: 'text', value: 'A DESIGNER.' },
-        { type: 'text', value: 'A HUMAN BEING.' },
-        { type: 'link', word: 'DĒDĒ', suffix: '&nbsp;<span class="phonetics">(deh-deh)</span>.' }
+        { type: 'text', value: 'A HUMAN.' },
+        { type: 'link', word: 'DĒDĒ.STUDIO' }
       ];
       const el = document.getElementById('statementPred');
       const HOLD_MS = 2500;
@@ -379,8 +378,7 @@
           el.innerHTML =
             '<a href="#" class="dede-link">' +
             variant.word +
-            '</a>' +
-            variant.suffix;
+            '</a>';
           const link = el.querySelector('.dede-link');
           if (link) {
             let last = 0;
