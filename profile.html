@@ -217,19 +217,17 @@
     padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
     /* Font-size lives on the container so max-width in em scales
        WITH the paragraph type — line length in characters stays
-       constant across sizes. Narrower max-width now caps lines at
-       ~10 words instead of the previous ~15. */
+       constant across sizes (~10 words per line). */
     font-family: "Akzidenz Grotesk",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Bold weight — Akzidenz EXTRABOLD registered above at 700. */
-    font-weight: 700;
-    /* Scale up ~50% from the previous clamp(1.6rem, 1.85vw, 2.25rem). */
-    font-size: clamp(2.4rem, 2.75vw, 3.4rem);
-    /* Leading halved (1.4 → 0.7) — tight, editorial stack. */
-    line-height: 0.7;
+    /* Back to regular weight. */
+    font-weight: 400;
+    /* +25% from the previous clamp(2.4rem, 2.75vw, 3.4rem). */
+    font-size: clamp(3rem, 3.45vw, 4.25rem);
+    /* Leading +25% (0.7 → 0.875) — still tight editorial stack,
+       a touch more breathing room for the regular weight. */
+    line-height: 0.875;
     letter-spacing: -0.015em;
-    /* Container narrowed from 42em → 28em so ~10 words fit per
-       line at the new type size. */
     max-width: 28em;
     margin: 0 auto;
     color: var(--fg);
@@ -350,12 +348,10 @@
 
     .profile__body {
       padding: 3rem 1.25rem 6rem;
-      /* Mobile floors the type so the desktop scale doesn't collapse
-         phone lines to 2-3 words each. Still bigger than the previous
-         mobile value (1.15rem → 1.5rem, +30%). */
-      font-size: 1.5rem;
-      /* Same -50% leading treatment as desktop. */
-      line-height: 0.7;
+      /* +25% from previous 1.5rem — matches desktop's proportional bump. */
+      font-size: 1.875rem;
+      /* Leading +25% (0.7 → 0.875) — same as desktop. */
+      line-height: 0.875;
     }
     .profile__body p {
       margin-bottom: 1.5em;
