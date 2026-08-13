@@ -108,7 +108,9 @@
     align-items: center;
   }
   .statement-pill__marquee-blur {
-    filter: blur(3px);
+    /* +25% blur (3px → 4px) — the carousel behind the label sits
+       further out of focus, so the sharp cursor-reveal reads bigger. */
+    filter: blur(4px);
     opacity: 0.6;
   }
   .statement-pill__marquee-sharp {
@@ -136,7 +138,9 @@
     /* 50% smaller than before — was clamp(1.75rem, 3.5vw, 3.5rem). */
     font-size: clamp(0.875rem, 1.75vw, 1.75rem);
     font-weight: 400;
-    padding: 0 1.5rem;
+    /* 3× the previous 1.5rem — statements now breathe far apart in
+       the carousel ("A HUMAN.        A CREATIVE."). */
+    padding: 0 4.5rem;
     color: var(--fg);
     letter-spacing: -0.02em;
     line-height: 1;
@@ -204,19 +208,25 @@
      nbsp-ties the last two words prevents orphans / widows. */
   .profile__body {
     padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
+    /* Font-size lives on the container so max-width in em scales
+       WITH the paragraph type — line length in characters stays
+       constant across sizes, ~15 words per line either way. */
+    font-family: "Akzidenz Grotesk",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    /* 60% bigger than before — was clamp(1rem, 1.15vw, 1.4rem). */
+    font-size: clamp(1.6rem, 1.85vw, 2.25rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
     max-width: 42em;
     margin: 0 auto;
     color: var(--fg);
     box-sizing: content-box;
   }
   .profile__body p {
-    font-family: "Akzidenz Grotesk",
-                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(1rem, 1.15vw, 1.4rem);
-    line-height: 1.45;
-    letter-spacing: -0.01em;
-    margin: 0 0 1.25rem;
+    /* Inherit font-size / family / spacing from the container so em
+       units stay coherent across the whole block. */
+    margin: 0 0 1.15em;
     text-align: left;
     text-wrap: pretty;              /* modern browsers: no widows / orphans */
     hyphens: none;
@@ -304,7 +314,7 @@
     .statement-pill__label {
       font-size: clamp(0.7rem, 2.5vw, 0.95rem);
     }
-    .statement-pill__marquee-blur { filter: blur(2px); }
+    .statement-pill__marquee-blur { filter: blur(2.5px); }
     /* Mobile has no cursor — auto-animate the sharp spotlight
        horizontally across the pill so the reveal effect still
        happens on touch devices. Matches site-mobile.css's marquee
@@ -326,10 +336,14 @@
 
     .profile__body {
       padding: 3rem 1.25rem 6rem;
+      /* Mobile floors the type so the ~15-words-per-line rule still
+         actually fits within a phone's viewport width (the +60%
+         desktop bump would otherwise clip lines to 3-4 words each). */
+      font-size: 1.15rem;
+      line-height: 1.4;
     }
     .profile__body p {
-      font-size: 0.95rem;
-      line-height: 1.4;
+      margin-bottom: 1.15em;
     }
   }
   @keyframes pill-spotlight {
@@ -409,12 +423,12 @@
         </div>
       </div>
     </div>
-    <h1 class="statement-pill__label">IAM&nbsp;<a href="#" class="dede-link">DĒDĒ</a></h1>
+    <h1 class="statement-pill__label">I&nbsp;AM&nbsp;<a href="#" class="dede-link">DĒDĒ.</a></h1>
   </div>
 
   <section class="profile__body" aria-label="Introduction">
-    <p class="reveal-words">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</p>
-    <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
+    <p class="reveal-words">I am Dede. My family pronounces it deh-deh. It&rsquo;s good to meet you. Of all the places we could be, here we are, together. As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication.</p>
+    <p class="reveal-words">Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
     <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
     <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
   </section>
@@ -446,9 +460,12 @@
       }
 
       /* Wrap each word in a .word span so we can reveal them per line.
-         Sentence-openers and the FINAL word are joined with a nbsp so
-         a period / punctuation never leaves a lone word stranded at
-         the start of a new line (or a widow on the last line). */
+         nbsp-tie policy:
+           • sentence-openers → tied to their next word (no lone period-
+             adjacent word at line-start)
+           • last THREE words → tied together (no widow of 1 OR 2 words
+             on the final line, regardless of trailing-word length)
+         text-wrap: pretty picks up whatever these miss. */
       function wrapWords(el) {
         const text = el.textContent.replace(/\s+/g, ' ').trim();
         const words = text.split(' ');
@@ -457,8 +474,8 @@
           parts.push('<span class="word">' + escapeHtml(word) + '</span>');
           if (idx < words.length - 1) {
             const isSentenceStart = idx === 0 || /[.?!]/.test(words[idx - 1].slice(-1));
-            const isFinalPair = idx === words.length - 2;
-            parts.push((isSentenceStart || isFinalPair) ? '&nbsp;' : ' ');
+            const isLastTriad = idx >= words.length - 3;
+            parts.push((isSentenceStart || isLastTriad) ? '&nbsp;' : ' ');
           }
         });
         el.innerHTML = parts.join('');
