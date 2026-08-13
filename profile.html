@@ -98,51 +98,37 @@
     transition: opacity var(--dur-long) var(--ease-out-expo);
   }
 
-  /* Small intro paragraph directly below the big statement. Regular
-     weight, same font family — reads as a subtitle in the hero, not
-     a separate section. */
-  .profile__intro {
-    margin: 0;
-    color: var(--fg);
-    font-family: "Akzidenz Grotesk",
-                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.85rem, 2.25vw, 2.5rem);
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-    max-width: 34em;
-    cursor: var(--cursor-url) 16 16, pointer;
-  }
-
-  /* ─── Body panel — frosted glass with masked soft edges ────────── */
+  /* ─── Body panel — three columns, no glass ─────────────────────
+     Glass / blur / mask all removed. Body reads as a plain multi-
+     column paragraph block below the hero. The four intro paragraphs
+     live in a single flow that CSS multi-column splits into three
+     equal-height columns; break-inside: avoid keeps each paragraph
+     inside one column so nothing splits mid-thought. Opaque bg so
+     when the sticky hero scrolls behind, it's cleanly hidden. */
   .profile__body {
     position: relative;
     z-index: 1;
     padding: clamp(4rem, 12vh, 8rem) clamp(1.5rem, 5vw, 3rem);
-    background: color-mix(in srgb, var(--bg) 55%, transparent);
-    -webkit-backdrop-filter: blur(24px) saturate(1.15);
-            backdrop-filter: blur(24px) saturate(1.15);
-    /* Soft top + bottom edges: mask fades from transparent → opaque
-       → transparent over the panel's own height, so the frosted-glass
-       backdrop dissolves at both edges instead of ending on a hard
-       line. Content sits well inside the fade zones (large padding). */
-    -webkit-mask-image: linear-gradient(to bottom,
-      transparent 0%, #000 6%, #000 94%, transparent 100%);
-            mask-image: linear-gradient(to bottom,
-      transparent 0%, #000 6%, #000 94%, transparent 100%);
+    background: var(--bg);
+    column-count: 3;
+    column-gap: clamp(1.5rem, 3vw, 3rem);
   }
   .profile__body p {
     color: var(--fg);
     font-family: "Akzidenz Grotesk",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(0.75rem, 2.25vw, 2.75rem);
+    /* 25% larger than the previous clamp(0.75rem, 2.25vw, 2.75rem). */
+    font-size: clamp(0.95rem, 2.8vw, 3.45rem);
     line-height: 1.2;
     letter-spacing: -0.015em;
     margin: 0 0 1.25rem;
     text-align: justify;
     hyphens: auto;
     -webkit-hyphens: auto;
+    /* Never split a paragraph across two columns. */
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
     cursor: var(--cursor-url) 16 16, pointer;
     -webkit-tap-highlight-color: transparent;
     will-change: opacity;
@@ -249,11 +235,11 @@
          edges. Unit is vw so it scales with any phone width. */
       font-size: 14.5vw;
     }
-    .profile__intro { font-size: 0.9rem; line-height: 1.25; }
     .profile__body {
       padding: 3rem 1.25rem;
-      -webkit-backdrop-filter: blur(12px);
-              backdrop-filter: blur(12px);
+      /* Mobile: fall back to a single column — three narrow columns
+         at phone widths become cramped 15-char strips. */
+      column-count: 1;
     }
     .profile__body p {
       line-height: 1.15;
@@ -306,10 +292,10 @@
         <span class="profile__statement-anchor">I&nbsp;AM</span>
         <span class="statement__predicate" id="statementPred">A CREATIVE.</span>
       </h1>
-      <p class="profile__intro reveal-words">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</p>
     </section>
 
     <section class="profile__body" aria-label="Introduction">
+      <p class="reveal-words">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</p>
       <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
       <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
       <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
@@ -474,7 +460,7 @@
       (function () {
         const dedeImage = document.querySelector('.dede-image');
         const paragraphs = Array.prototype.slice.call(
-          document.querySelectorAll('.profile__body p, .profile__intro')
+          document.querySelectorAll('.profile__body p')
         );
         paragraphs.forEach((p) => p.setAttribute('tabindex', '0'));
 
@@ -535,7 +521,7 @@
           const now = Date.now();
           if (now - lastHandled < 400) return;
           lastHandled = now;
-          if (e.target.closest('.profile__body p, .profile__intro')) return;
+          if (e.target.closest('.profile__body p')) return;
           hideDedeImage();
           clearFocus();
         }

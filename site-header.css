@@ -85,7 +85,9 @@ body:has(.site-header) {
 .site-header__theme-toggle {
   position: relative;
   width: 48px;
-  height: 26px;
+  /* Mobile base — 25% shorter than the previous 26px. Desktop takes
+     another 25% off further down. */
+  height: 20px;
   padding: 0;
   border: 1px solid rgba(var(--fg-rgb), 0.35);
   background: color-mix(in srgb, var(--fg) 4%, transparent);
@@ -115,10 +117,13 @@ body:has(.site-header) {
 
 .site-header__theme-toggle-thumb {
   position: absolute;
-  top: 3px;
+  /* Mobile base thumb — fits inside the 20px track (2 + 14 + 2 + 2
+     borders = 20). Desktop overrides further below with a smaller
+     10×10 thumb for the 15px track. */
+  top: 2px;
   left: 3px;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--accent);
   /* Multi-layer accent glow — reads as cyan in dark mode, red in
@@ -139,7 +144,8 @@ body:has(.site-header) {
     box-shadow var(--dur-medium) var(--ease-standard);
 }
 [data-theme="light"] .site-header__theme-toggle-thumb {
-  translate: 22px 0;
+  /* Slide: 46 (content) − 3 (left) − 14 (thumb) − 3 (right) = 26. */
+  translate: 26px 0;
 }
 .site-header__theme-toggle:hover .site-header__theme-toggle-thumb {
   scale: 1.08;
@@ -149,20 +155,20 @@ body:has(.site-header) {
     0 1px 3px  rgba(0, 0, 0, 0.28);
 }
 
-/* Desktop: shorten the toggle track by ~25% (26px → 20px) with a
-   proportionally shrunk thumb. Reads sleeker at desktop scale where
-   the header pill is smaller / farther from thumb-touch geometry.
-   Mobile keeps the taller 26px track for tap comfort + overlay
-   alignment with the large CONTACT nav item. */
+/* Desktop: another 25% off the toggle height (20px → 15px). Reads
+   as a minimal linear indicator at desktop scale. Thumb shrinks to
+   a 10×10 dot to sit inside the 13px content area with balanced
+   1.5px top / bottom breathing room. */
 @media (min-width: 641px) {
-  .site-header__theme-toggle { height: 20px; }
+  .site-header__theme-toggle { height: 15px; }
   .site-header__theme-toggle-thumb {
-    top: 2px;
-    width: 14px;
-    height: 14px;
+    top: 1.5px;
+    width: 10px;
+    height: 10px;
   }
   [data-theme="light"] .site-header__theme-toggle-thumb {
-    translate: 26px 0;   /* recomputed slide: 46 - 3 - 14 - 3 = 26 */
+    /* Slide: 46 (content) − 3 (left) − 10 (thumb) − 3 (right) = 30. */
+    translate: 30px 0;
   }
 }
 
