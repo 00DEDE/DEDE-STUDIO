@@ -331,7 +331,7 @@ body:has(.site-header) {
   }
   .site-header.is-menu-open .site-header__nav a {
     display: block;
-    font-family: "Akzidenz Grotesk",
+    font-family: "Inter Tight",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(3rem, 13vw, 5.5rem);

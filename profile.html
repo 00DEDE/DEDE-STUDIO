@@ -16,21 +16,7 @@
 <link rel="stylesheet" href="site-bg.css" />
 <link rel="stylesheet" href="site-mobile.css" />
 <style>
-  @font-face {
-    font-family: "Akzidenz Grotesk";
-    src: url("ASSETS/FONTS/AKZIDENZGROTESK-REGULAR.OTF") format("opentype");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Akzidenz Grotesk";
-    src: url("ASSETS/FONTS/AKZIDENZGROTESK-EXTRABOLD.OTF") format("opentype");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-  }
-  html { background: var(--bg); }
+html { background: var(--bg); }
   html, body {
     margin: 0;
     padding: 0;
@@ -72,7 +58,7 @@
     /* pointer-events: none so body content can be clicked/selected
        through the pill; only the label opts back in below. */
     pointer-events: none;
-    font-family: "Akzidenz Grotesk",
+    font-family: "Inter Tight",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     /* On-brand entrance — same spring language used elsewhere. */
     opacity: 0;
@@ -218,7 +204,7 @@
     /* Font-size lives on the container so max-width in em scales
        WITH the paragraph type — line length in characters stays
        constant across sizes (~10 words per line). */
-    font-family: "Akzidenz Grotesk",
+    font-family: "Inter Tight",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     /* Semi-bold — one step above medium. Only Regular (400) and
        EXTRABOLD (700) are registered, so the browser synthesizes
@@ -359,7 +345,7 @@
       /* Start states: layer A parked off left, layer B parked off right. */
       -webkit-mask-position: -20% 50%, 120% 50%;
               mask-position: -20% 50%, 120% 50%;
-      animation: pill-spotlight 17s ease-in-out infinite;
+      animation: pill-spotlight 21s ease-in-out infinite;
     }
     @media (prefers-reduced-motion: reduce) {
       .statement-pill__marquee-sharp { animation: none; }

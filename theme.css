@@ -1,3 +1,24 @@
+/* ─── Site font ───────────────────────────────────────────────────────
+   Inter Tight — variable font, weight axis 100–900. Registered once
+   here (theme.css loads on every page) so all pages get the full
+   weight range from a single request. Italic axis registered too. */
+@font-face {
+  font-family: "Inter Tight";
+  src: url("ASSETS/FONTS/INTER/InterTight-VariableFont_wght.ttf") format("truetype-variations"),
+       url("ASSETS/FONTS/INTER/InterTight-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Tight";
+  src: url("ASSETS/FONTS/INTER/InterTight-Italic-VariableFont_wght.ttf") format("truetype-variations"),
+       url("ASSETS/FONTS/INTER/InterTight-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* Theme variables — dark by default, light when [data-theme="light"] is on
    the <html> element. All shared colors point at these vars, so page CSS
    automatically adapts. */
