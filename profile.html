@@ -326,21 +326,33 @@
     .statement-pill__label {
       font-size: clamp(0.7rem, 2.5vw, 0.95rem);
     }
+    /* Mobile-only gap trim — half the desktop 4.5rem = 2.25rem each
+       side (4.5rem total gap between statements, was 9rem). */
+    .statement-pill__marquee-track span {
+      padding: 0 2.25rem;
+    }
     .statement-pill__marquee-blur { filter: blur(2.5px); }
     /* Mobile has no cursor — auto-animate the sharp spotlight
        horizontally across the pill so the reveal effect still
-       happens on touch devices. Matches site-mobile.css's marquee
-       spotlight technique. */
+       happens on touch devices. TWO mask layers now: one enters
+       from the left, one from the right, and they cross in the
+       middle. Duration bumped to 13s (40% slower than the previous
+       9s) so it drifts more like wind blowing across the pill. */
     .statement-pill__marquee-sharp {
-      -webkit-mask-image: radial-gradient(circle,
-        #000 30%, transparent 90%);
-              mask-image: radial-gradient(circle,
-        #000 30%, transparent 90%);
-      -webkit-mask-size: 55px 55px;
-              mask-size: 55px 55px;
-      -webkit-mask-position: -20% 50%;
-              mask-position: -20% 50%;
-      animation: pill-spotlight 9s ease-in-out infinite;
+      -webkit-mask-image:
+        radial-gradient(circle, #000 30%, transparent 90%),
+        radial-gradient(circle, #000 30%, transparent 90%);
+              mask-image:
+        radial-gradient(circle, #000 30%, transparent 90%),
+        radial-gradient(circle, #000 30%, transparent 90%);
+      -webkit-mask-size: 55px 55px, 55px 55px;
+              mask-size: 55px 55px, 55px 55px;
+      -webkit-mask-repeat: no-repeat, no-repeat;
+              mask-repeat: no-repeat, no-repeat;
+      /* Start states: layer A parked off left, layer B parked off right. */
+      -webkit-mask-position: -20% 50%, 120% 50%;
+              mask-position: -20% 50%, 120% 50%;
+      animation: pill-spotlight 13s ease-in-out infinite;
     }
     @media (prefers-reduced-motion: reduce) {
       .statement-pill__marquee-sharp { animation: none; }
@@ -355,16 +367,22 @@
     }
     .profile__body p {
       margin-bottom: 1.5em;
+      /* Left justified: both edges flush, last line stays left. */
+      text-align: justify;
     }
   }
   @keyframes pill-spotlight {
+    /* Two mask layers animate in tandem within the same keyframes:
+       layer A goes left → right, layer B goes right → left; they
+       cross mid-cycle and return. Ease-in-out gives the wind-blowing
+       drift — slow at the edges, faster through the middle. */
     0%, 100% {
-      -webkit-mask-position: -20% 50%;
-              mask-position: -20% 50%;
+      -webkit-mask-position: -20% 50%, 120% 50%;
+              mask-position: -20% 50%, 120% 50%;
     }
     50% {
-      -webkit-mask-position: 120% 50%;
-              mask-position: 120% 50%;
+      -webkit-mask-position: 120% 50%, -20% 50%;
+              mask-position: 120% 50%, -20% 50%;
     }
   }
 </style>
