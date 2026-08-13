@@ -334,25 +334,28 @@
     .statement-pill__marquee-blur { filter: blur(2.5px); }
     /* Mobile has no cursor — auto-animate the sharp spotlight
        horizontally across the pill so the reveal effect still
-       happens on touch devices. TWO mask layers now: one enters
-       from the left, one from the right, and they cross in the
-       middle. Duration bumped to 13s (40% slower than the previous
-       9s) so it drifts more like wind blowing across the pill. */
+       happens on touch devices. TWO mask layers: one enters from
+       the left, one from the right, crossing in the middle.
+       Softer gradient stops (small opaque core, long falloff to the
+       edge) blur the spotlight boundary so no hard circle line is
+       visible — text transitions gradually from sharp centre to
+       blurred surroundings. Duration slowed 30% (13s → 17s) for a
+       heavier wind-drift feel. */
     .statement-pill__marquee-sharp {
       -webkit-mask-image:
-        radial-gradient(circle, #000 30%, transparent 90%),
-        radial-gradient(circle, #000 30%, transparent 90%);
+        radial-gradient(circle, #000 12%, transparent 100%),
+        radial-gradient(circle, #000 12%, transparent 100%);
               mask-image:
-        radial-gradient(circle, #000 30%, transparent 90%),
-        radial-gradient(circle, #000 30%, transparent 90%);
-      -webkit-mask-size: 55px 55px, 55px 55px;
-              mask-size: 55px 55px, 55px 55px;
+        radial-gradient(circle, #000 12%, transparent 100%),
+        radial-gradient(circle, #000 12%, transparent 100%);
+      -webkit-mask-size: 65px 65px, 65px 65px;
+              mask-size: 65px 65px, 65px 65px;
       -webkit-mask-repeat: no-repeat, no-repeat;
               mask-repeat: no-repeat, no-repeat;
       /* Start states: layer A parked off left, layer B parked off right. */
       -webkit-mask-position: -20% 50%, 120% 50%;
               mask-position: -20% 50%, 120% 50%;
-      animation: pill-spotlight 13s ease-in-out infinite;
+      animation: pill-spotlight 17s ease-in-out infinite;
     }
     @media (prefers-reduced-motion: reduce) {
       .statement-pill__marquee-sharp { animation: none; }
@@ -367,8 +370,8 @@
     }
     .profile__body p {
       margin-bottom: 1.5em;
-      /* Left justified: both edges flush, last line stays left. */
-      text-align: justify;
+      /* Left aligned — flush left, ragged right (inherits base). */
+      text-align: left;
     }
   }
   @keyframes pill-spotlight {
