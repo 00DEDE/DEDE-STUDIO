@@ -38,138 +38,106 @@
     cursor: var(--cursor-url) 16 16, pointer;
   }
 
-  /* ─── Sticky hero + soft-edge body panel ─────────────────────────
-     The big regular-weight "I AM ___" sits in a sticky hero. The
-     small intro copy sits DIRECTLY below the statement, inside the
-     same sticky area — both visible in the initial viewport. The
-     body panel below scrolls up over the sticky hero; a linear
-     mask-gradient fades its top and bottom edges so the panel
-     dissolves into the page instead of showing hard rectangle lines. */
-  .profile-scene {
-    position: relative;
-  }
-  .profile__hero {
-    position: sticky;
-    top: 0;
-    min-height: 100vh;
-    min-height: 100svh;
+  /* ─── Statement pill — fixed at vertical centre, always visible ───
+     Same glass-pill language as the site-header. Inside it: a
+     horizontal marquee track carries the "I AM ___" carousel
+     (blurred + dimmed as a background element) and a fixed
+     "I AM DĒDĒ.STUDIO" label sits centre-front, sharp and readable.
+     Marquee items scroll left→right in an infinite loop. */
+  .statement-pill {
+    position: fixed;
+    top: 50%;
+    left: 1rem;
+    right: 1rem;
+    transform: translateY(-50%);
+    height: clamp(4rem, 10vh, 7rem);
+    z-index: 50;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 45%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+            backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    box-sizing: border-box;
-    /* Horizontal padding trimmed — the display type below is sized to
-       nearly fill the viewport at its longest variant ("DĒDĒ.STUDIO"),
-       so the sides need to be tight to give the type the full width. */
-    padding:
-      calc(var(--header-safe-top, 5rem) + clamp(1rem, 4vh, 3rem))
-      clamp(0.75rem, 1.25vw, 1.25rem)
-      clamp(2rem, 8vh, 6rem);
-    gap: clamp(1.25rem, 4vh, 3rem);
-    z-index: 0;
-    color: var(--fg);
-  }
-  .profile__statement {
-    margin: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
     font-family: "Akzidenz Grotesk",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Regular weight — matches the NMBRS about hero character. */
-    font-weight: 400;
-    /* Sized so the longest cycle stage ("DĒDĒ.STUDIO") stretches
-       across the full viewport width. Tighter letter-spacing helps
-       the line reach viewport edges without overflow. */
-    font-size: 15vw;
-    line-height: 0.95;
-    letter-spacing: -0.04em;
-    color: var(--fg);
-    /* Flush-left / left-justified — both lines ("I AM" and the
-       cycling predicate) hug the same left edge, so cycling never
-       shifts horizontal position. */
-    text-align: left;
-  }
-  /* "I AM" is locked on its own line — display: block guarantees the
-     predicate wraps to line 2 below, so the "I AM" anchor stays in
-     the exact same spot no matter how long the predicate is. */
-  .profile__statement-anchor,
-  .statement__predicate {
-    display: block;
-  }
-  .statement__predicate {
-    transition: opacity var(--dur-long) var(--ease-out-expo);
-  }
-
-  /* ─── Body panel — three columns, no glass ─────────────────────
-     Glass / blur / mask all removed. Body reads as a plain multi-
-     column paragraph block below the hero. The four intro paragraphs
-     live in a single flow that CSS multi-column splits into three
-     equal-height columns; break-inside: avoid keeps each paragraph
-     inside one column so nothing splits mid-thought. Opaque bg so
-     when the sticky hero scrolls behind, it's cleanly hidden. */
-  .profile__body {
-    position: relative;
-    z-index: 1;
-    padding: clamp(4rem, 12vh, 8rem) clamp(1.5rem, 5vw, 3rem);
-    background: var(--bg);
-    column-count: 3;
-    column-gap: clamp(1.5rem, 3vw, 3rem);
-  }
-  .profile__body p {
-    color: var(--fg);
-    font-family: "Akzidenz Grotesk",
-                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    /* 25% larger than the previous clamp(0.75rem, 2.25vw, 2.75rem). */
-    font-size: clamp(0.95rem, 2.8vw, 3.45rem);
-    line-height: 1.2;
-    letter-spacing: -0.015em;
-    margin: 0 0 1.25rem;
-    text-align: justify;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-    /* Never split a paragraph across two columns. */
-    break-inside: avoid;
-    -webkit-column-break-inside: avoid;
-    cursor: var(--cursor-url) 16 16, pointer;
-    -webkit-tap-highlight-color: transparent;
-    will-change: opacity;
-    outline: none;
-    transition: opacity var(--dur-medium) var(--ease-standard);
-  }
-  .profile__body p:last-child { margin-bottom: 0; }
-
-  @media (hover: hover) {
-    .profile__body:has(p:hover) > p:not(:hover) { opacity: 0.5; }
-  }
-
-  /* ─── Per-word / per-line reveal ────────────────────────────────
-     JS wraps each word in .word, groups them by offsetTop after
-     layout, and fades in one line at a time. .reveal-words stays
-     hidden until wrapping finishes so text never flashes in raw. */
-  .reveal-words:not(.is-ready) { visibility: hidden; }
-  .word {
+    /* On-brand entrance — same spring language the selections cells
+       and home work sections use: opacity + scale + a slight
+       overshoot at the tail of the transform. */
     opacity: 0;
-    transition: opacity var(--dur-cinematic) var(--ease-out-expo);
+    scale: 0.94;
+    animation: pill-enter var(--dur-cinematic) cubic-bezier(0.16, 1.15, 0.3, 1) 200ms both;
   }
-  .word.is-visible { opacity: 1; }
-  .phonetics {
-    font-size: 0.55em;
-    vertical-align: 0.28em;
-    letter-spacing: 0;
-    opacity: 0.75;
+  @keyframes pill-enter {
+    from { opacity: 0; scale: 0.94; }
+    to   { opacity: 1; scale: 1;    }
+  }
+  .statement-pill > * { pointer-events: auto; }
+
+  /* Marquee layer — behind the label. Blur applied HERE, so only the
+     carousel items are blurred; the label overlay stays sharp. */
+  .statement-pill__marquee {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    opacity: 0.4;
+    filter: blur(3px);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .statement-pill__marquee-track {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    /* Two duplicated sets of items in the track; the animation
+       shifts the track by 50% of its own width — the second set
+       lands exactly where the first started, so the loop is seamless.
+       from -50% → 0 = track moves right = items enter from left,
+       exit right (left-to-right motion, as requested). */
+    animation: pill-marquee 32s linear infinite;
+  }
+  .statement-pill__marquee-track span {
+    font-size: clamp(1.75rem, 3.5vw, 3.5rem);
+    font-weight: 400;
+    padding: 0 2rem;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  @keyframes pill-marquee {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .statement-pill__marquee-track { animation: none; }
   }
 
-  /* Inline links (DĒDĒ / BLLCRW) — pulsing accent glow. */
-  .dede-link,
-  .bllcrw-link {
+  /* Sharp label — sits on top of the marquee, always centred. */
+  .statement-pill__label {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    padding: 0 1.5rem;
+    font-size: clamp(1.75rem, 3.5vw, 3.5rem);
+    font-weight: 400;
+    color: var(--fg);
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .statement-pill__label .dede-link {
     color: inherit;
     text-decoration: none;
     animation: link-glow 2.5s ease-in-out infinite;
     transition: color var(--dur-medium) var(--ease-standard);
   }
-  .dede-link:hover,
-  .dede-link:focus-visible,
-  .bllcrw-link:hover,
-  .bllcrw-link:focus-visible {
+  .statement-pill__label .dede-link:hover,
+  .statement-pill__label .dede-link:focus-visible {
     color: var(--accent);
   }
   @keyframes link-glow {
@@ -187,7 +155,72 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .dede-link,
+    .statement-pill__label .dede-link {
+      animation: none;
+      text-shadow:
+        0 0 0.25em rgba(var(--accent-rgb), 0.7),
+        0 0 0.6em  rgba(var(--accent-rgb), 0.4);
+    }
+  }
+
+  /* ─── Body copy: single flow, left-aligned, comfortable width ─────
+     Small alright.studio-scale type. max-width caps line length so
+     no line exceeds ~15 words; text-wrap: pretty + a JS pass that
+     nbsp-ties the last two words prevents orphans / widows. */
+  .profile__body {
+    padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
+    max-width: 42em;
+    margin: 0 auto;
+    color: var(--fg);
+    box-sizing: content-box;
+  }
+  .profile__body p {
+    font-family: "Akzidenz Grotesk",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1rem, 1.15vw, 1.4rem);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    margin: 0 0 1.25rem;
+    text-align: left;
+    text-wrap: pretty;              /* modern browsers: no widows / orphans */
+    hyphens: none;
+    -webkit-hyphens: none;
+    cursor: var(--cursor-url) 16 16, pointer;
+    -webkit-tap-highlight-color: transparent;
+    will-change: opacity;
+    outline: none;
+    transition: opacity var(--dur-medium) var(--ease-standard);
+  }
+  .profile__body p:last-child { margin-bottom: 0; }
+  @media (hover: hover) {
+    .profile__body:has(p:hover) > p:not(:hover) { opacity: 0.5; }
+  }
+
+  /* Per-word / per-line reveal — same JS-driven cascade used on
+     every other content page. Words start hidden, JS groups them by
+     offsetTop after layout, then fades them in a line at a time so
+     each paragraph reads like it's being spoken into place. */
+  .reveal-words:not(.is-ready) { visibility: hidden; }
+  .word {
+    opacity: 0;
+    transition: opacity var(--dur-cinematic) var(--ease-out-expo);
+  }
+  .word.is-visible { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-words:not(.is-ready) { visibility: visible; }
+    .word { opacity: 1; transition: none; }
+  }
+
+  .bllcrw-link {
+    color: inherit;
+    text-decoration: none;
+    animation: link-glow 2.5s ease-in-out infinite;
+    transition: color var(--dur-medium) var(--ease-standard);
+  }
+  .bllcrw-link:hover,
+  .bllcrw-link:focus-visible { color: var(--accent); }
+  @media (prefers-reduced-motion: reduce) {
     .bllcrw-link {
       animation: none;
       text-shadow:
@@ -196,7 +229,7 @@
     }
   }
 
-  /* DĒDĒ profile image reveal. */
+  /* Hovering DĒDĒ.STUDIO reveals a portrait image, fixed centre. */
   .dede-image {
     position: fixed;
     top: 50%;
@@ -222,38 +255,27 @@
 
   /* ─── Mobile ─────────────────────────────────────────────────── */
   @media (max-width: 640px) {
-    .profile__hero {
-      padding:
-        calc(var(--header-safe-top, 5rem) + 1rem)
-        0.75rem
-        2rem;
-      gap: 1.5rem;
+    .statement-pill {
+      left: 0.75rem;
+      right: 0.75rem;
+      height: clamp(2.75rem, 7vh, 4.25rem);
+      /* Lighter blur on mobile — full-viewport-width backdrop-filter
+         is expensive per scroll frame. */
+      -webkit-backdrop-filter: blur(10px) saturate(1.3);
+              backdrop-filter: blur(10px) saturate(1.3);
     }
-    .profile__statement {
-      /* Mobile: same "fill the viewport at DĒDĒ.STUDIO" logic — 14vw
-         with tighter side padding lands the longest variant on the
-         edges. Unit is vw so it scales with any phone width. */
-      font-size: 14.5vw;
+    .statement-pill__marquee-track span,
+    .statement-pill__label {
+      font-size: clamp(1rem, 5vw, 1.75rem);
     }
+    .statement-pill__marquee { filter: blur(2px); }
     .profile__body {
-      padding: 3rem 1.25rem;
-      /* Mobile: fall back to a single column — three narrow columns
-         at phone widths become cramped 15-char strips. */
-      column-count: 1;
+      padding: 3rem 1.25rem 6rem;
     }
     .profile__body p {
-      line-height: 1.15;
-      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
-    .profile__body p:last-child { margin-bottom: 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal-words:not(.is-ready) { visibility: visible; }
-    .word { opacity: 1; transition: none; }
-    .profile__body p { transition: none; }
-    .dede-image { transition: opacity var(--dur-quick) var(--ease-standard); }
-    .statement__predicate { transition: opacity var(--dur-medium) var(--ease-out-expo); }
   }
 </style>
 </head>
@@ -286,21 +308,29 @@
 
   <img class="dede-image" src="ASSETS/IMAGES/DEDE_PROFILE_IMAGE 2.png" alt="" aria-hidden="true" loading="lazy" decoding="async" />
 
-  <div class="profile-scene">
-    <section class="profile__hero" aria-label="I am">
-      <h1 class="profile__statement">
-        <span class="profile__statement-anchor">I&nbsp;AM</span>
-        <span class="statement__predicate" id="statementPred">A CREATIVE.</span>
-      </h1>
-    </section>
-
-    <section class="profile__body" aria-label="Introduction">
-      <p class="reveal-words">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</p>
-      <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
-      <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
-      <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
-    </section>
+  <!-- Fixed centre-of-viewport statement pill. The marquee behind
+       carries the cycling predicates; the label in front holds the
+       final DĒDĒ.STUDIO wordmark. -->
+  <div class="statement-pill" aria-label="I am DĒDĒ.STUDIO">
+    <div class="statement-pill__marquee" aria-hidden="true">
+      <div class="statement-pill__marquee-track">
+        <span>A CREATIVE.</span>
+        <span>A DESIGNER.</span>
+        <span>A HUMAN.</span>
+        <span>A CREATIVE.</span>
+        <span>A DESIGNER.</span>
+        <span>A HUMAN.</span>
+      </div>
+    </div>
+    <h1 class="statement-pill__label">I&nbsp;AM&nbsp;<a href="#" class="dede-link">DĒDĒ.STUDIO</a></h1>
   </div>
+
+  <section class="profile__body" aria-label="Introduction">
+    <p class="reveal-words">It&rsquo;s good to meet you here. Of all the places we could be, here we are, together.</p>
+    <p class="reveal-words">As you&rsquo;ve seen, or are about to, my work lives across packaging, brand identity, and visual communication. Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
+    <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
+    <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
+  </section>
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
@@ -322,9 +352,16 @@
 
   <script>
     (function () {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       function escapeHtml(s) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
+
+      /* Wrap each word in a .word span so we can reveal them per line.
+         Sentence-openers and the FINAL word are joined with a nbsp so
+         a period / punctuation never leaves a lone word stranded at
+         the start of a new line (or a widow on the last line). */
       function wrapWords(el) {
         const text = el.textContent.replace(/\s+/g, ' ').trim();
         const words = text.split(' ');
@@ -332,9 +369,9 @@
         words.forEach((word, idx) => {
           parts.push('<span class="word">' + escapeHtml(word) + '</span>');
           if (idx < words.length - 1) {
-            const isSentenceStart =
-              idx === 0 || /[.?!]$/.test(words[idx - 1]);
-            parts.push(isSentenceStart ? '&nbsp;' : ' ');
+            const isSentenceStart = idx === 0 || /[.?!]/.test(words[idx - 1].slice(-1));
+            const isFinalPair = idx === words.length - 2;
+            parts.push((isSentenceStart || isFinalPair) ? '&nbsp;' : ' ');
           }
         });
         el.innerHTML = parts.join('');
@@ -342,7 +379,9 @@
       }
       document.querySelectorAll('.reveal-words').forEach(wrapWords);
 
-      document.querySelectorAll('.word').forEach((w) => {
+      /* Upgrade BLLCRW. word span → Instagram link (runs post-wrap so
+         we target the exact word span, not raw HTML). */
+      document.querySelectorAll('.profile__body .word').forEach((w) => {
         if (w.textContent === 'BLLCRW.') {
           const a = document.createElement('a');
           a.href = 'https://www.instagram.com/bllcrw/';
@@ -355,65 +394,9 @@
         }
       });
 
-      /* Cycling predicate — line 2 of the statement. "I AM" (line 1)
-         is anchored above and never changes. Cycle lands on the
-         DĒDĒ.STUDIO link, which still triggers the profile image. */
-      const variants = [
-        { type: 'text', value: 'A CREATIVE.' },
-        { type: 'text', value: 'A DESIGNER.' },
-        { type: 'text', value: 'A HUMAN.' },
-        { type: 'link', word: 'DĒDĒ.STUDIO' }
-      ];
-      const el = document.getElementById('statementPred');
-      const HOLD_MS = 2500;
-      const FADE_MS = 500;
-      const REVEAL_PAUSE_MS = 900;
-      const LINE_MS = 500;
-      const PARA_PAUSE_MS = 350;
-      let i = 0;
-
-      function paint(variant) {
-        if (variant.type === 'link') {
-          el.innerHTML =
-            '<a href="#" class="dede-link">' +
-            variant.word +
-            '</a>';
-          const link = el.querySelector('.dede-link');
-          if (link) {
-            let last = 0;
-            const toggle = function (e) {
-              e.preventDefault();
-              e.stopPropagation();
-              const now = Date.now();
-              if (now - last < 400) return;
-              last = now;
-              const img = document.querySelector('.dede-image');
-              if (img) img.classList.toggle('is-shown');
-            };
-            link.addEventListener('click', toggle);
-            link.addEventListener('touchend', toggle);
-          }
-        } else {
-          el.textContent = variant.value;
-        }
-      }
-
-      function scheduleNext() {
-        if (i >= variants.length - 1) {
-          setTimeout(startLineCascade, REVEAL_PAUSE_MS);
-          return;
-        }
-        setTimeout(() => {
-          el.style.opacity = '0';
-          setTimeout(() => {
-            i++;
-            paint(variants[i]);
-            el.style.opacity = '1';
-            scheduleNext();
-          }, FADE_MS);
-        }, HOLD_MS);
-      }
-
+      /* Line cascade — group word spans by their offsetTop after
+         layout, then fade one line at a time. Same rhythm as the
+         other content pages, just tuned snappier for smaller type. */
       function groupByLine(container) {
         const words = Array.from(container.querySelectorAll('.word'));
         const lines = [];
@@ -433,9 +416,10 @@
         if (current.length) lines.push(current);
         return lines;
       }
-
       function startLineCascade() {
-        const blocks = document.querySelectorAll('.reveal-words');
+        const LINE_MS = 240;
+        const PARA_PAUSE_MS = 200;
+        const blocks = document.querySelectorAll('.profile__body .reveal-words');
         let clock = 0;
         blocks.forEach((block) => {
           const lines = groupByLine(block);
@@ -448,86 +432,39 @@
           clock += PARA_PAUSE_MS;
         });
       }
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        paint(variants[variants.length - 1]);
-        document.querySelectorAll('.word').forEach(w => w.classList.add('is-visible'));
+      if (reduced) {
+        document.querySelectorAll('.word').forEach((w) => w.classList.add('is-visible'));
       } else {
-        scheduleNext();
+        /* Let the pill's entrance land first, then cascade the copy. */
+        setTimeout(startLineCascade, 900);
       }
 
-      /* Paragraph focus + DĒDĒ image dismissal on outside tap. */
-      (function () {
-        const dedeImage = document.querySelector('.dede-image');
-        const paragraphs = Array.prototype.slice.call(
-          document.querySelectorAll('.profile__body p')
-        );
-        paragraphs.forEach((p) => p.setAttribute('tabindex', '0'));
 
-        function clearFocus() {
-          paragraphs.forEach((p) => {
-            p.style.opacity = '';
-            p.removeAttribute('data-focused');
-          });
-        }
-        function focusOn(paragraph) {
-          paragraphs.forEach((p) => {
-            if (p === paragraph) {
-              p.style.opacity = '1';
-              p.setAttribute('data-focused', '');
-            } else {
-              p.style.opacity = '0.5';
-              p.removeAttribute('data-focused');
-            }
-          });
-        }
-        function hideDedeImage() {
-          if (dedeImage) dedeImage.classList.remove('is-shown');
-        }
-
-        let lastHandled = 0;
-        function handleParagraph(paragraph, e) {
+      /* DĒDĒ.STUDIO link → toggles the fixed profile image. */
+      const dedeLink = document.querySelector('.dede-link');
+      const dedeImage = document.querySelector('.dede-image');
+      if (dedeLink && dedeImage) {
+        let last = 0;
+        const toggle = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           const now = Date.now();
-          if (now - lastHandled < 400) return;
-          lastHandled = now;
-          if (e.target.closest('.dede-link')) {
-            if (e.cancelable) e.preventDefault();
-            const imageShown = dedeImage && dedeImage.classList.contains('is-shown');
-            if (imageShown) hideDedeImage();
-            else if (dedeImage) dedeImage.classList.add('is-shown');
-            return;
-          }
-          if (e.target.closest('.bllcrw-link')) {
-            hideDedeImage();
-            return;
-          }
-          if (dedeImage && dedeImage.classList.contains('is-shown')) {
-            hideDedeImage();
-            return;
-          }
-          if (paragraph.hasAttribute('data-focused')) {
-            clearFocus();
-          } else {
-            focusOn(paragraph);
-          }
-        }
+          if (now - last < 400) return;
+          last = now;
+          dedeImage.classList.toggle('is-shown');
+        };
+        dedeLink.addEventListener('click', toggle);
+        dedeLink.addEventListener('touchend', toggle);
+      }
 
-        paragraphs.forEach((paragraph) => {
-          paragraph.addEventListener('click', (e) => handleParagraph(paragraph, e));
-          paragraph.addEventListener('touchend', (e) => handleParagraph(paragraph, e), { passive: true });
-        });
-
-        function handleOutside(e) {
-          const now = Date.now();
-          if (now - lastHandled < 400) return;
-          lastHandled = now;
-          if (e.target.closest('.profile__body p')) return;
-          hideDedeImage();
-          clearFocus();
-        }
-        document.addEventListener('click', handleOutside);
-        document.addEventListener('touchend', handleOutside, { passive: true });
-      })();
+      /* Tap outside the pill / image → dismiss the profile image. */
+      function dismissOnOutside(e) {
+        if (!dedeImage || !dedeImage.classList.contains('is-shown')) return;
+        if (e.target.closest('.dede-link') || e.target.closest('.dede-image')) return;
+        dedeImage.classList.remove('is-shown');
+      }
+      document.addEventListener('click', dismissOnOutside);
+      document.addEventListener('touchend', dismissOnOutside, { passive: true });
     })();
   </script>
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
