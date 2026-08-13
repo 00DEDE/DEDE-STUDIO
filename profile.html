@@ -58,9 +58,12 @@
     align-items: flex-start;
     justify-content: flex-start;
     box-sizing: border-box;
+    /* Horizontal padding trimmed — the display type below is sized to
+       nearly fill the viewport at its longest variant ("DĒDĒ.STUDIO"),
+       so the sides need to be tight to give the type the full width. */
     padding:
       calc(var(--header-safe-top, 5rem) + clamp(1rem, 4vh, 3rem))
-      clamp(1.25rem, 5vw, 3rem)
+      clamp(0.75rem, 1.25vw, 1.25rem)
       clamp(2rem, 8vh, 6rem);
     gap: clamp(1.25rem, 4vh, 3rem);
     z-index: 0;
@@ -72,10 +75,17 @@
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     /* Regular weight — matches the NMBRS about hero character. */
     font-weight: 400;
-    font-size: clamp(3.5rem, 13vw, 15rem);
+    /* Sized so the longest cycle stage ("DĒDĒ.STUDIO") stretches
+       across the full viewport width. Tighter letter-spacing helps
+       the line reach viewport edges without overflow. */
+    font-size: 15vw;
     line-height: 0.95;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
     color: var(--fg);
+    /* Flush-left / left-justified — both lines ("I AM" and the
+       cycling predicate) hug the same left edge, so cycling never
+       shifts horizontal position. */
+    text-align: left;
   }
   /* "I AM" is locked on its own line — display: block guarantees the
      predicate wraps to line 2 below, so the "I AM" anchor stays in
@@ -229,12 +239,15 @@
     .profile__hero {
       padding:
         calc(var(--header-safe-top, 5rem) + 1rem)
-        1.25rem
+        0.75rem
         2rem;
       gap: 1.5rem;
     }
     .profile__statement {
-      font-size: clamp(2.5rem, 14vw, 5.5rem);
+      /* Mobile: same "fill the viewport at DĒDĒ.STUDIO" logic — 14vw
+         with tighter side padding lands the longest variant on the
+         edges. Unit is vw so it scales with any phone width. */
+      font-size: 14.5vw;
     }
     .profile__intro { font-size: 0.9rem; line-height: 1.25; }
     .profile__body {
