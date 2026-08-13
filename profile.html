@@ -23,6 +23,13 @@
     font-style: normal;
     font-display: swap;
   }
+  @font-face {
+    font-family: "Akzidenz Grotesk";
+    src: url("ASSETS/FONTS/AKZIDENZGROTESK-EXTRABOLD.OTF") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
   html { background: var(--bg); }
   html, body {
     margin: 0;
@@ -210,23 +217,30 @@
     padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
     /* Font-size lives on the container so max-width in em scales
        WITH the paragraph type — line length in characters stays
-       constant across sizes, ~15 words per line either way. */
+       constant across sizes. Narrower max-width now caps lines at
+       ~10 words instead of the previous ~15. */
     font-family: "Akzidenz Grotesk",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    /* 60% bigger than before — was clamp(1rem, 1.15vw, 1.4rem). */
-    font-size: clamp(1.6rem, 1.85vw, 2.25rem);
-    line-height: 1.4;
-    letter-spacing: -0.01em;
-    max-width: 42em;
+    /* Bold weight — Akzidenz EXTRABOLD registered above at 700. */
+    font-weight: 700;
+    /* Scale up ~50% from the previous clamp(1.6rem, 1.85vw, 2.25rem). */
+    font-size: clamp(2.4rem, 2.75vw, 3.4rem);
+    /* Leading halved (1.4 → 0.7) — tight, editorial stack. */
+    line-height: 0.7;
+    letter-spacing: -0.015em;
+    /* Container narrowed from 42em → 28em so ~10 words fit per
+       line at the new type size. */
+    max-width: 28em;
     margin: 0 auto;
     color: var(--fg);
     box-sizing: content-box;
   }
   .profile__body p {
-    /* Inherit font-size / family / spacing from the container so em
-       units stay coherent across the whole block. */
-    margin: 0 0 1.15em;
+    /* Inherit font-size / family / weight from the container so em
+       units stay coherent. Larger bottom margin than before —
+       the tight 0.7 leading needs real breathing room between
+       paragraphs to keep them visually distinct. */
+    margin: 0 0 1.5em;
     text-align: left;
     text-wrap: pretty;              /* modern browsers: no widows / orphans */
     hyphens: none;
@@ -336,14 +350,15 @@
 
     .profile__body {
       padding: 3rem 1.25rem 6rem;
-      /* Mobile floors the type so the ~15-words-per-line rule still
-         actually fits within a phone's viewport width (the +60%
-         desktop bump would otherwise clip lines to 3-4 words each). */
-      font-size: 1.15rem;
-      line-height: 1.4;
+      /* Mobile floors the type so the desktop scale doesn't collapse
+         phone lines to 2-3 words each. Still bigger than the previous
+         mobile value (1.15rem → 1.5rem, +30%). */
+      font-size: 1.5rem;
+      /* Same -50% leading treatment as desktop. */
+      line-height: 0.7;
     }
     .profile__body p {
-      margin-bottom: 1.15em;
+      margin-bottom: 1.5em;
     }
   }
   @keyframes pill-spotlight {
