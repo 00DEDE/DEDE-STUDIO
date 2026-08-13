@@ -220,12 +220,11 @@
        constant across sizes (~10 words per line). */
     font-family: "Akzidenz Grotesk",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* One step up from regular — medium. Only Regular (400) and
-       EXTRABOLD (700) faces are registered, so the browser
-       synthesizes 500 by adding a hair of stroke weight to the
-       regular face — reads a touch heavier without jumping all
-       the way to bold. */
-    font-weight: 500;
+    /* Semi-bold — one step above medium. Only Regular (400) and
+       EXTRABOLD (700) are registered, so the browser synthesizes
+       600 by adding stroke weight to Regular. Reads noticeably
+       heavier than medium without jumping to full extrabold. */
+    font-weight: 600;
     /* +25% from the previous clamp(2.4rem, 2.75vw, 3.4rem). */
     font-size: clamp(3rem, 3.45vw, 4.25rem);
     /* Leading +25% (0.7 → 0.875) — still tight editorial stack,
