@@ -30,6 +30,18 @@ body:has(.site-header) {
   border-radius: 999px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
+/* Dark mode: pale glass over dark backdrop so the pill reads as an
+   elevated surface — the same "sitting on top of the page" feel that
+   the light-mode pill gets naturally against the light backdrop.
+   • rgba white tint = brighter than the underlying dark blobs
+   • deeper drop shadow = more perceived lift
+   • inset top highlight = subtle edge catching light from above */
+[data-theme="dark"] .site-header {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
 .site-header > * { pointer-events: auto; }
 
 .site-header__brand {
