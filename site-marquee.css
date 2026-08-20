@@ -102,10 +102,11 @@
 }
 
 @keyframes marquee {
-  /* Left → right motion (items enter from the left, exit at right) —
-     same direction as the pill marquee on profile / contact. */
-  from { transform: translate3d(-50%, 0, 0); }
-  to   { transform: translate3d(0, 0, 0); }
+  /* Right → left motion (items enter from the right, exit at left).
+     Track moves left; the duplicated second phrase lands where the
+     first started, keeping the loop seamless. */
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

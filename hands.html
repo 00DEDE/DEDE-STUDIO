@@ -8,28 +8,178 @@
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#121212" />
+<meta name="theme-color" content="#0f0e0c" />
+<!-- Read saved theme + apply BEFORE any style loads. Prevents theme-flash. -->
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <link rel="stylesheet" href="theme.css" />
 <link rel="stylesheet" href="site-header.css" />
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
+<link rel="stylesheet" href="site-mobile.css" />
 <style>
+/* ─── page reset ─────────────────────────────────────────────────── */
   html { background: var(--bg); }
   html, body {
     margin: 0;
     padding: 0;
     min-height: 100%;
     width: 100%;
-    cursor: var(--cursor-url) 16 16, auto;
+    color: var(--fg);
+    overflow-x: clip;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    cursor: var(--cursor-url) 16 16, auto;
   }
   body { background: transparent; }
-  .page-hero {
-    min-height: 100vh;
-  }
   a, button, [role="button"] {
     cursor: var(--cursor-url) 16 16, pointer;
+  }
+
+  /* ─── editorial grid — identical geometry to mind.html (2 × 3 here
+     for the 6 hands projects; grid-auto-rows keeps every cell exactly
+     the same size). */
+  .selections-grid {
+    --grid-row: clamp(300px, 46vh, 620px);
+    --cell-gap: clamp(10px, 1.25vw, 20px);
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: var(--grid-row);
+    gap: var(--cell-gap);
+    padding: 0 var(--cell-gap);
+  }
+  @media (max-width: 640px) {
+    .selections-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: unset;
+    }
+    .cell {
+      aspect-ratio: 3 / 4;
+    }
+    .cell.needs-reveal:not(.is-in-view) { filter: none; }
+  }
+
+  /* ─── cell base — same behaviour + reveal as mind. Since hands
+     cells don't carry images (yet), a very faint palette-driven tint
+     makes the empty cells visible as placeholders. On hover the cell
+     fills with fg (same fg-fill inversion mind uses). */
+  .cell {
+    position: relative;
+    color: var(--fg);
+    text-decoration: none;
+    box-sizing: border-box;
+    background-color: rgba(var(--fg-rgb), 0.05);
+    border-radius: clamp(10px, 1.1vw, 18px);
+    overflow: hidden;
+    transition:
+      background-color var(--dur-medium)    var(--ease-standard),
+      color            var(--dur-medium)    var(--ease-standard),
+      opacity          var(--dur-cinematic) var(--ease-out-expo),
+      transform        var(--dur-cinematic) cubic-bezier(0.16, 1.15, 0.3, 1),
+      filter           var(--dur-cinematic) var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .cell:hover { background-color: var(--fg); }
+  }
+  .cell.is-active { background-color: var(--fg); }
+
+  /* Reveal cascade — same 96px lift + 16px blur + spring settle as
+     mind. JS toggles .needs-reveal → .is-in-view and staggers 180ms
+     per cell so a row cascades top → bottom. */
+  .cell.needs-reveal:not(.is-in-view) {
+    opacity: 0;
+    transform: translateY(96px) scale(0.9);
+    filter: blur(16px);
+  }
+
+  /* ─── overlays: tag + VIEW CASE label ─────────────────────────────
+     Tag color is --fg here (not hard white like mind's image cells)
+     so it reads against the subtle palette tint in either theme. On
+     hover the cell fills with fg and the VIEW CASE overlay takes
+     over, so the tag being briefly the same color as the fill is
+     covered instantly. */
+  .cell-tags {
+    position: absolute;
+    left: 1.25rem;
+    bottom: 1.25rem;
+    color: var(--fg);
+    font-weight: 400;
+    font-size: clamp(0.72rem, 1vw, 0.95rem);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    z-index: 3;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .cell-tags strong { font-weight: 700; }
+  @media (max-width: 640px) {
+    .cell-tags {
+      left: 0.6rem;
+      bottom: 0.6rem;
+      right: 0.6rem;
+      font-size: 0.6rem;
+      white-space: normal;
+      line-height: 1.2;
+    }
+  }
+
+  .cell__view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    font-weight: 400;
+    font-size: clamp(0.95rem, 1.5vw, 1.35rem);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity var(--dur-medium) var(--ease-out-expo);
+    pointer-events: none;
+    z-index: 4;
+  }
+  @media (hover: hover) {
+    .cell:hover .cell__view { opacity: 1; }
+  }
+  .cell.is-active .cell__view { opacity: 1; }
+
+  /* ─── scroll cue ─────────────────────────────────────────────────── */
+  .scroll-cue {
+    position: fixed;
+    bottom: 1.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(var(--fg-rgb), 0.75);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    opacity: 1;
+    transition: opacity var(--dur-long) var(--ease-out-expo);
+    animation: scroll-cue-bounce 2.4s var(--ease-in-out) infinite;
+  }
+  .scroll-cue.is-hidden { opacity: 0; }
+  .scroll-cue__arrow { font-size: 1rem; letter-spacing: 0; }
+  @keyframes scroll-cue-bounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50%      { transform: translate(-50%, 8px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cell.needs-reveal:not(.is-in-view) { opacity: 1; transform: none; filter: none; }
+    .scroll-cue { animation: none; }
+  }
+
+  /* Top breathing room — matches mind: header floats over the top,
+     the grid tucks below its bottom edge with a small extra gap. */
+  .selections {
+    padding-top: var(--cell-gap, 1rem);
   }
 </style>
 </head>
@@ -40,26 +190,71 @@
     <div class="site-bg__blob site-bg__blob--dark-1"></div>
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
   </div>
-  <header class="site-header">
-    <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
-      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_red.png" alt="DEDE STUDIO" />
-    </a>
-    <div class="site-header__end">
-      <nav class="site-header__nav" aria-label="Primary">
-        <a href="home.html">HOME</a>
-        <a href="mind.html">MIND</a>
-        <a href="hands.html">HANDS</a>
-        <a href="profile.html">PROFILE</a>
-        <a href="contact.html">CONTACT</a>
-      </nav>
-      <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
-        <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
-      </button>
-    </div>
-  </header>
-  <script src="site-header.js" defer></script>
+  <div class="selections">
+    <header class="site-header">
+      <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
+        <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_red.png" alt="DEDE STUDIO" />
+      </a>
+      <div class="site-header__end">
+        <nav class="site-header__nav" aria-label="Primary">
+          <a href="home.html">HOME</a>
+          <a href="mind.html">MIND</a>
+          <a href="hands.html">HANDS</a>
+          <a href="profile.html">PROFILE</a>
+          <a href="contact.html">CONTACT</a>
+        </nav>
+        <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
+          <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+    <script src="site-header.js" defer></script>
     <script src="site-bg.js" defer></script>
-  <div class="page-hero"></div>
+
+    <div class="selections-grid">
+      <!-- 1 -->
+      <a class="cell" href="#">
+        <div class="cell-tags"><strong>TOMORROWLAND</strong> HULU INTERNSHIP</div>
+        <div class="cell__view">VIEW CASE</div>
+      </a>
+
+      <!-- 2 -->
+      <a class="cell" href="#">
+        <div class="cell-tags"><strong>DEDE</strong> PERSONAL REBRAND</div>
+        <div class="cell__view">VIEW CASE</div>
+      </a>
+
+      <!-- 3 -->
+      <a class="cell" href="#">
+        <div class="cell-tags"><strong>PARMI</strong> EXPLORATIONS</div>
+        <div class="cell__view">VIEW CASE</div>
+      </a>
+
+      <!-- 4 -->
+      <a class="cell" href="#">
+        <div class="cell-tags"><strong>LEATHERWORK</strong> EXPLORATIONS</div>
+        <div class="cell__view">VIEW CASE</div>
+      </a>
+
+      <!-- 5 -->
+      <a class="cell" href="#">
+        <div class="cell-tags"><strong>ILLUSTRATION</strong> FOR BUSINESS</div>
+        <div class="cell__view">VIEW CASE</div>
+      </a>
+
+      <!-- 6 -->
+      <a class="cell" href="#">
+        <div class="cell-tags"><strong>BLLCRW.</strong> PREVIOUS RELEASES</div>
+        <div class="cell__view">VIEW CASE</div>
+      </a>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <span class="scroll-cue__text">SCROLL</span>
+      <span class="scroll-cue__arrow">↓</span>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
       <img class="theme-img theme-img--dark" src="ASSETS/LOGO/logo_horizontal_white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/logo_horizontal_black.png" alt="DEDE STUDIO" />
@@ -77,6 +272,90 @@
       </div>
     </div>
   </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    const cells = document.querySelectorAll('.cell');
+    const isTouch = window.matchMedia('(hover: none)').matches;
+
+    /* ─── scroll-in reveal for below-fold cells — identical mechanic
+       to mind.html: IntersectionObserver batches entries, sorts them
+       top → bottom, and stages a 180ms per-cell transition-delay so a
+       row cascades. Inline delay clears after the transition finishes
+       so it can't leak into future hover transitions. */
+    if ('IntersectionObserver' in window) {
+      const STAGGER_MS = 180;
+      const CLEAR_AFTER = 1800;
+      const io = new IntersectionObserver((entries) => {
+        const revealing = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        revealing.forEach((entry, i) => {
+          const el = entry.target;
+          if (i > 0) {
+            const delay = i * STAGGER_MS;
+            el.style.transitionDelay = delay + 'ms';
+            setTimeout(() => { el.style.transitionDelay = ''; }, delay + CLEAR_AFTER);
+          }
+          el.classList.add('is-in-view');
+          io.unobserve(el);
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -12% 0px' });
+
+      cells.forEach((cell) => {
+        if (cell.getBoundingClientRect().top < window.innerHeight * 0.9) {
+          cell.classList.add('is-in-view');
+        } else {
+          cell.classList.add('needs-reveal');
+          io.observe(cell);
+        }
+      });
+    }
+
+    /* Touch: 1st tap reveals VIEW CASE; 2nd tap navigates. */
+    if (isTouch) {
+      let activeCell = null, timer = null;
+      const RESET_MS = 2000;
+      function reset() {
+        if (activeCell) activeCell.classList.remove('is-active');
+        activeCell = null;
+        clearTimeout(timer);
+        timer = null;
+      }
+      cells.forEach((cell) => {
+        cell.addEventListener('click', (e) => {
+          if (activeCell === cell) { reset(); return; }
+          e.preventDefault();
+          reset();
+          activeCell = cell;
+          cell.classList.add('is-active');
+          timer = setTimeout(reset, RESET_MS);
+        });
+      });
+    }
+
+    /* Scroll cue fade-out — same threshold as mind. */
+    const cue = document.querySelector('.scroll-cue');
+    if (cue) {
+      const HIDE_AFTER = 80;
+      let hidden = false, ticking = false;
+      window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const shouldHide = window.scrollY > HIDE_AFTER;
+          if (shouldHide !== hidden) {
+            hidden = shouldHide;
+            cue.classList.toggle('is-hidden', hidden);
+          }
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+  })();
+  </script>
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 </body>
 </html>
