@@ -249,10 +249,10 @@ html { background: var(--bg); }
     margin-bottom: var(--cell-gap);
   }
 
-  /* ─── Quote band — exact same treatment as the selections page ─────
-     Copied verbatim so the between-projects quote uses the same dual
-     layer, per-word blur (desktop hover reveals a word), and per-line
-     mobile auto-cycle. */
+  /* ─── Quote band — regular-weight display type filling the
+     viewport width, same character as the profile hero statement.
+     Per-word blur reveal (desktop hover) + per-line mobile auto-cycle
+     preserved from before. */
   .selections__band {
     position: relative;
     z-index: 1;
@@ -260,15 +260,20 @@ html { background: var(--bg); }
     color: var(--fg);
     font-family: "Inter Tight",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 900;
+    /* Regular weight — not bold — to match the profile statement. */
+    font-weight: 400;
     line-height: 0.95;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
     text-transform: uppercase;
   }
   .selections__band--stacked {
-    padding: 6rem 1.5rem;
-    font-size: clamp(1.6rem, 7vw, 12rem);
-    text-wrap: balance;
+    /* Tight horizontal padding + large vw font-size so each line of
+       the quote stretches nearly edge-to-edge. text-wrap: initial
+       (not balance) lets lines wrap naturally to fill width instead
+       of being distributed for even length. */
+    padding: 6rem clamp(0.75rem, 1.25vw, 1.25rem);
+    font-size: 12vw;
+    text-wrap: initial;
   }
   .band__layers {
     position: relative;
@@ -302,6 +307,7 @@ html { background: var(--bg); }
 
   @media (max-width: 640px) {
     .selections__band--stacked {
+      padding: 4rem 0.75rem;
       font-size: 14vw;
       text-align: left;
       text-wrap: initial;

@@ -28,8 +28,8 @@
   top: -15%;
   left: -10%;
   background: radial-gradient(circle at center,
-              rgba(var(--accent-rgb), 0.55) 0%,
-              rgba(var(--accent-rgb), 0) 65%);
+              rgba(var(--blob-rgb), 0.55) 0%,
+              rgba(var(--blob-rgb), 0) 65%);
   animation: bg-drift-1 36s var(--ease-in-out) infinite;
 }
 .site-bg__blob--cyan-2 {
@@ -38,8 +38,8 @@
   bottom: -10%;
   right: -10%;
   background: radial-gradient(circle at center,
-              rgba(var(--accent-rgb), 0.42) 0%,
-              rgba(var(--accent-rgb), 0) 65%);
+              rgba(var(--blob-rgb), 0.42) 0%,
+              rgba(var(--blob-rgb), 0) 65%);
   animation: bg-drift-2 44s var(--ease-in-out) infinite;
 }
 .site-bg__blob--dark-1 {
@@ -103,7 +103,7 @@
 }
 
 /* Light mode uses the SAME blob layout as dark mode — the cyan blobs
-   auto-swap to red because their color is `rgba(var(--accent-rgb), α)`
+   auto-swap to red because their color is `rgba(var(--blob-rgb), α)`
    and --accent-rgb becomes 222,0,0 under [data-theme="light"]. Nothing
    is hidden or overridden here on purpose. */
 
@@ -124,12 +124,12 @@
   .site-bg__blob { filter: blur(40px); }
   .site-bg__blob--cyan-1 {
     background: radial-gradient(circle at center,
-                rgba(var(--accent-rgb), 0.7) 0%,
-                rgba(var(--accent-rgb), 0)  65%);
+                rgba(var(--blob-rgb), 0.7) 0%,
+                rgba(var(--blob-rgb), 0)  65%);
   }
   .site-bg__blob--cyan-2 {
     background: radial-gradient(circle at center,
-                rgba(var(--accent-rgb), 0.55) 0%,
-                rgba(var(--accent-rgb), 0)   65%);
+                rgba(var(--blob-rgb), 0.55) 0%,
+                rgba(var(--blob-rgb), 0)   65%);
   }
 }

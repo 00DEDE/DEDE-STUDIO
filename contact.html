@@ -349,14 +349,15 @@
       }
 
       /* Word-wrap for line-cascade reveal. Preserves inline links —
-         if a text node contains anchors, wrap the anchors and the
-         surrounding text tokens separately. Sentence-openers and the
-         last three words get nbsp-tied to prevent orphans/widows. */
+         each <a> is swapped for a marker before we split on spaces,
+         then each split token that CONTAINS a marker (may have
+         adjacent punctuation like "__LINK0__.") has its marker
+         portion replaced with the anchor's HTML, keeping the
+         punctuation intact around it. */
       function wrapWords(el) {
-        // Flatten to tokens preserving links via placeholder swaps.
         const links = [];
         el.querySelectorAll('a').forEach((a, i) => {
-          const marker = '__LINK' + i + '__';
+          const marker = '__DEDELINK' + i + '__';
           links.push({ marker, html: a.outerHTML });
           a.replaceWith(document.createTextNode(marker));
         });
@@ -364,13 +365,19 @@
         const words = text.split(' ');
         const parts = [];
         words.forEach((word, idx) => {
-          // If word matches a link marker, splice the anchor HTML back.
-          const linkMatch = links.find((l) => word === l.marker);
-          if (linkMatch) {
-            parts.push('<span class="word">' + linkMatch.html + '</span>');
+          // Splice any embedded link marker back into HTML, preserving
+          // punctuation before/after (e.g. "__LINK0__." → "<a>…</a>.").
+          const link = links.find((l) => word.indexOf(l.marker) !== -1);
+          let inner;
+          if (link) {
+            const at = word.indexOf(link.marker);
+            const before = word.substring(0, at);
+            const after  = word.substring(at + link.marker.length);
+            inner = escapeHtml(before) + link.html + escapeHtml(after);
           } else {
-            parts.push('<span class="word">' + escapeHtml(word) + '</span>');
+            inner = escapeHtml(word);
           }
+          parts.push('<span class="word">' + inner + '</span>');
           if (idx < words.length - 1) {
             const prev = words[idx - 1];
             const isSentenceStart = idx === 0 || (prev && /[.?!]/.test(prev.slice(-1)));

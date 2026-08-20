@@ -24,16 +24,20 @@
    automatically adapts. */
 
 :root {
-  /* Warm dark palette — off-black bg + warm cream fg + dusty teal
-     accent. Reads editorial studio rather than neon sci-fi. */
+  /* Warm dark palette — off-black bg + warm cream fg. Accent is the
+     bright brand cyan (matches the top-left logo hex exactly); the
+     dusty teal used to atmospheric-blob the page is decoupled into
+     --blob-rgb below so UI ink stays vivid while the backdrop stays
+     muted / editorial. */
   --bg:            #0f0e0c;              /* warm off-black */
   --bg-tint:       #1a1815;              /* warm neutral panel/blob tone */
   --bg-tint-rgb:   26, 24, 21;
   --fg:            #f2ede4;              /* warm cream */
   --fg-rgb:        242, 237, 228;
   --fg-dim:        rgba(242, 237, 228, 0.65);
-  --accent:        #8fb0aa;              /* dusty teal — designer ink */
-  --accent-rgb:    143, 176, 170;
+  --accent:        #00dede;              /* brand cyan — matches logo */
+  --accent-rgb:    0, 222, 222;
+  --blob-rgb:      143, 176, 170;        /* dusty teal — blobs only */
   --line:          rgba(242, 237, 228, 0.28);
   --cursor-url:    url("ASSETS/LOGO/cursor_dede.png");
 
@@ -64,18 +68,18 @@
 }
 
 [data-theme="light"] {
-  /* Warm light palette — mirror inversion of warm dark: cream bg,
-     warm near-black fg, dusty terracotta accent (hue-inverted from
-     the dusty teal on dark). Same editorial character, opposite
-     lightness. */
+  /* Warm light palette — mirror inversion of warm dark. Accent is
+     the bright brand red (matches the top-left logo hex); dusty
+     terracotta stays isolated to the blob layer via --blob-rgb. */
   --bg:            #f2ede4;              /* warm cream (was dark's fg) */
   --bg-tint:       #e5dfd1;              /* warm light panel tone */
   --bg-tint-rgb:   229, 223, 209;
   --fg:            #0f0e0c;              /* warm near-black (was dark's bg) */
   --fg-rgb:        15, 14, 12;
   --fg-dim:        rgba(15, 14, 12, 0.65);
-  --accent:        #b47a72;              /* dusty terracotta — hue-inverse of teal */
-  --accent-rgb:    180, 122, 114;
+  --accent:        #de0000;              /* brand red — matches logo */
+  --accent-rgb:    222, 0, 0;
+  --blob-rgb:      180, 122, 114;        /* dusty terracotta — blobs only */
   --line:          rgba(15, 14, 12, 0.28);
   --cursor-url:    url("ASSETS/LOGO/cursor_dede_red.png");
 }
