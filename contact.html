@@ -68,18 +68,21 @@ html { background: var(--bg); }
   }
   .hello p:last-child { margin-bottom: 0; }
 
-  /* Email link: same radiating cyan glow used for DĒDĒ + BLLCRW on the
-     introductions page, so interactive words have a consistent language. */
+  /* Email link — quiet by default, accent-colored glow appears on
+     hover/focus only. No always-on pulse. */
   .email-link {
     color: inherit;
     text-decoration: none;
-    animation: link-glow 2.5s var(--ease-in-out) infinite;
-    transition: color var(--dur-medium) var(--ease-standard);
+    transition: color       var(--dur-medium) var(--ease-standard),
+                text-shadow var(--dur-medium) var(--ease-standard);
     cursor: var(--cursor-url) 16 16, pointer;
   }
   .email-link:hover,
   .email-link:focus-visible {
     color: var(--accent);
+    text-shadow:
+      0 0 0.2em rgba(var(--accent-rgb), 0.4),
+      0 0 0.5em rgba(var(--accent-rgb), 0.2);
   }
 
   /* Mail-app chooser — appears below the email on click. */
@@ -104,43 +107,18 @@ html { background: var(--bg); }
   .email-option {
     color: var(--fg);
     text-decoration: none;
-    transition: color var(--dur-medium) var(--ease-standard);
-    /* Same radiating glow as the email itself so all three interactive
-       words carry a single visual language. */
-    animation: link-glow 2.5s var(--ease-in-out) infinite;
+    transition: color       var(--dur-medium) var(--ease-standard),
+                text-shadow var(--dur-medium) var(--ease-standard);
   }
   .email-option:hover,
   .email-option:focus-visible {
     color: var(--accent);
+    text-shadow:
+      0 0 0.2em rgba(var(--accent-rgb), 0.4),
+      0 0 0.5em rgba(var(--accent-rgb), 0.2);
   }
   .email-options__sep {
     opacity: 0.5;
-  }
-  /* Same keyframes as the DĒDĒ / BLLCRW glow on introductions. Colors
-     interpolate through --accent-rgb so cyan (dark) and red (light) both
-     read with the same intensity. */
-  @keyframes link-glow {
-    0%, 100% {
-      text-shadow:
-        0 0 0.15em rgba(var(--accent-rgb), 0.45),
-        0 0 0.4em  rgba(var(--accent-rgb), 0.25),
-        0 0 0.7em  rgba(var(--accent-rgb), 0.12);
-    }
-    50% {
-      text-shadow:
-        0 0 0.3em rgba(var(--accent-rgb), 0.95),
-        0 0 0.7em rgba(var(--accent-rgb), 0.55),
-        0 0 1.2em rgba(var(--accent-rgb), 0.3);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .email-link,
-    .email-option {
-      animation: none;
-      text-shadow:
-        0 0 0.25em rgba(var(--accent-rgb), 0.7),
-        0 0 0.6em  rgba(var(--accent-rgb), 0.4);
-    }
   }
 </style>
 </head>

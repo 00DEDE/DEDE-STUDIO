@@ -24,23 +24,22 @@ body:has(.site-header) {
   align-items: center;
   pointer-events: none;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  background: color-mix(in srgb, var(--bg) 45%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-          backdrop-filter: blur(14px) saturate(1.4);
+  /* Palette-driven tint — uses --fg-rgb so the pill auto-swaps:
+     warm cream haze on dark bg, warm dark haze on light bg. Both
+     read as an elevated surface over their respective backdrops
+     without needing per-mode overrides. Softer blur + shadow than
+     the previous "Vision Pro" treatment — reads as glass, not tech. */
+  background: rgba(var(--fg-rgb), 0.06);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
   border-radius: 999px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
 }
-/* Dark mode: pale glass over dark backdrop so the pill reads as an
-   elevated surface — the same "sitting on top of the page" feel that
-   the light-mode pill gets naturally against the light backdrop.
-   • rgba white tint = brighter than the underlying dark blobs
-   • deeper drop shadow = more perceived lift
-   • inset top highlight = subtle edge catching light from above */
-[data-theme="dark"] .site-header {
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+[data-theme="light"] .site-header {
+  /* Lighter drop shadow on the cream backdrop — the fg-rgb tint
+     alone gives enough contrast; heavy shadow would darken the
+     page mood. */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 .site-header > * { pointer-events: auto; }
 

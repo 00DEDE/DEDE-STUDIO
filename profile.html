@@ -47,10 +47,12 @@ html { background: var(--bg); }
     height: clamp(2rem, 5vh, 3.5rem);
     z-index: 50;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--bg) 45%, transparent);
-    -webkit-backdrop-filter: blur(14px) saturate(1.4);
-            backdrop-filter: blur(14px) saturate(1.4);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    /* Palette-driven tint (matches site-header). Auto-adapts:
+       warm cream haze on dark bg, warm dark haze on light bg. */
+    background: rgba(var(--fg-rgb), 0.06);
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -69,14 +71,10 @@ html { background: var(--bg); }
     from { opacity: 0; scale: 0.94; }
     to   { opacity: 1; scale: 1;    }
   }
-  /* Dark mode: same elevated-glass treatment as the site-header pill.
-     Pale white tint + deeper shadow + inset top highlight — the pill
-     reads as a physical, lit surface floating over the dark page. */
-  [data-theme="dark"] .statement-pill {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow:
-      0 12px 40px rgba(0, 0, 0, 0.6),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  /* Lighter shadow on the cream light-mode backdrop — matches
+     the site-header treatment. */
+  [data-theme="light"] .statement-pill {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   }
 
   /* ─── Marquee: dual-layer blur + sharp with cursor reveal ────────
@@ -162,37 +160,20 @@ html { background: var(--bg); }
        stays clickable while the rest of the pill passes clicks through. */
     pointer-events: auto;
   }
+  /* Quiet by default — accent-colored glow appears on hover/focus
+     only. No more always-on pulse; interaction is what animates. */
   .statement-pill__label .dede-link {
     color: inherit;
     text-decoration: none;
-    animation: link-glow 2.5s ease-in-out infinite;
-    transition: color var(--dur-medium) var(--ease-standard);
+    transition: color       var(--dur-medium) var(--ease-standard),
+                text-shadow var(--dur-medium) var(--ease-standard);
   }
   .statement-pill__label .dede-link:hover,
   .statement-pill__label .dede-link:focus-visible {
     color: var(--accent);
-  }
-  @keyframes link-glow {
-    0%, 100% {
-      text-shadow:
-        0 0 0.15em rgba(var(--accent-rgb), 0.45),
-        0 0 0.4em  rgba(var(--accent-rgb), 0.25),
-        0 0 0.7em  rgba(var(--accent-rgb), 0.12);
-    }
-    50% {
-      text-shadow:
-        0 0 0.3em rgba(var(--accent-rgb), 0.95),
-        0 0 0.7em rgba(var(--accent-rgb), 0.55),
-        0 0 1.2em rgba(var(--accent-rgb), 0.3);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .statement-pill__label .dede-link {
-      animation: none;
-      text-shadow:
-        0 0 0.25em rgba(var(--accent-rgb), 0.7),
-        0 0 0.6em  rgba(var(--accent-rgb), 0.4);
-    }
+    text-shadow:
+      0 0 0.2em rgba(var(--accent-rgb), 0.4),
+      0 0 0.5em rgba(var(--accent-rgb), 0.2);
   }
 
   /* ─── Body copy: single flow, left-aligned, comfortable width ─────
@@ -261,18 +242,15 @@ html { background: var(--bg); }
   .bllcrw-link {
     color: inherit;
     text-decoration: none;
-    animation: link-glow 2.5s ease-in-out infinite;
-    transition: color var(--dur-medium) var(--ease-standard);
+    transition: color       var(--dur-medium) var(--ease-standard),
+                text-shadow var(--dur-medium) var(--ease-standard);
   }
   .bllcrw-link:hover,
-  .bllcrw-link:focus-visible { color: var(--accent); }
-  @media (prefers-reduced-motion: reduce) {
-    .bllcrw-link {
-      animation: none;
-      text-shadow:
-        0 0 0.25em rgba(var(--accent-rgb), 0.7),
-        0 0 0.6em  rgba(var(--accent-rgb), 0.4);
-    }
+  .bllcrw-link:focus-visible {
+    color: var(--accent);
+    text-shadow:
+      0 0 0.2em rgba(var(--accent-rgb), 0.4),
+      0 0 0.5em rgba(var(--accent-rgb), 0.2);
   }
 
   /* Hovering DĒDĒ.STUDIO reveals a portrait image, fixed centre. */

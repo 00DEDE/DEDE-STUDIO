@@ -24,15 +24,17 @@
    automatically adapts. */
 
 :root {
-  --bg:            #000000;              /* pure black */
-  --bg-tint:       #1a1a1a;              /* neutral panel/blob tone */
-  --bg-tint-rgb:   26, 26, 26;
-  --fg:            #ffffff;              /* pure white */
-  --fg-rgb:        255, 255, 255;
-  --fg-dim:        rgba(255, 255, 255, 0.65);
-  --accent:        #00dede;              /* brand cyan */
-  --accent-rgb:    0, 222, 222;          /* for rgba() interpolation */
-  --line:          rgba(255, 255, 255, 0.35);
+  /* Warm dark palette — off-black bg + warm cream fg + dusty teal
+     accent. Reads editorial studio rather than neon sci-fi. */
+  --bg:            #0f0e0c;              /* warm off-black */
+  --bg-tint:       #1a1815;              /* warm neutral panel/blob tone */
+  --bg-tint-rgb:   26, 24, 21;
+  --fg:            #f2ede4;              /* warm cream */
+  --fg-rgb:        242, 237, 228;
+  --fg-dim:        rgba(242, 237, 228, 0.65);
+  --accent:        #8fb0aa;              /* dusty teal — designer ink */
+  --accent-rgb:    143, 176, 170;
+  --line:          rgba(242, 237, 228, 0.28);
   --cursor-url:    url("ASSETS/LOGO/cursor_dede.png");
 
   /* ─── motion system ──────────────────────────────────────────────────
@@ -62,15 +64,19 @@
 }
 
 [data-theme="light"] {
-  --bg:            #ffffff;              /* pure white — inverse of dark */
-  --bg-tint:       #eaeaea;              /* light grey */
-  --bg-tint-rgb:   234, 234, 234;
-  --fg:            #000000;              /* pure black — inverse of dark */
-  --fg-rgb:        0, 0, 0;
-  --fg-dim:        rgba(0, 0, 0, 0.65);
-  --accent:        #de0000;              /* light-mode accent — red */
-  --accent-rgb:    222, 0, 0;
-  --line:          rgba(0, 0, 0, 0.35);
+  /* Warm light palette — mirror inversion of warm dark: cream bg,
+     warm near-black fg, dusty terracotta accent (hue-inverted from
+     the dusty teal on dark). Same editorial character, opposite
+     lightness. */
+  --bg:            #f2ede4;              /* warm cream (was dark's fg) */
+  --bg-tint:       #e5dfd1;              /* warm light panel tone */
+  --bg-tint-rgb:   229, 223, 209;
+  --fg:            #0f0e0c;              /* warm near-black (was dark's bg) */
+  --fg-rgb:        15, 14, 12;
+  --fg-dim:        rgba(15, 14, 12, 0.65);
+  --accent:        #b47a72;              /* dusty terracotta — hue-inverse of teal */
+  --accent-rgb:    180, 122, 114;
+  --line:          rgba(15, 14, 12, 0.28);
   --cursor-url:    url("ASSETS/LOGO/cursor_dede_red.png");
 }
 
