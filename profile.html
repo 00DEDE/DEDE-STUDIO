@@ -253,7 +253,13 @@ html { background: var(--bg); }
       0 0 0.5em rgba(var(--accent-rgb), 0.2);
   }
 
-  /* Hovering DĒDĒ.STUDIO reveals a portrait image, fixed centre. */
+  /* Hovering DĒDĒ.STUDIO reveals a portrait image, fixed centre.
+     The source PNG is pure B&W, which fights the site's warm palette
+     — a soft filter warms it into the same family: sepia for a
+     warm tan tone, saturate < 1 to keep it muted, contrast lift so
+     the mid-tones don't wash into the tint. Per-theme hue-rotate
+     nudges the warm toward the atmospheric blob colour of each
+     mode (dusty teal in dark, dusty terracotta in light). */
   .dede-image {
     position: fixed;
     top: 50%;
@@ -264,11 +270,23 @@ html { background: var(--bg); }
     object-fit: contain;
     transform: translate(-50%, -50%) scale(0.35);
     opacity: 0;
+    filter: sepia(0.55) saturate(0.85) contrast(1.05);
     transition: transform var(--dur-long)   cubic-bezier(0.34, 1.56, 0.64, 1),
                 opacity   var(--dur-medium) var(--ease-out-expo);
     pointer-events: none;
     z-index: 200;
     will-change: transform, opacity;
+  }
+  /* Dark mode: rotate the sepia toward the dusty-teal atmospheric hue
+     so the portrait echoes the blob backdrop it floats over. */
+  [data-theme="dark"] .dede-image {
+    filter: sepia(0.6) hue-rotate(135deg) saturate(0.55) brightness(0.95);
+  }
+  /* Light mode: sepia already lands in the warm terracotta family —
+     a small negative hue-rotate nudges it a hair redder so it
+     harmonises with the terracotta blobs. */
+  [data-theme="light"] .dede-image {
+    filter: sepia(0.55) hue-rotate(-15deg) saturate(0.9) contrast(1.05);
   }
   body:has(.dede-link:hover) .dede-image,
   body:has(.dede-link:focus-visible) .dede-image,
