@@ -203,7 +203,9 @@
      --line so both themes carry them consistently. */
   .resume {
     /* Same left/right padding language as other full-width sections
-       — the header pill's 1rem sides, extended a hair for readability. */
+       — the header pill's 1rem sides, extended a hair for readability.
+       Top + bottom hairline live on the section itself so they always
+       bookend the whole resume, regardless of how many rows are inside. */
     padding: clamp(3rem, 6vh, 5rem) clamp(1.25rem, 2vw, 2rem)
              clamp(4rem, 8vh, 6rem);
     color: var(--fg);
@@ -214,6 +216,8 @@
     line-height: 1.5;
     letter-spacing: 0;
     box-sizing: border-box;
+    border-top:    1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
   .resume__contact {
     display: grid;
@@ -227,9 +231,11 @@
     grid-template-columns: 1fr 2fr 4fr;
     gap: clamp(1rem, 2vw, 2.5rem);
     padding: clamp(1rem, 2vh, 1.5rem) 0;
-    border-top: 1px solid var(--line);
   }
-  .resume__row:last-child { border-bottom: 1px solid var(--line); }
+  /* Only rows that KICK OFF a new category (Education / Experience /
+     Expertise) draw a hairline above themselves — sub-rows inside a
+     category flow together without any divider. */
+  .resume__row--start { border-top: 1px solid var(--line); }
   .resume__section {
     font-weight: 600;
   }
@@ -424,7 +430,7 @@
       <div></div>
     </div>
 
-    <div class="resume__row">
+    <div class="resume__row resume__row--start">
       <div class="resume__section">Education</div>
       <div class="resume__meta">
         <strong>ArtCenter College of Design</strong>
@@ -454,7 +460,7 @@
       </div>
     </div>
 
-    <div class="resume__row">
+    <div class="resume__row resume__row--start">
       <div class="resume__section">Experience</div>
       <div class="resume__meta">
         <strong>Creative Design Intern</strong>
@@ -493,7 +499,7 @@
       </div>
     </div>
 
-    <div class="resume__row">
+    <div class="resume__row resume__row--start">
       <div class="resume__section">Expertise</div>
       <div class="resume__meta">
         <strong>Proficient In</strong>
