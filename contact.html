@@ -204,8 +204,8 @@
   .resume {
     /* Same left/right padding language as other full-width sections
        — the header pill's 1rem sides, extended a hair for readability.
-       Top + bottom hairline live on the section itself so they always
-       bookend the whole resume, regardless of how many rows are inside. */
+       Borders live on INNER children (not the section itself) so all
+       five hairlines share the same inset from the viewport edge. */
     padding: clamp(3rem, 6vh, 5rem) clamp(1.25rem, 2vw, 2rem)
              clamp(4rem, 8vh, 6rem);
     color: var(--fg);
@@ -216,14 +216,15 @@
     line-height: 1.5;
     letter-spacing: 0;
     box-sizing: border-box;
-    border-top:    1px solid var(--line);
-    border-bottom: 1px solid var(--line);
   }
   .resume__contact {
     display: grid;
     grid-template-columns: 1fr 2fr 4fr;
     gap: clamp(1rem, 2vw, 2.5rem);
-    padding: 0 0 clamp(2rem, 4vh, 3rem);
+    /* Top hairline sits on the contact block — inset from viewport
+       by the section's horizontal padding, matching every other rule. */
+    padding: clamp(1rem, 2vh, 1.5rem) 0 clamp(2rem, 4vh, 3rem);
+    border-top: 1px solid var(--line);
   }
   .resume__contact strong { font-weight: 600; display: block; }
   .resume__row {
@@ -236,6 +237,8 @@
      Expertise) draw a hairline above themselves — sub-rows inside a
      category flow together without any divider. */
   .resume__row--start { border-top: 1px solid var(--line); }
+  /* Bottom hairline sits on the last row, same inset as the rest. */
+  .resume__row:last-child { border-bottom: 1px solid var(--line); }
   .resume__section {
     font-weight: 600;
   }
@@ -248,7 +251,13 @@
     display: block;
     color: rgba(var(--fg-rgb), 0.6);
   }
-  .resume__desc { color: var(--fg); }
+  .resume__desc {
+    color: var(--fg);
+    /* Widow prevention: modern browsers balance last-line length
+       automatically. Combined with the nbsp-ties in the HTML below,
+       no single-word last line can happen. */
+    text-wrap: pretty;
+  }
   .resume__desc-sub {
     color: rgba(var(--fg-rgb), 0.55);
     display: block;
@@ -438,7 +447,7 @@
         <span>Pasadena, CA</span>
       </div>
       <div class="resume__desc">
-        BFA in Graphic Design — Specialization in Identity Systems
+        BFA in Graphic Design — Specialization in Identity&nbsp;Systems
         <span class="resume__desc-sub">Awarded Scholarships:</span>
         Honda Endowed Scholarship<br>
         Martha Chandler Scholarship<br>
@@ -469,7 +478,7 @@
         <span>Santa Monica, CA</span>
       </div>
       <div class="resume__desc">
-        Assisted in the exploration and development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all touchpoints, which included refreshing campaign assets, refining presentation decks, designing brand merchandise and creating design references for both Hulu&rsquo;s original programming and its overarching brand.
+        Assisted in the exploration and development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all touchpoints, which included refreshing campaign assets, refining presentation decks, designing brand merchandise and creating design references for both Hulu&rsquo;s original programming and its overarching&nbsp;brand.
       </div>
     </div>
 
@@ -482,7 +491,7 @@
         <span>Los Angeles, CA</span>
       </div>
       <div class="resume__desc">
-        Contracted to produce videos showcasing the debut of a new mobile video app from Adobe while also exploring its capabilities with original content. Through this opportunity I was able to collaborate with and learn from Luis Callegari, current Creative Director for EA Sports.
+        Contracted to produce videos showcasing the debut of a new mobile video app from Adobe while also exploring its capabilities with original content. Through this opportunity I was able to collaborate with and learn from Luis Callegari, current Creative Director for EA&nbsp;Sports.
       </div>
     </div>
 
@@ -495,7 +504,7 @@
         <span>Los Angeles, CA</span>
       </div>
       <div class="resume__desc">
-        Leading the creative vision for BLLCRW., I oversee garment design, manufacturer and supplier relations, and brand storytelling. I ensure that each collection reflects a cohesive theme, from sketch and concept to the final product, meanwhile also maintaining consistent identity and ethos across the brand&rsquo;s visuals and messaging.
+        Leading the creative vision for BLLCRW., I oversee garment design, manufacturer and supplier relations, and brand storytelling. I ensure that each collection reflects a cohesive theme, from sketch and concept to the final product, meanwhile also maintaining consistent identity and ethos across the brand&rsquo;s visuals and&nbsp;messaging.
       </div>
     </div>
 
@@ -505,7 +514,7 @@
         <strong>Proficient In</strong>
       </div>
       <div class="resume__desc">
-        After Effects, Premiere Pro, Lightroom, InDesign, Photoshop, Illustrator, Media Encoder, Procreate, Madmapper, Microsoft Powerpoint, Google Workspace.
+        After Effects, Premiere Pro, Lightroom, InDesign, Photoshop, Illustrator, Media Encoder, Procreate, Madmapper, Microsoft Powerpoint, Google&nbsp;Workspace.
       </div>
     </div>
 
@@ -515,7 +524,7 @@
         <strong>Familiar With</strong>
       </div>
       <div class="resume__desc">
-        Cinema 4D, VS Code, Figma, Keyshot, SolidWorks, Keynote.
+        Cinema 4D, VS Code, Figma, Keyshot, SolidWorks,&nbsp;Keynote.
       </div>
     </div>
 
@@ -525,7 +534,7 @@
         <strong>Abilities</strong>
       </div>
       <div class="resume__desc">
-        Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial &amp; Print Design, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packages, Product Development, Storytelling.
+        Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial &amp; Print Design, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packages, Product Development,&nbsp;Storytelling.
       </div>
     </div>
   </section>
