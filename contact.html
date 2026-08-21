@@ -194,6 +194,74 @@
       0 0 0.5em rgba(var(--accent-rgb), 0.2);
   }
 
+  /* ─── Resume / info block ────────────────────────────────────────
+     Compact 3-column table below the contact copy — loose reference:
+     jennalee.design/info. Full-viewport-width (no PDF-canvas max)
+     with the same edge padding language the rest of the site uses.
+     Column ratio 1 : 2 : 4 gives the description most of the room,
+     which reads editorially on wide screens. Hairline row rules use
+     --line so both themes carry them consistently. */
+  .resume {
+    /* Same left/right padding language as other full-width sections
+       — the header pill's 1rem sides, extended a hair for readability. */
+    padding: clamp(3rem, 6vh, 5rem) clamp(1.25rem, 2vw, 2rem)
+             clamp(4rem, 8vh, 6rem);
+    color: var(--fg);
+    font-family: "Inter Tight",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.72rem, 0.85vw, 0.95rem);
+    line-height: 1.5;
+    letter-spacing: 0;
+    box-sizing: border-box;
+  }
+  .resume__contact {
+    display: grid;
+    grid-template-columns: 1fr 2fr 4fr;
+    gap: clamp(1rem, 2vw, 2.5rem);
+    padding: 0 0 clamp(2rem, 4vh, 3rem);
+  }
+  .resume__contact strong { font-weight: 600; display: block; }
+  .resume__row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 4fr;
+    gap: clamp(1rem, 2vw, 2.5rem);
+    padding: clamp(1rem, 2vh, 1.5rem) 0;
+    border-top: 1px solid var(--line);
+  }
+  .resume__row:last-child { border-bottom: 1px solid var(--line); }
+  .resume__section {
+    font-weight: 600;
+  }
+  .resume__meta strong {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25em;
+  }
+  .resume__meta span {
+    display: block;
+    color: rgba(var(--fg-rgb), 0.6);
+  }
+  .resume__desc { color: var(--fg); }
+  .resume__desc-sub {
+    color: rgba(var(--fg-rgb), 0.55);
+    display: block;
+    margin-top: 0.5em;
+  }
+  .resume__desc a {
+    color: inherit;
+    text-decoration: none;
+    transition: color       var(--dur-medium) var(--ease-standard),
+                text-shadow var(--dur-medium) var(--ease-standard);
+  }
+  .resume__desc a:hover,
+  .resume__desc a:focus-visible {
+    color: var(--accent);
+    text-shadow:
+      0 0 0.2em rgba(var(--accent-rgb), 0.35),
+      0 0 0.4em rgba(var(--accent-rgb), 0.18);
+  }
+
   /* ─── Mobile ─────────────────────────────────────────────────── */
   @media (max-width: 640px) {
     .statement-pill {
@@ -243,6 +311,19 @@
       margin-bottom: 1.5em;
       text-align: left;
     }
+    /* Resume stacks to one column on mobile — 3-across is too tight
+       at phone widths. Font-size floors at 0.75rem for readability. */
+    .resume {
+      padding: 3rem 1.25rem 4rem;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+    .resume__contact,
+    .resume__row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .resume__row { padding: 1.25rem 0; }
   }
   @keyframes pill-spotlight {
     0%, 100% {
@@ -320,6 +401,127 @@
     <p class="reveal-words">I&rsquo;m David Gomez, head of Dēdē.Studio.</p>
     <p class="reveal-words">The best way to reach me is at <a class="email-link" href="mailto:iamdede@bllcrw.com">iamdede@bllcrw.com</a>. Send me a message through your <a class="email-option" href="mailto:iamdede@bllcrw.com">mail app</a> or via <a class="email-option" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=iamdede@bllcrw.com" target="_blank" rel="noopener noreferrer">gmail</a>.</p>
     <p class="reveal-words">I look forward to hearing from you. I look forward to working with you.</p>
+  </section>
+
+  <!-- Resume / info block — sourced from DEDE_RESUME 2026.pdf.
+       Loose reference: jennalee.design/info. Full-width 3-column
+       grid on desktop (label / role-meta / description at 1:2:4);
+       stacks to one column on mobile. Placed directly below the
+       contact copy so the page reads: greeting → get-in-touch →
+       full CV context. -->
+  <section class="resume" aria-label="Resume">
+    <div class="resume__contact">
+      <div>
+        <strong>David Gomez</strong>
+        <span>Designer/Diseñador</span>
+        <span>(Dede)</span>
+      </div>
+      <div class="resume__desc">
+        <a href="https://iamdede.com">iamdede.com</a><br>
+        <a href="tel:+16614357379">+1 661 435 7379</a><br>
+        <a href="mailto:iamdede@bllcrw.com">iamdede@bllcrw.com</a>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section">Education</div>
+      <div class="resume__meta">
+        <strong>ArtCenter College of Design</strong>
+        <span>09.2023–12.2026</span>
+        <span>Pasadena, CA</span>
+      </div>
+      <div class="resume__desc">
+        BFA in Graphic Design — Specialization in Identity Systems
+        <span class="resume__desc-sub">Awarded Scholarships:</span>
+        Honda Endowed Scholarship<br>
+        Martha Chandler Scholarship<br>
+        M.A. Larsen Endowed Scholarship<br>
+        Siras Greiner Memorial Endowed Scholarship
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Antelope Valley College</strong>
+        <span>09.2020–05.2023</span>
+        <span>Lancaster, CA</span>
+      </div>
+      <div class="resume__desc">
+        Associates Degree in Graphic Design<br>
+        Associates Degree in Art History
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section">Experience</div>
+      <div class="resume__meta">
+        <strong>Creative Design Intern</strong>
+        <span>Hulu (Disney)</span>
+        <span>06.2025–01.2026</span>
+        <span>Santa Monica, CA</span>
+      </div>
+      <div class="resume__desc">
+        Assisted in the exploration and development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all touchpoints, which included refreshing campaign assets, refining presentation decks, designing brand merchandise and creating design references for both Hulu&rsquo;s original programming and its overarching brand.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Freelance Designer</strong>
+        <span>Adobe Inc.</span>
+        <span>09.2025–10.2025</span>
+        <span>Los Angeles, CA</span>
+      </div>
+      <div class="resume__desc">
+        Contracted to produce videos showcasing the debut of a new mobile video app from Adobe while also exploring its capabilities with original content. Through this opportunity I was able to collaborate with and learn from Luis Callegari, current Creative Director for EA Sports.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Co-Owner/Designer</strong>
+        <span>BLLCRW. LLC</span>
+        <span>06.2022–Currently</span>
+        <span>Los Angeles, CA</span>
+      </div>
+      <div class="resume__desc">
+        Leading the creative vision for BLLCRW., I oversee garment design, manufacturer and supplier relations, and brand storytelling. I ensure that each collection reflects a cohesive theme, from sketch and concept to the final product, meanwhile also maintaining consistent identity and ethos across the brand&rsquo;s visuals and messaging.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section">Expertise</div>
+      <div class="resume__meta">
+        <strong>Proficient In</strong>
+      </div>
+      <div class="resume__desc">
+        After Effects, Premiere Pro, Lightroom, InDesign, Photoshop, Illustrator, Media Encoder, Procreate, Madmapper, Microsoft Powerpoint, Google Workspace.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Familiar With</strong>
+      </div>
+      <div class="resume__desc">
+        Cinema 4D, VS Code, Figma, Keyshot, SolidWorks, Keynote.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Abilities</strong>
+      </div>
+      <div class="resume__desc">
+        Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial &amp; Print Design, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packages, Product Development, Storytelling.
+      </div>
+    </div>
   </section>
 
   <footer class="site-footer">
