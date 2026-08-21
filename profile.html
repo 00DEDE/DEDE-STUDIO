@@ -253,6 +253,82 @@ html { background: var(--bg); }
       0 0 0.5em rgba(var(--accent-rgb), 0.2);
   }
 
+  /* ─── Resume / info block ────────────────────────────────────────
+     Compact 3-column table below the body copy — loose reference:
+     jennalee.design/info. Left column names the section, middle
+     column carries role / school + dates + location, right column
+     carries the description. Very small type, thin rules between
+     rows, palette-driven so both modes read as editorial CV. */
+  .resume {
+    padding: clamp(3rem, 6vh, 5rem) clamp(1.5rem, 5vw, 3rem)
+             clamp(4rem, 8vh, 6rem);
+    max-width: 60em;
+    margin: 0 auto;
+    color: var(--fg);
+    font-family: "Inter Tight",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.72rem, 0.85vw, 0.95rem);
+    line-height: 1.5;
+    letter-spacing: 0;
+    box-sizing: content-box;
+  }
+  .resume__contact {
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr;
+    gap: 1.5rem;
+    padding: 0 0 clamp(2rem, 4vh, 3rem);
+  }
+  .resume__contact strong { font-weight: 600; display: block; }
+  .resume__row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr;
+    gap: 1.5rem;
+    padding: clamp(1rem, 2vh, 1.5rem) 0;
+    border-top: 1px solid rgba(var(--fg-rgb), 0.18);
+  }
+  .resume__row:last-child { border-bottom: 1px solid rgba(var(--fg-rgb), 0.18); }
+  .resume__section {
+    font-weight: 600;
+  }
+  .resume__meta strong {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25em;
+  }
+  .resume__meta span {
+    display: block;
+    color: rgba(var(--fg-rgb), 0.65);
+  }
+  .resume__desc { color: var(--fg); }
+  .resume__desc-sub {
+    color: rgba(var(--fg-rgb), 0.55);
+    display: block;
+    margin-top: 0.5em;
+  }
+  .resume__desc a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur-medium) var(--ease-standard);
+  }
+  .resume__desc a:hover,
+  .resume__desc a:focus-visible { color: var(--accent); }
+  @media (max-width: 640px) {
+    .resume {
+      padding: 3rem 1.25rem 4rem;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+    .resume__contact,
+    .resume__row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .resume__row {
+      padding: 1.25rem 0;
+    }
+  }
+
   /* Hovering DĒDĒ.STUDIO reveals a portrait image, fixed centre. */
   .dede-image {
     position: fixed;
@@ -431,6 +507,124 @@ html { background: var(--bg); }
     <p class="reveal-words">Every project begins the same way. Find the narrative. An entity, an object, a system is only as strong as the story it tells, and even more so, by the emotion that story stirs within us all.</p>
     <p class="reveal-words">That belief comes from one of the biggest forces in my life. I am co-owner of BLLCRW. I lead visual identity, garment design, manufacturer relations, and brand storytelling. Building a creative label has allowed me turn sketches into shared moments for my team and I, and give life to something that will outlast my own. I create because there will always be a story worth telling, emotion worth uncovering, and ideas worth sharing.</p>
     <p class="reveal-words">Life is complicated but my existence is simple: make work that resonates, inspires, and communicates with intent.</p>
+  </section>
+
+  <!-- Resume / info block — sourced from DEDE_RESUME 2026.pdf.
+       Loose reference: jennalee.design/info. Small type, 3-column
+       label / meta / description grid; stacks to one column on mobile. -->
+  <section class="resume" aria-label="Resume">
+    <div class="resume__contact">
+      <div>
+        <strong>David Gomez</strong>
+        <span>Designer/Diseñador</span>
+        <span>(Dede)</span>
+      </div>
+      <div class="resume__desc">
+        <a href="https://iamdede.com">iamdede.com</a><br>
+        <a href="tel:+16614357379">+1 661 435 7379</a><br>
+        <a href="mailto:iamdede@bllcrw.com">iamdede@bllcrw.com</a>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section">Education</div>
+      <div class="resume__meta">
+        <strong>ArtCenter College of Design</strong>
+        <span>09.2023–12.2026</span>
+        <span>Pasadena, CA</span>
+      </div>
+      <div class="resume__desc">
+        BFA in Graphic Design — Specialization in Identity Systems
+        <span class="resume__desc-sub">Awarded Scholarships:</span>
+        Honda Endowed Scholarship<br>
+        Martha Chandler Scholarship<br>
+        M.A. Larsen Endowed Scholarship<br>
+        Siras Greiner Memorial Endowed Scholarship
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Antelope Valley College</strong>
+        <span>09.2020–05.2023</span>
+        <span>Lancaster, CA</span>
+      </div>
+      <div class="resume__desc">
+        Associates Degree in Graphic Design<br>
+        Associates Degree in Art History
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section">Experience</div>
+      <div class="resume__meta">
+        <strong>Creative Design Intern</strong>
+        <span>Hulu (Disney)</span>
+        <span>06.2025–01.2026</span>
+        <span>Santa Monica, CA</span>
+      </div>
+      <div class="resume__desc">
+        Assisted in the exploration and development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all touchpoints, which included refreshing campaign assets, refining presentation decks, designing brand merchandise and creating design references for both Hulu&rsquo;s original programming and its overarching brand.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Freelance Designer</strong>
+        <span>Adobe Inc.</span>
+        <span>09.2025–10.2025</span>
+        <span>Los Angeles, CA</span>
+      </div>
+      <div class="resume__desc">
+        Contracted to produce videos showcasing the debut of a new mobile video app from Adobe while also exploring its capabilities with original content. Through this opportunity I was able to collaborate with and learn from Luis Callegari, current Creative Director for EA Sports.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Co-Owner/Designer</strong>
+        <span>BLLCRW. LLC</span>
+        <span>06.2022–Currently</span>
+        <span>Los Angeles, CA</span>
+      </div>
+      <div class="resume__desc">
+        Leading the creative vision for BLLCRW., I oversee garment design, manufacturer and supplier relations, and brand storytelling. I ensure that each collection reflects a cohesive theme, from sketch and concept to the final product, meanwhile also maintaining consistent identity and ethos across the brand&rsquo;s visuals and messaging.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section">Expertise</div>
+      <div class="resume__meta">
+        <strong>Proficient In</strong>
+      </div>
+      <div class="resume__desc">
+        After Effects, Premiere Pro, Lightroom, InDesign, Photoshop, Illustrator, Media Encoder, Procreate, Madmapper, Microsoft Powerpoint, Google Workspace.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Familiar With</strong>
+      </div>
+      <div class="resume__desc">
+        Cinema 4D, VS Code, Figma, Keyshot, SolidWorks, Keynote.
+      </div>
+    </div>
+
+    <div class="resume__row">
+      <div class="resume__section"></div>
+      <div class="resume__meta">
+        <strong>Abilities</strong>
+      </div>
+      <div class="resume__desc">
+        Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial &amp; Print Design, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packages, Product Development, Storytelling.
+      </div>
+    </div>
   </section>
 
   <footer class="site-footer">
