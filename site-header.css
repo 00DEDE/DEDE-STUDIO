@@ -54,9 +54,13 @@ body:has(.site-header) {
 }
 .site-header__brand img {
   display: block;
-  /* Desktop-only: 10% bigger (28px → 31px). Mobile uses width-based sizing. */
-  height: 31px;
-  width: auto;
+  /* The old horizontal wordmark was 2404×858 (~2.8:1) rendered at
+     height 31px, so its actual footprint was ~87px wide × 31px tall.
+     The new logo is square (1:1) — matching the OLD width so the new
+     mark takes up the same horizontal presence. Height auto keeps the
+     square proportion; the header pill grows to accommodate. */
+  width: 87px;
+  height: auto;
 }
 
 /* Right-side group holds nav + theme toggle so `justify-content: space-between`
@@ -238,11 +242,13 @@ body:has(.site-header) {
       background    var(--dur-medium) var(--ease-standard);
   }
   .site-header__brand img {
-    /* Mobile logo −25% from the previous sizing (13.75vw / 200 / 112). */
-    width: 10.3vw;
-    max-width: 150px;
-    min-width: 84px;
-    height: auto;
+    /* Old horizontal on mobile was ~10.3vw wide × ~3.68vw tall (2.8:1
+       aspect). Mobile pill is height-constrained (clamp 31–47px), so
+       matching the old *height* (~24-28px) is what fits — matching
+       the old width would overflow the pill vertically since the new
+       logo is square. */
+    height: 28px;
+    width: 28px;
   }
 
   /* ─── Hamburger button ──────────────────────────────────────────
