@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>I AM DĒDĒ.STUDIO</title>
 <link rel="canonical" href="https://iamdede.com/home.html" />
-<link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-96.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-180.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/logo_favicon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#050505" />
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -54,17 +54,12 @@
   .logo.is-visible { opacity: 1; }
 
   .logo--horizontal {
-    /* Old horizontal file was 2.8:1; at width clamp(147,17.95vw,275)
-       it rendered ~52-98px tall. New logo is square, so matching the
-       OLD's rendered HEIGHT keeps the splash mark from ballooning
-       (a square at 147-275 wide would be 3× taller than before). */
-    width: clamp(55px, 6.4vw, 100px);
+    /* Another 10% bigger on top of the previous 20% bump. */
+    width: clamp(147px, 17.95vw, 275px);
     height: auto;
   }
   .logo--stacked {
-    /* Old stacked file was 1.07:1 (basically square), so this width
-       clamp already matches the rendered dimensions on both aspects
-       — the new square slots straight in with no change needed. */
+    /* 60% smaller than the previous sizing (×0.4). */
     width: clamp(80px, 9.6vw, 144px);
     height: auto;
   }
@@ -115,16 +110,16 @@
          relying on hue-rotate — that filter fades anti-aliased edges. The
          theme-img classes in theme.css hide the wrong-theme copy. -->
     <img class="logo logo--horizontal theme-img theme-img--dark is-visible"
-         src="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-white.png"
+         src="ASSETS/LOGO/logo_horizontal_cyan.png"
          alt="DĒDĒ STUDIO" />
     <img class="logo logo--horizontal theme-img theme-img--light is-visible"
-         src="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01.png"
+         src="ASSETS/LOGO/logo_horizontal_red.png"
          alt="DĒDĒ STUDIO" />
     <img class="logo logo--stacked theme-img theme-img--dark"
-         src="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-white.png"
+         src="ASSETS/LOGO/logo_stacked_cyan.png"
          alt="DĒDĒ STUDIO" />
     <img class="logo logo--stacked theme-img theme-img--light"
-         src="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01.png"
+         src="ASSETS/LOGO/logo_stacked_red.png"
          alt="DĒDĒ STUDIO" />
   </div>
 

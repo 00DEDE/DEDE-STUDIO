@@ -18,16 +18,8 @@
 }
 .site-footer__logo img {
   display: block;
-  /* Old horizontal here was `width: 100%` (2.8:1 aspect) — it rendered
-     as ~100vw wide × ~36vw tall. For the new square (1:1), matching
-     100% width would produce a viewport-sized square. Matching the
-     OLD's rendered HEIGHT keeps the footprint sensible: ~36vw side
-     length, capped at 500px so it never dominates ultra-wide viewports. */
-  width: 36vw;
-  height: 36vw;
-  max-width: 500px;
-  max-height: 500px;
-  margin: 0 auto;
+  width: 100%;
+  height: auto;
 }
 /* 3-column grid keeps the tagline in the *exact* horizontal center,
    independent of what's in the left/right groups. */
