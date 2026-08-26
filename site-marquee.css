@@ -91,8 +91,8 @@
   vertical-align: middle;
   transform: translateY(-5%);
   background-color: var(--accent);
-  -webkit-mask-image: url("ASSETS/LOGO/DEDE_FINAL%20LOGO%20STACKED_BLACK.png");
-          mask-image: url("ASSETS/LOGO/DEDE_FINAL%20LOGO%20STACKED_BLACK.png");
+  -webkit-mask-image: url("ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01.png");
+          mask-image: url("ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01.png");
   -webkit-mask-size: contain;
           mask-size: contain;
   -webkit-mask-repeat: no-repeat;
