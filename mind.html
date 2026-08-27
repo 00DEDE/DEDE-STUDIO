@@ -17,6 +17,9 @@
 <link rel="stylesheet" href="site-bg.css" />
 <link rel="stylesheet" href="site-mobile.css" />
 <style>
+  /* Per-page cursor — overrides theme.css site-wide default. */
+  :root                     { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-white.png"); }
+  :root[data-theme="light"] { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor.png"); }
 /* ─── page reset ─────────────────────────────────────────────────── */
   html { background: var(--bg); }
   html, body {
