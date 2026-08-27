@@ -18,16 +18,11 @@
 }
 .site-footer__logo img {
   display: block;
-  /* Source file is 1024px wide native — capping display at 550px
-     keeps it sharp on retina (which renders it at ~1100 device-px,
-     inside the file's native resolution). Was `width: 100%` before,
-     which stretched a 1024px source to the full 1400-1900px footer
-     width and caused visible blur. margin: 0 auto centers it inside
-     the block-level anchor. */
+  /* Footer variants (-01.png black + -01-white.png) are now 2324px
+     wide native — plenty of resolution to stretch full-viewport-width
+     without any blur even on retina up through ~1440px viewports. */
   width: 100%;
-  max-width: 550px;
   height: auto;
-  margin: 0 auto;
 }
 /* 3-column grid keeps the tagline in the *exact* horizontal center,
    independent of what's in the left/right groups. */
