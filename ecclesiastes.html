@@ -149,15 +149,75 @@
     overflow: hidden;
     background: #000;
   }
-  /* Hero uses the project's motion piece — autoplays muted + looped,
+  /* Hero uses the project's motion trailer — autoplays muted + looped,
      poster is cover.jpg so the still lands under the view-transition
-     morph before the first frame of video paints. */
+     morph before the first frame of video paints. Users can pause,
+     unmute, and enter fullscreen via the custom controls below. */
   .ecclesiastes__hero-video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
+    background: #000;
+  }
+
+  /* ─── Video controls — three frosted pills in the media-tab vocabulary.
+     Sit in the bottom-right so they mirror the top-right info-tabs on
+     the body images. Icons swap via [data-state]. */
+  .video-controls {
+    position: absolute;
+    bottom: clamp(0.75rem, 1vw, 1rem);
+    right:  clamp(0.75rem, 1vw, 1rem);
+    z-index: 2;
+    display: inline-flex;
+    gap: 0.4rem;
+  }
+  .video-btn {
+    width:  clamp(2rem, 2.4vw, 2.4rem);
+    height: clamp(2rem, 2.4vw, 2.4rem);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(15, 14, 12, 0.6);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    backdrop-filter: blur(10px) saturate(1.05);
+    -webkit-backdrop-filter: blur(10px) saturate(1.05);
+    cursor: var(--cursor-url) 16 16, pointer;
+    transition:
+      background   240ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform    240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .video-btn:hover,
+  .video-btn:focus-visible {
+    background: rgba(15, 14, 12, 0.82);
+    border-color: rgba(255, 255, 255, 0.28);
+    outline: none;
+  }
+  .video-btn:active { transform: scale(0.94); }
+  .video-btn__icon {
+    width:  0.72rem;
+    height: 0.72rem;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Icon toggle — each button hides all its icons, then reveals the one
+     that matches its current [data-state]. Fullscreen has a single icon. */
+  .video-btn .video-btn__icon { display: none; }
+  .video-btn[data-action="play"][data-state="playing"] .icon-pause,
+  .video-btn[data-action="play"][data-state="paused"]  .icon-play,
+  .video-btn[data-action="mute"][data-state="muted"]   .icon-sound-off,
+  .video-btn[data-action="mute"][data-state="unmuted"] .icon-sound-on,
+  .video-btn[data-action="fullscreen"] .icon-fullscreen {
     display: block;
   }
 
@@ -581,11 +641,46 @@
   <section class="ecclesiastes__hero" aria-label="The Book of Ecclesiastes cover">
     <div class="ecclesiastes__hero-media">
       <video class="ecclesiastes__hero-video"
+             id="hero-video"
              autoplay muted loop playsinline preload="auto"
              poster="ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
-             aria-label="The Book of Ecclesiastes — motion cover">
-        <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+             aria-label="The Book of Ecclesiastes — motion trailer">
+        <source src="ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
       </video>
+
+      <!-- Custom controls — three frosted pills in the media-tab style.
+           Icons toggle via [data-state] on the button (see CSS). -->
+      <div class="video-controls" role="group" aria-label="Video controls">
+        <button class="video-btn" type="button" data-action="play" data-state="playing" aria-label="Pause video">
+          <svg class="video-btn__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
+          </svg>
+          <svg class="video-btn__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
+            <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
+            <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
+          </svg>
+        </button>
+        <button class="video-btn" type="button" data-action="mute" data-state="muted" aria-label="Unmute video">
+          <svg class="video-btn__icon icon-sound-off" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M2.5 6 L2.5 10 L5 10 L8 12.5 L8 3.5 L5 6 Z" fill="currentColor" stroke="none"/>
+            <line x1="10.5" y1="6" x2="13.5" y2="10"/>
+            <line x1="13.5" y1="6" x2="10.5" y2="10"/>
+          </svg>
+          <svg class="video-btn__icon icon-sound-on" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M2.5 6 L2.5 10 L5 10 L8 12.5 L8 3.5 L5 6 Z" fill="currentColor" stroke="none"/>
+            <path d="M10.5 5.5 Q12.5 8 10.5 10.5"/>
+            <path d="M12 3.5 Q15 8 12 12.5"/>
+          </svg>
+        </button>
+        <button class="video-btn" type="button" data-action="fullscreen" aria-label="Enter fullscreen">
+          <svg class="video-btn__icon icon-fullscreen" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3 6 L3 3 L6 3"/>
+            <path d="M13 6 L13 3 L10 3"/>
+            <path d="M3 10 L3 13 L6 13"/>
+            <path d="M13 10 L13 13 L10 13"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -768,6 +863,75 @@
         if (labelSpan) labelSpan.textContent = open ? 'Read more' : 'Read less';
       });
     });
+
+    /* ── Hero video controls ─────────────────────────────────────────
+       Each control button uses data-state as its source of truth so
+       screen readers see the right label AND the CSS reveals the
+       matching icon. Video events (play/pause/volumechange) sync the
+       state back — covers cases where the video ends, autoplay is
+       blocked, or another script mutates the element. */
+    var video   = document.getElementById('hero-video');
+    var playBtn = document.querySelector('.video-btn[data-action="play"]');
+    var muteBtn = document.querySelector('.video-btn[data-action="mute"]');
+    var fsBtn   = document.querySelector('.video-btn[data-action="fullscreen"]');
+
+    if (video && playBtn && muteBtn && fsBtn) {
+
+      function syncPlayState() {
+        var playing = !video.paused && !video.ended;
+        playBtn.setAttribute('data-state', playing ? 'playing' : 'paused');
+        playBtn.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+      }
+      function syncMuteState() {
+        var muted = video.muted || video.volume === 0;
+        muteBtn.setAttribute('data-state', muted ? 'muted' : 'unmuted');
+        muteBtn.setAttribute('aria-label', muted ? 'Unmute video' : 'Mute video');
+      }
+
+      playBtn.addEventListener('click', function () {
+        if (video.paused || video.ended) {
+          var p = video.play();
+          if (p && typeof p.catch === 'function') p.catch(function () {});
+        } else {
+          video.pause();
+        }
+      });
+
+      muteBtn.addEventListener('click', function () {
+        video.muted = !video.muted;
+        /* If we're unmuting and volume is 0 for any reason, restore
+           it so the user actually hears something. */
+        if (!video.muted && video.volume === 0) video.volume = 1;
+      });
+
+      fsBtn.addEventListener('click', function () {
+        /* Prefer standard Fullscreen API on the video's container so
+           the custom controls remain visible while fullscreen; fall
+           back to the video element itself, then iOS Safari's
+           webkitEnterFullscreen (which uses the native player and
+           hides our custom controls — acceptable on iOS). */
+        var target = video.closest('.ecclesiastes__hero-media') || video;
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+          return;
+        }
+        if (target.requestFullscreen) {
+          target.requestFullscreen();
+        } else if (target.webkitRequestFullscreen) {
+          target.webkitRequestFullscreen();
+        } else if (video.webkitEnterFullscreen) {
+          video.webkitEnterFullscreen();
+        }
+      });
+
+      video.addEventListener('play',         syncPlayState);
+      video.addEventListener('pause',        syncPlayState);
+      video.addEventListener('ended',        syncPlayState);
+      video.addEventListener('volumechange', syncMuteState);
+
+      syncPlayState();
+      syncMuteState();
+    }
   })();
   </script>
 </body>
