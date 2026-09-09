@@ -184,7 +184,12 @@ html { background: var(--bg); }
      no line exceeds ~15 words; text-wrap: pretty + a JS pass that
      nbsp-ties the last two words prevents orphans / widows. */
   .profile__body {
-    padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
+    /* Hairline above the essay marks the shift from the fixed
+       statement-pill (identity marquee) into the first-person
+       introduction — same editorial rule pattern as the contact
+       resume + unesco metadata capsule, tying the pages together. */
+    border-top: 1px solid var(--line);
+    padding: clamp(2.5rem, 5vh, 4rem) clamp(1.5rem, 5vw, 3rem) 8rem;
     /* Font-size lives on the container so max-width in em scales
        WITH the paragraph type — line length in characters stays
        constant across sizes (~10 words per line). */
