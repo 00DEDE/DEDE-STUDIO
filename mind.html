@@ -255,6 +255,23 @@
     .cell:hover .cell__view { opacity: 1; }
   }
   .cell.is-active .cell__view { opacity: 1; }
+  /* Mobile only — first tap adds .is-active and lays a dark scrim
+     over the whole cell so the white VIEW CASE label reads with
+     high contrast. Cancels the desktop-hover image fade / cell
+     bg-swap that .is-active also triggers, so the image stays
+     visible-through-scrim rather than double-dimming. Second
+     tap navigates (see the touch handler in the script block). */
+  @media (hover: none) {
+    .cell.is-active .cell__view {
+      background: rgba(0, 0, 0, 0.55);
+    }
+    .cell.is-active { background-color: transparent; }
+    .cell--cover.is-active::before,
+    .cell--carousel.is-active .cover-slide.is-active {
+      opacity: 1;
+      transform: none;
+    }
+  }
   .cell--cover .cell__view {
     color: #ffffff;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);

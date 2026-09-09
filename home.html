@@ -247,6 +247,15 @@ html { background: var(--bg); }
     .work:hover .work__view { opacity: 1; }
   }
   .work.is-active .work__view { opacity: 1; }
+  /* Mobile only — first tap adds .is-active and lays a dark scrim
+     over the whole cell so the white VIEW CASE label reads with
+     high contrast regardless of the image beneath. Second tap
+     navigates (see the touch handler in the script block below). */
+  @media (hover: none) {
+    .work.is-active .work__view {
+      background: rgba(0, 0, 0, 0.55);
+    }
+  }
 
   /* ─── Reduced motion ────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
