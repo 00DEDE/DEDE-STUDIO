@@ -59,24 +59,32 @@
   a, button, [role="button"] {
     cursor: var(--cursor-url) 16 16, pointer;
   }
-  /* Header floats over the hero (like home). */
-  body.unesco { padding-top: 0; }
+  /* ═══════════════════════════════════════════════════════════════════
+     INTRO — sits above the hero image (Manual/Waabi pattern). Big
+     statement type + optional read-more expansion. Padded generously
+     so the header pill has breathing room and the statement doesn't
+     crowd the image below.
+     ═══════════════════════════════════════════════════════════════════ */
+  .unesco__intro {
+    padding: clamp(6.5rem, 16vh, 11rem) clamp(1.5rem, 4vw, 4rem) clamp(3rem, 6vh, 5rem);
+    box-sizing: border-box;
+  }
+  .unesco__intro .statement { max-width: none; }
 
   /* ═══════════════════════════════════════════════════════════════════
-     HERO — breaks the grid (full-bleed). Same rounded media container
-     as the source cell so the view-transition morph lands cleanly.
+     HERO — clean full-bleed image, no overlay type. Rounded media
+     container matches the source cell so the view-transition morph
+     lands cleanly. Sits directly below the intro statement.
      ═══════════════════════════════════════════════════════════════════ */
   .unesco__hero {
     position: relative;
-    height: 100vh;
-    height: 100svh;
-    padding: clamp(10px, 1.25vw, 20px);
+    padding: 0 clamp(10px, 1.25vw, 20px);
     box-sizing: border-box;
   }
   .unesco__hero-media {
     position: relative;
     width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 10;
     border-radius: clamp(12px, 1.25vw, 22px);
     overflow: hidden;
     background: #000;
@@ -87,38 +95,6 @@
     background-image: url("ASSETS/IMAGES/UNESCO/01.jpg");
     background-size: cover;
     background-position: center;
-  }
-  .unesco__hero-scrim {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 45%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
-    pointer-events: none;
-  }
-  .unesco__hero-meta {
-    position: absolute;
-    left: clamp(1.25rem, 3vw, 3rem);
-    bottom: clamp(1.25rem, 3vw, 2.5rem);
-    color: #ffffff;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  }
-  .unesco__title {
-    margin: 0;
-    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(2rem, 5.5vw, 5rem);
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-  }
-  .unesco__tag {
-    margin: 0.4rem 0 0;
-    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.8rem, 1.1vw, 1.05rem);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.85;
   }
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -467,39 +443,34 @@
   <script src="site-header.js" defer></script>
   <script src="site-bg.js" defer></script>
 
-  <!-- ══════════════════════ HERO (breaks the grid) ═════════════════════ -->
-  <section class="unesco__hero" aria-label="UNESCO">
+  <!-- ══════════ INTRO — big-type statement + read-more, above the hero ══════════ -->
+  <section class="unesco__intro" aria-label="UNESCO overview">
+    <h1 class="statement">
+      An identity system for the world's cultural heritage agency —
+      exploring how a global organization can <em>speak in every voice</em>
+      while remaining unmistakably itself.
+    </h1>
+    <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
+      <span class="read-more__glyph" aria-hidden="true"></span>
+      <span>Read more</span>
+    </button>
+    <div class="read-more__panel" id="rm-overview">
+      <div class="read-more__inner">
+        <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. The redesign needed a system that could hold cultural richness without flattening it — a language that felt as at home in a Nairobi campaign as in a Kyoto exhibition.</p>
+        <p>We approached the wordmark as an anchor, then built outward: a modular typographic scale, a chromatic system tied to region and initiative, and a set of interactive components for the digital archive. Every touchpoint speaks the same grammar, phrased in local dialect.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ HERO — clean image, no overlay type ══════════ -->
+  <section class="unesco__hero" aria-label="UNESCO cover">
     <div class="unesco__hero-media">
       <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
-      <div class="unesco__hero-scrim" aria-hidden="true"></div>
-      <div class="unesco__hero-meta">
-        <h1 class="unesco__title">UNESCO</h1>
-        <p class="unesco__tag">Branding &amp; Interaction</p>
-      </div>
     </div>
   </section>
 
   <!-- ═══════════════════ 3-COLUMN GRID (skeleton) ══════════════════════ -->
   <section class="unesco__grid" aria-label="Case study">
-
-    <!-- Row 1 — full-width statement with expandable "read more". -->
-    <div class="g-span-3">
-      <p class="statement">
-        An identity system for the world's cultural heritage agency —
-        exploring how a global organization can <em>speak in every voice</em>
-        while remaining unmistakably itself.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
-        <span class="read-more__glyph" aria-hidden="true"></span>
-        <span>Read more</span>
-      </button>
-      <div class="read-more__panel" id="rm-overview">
-        <div class="read-more__inner">
-          <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. The redesign needed a system that could hold cultural richness without flattening it — a language that felt as at home in a Nairobi campaign as in a Kyoto exhibition.</p>
-          <p>We approached the wordmark as an anchor, then built outward: a modular typographic scale, a chromatic system tied to region and initiative, and a set of interactive components for the digital archive. Every touchpoint speaks the same grammar, phrased in local dialect.</p>
-        </div>
-      </div>
-    </div>
 
     <!-- Row 2 — media (2 cols) + caption (1 col, right column, top-aligned). -->
     <figure class="media g-span-2" style="aspect-ratio: 16 / 10;">
