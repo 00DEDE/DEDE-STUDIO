@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="site-footer.css" />
 <link rel="stylesheet" href="site-bg.css" />
 <link rel="stylesheet" href="site-mobile.css" />
+<link rel="stylesheet" href="case-transition.css" />
 <style>
   /* Per-page cursor — overrides theme.css site-wide default. */
   :root                     { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-cyan.png"); }
@@ -308,10 +309,13 @@
     </header>
     <script src="site-header.js" defer></script>
     <script src="site-bg.js" defer></script>
+    <script src="case-transition.js" defer></script>
 
     <div class="selections-grid">
-      <!-- 1. UNESCO ─ carousel (6 stills) -->
-      <a class="cell cell--cover cell--carousel" href="#">
+      <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
+           data-case-transition triggers the click-to-navigate motion
+           defined in case-transition.js. -->
+      <a class="cell cell--cover cell--carousel" href="unesco.html" data-case-transition>
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active" style="background-image:url('ASSETS/IMAGES/UNESCO/01.jpg')"></div>
           <div class="cover-slide" style="background-image:url('ASSETS/IMAGES/UNESCO/02.jpg')"></div>

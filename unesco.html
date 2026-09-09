@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UNESCO — I AM DĒDĒ.STUDIO</title>
+<link rel="canonical" href="https://iamdede.com/unesco.html" />
+<link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-96.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-180.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#0f0e0c" />
+<script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="theme.css" />
+<link rel="stylesheet" href="site-header.css" />
+<link rel="stylesheet" href="site-footer.css" />
+<link rel="stylesheet" href="site-bg.css" />
+<link rel="stylesheet" href="site-mobile.css" />
+<style>
+  /* Per-page cursor — matches mind (UNESCO is a project from mind). */
+  :root                     { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-cyan.png"); }
+  :root[data-theme="light"] { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-red.png"); }
+
+  html { background: var(--bg); }
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    width: 100%;
+    color: var(--fg);
+    overflow-x: clip;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    cursor: var(--cursor-url) 16 16, auto;
+  }
+  body { background: transparent; }
+  a, button, [role="button"] {
+    cursor: var(--cursor-url) 16 16, pointer;
+  }
+  /* Header floats over the hero image (like home). */
+  body.unesco { padding-top: 0; }
+
+  /* ─── Hero: full-viewport image + title overlay ─────────────────── */
+  .unesco__hero {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    padding: clamp(10px, 1.25vw, 20px);
+    box-sizing: border-box;
+  }
+  .unesco__hero-media {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: clamp(12px, 1.25vw, 22px);
+    overflow: hidden;
+    background: #000;
+    /* Match the source cell's initial "landing" — this is what the
+       click-transition overlay lands on so the seam is invisible. */
+  }
+  .unesco__hero-image {
+    position: absolute;
+    inset: 0;
+    background-image: url("ASSETS/IMAGES/UNESCO/01.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+  .unesco__hero-scrim {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+    pointer-events: none;
+  }
+  .unesco__hero-meta {
+    position: absolute;
+    left: clamp(1.25rem, 3vw, 3rem);
+    bottom: clamp(1.25rem, 3vw, 2.5rem);
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+  .unesco__title {
+    margin: 0;
+    font-family: "Inter Tight",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 5.5vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .unesco__tag {
+    margin: 0.4rem 0 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.8rem, 1.1vw, 1.05rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  /* ─── Body copy placeholder ─────────────────────────────────────── */
+  .unesco__body {
+    padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
+    max-width: 42em;
+    margin: 0 auto;
+    color: var(--fg);
+    font-family: "Inter Tight",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+  .unesco__body p { margin: 0 0 1.5em; }
+  .unesco__body p:last-child { margin: 0; }
+
+  /* ─── Landing "unfold" — the incoming page slides + fades in so the
+     handoff from the click-transition overlay lands smoothly instead
+     of snapping. Runs once on load. */
+  .unesco__hero,
+  .unesco__body {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: unesco-land 700ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both;
+  }
+  .unesco__body { animation-delay: 180ms; }
+  @keyframes unesco-land {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .unesco__hero,
+    .unesco__body { animation: none; opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body class="unesco">
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+    <div class="site-bg__blob site-bg__blob--dark-1"></div>
+    <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
+
+  <header class="site-header">
+    <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/DEDE_LOGO_CONFIRMED-01-cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/DEDE_LOGO_CONFIRMED-01-red.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-header__end">
+      <nav class="site-header__nav" aria-label="Primary">
+        <a href="home.html">HOME</a>
+        <a href="mind.html">MIND</a>
+        <a href="hands.html">HANDS</a>
+        <a href="profile.html">PROFILE</a>
+        <a href="contact.html">CONTACT</a>
+      </nav>
+      <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
+        <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <script src="site-header.js" defer></script>
+  <script src="site-bg.js" defer></script>
+
+  <section class="unesco__hero" aria-label="UNESCO">
+    <div class="unesco__hero-media">
+      <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
+      <div class="unesco__hero-scrim" aria-hidden="true"></div>
+      <div class="unesco__hero-meta">
+        <h1 class="unesco__title">UNESCO</h1>
+        <p class="unesco__tag">Branding &amp; Interaction</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="unesco__body" aria-label="Case study">
+    <p>Case study coming soon.</p>
+  </section>
+
+  <footer class="site-footer">
+    <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/DEDE_LOGO_CONFIRMED-01-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/DEDE_LOGO_CONFIRMED-01.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-footer__meta">
+      <div class="site-footer__meta-left">
+        <span>DEDE.STUDIO © 2026 ALL RIGHTS RESERVED.</span>
+      </div>
+      <div class="site-footer__meta-center">
+        <span>DEFINE EXPRESSION. DESIGN EXISTENCE.</span>
+      </div>
+      <div class="site-footer__meta-right">
+        <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">BACK TO TOP</a>
+        <a href="https://www.linkedin.com/in/dedestudio" target="_blank" rel="noopener">LINKEDIN</a>
+      </div>
+    </div>
+  </footer>
+  <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
+</body>
+</html>
