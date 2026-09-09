@@ -184,12 +184,7 @@ html { background: var(--bg); }
      no line exceeds ~15 words; text-wrap: pretty + a JS pass that
      nbsp-ties the last two words prevents orphans / widows. */
   .profile__body {
-    /* Hairline above the essay marks the shift from the fixed
-       statement-pill (identity marquee) into the first-person
-       introduction — same editorial rule pattern as the contact
-       resume + unesco metadata capsule, tying the pages together. */
-    border-top: 1px solid var(--line);
-    padding: clamp(2.5rem, 5vh, 4rem) clamp(1.5rem, 5vw, 3rem) 8rem;
+    padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
     /* Font-size lives on the container so max-width in em scales
        WITH the paragraph type — line length in characters stays
        constant across sizes (~10 words per line). */
@@ -213,10 +208,11 @@ html { background: var(--bg); }
   }
   .profile__body p {
     /* Inherit font-size / family / weight from the container so em
-       units stay coherent. Larger bottom margin than before —
-       the tight 0.7 leading needs real breathing room between
-       paragraphs to keep them visually distinct. */
-    margin: 0 0 1.5em;
+       units stay coherent. Margins are handled by the p + p rule
+       below so each paragraph is separated by a hairline instead
+       of just whitespace — matches the editorial-rule pattern on
+       contact + unesco. */
+    margin: 0;
     text-align: left;
     text-wrap: pretty;              /* modern browsers: no widows / orphans */
     hyphens: none;
@@ -227,7 +223,15 @@ html { background: var(--bg); }
     outline: none;
     transition: opacity var(--dur-medium) var(--ease-standard);
   }
-  .profile__body p:last-child { margin-bottom: 0; }
+  /* Hairline between paragraphs — symmetrical breathing room on
+     each side of the rule so it sits balanced against the tight
+     0.875 leading. First paragraph gets no rule (nothing above it
+     to separate from). */
+  .profile__body p + p {
+    border-top: 1px solid var(--line);
+    margin-top: 1em;
+    padding-top: 1em;
+  }
   @media (hover: hover) {
     .profile__body:has(p:hover) > p:not(:hover) { opacity: 0.5; }
   }
