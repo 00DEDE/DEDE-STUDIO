@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UNESCO — I AM DĒDĒ.STUDIO</title>
-<link rel="canonical" href="https://iamdede.com/unesco.html" />
+<title>Ecclesiastes — I AM DĒDĒ.STUDIO</title>
+<link rel="canonical" href="https://iamdede.com/ecclesiastes.html" />
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-96.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-180.png" />
 <link rel="manifest" href="site.webmanifest" />
@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="site-bg.css" />
 <link rel="stylesheet" href="site-mobile.css" />
 <style>
-  /* Per-page cursor — matches mind (UNESCO lives inside mind). */
+  /* Per-page cursor — matches mind (Ecclesiastes lives inside mind). */
   :root                     { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-cyan.png"); }
   :root[data-theme="light"] { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-red.png"); }
 
@@ -35,8 +35,8 @@
      Browser holds the outgoing page until this one is ready, then
      morphs the named element from source → destination. */
   @view-transition { navigation: auto; }
-  .unesco__hero-media { view-transition-name: unesco-hero; }
-  ::view-transition-group(unesco-hero) {
+  .ecclesiastes__hero-media { view-transition-name: ecclesiastes-hero; }
+  ::view-transition-group(ecclesiastes-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
@@ -65,7 +65,7 @@
      lead + read-more + metadata capsule (Casa pattern). Sets scale
      for the whole page.
      ═══════════════════════════════════════════════════════════════════ */
-  .unesco__intro {
+  .ecclesiastes__intro {
     padding: var(--stack-top) var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
@@ -105,8 +105,7 @@
     color: var(--accent);
   }
 
-  /* Metadata capsule — Client / Year / Role / Sector. Above-the-fold
-     credibility signal; scannable in a single glance. */
+  /* Metadata capsule — Project / Year / Function / Category. */
   .intro__meta {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
@@ -135,14 +134,14 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     HERO — clean full-bleed image (Manual pattern). Rounded container
-     matches the source cell so the view-transition morph lands clean.
+     HERO — clean full-bleed image. Rounded container matches the
+     source cell so the view-transition morph lands clean.
      ═══════════════════════════════════════════════════════════════════ */
-  .unesco__hero {
+  .ecclesiastes__hero {
     padding: 0 var(--page-x);
     box-sizing: border-box;
   }
-  .unesco__hero-media {
+  .ecclesiastes__hero-media {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 10;
@@ -150,20 +149,18 @@
     overflow: hidden;
     background: #000;
   }
-  .unesco__hero-image {
+  .ecclesiastes__hero-image {
     position: absolute;
     inset: 0;
-    background-image: url("ASSETS/IMAGES/UNESCO/01.jpg");
+    background-image: url("ASSETS/IMAGES/ECCLESIASTES/cover.jpg");
     background-size: cover;
     background-position: center;
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     3-COLUMN GRID SKELETON — every section lives on this rhythm.
-     Utility classes span 1/2/3 columns; positional utilities let
-     specific rows start in column 2 or 3 to break the grid deliberately.
+     3-COLUMN GRID SKELETON — same skeleton as every other case page.
      ═══════════════════════════════════════════════════════════════════ */
-  .unesco__grid {
+  .ecclesiastes__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--stack-y-tight) calc(var(--page-x) * 2);
@@ -178,7 +175,7 @@
   .g-col-3  { grid-column-start: 3; }
 
   @media (max-width: 900px) {
-    .unesco__grid {
+    .ecclesiastes__grid {
       grid-template-columns: 1fr;
       gap: clamp(1.5rem, 4vw, 2rem);
     }
@@ -186,9 +183,7 @@
     .g-col-2, .g-col-3 { grid-column-start: 1; }
   }
 
-  /* ─── Section label (numbered eyebrow) ───────────────────────────
-     Sits in column 1 next to a statement in columns 2–3. Casa's
-     chaptered rhythm — "01 / Foundations", "02 / Palette". */
+  /* ─── Section label (numbered eyebrow) ─────────────────────────── */
   .section-label {
     margin: 0;
     padding-top: 0.55em;
@@ -201,7 +196,7 @@
   }
   .section-label__num { color: var(--accent); margin-right: 0.9em; }
 
-  /* ─── Statement (mouthwash-scale display type) ───────────────────── */
+  /* ─── Statement (display type) ─────────────────────────────────── */
   .statement {
     margin: 0;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
@@ -217,9 +212,7 @@
     color: var(--accent);
   }
 
-  /* ─── Read-more — refined text link with an animated horizontal
-     rule (Casa's "Read More" pattern). Keeps type as the star; the
-     button reads as a footnote rather than furniture. */
+  /* ─── Read-more — text link with an animated horizontal rule. */
   .read-more {
     display: inline-flex;
     align-items: center;
@@ -289,9 +282,7 @@
   .read-more__inner p:last-child { margin-bottom: 0; }
 
   /* ═══════════════════════════════════════════════════════════════════
-     MEDIA + NUMBERED INFO TAB (Waabi pattern) — corner tab shows the
-     image's number in the case sequence; clicking expands the pill
-     to reveal a contextual note. Invites curiosity ("what is 03?").
+     MEDIA + NUMBERED INFO TAB (Waabi pattern).
      ═══════════════════════════════════════════════════════════════════ */
   .media {
     position: relative;
@@ -396,10 +387,9 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     CLOSING statement — deliberate grid break, single big line on
-     its own row with generous space above and below.
+     CLOSING statement.
      ═══════════════════════════════════════════════════════════════════ */
-  .unesco__closing {
+  .ecclesiastes__closing {
     padding: var(--stack-y) var(--page-x) calc(var(--stack-y) * 1.25);
   }
   .statement--closing {
@@ -410,11 +400,9 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     CREDITS — the professional signal that says "real people made
-     this, and we'll name them". Uses the 3-col skeleton: label in
-     column 1, name list flows across columns 2–3.
+     CREDITS.
      ═══════════════════════════════════════════════════════════════════ */
-  .unesco__credits {
+  .ecclesiastes__credits {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--stack-y-tight) calc(var(--page-x) * 2);
@@ -422,7 +410,7 @@
     border-top: 1px solid var(--line);
     margin: 0 var(--page-x);
   }
-  .unesco__credits .section-label { grid-column: 1; }
+  .ecclesiastes__credits .section-label { grid-column: 1; }
   .credits__list {
     grid-column: 2 / span 2;
     display: grid;
@@ -450,15 +438,13 @@
   }
 
   @media (max-width: 900px) {
-    .unesco__credits { grid-template-columns: 1fr; }
-    .unesco__credits .section-label,
+    .ecclesiastes__credits { grid-template-columns: 1fr; }
+    .ecclesiastes__credits .section-label,
     .credits__list { grid-column: 1; }
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     PREV / NEXT PAGER — richer than a stub arrow: label, project
-     name, and a small sub-line ("Case Study — 002") so the "next"
-     reads as an invitation, not just a link.
+     PREV / NEXT PAGER.
      ═══════════════════════════════════════════════════════════════════ */
   .pager {
     display: grid;
@@ -531,7 +517,7 @@
   }
 </style>
 </head>
-<body class="unesco">
+<body class="ecclesiastes">
   <div class="site-bg" aria-hidden="true">
     <div class="site-bg__blob site-bg__blob--cyan-1"></div>
     <div class="site-bg__blob site-bg__blob--cyan-2"></div>
@@ -560,13 +546,13 @@
   <script src="site-bg.js" defer></script>
 
   <!-- ══════════════════════ INTRO ══════════════════════ -->
-  <section class="unesco__intro" aria-label="UNESCO overview">
-    <span class="intro__eyebrow">Case Study · 001</span>
-    <h1 class="intro__title">UNESCO</h1>
+  <section class="ecclesiastes__intro" aria-label="Ecclesiastes overview">
+    <span class="intro__eyebrow">Case Study · 002</span>
+    <h1 class="intro__title">Ecclesiastes</h1>
     <p class="intro__lead">
-      An identity system for the world's cultural heritage agency —
-      exploring how a global organization can <em>speak in every voice</em>
-      while remaining unmistakably itself.
+      A compositional design study — exploring how meaning
+      emerges from arrangement, and how <em>line, form, and space</em>
+      become the language of an idea.
     </p>
     <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
       <span>Read more</span>
@@ -574,35 +560,35 @@
     </button>
     <div class="read-more__panel" id="rm-overview">
       <div class="read-more__inner">
-        <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. The redesign needed a system that could hold cultural richness without flattening it — a language that felt as at home in a Nairobi campaign as in a Kyoto exhibition.</p>
-        <p>We approached the wordmark as an anchor, then built outward: a modular typographic scale, a chromatic system tied to region and initiative, and a set of interactive components for the digital archive. Every touchpoint speaks the same grammar, phrased in local dialect.</p>
+        <p>Ecclesiastes started as an editorial study — a personal investigation into how a single body of text can be re-composed sixteen ways without changing a single word. The point was never the words themselves; it was the shape of attention they invite.</p>
+        <p>Each composition was set on the same underlying grid, then broken deliberately at different points — margin, leading, alignment, weight. What emerges is a catalog of how form directs the reader before the reader even begins to read.</p>
       </div>
     </div>
 
     <dl class="intro__meta">
-      <div><dt>Project</dt><dd>UNESCO</dd></div>
-      <div><dt>Year</dt><dd>2026</dd></div>
-      <div><dt>Function</dt><dd>Branding &amp; Interaction</dd></div>
-      <div><dt>Category</dt><dd>Cultural Heritage &amp; Awareness</dd></div>
+      <div><dt>Project</dt><dd>Ecclesiastes</dd></div>
+      <div><dt>Year</dt><dd>2024</dd></div>
+      <div><dt>Function</dt><dd>Compositional Design</dd></div>
+      <div><dt>Category</dt><dd>Editorial Practice</dd></div>
     </dl>
   </section>
 
   <!-- ══════════════════════ HERO ══════════════════════ -->
-  <section class="unesco__hero" aria-label="UNESCO cover">
-    <div class="unesco__hero-media">
-      <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
+  <section class="ecclesiastes__hero" aria-label="Ecclesiastes cover">
+    <div class="ecclesiastes__hero-media">
+      <div class="ecclesiastes__hero-image" role="img" aria-label="Ecclesiastes project cover"></div>
     </div>
   </section>
 
   <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════ -->
-  <section class="unesco__grid" aria-label="Case study">
+  <section class="ecclesiastes__grid" aria-label="Case study">
 
     <!-- ─── 01 · Foundations ─────────────────────────────────────── -->
     <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundations</p>
     <div class="g-span-2">
       <p class="statement">
-        The mark holds its own at the scale of a museum banner —
-        and at the <em>size of an app icon</em>.
+        The page speaks first through what it chooses
+        <em>not to say</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
         <span>Read more</span>
@@ -610,40 +596,39 @@
       </button>
       <div class="read-more__panel" id="rm-foundations">
         <div class="read-more__inner">
-          <p>Proportions were tuned for both extremes. Optical spacing at large sizes, tightened counters at small — the wordmark reads confidently from a rooftop banner and stays legible on a lockscreen.</p>
+          <p>The underlying grid was set at a five-column module with a single wide alley. Every composition inherits it. The variation comes from what each spread refuses to fill — negative space as an active material.</p>
         </div>
       </div>
     </div>
 
     <!-- Media 01 (wide, spans 2 cols) + caption in col 3 -->
     <figure class="media media--wide g-span-2">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/02.jpg" alt="UNESCO wordmark study" />
+      <img class="media__img" src="ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Ecclesiastes compositional study" />
       <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 01 detail">
         <span class="media-tab__num" aria-hidden="true">01</span>
-        <span class="media-tab__panel">Cut-paper wordmark studies, photographed under directional light to test optical spacing at scale.</span>
+        <span class="media-tab__panel">Composition study — text set to the base grid, alignment shifted one alley to the right.</span>
       </button>
     </figure>
     <p class="caption g-span-1">
       <span class="caption__label">Image 01</span>
-      Optical spacing at banner scale, tightened counters at icon scale.
+      One shift in alignment, sixteen possible readings.
     </p>
 
-    <!-- ─── 02 · Palette ─────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">02</span>Palette</p>
+    <!-- ─── 02 · Rhythm ──────────────────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">02</span>Rhythm</p>
     <div class="g-span-2">
       <p class="statement">
-        Chromatic system tied to region and initiative — warm earth
-        for heritage, cool grey for archive, <em>saturated brand</em> for
-        campaign.
+        Pauses matter as much as marks —
+        <em>silence carries the meter</em>.
       </p>
     </div>
 
     <!-- Media 02 spans full width for impact -->
     <figure class="media media--cinema g-span-3">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/03.jpg" alt="UNESCO palette study" />
+      <img class="media__img" src="ASSETS/IMAGES/ECCLESIASTES/cover.jpg" alt="Ecclesiastes rhythm study" />
       <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 02 detail">
         <span class="media-tab__num" aria-hidden="true">02</span>
-        <span class="media-tab__panel">Palette derived from seventeen heritage sites — pigment sampled from stone, cloth, and light.</span>
+        <span class="media-tab__panel">Wide spread — the eye moves from left column to right through a single line of white space.</span>
       </button>
     </figure>
 
@@ -651,8 +636,8 @@
     <p class="section-label g-span-1"><span class="section-label__num">03</span>Voice</p>
     <div class="g-span-2">
       <p class="statement">
-        A system that respects local nuance while
-        <em>carrying a unified global voice</em>.
+        Every mark placed with intent — nothing
+        <em>decorative, everything felt</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-voice">
         <span>Read more</span>
@@ -660,8 +645,8 @@
       </button>
       <div class="read-more__panel" id="rm-voice">
         <div class="read-more__inner">
-          <p>The typographic scale is built on a single ratio that flexes across sixteen sizes — from a captioned image credit to a wall-scale statement. Regional teams inherit the ratio, not the pixel values, so every locale keeps its own texture.</p>
-          <p>Components ship as a Figma variables kit and a matching CSS token set — designers and engineers work from the same source of truth.</p>
+          <p>Type weight moves in a three-step ladder: light for context, medium for statement, bold only for the phrase the composition wants to underline. No weight is used ornamentally. The reader learns the system in two spreads and reads freely from the third onward.</p>
+          <p>The motion study extends the same discipline into time — the phrase enters, holds, and lifts, on a beat set by the composition itself.</p>
         </div>
       </div>
     </div>
@@ -670,41 +655,42 @@
     <p class="section-label g-span-3"><span class="section-label__num">04</span>Applications</p>
 
     <figure class="media media--square g-span-1">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO signage" />
+      <img class="media__img" src="ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Ecclesiastes detail 03" />
       <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 03 detail">
         <span class="media-tab__num" aria-hidden="true">03</span>
-        <span class="media-tab__panel">Signage system — routed brass on limestone, tested on-site in Aleppo.</span>
+        <span class="media-tab__panel">Poster application — the composition sized to a single reading distance.</span>
       </button>
     </figure>
     <figure class="media media--square g-span-1">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/05.jpg" alt="UNESCO editorial" />
+      <img class="media__img" src="ASSETS/IMAGES/ECCLESIASTES/cover.jpg" alt="Ecclesiastes detail 04" />
       <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 04 detail">
         <span class="media-tab__num" aria-hidden="true">04</span>
-        <span class="media-tab__panel">Editorial layout — variable-width columns respond to language density.</span>
+        <span class="media-tab__panel">Cover treatment — the base grid pulled to the tightest register the type will hold.</span>
       </button>
     </figure>
     <figure class="media media--square g-span-1">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO digital archive" />
+      <img class="media__img" src="ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Ecclesiastes detail 05" />
       <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 05 detail">
         <span class="media-tab__num" aria-hidden="true">05</span>
-        <span class="media-tab__panel">Digital archive — interactive components let visitors trace an artifact's provenance.</span>
+        <span class="media-tab__panel">Motion still — same phrase, held for a beat, timed to the page's own meter.</span>
       </button>
     </figure>
 
   </section>
 
   <!-- ══════════════════════ CLOSING STATEMENT ══════════════════════ -->
-  <section class="unesco__closing" aria-label="Closing statement">
+  <section class="ecclesiastes__closing" aria-label="Closing statement">
     <p class="statement statement--closing">
-      The story ends <em>where the reader begins</em>.
+      A page that <em>knows how to be still</em>
+      says the most.
     </p>
   </section>
 
   <!-- ══════════════════════ CREDITS ══════════════════════ -->
-  <section class="unesco__credits" aria-label="Credits">
+  <section class="ecclesiastes__credits" aria-label="Credits">
     <p class="section-label">Credits</p>
     <dl class="credits__list">
-      <div><dt>Client</dt><dd>UNESCO Global</dd></div>
+      <div><dt>Project</dt><dd>Ecclesiastes</dd></div>
       <div><dt>Studio</dt><dd>DĒDĒ.STUDIO</dd></div>
       <div><dt>Creative Direction</dt><dd>David Gómez</dd></div>
       <div><dt>Design</dt><dd>David Gómez</dd></div>
@@ -715,15 +701,15 @@
 
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
   <nav class="pager" aria-label="Case navigation">
-    <a class="pager__link pager__link--prev" href="mind.html">
+    <a class="pager__link pager__link--prev" href="unesco.html">
       <span class="pager__label"><span class="pager__arrow" aria-hidden="true">←</span> Previous</span>
-      <span class="pager__title">San Diego FC</span>
-      <span class="pager__sub">Case Study · 008</span>
+      <span class="pager__title">UNESCO</span>
+      <span class="pager__sub">Case Study · 001</span>
     </a>
-    <a class="pager__link pager__link--next" href="ecclesiastes.html">
+    <a class="pager__link pager__link--next" href="mind.html">
       <span class="pager__label">Next <span class="pager__arrow" aria-hidden="true">→</span></span>
-      <span class="pager__title">Ecclesiastes</span>
-      <span class="pager__sub">Case Study · 002</span>
+      <span class="pager__title">BLLCRW. Melange</span>
+      <span class="pager__sub">Case Study · 003</span>
     </a>
   </nav>
 

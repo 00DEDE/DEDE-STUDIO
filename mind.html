@@ -25,8 +25,10 @@
      unesco.html is ready, then morphs the UNESCO cell's carousel into
      the destination hero. All other page-to-page nav crossfades. */
   @view-transition { navigation: auto; }
-  .cell--unesco .cover-carousel { view-transition-name: unesco-hero; }
-  ::view-transition-group(unesco-hero) {
+  .cell--unesco       .cover-carousel { view-transition-name: unesco-hero; }
+  .cell--ecclesiastes .cover-carousel { view-transition-name: ecclesiastes-hero; }
+  ::view-transition-group(unesco-hero),
+  ::view-transition-group(ecclesiastes-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
@@ -343,15 +345,11 @@
         <div class="cell__view">VIEW CASE</div>
       </a>
 
-      <!-- 2. BLLCRW. MELANGE CAPSULE ─ single cover -->
-      <a class="cell cell--cover" href="#"
-         style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%">
-        <div class="cell-tags"><strong>BLLCRW.</strong> MELANGE CAPSULE</div>
-        <div class="cell__view">VIEW CASE</div>
-      </a>
-
-      <!-- 3. ECCLESIASTES ─ carousel (image + video + poster) -->
-      <a class="cell cell--cover cell--carousel" href="#">
+      <!-- 2. ECCLESIASTES ─ carousel (image + video + poster) — links to case page.
+           The .cover-carousel is view-transition-named "ecclesiastes-hero"
+           (see the @view-transition block in <style>) so the browser morphs
+           the cell into ecclesiastes.html's hero. -->
+      <a class="cell cell--cover cell--carousel cell--ecclesiastes" href="ecclesiastes.html">
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active"
                data-duration="4000"
@@ -368,6 +366,13 @@
                style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
         </div>
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
+        <div class="cell__view">VIEW CASE</div>
+      </a>
+
+      <!-- 3. BLLCRW. MELANGE CAPSULE ─ single cover -->
+      <a class="cell cell--cover" href="#"
+         style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%">
+        <div class="cell-tags"><strong>BLLCRW.</strong> MELANGE CAPSULE</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
 

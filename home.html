@@ -28,8 +28,10 @@
      that cell animates the media cleanly across pages. Every other
      navigation crossfades. */
   @view-transition { navigation: auto; }
-  .work--unesco .work__media { view-transition-name: unesco-hero; }
-  ::view-transition-group(unesco-hero) {
+  .work--unesco       .work__media { view-transition-name: unesco-hero; }
+  .work--ecclesiastes .work__media { view-transition-name: ecclesiastes-hero; }
+  ::view-transition-group(unesco-hero),
+  ::view-transition-group(ecclesiastes-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
@@ -335,7 +337,36 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- 2. BLLCRW. MELANGE CAPSULE ─ single cover -->
+    <!-- 2. ECCLESIASTES ─ carousel (image + video + poster) — links to case page.
+         The .work__media inside is view-transition-named "ecclesiastes-hero"
+         (see the @view-transition block in <style>) so the browser morphs
+         it into ecclesiastes.html's hero seamlessly. -->
+    <a class="work work--ecclesiastes" href="ecclesiastes.html">
+      <div class="work__media">
+        <div class="cover-carousel" aria-hidden="true">
+          <div class="cover-slide is-active"
+               data-duration="4000"
+               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
+          <video class="cover-slide"
+                 data-duration="10000"
+                 style="--cover-y: 100%; --poster: url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"
+                 muted playsinline preload="auto"
+                 poster="ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
+            <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+          </video>
+          <div class="cover-slide"
+               data-duration="4000"
+               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
+        </div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">Ecclesiastes</h2>
+        <p class="work__desc">Compositional Design</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- 3. BLLCRW. MELANGE CAPSULE ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
         <div class="work__cover" style="--cover: url('ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%"></div>
@@ -364,32 +395,6 @@ html { background: var(--bg); }
         </span>
       </span>
     </h2>
-
-    <!-- 3. ECCLESIASTES ─ carousel (image + video + poster) -->
-    <a class="work" href="#">
-      <div class="work__media">
-        <div class="cover-carousel" aria-hidden="true">
-          <div class="cover-slide is-active"
-               data-duration="4000"
-               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
-          <video class="cover-slide"
-                 data-duration="10000"
-                 style="--cover-y: 100%; --poster: url('ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"
-                 muted playsinline preload="auto"
-                 poster="ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
-            <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
-          </video>
-          <div class="cover-slide"
-               data-duration="4000"
-               style="background-image:url('ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
-        </div>
-      </div>
-      <div class="work__meta">
-        <h2 class="work__title">Ecclesiastes</h2>
-        <p class="work__desc">Compositional Design</p>
-      </div>
-      <div class="work__view">VIEW CASE</div>
-    </a>
 
     <!-- 4. NANA'S BAKERY ─ single cover -->
     <a class="work" href="#">
