@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ecclesiastes — I AM DĒDĒ.STUDIO</title>
+<title>The Book of Ecclesiastes — I AM DĒDĒ.STUDIO</title>
 <link rel="canonical" href="https://iamdede.com/ecclesiastes.html" />
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-96.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/FINAL%20LOGO/DEDE_LOGO_CONFIRMED-01-180.png" />
@@ -149,12 +149,16 @@
     overflow: hidden;
     background: #000;
   }
-  .ecclesiastes__hero-image {
+  /* Hero uses the project's motion piece — autoplays muted + looped,
+     poster is cover.jpg so the still lands under the view-transition
+     morph before the first frame of video paints. */
+  .ecclesiastes__hero-video {
     position: absolute;
     inset: 0;
-    background-image: url("ASSETS/IMAGES/ECCLESIASTES/cover.jpg");
-    background-size: cover;
-    background-position: center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -546,9 +550,9 @@
   <script src="site-bg.js" defer></script>
 
   <!-- ══════════════════════ INTRO ══════════════════════ -->
-  <section class="ecclesiastes__intro" aria-label="Ecclesiastes overview">
+  <section class="ecclesiastes__intro" aria-label="The Book of Ecclesiastes overview">
     <span class="intro__eyebrow">Case Study · 002</span>
-    <h1 class="intro__title">Ecclesiastes</h1>
+    <h1 class="intro__title">The Book of<br>Ecclesiastes</h1>
     <p class="intro__lead">
       A compositional design study — exploring how meaning
       emerges from arrangement, and how <em>line, form, and space</em>
@@ -566,17 +570,22 @@
     </div>
 
     <dl class="intro__meta">
-      <div><dt>Project</dt><dd>Ecclesiastes</dd></div>
-      <div><dt>Year</dt><dd>2024</dd></div>
+      <div><dt>Project</dt><dd>The Book of Ecclesiastes</dd></div>
+      <div><dt>Year</dt><dd>2026</dd></div>
       <div><dt>Function</dt><dd>Compositional Design</dd></div>
-      <div><dt>Category</dt><dd>Editorial Practice</dd></div>
+      <div><dt>Category</dt><dd>Editorial Heirloom</dd></div>
     </dl>
   </section>
 
   <!-- ══════════════════════ HERO ══════════════════════ -->
-  <section class="ecclesiastes__hero" aria-label="Ecclesiastes cover">
+  <section class="ecclesiastes__hero" aria-label="The Book of Ecclesiastes cover">
     <div class="ecclesiastes__hero-media">
-      <div class="ecclesiastes__hero-image" role="img" aria-label="Ecclesiastes project cover"></div>
+      <video class="ecclesiastes__hero-video"
+             autoplay muted loop playsinline preload="auto"
+             poster="ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
+             aria-label="The Book of Ecclesiastes — motion cover">
+        <source src="ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+      </video>
     </div>
   </section>
 
@@ -690,7 +699,7 @@
   <section class="ecclesiastes__credits" aria-label="Credits">
     <p class="section-label">Credits</p>
     <dl class="credits__list">
-      <div><dt>Project</dt><dd>Ecclesiastes</dd></div>
+      <div><dt>Project</dt><dd>The Book of Ecclesiastes</dd></div>
       <div><dt>Studio</dt><dd>DĒDĒ.STUDIO</dd></div>
       <div><dt>Creative Direction</dt><dd>David Gómez</dd></div>
       <div><dt>Design</dt><dd>David Gómez</dd></div>
