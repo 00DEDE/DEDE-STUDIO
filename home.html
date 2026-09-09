@@ -16,11 +16,29 @@
 <link rel="stylesheet" href="site-bg.css" />
 <link rel="stylesheet" href="site-marquee.css" />
 <link rel="stylesheet" href="site-mobile.css" />
-<link rel="stylesheet" href="case-transition.css" />
 <style>
   /* Per-page cursor — overrides theme.css site-wide default. */
   :root                     { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-03-cursor-cyan.png"); }
   :root[data-theme="light"] { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-03-cursor-red.png"); }
+
+  /* Cross-document View Transitions — the browser holds this page's
+     rendering until the destination is ready, then morphs the named
+     element from here to there. The UNESCO cell's media container
+     shares the name `unesco-hero` with unesco.html's hero, so clicking
+     that cell animates the media cleanly across pages. Every other
+     navigation crossfades. */
+  @view-transition { navigation: auto; }
+  .work--unesco .work__media { view-transition-name: unesco-hero; }
+  ::view-transition-group(unesco-hero) {
+    animation-duration: 620ms;
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
 html { background: var(--bg); }
   html, body {
     margin: 0;
@@ -293,13 +311,13 @@ html { background: var(--bg); }
   <script src="site-header.js" defer></script>
   <script src="site-bg.js" defer></script>
   <script src="site-marquee.js" defer></script>
-  <script src="case-transition.js" defer></script>
 
   <main class="home-work">
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
-         data-case-transition triggers the click-to-navigate motion
-         defined in case-transition.js. -->
-    <a class="work" href="unesco.html" data-case-transition>
+         The .work__media below is view-transition-named "unesco-hero"
+         (see the @view-transition block in <style>) so the browser
+         morphs it into the destination page's hero seamlessly. -->
+    <a class="work work--unesco" href="unesco.html">
       <div class="work__media">
         <div class="cover-carousel" aria-hidden="true">
           <div class="cover-slide is-active" style="background-image:url('ASSETS/IMAGES/UNESCO/01.jpg')"></div>

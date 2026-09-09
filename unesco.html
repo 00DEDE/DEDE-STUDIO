@@ -16,9 +16,33 @@
 <link rel="stylesheet" href="site-bg.css" />
 <link rel="stylesheet" href="site-mobile.css" />
 <style>
-  /* Per-page cursor — matches mind (UNESCO is a project from mind). */
+  /* Per-page cursor — matches mind (UNESCO lives inside mind). */
   :root                     { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-cyan.png"); }
   :root[data-theme="light"] { --cursor-url: url("ASSETS/LOGO/DEDE_LOGO_CONFIRMED-02-cursor-red.png"); }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     Cross-document View Transitions — the browser holds the outgoing
+     page until the incoming one is ready, then morphs matching elements
+     between them. No "reload flash", no double-render seam.
+
+     The `unesco-hero` name is applied here on the destination hero and
+     on the source UNESCO cell on home.html / mind.html. The browser
+     interpolates its bounds + border-radius from cell → hero.
+     ═══════════════════════════════════════════════════════════════════ */
+  @view-transition { navigation: auto; }
+  .unesco__hero-media { view-transition-name: unesco-hero; }
+
+  /* Slow the morph slightly so it feels cinematic rather than snappy. */
+  ::view-transition-group(unesco-hero) {
+    animation-duration: 620ms;
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  /* Fade everything else between pages (default crossfade timing). */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
   html { background: var(--bg); }
   html, body {
@@ -35,10 +59,13 @@
   a, button, [role="button"] {
     cursor: var(--cursor-url) 16 16, pointer;
   }
-  /* Header floats over the hero image (like home). */
+  /* Header floats over the hero (like home). */
   body.unesco { padding-top: 0; }
 
-  /* ─── Hero: full-viewport image + title overlay ─────────────────── */
+  /* ═══════════════════════════════════════════════════════════════════
+     HERO — breaks the grid (full-bleed). Same rounded media container
+     as the source cell so the view-transition morph lands cleanly.
+     ═══════════════════════════════════════════════════════════════════ */
   .unesco__hero {
     position: relative;
     height: 100vh;
@@ -53,8 +80,6 @@
     border-radius: clamp(12px, 1.25vw, 22px);
     overflow: hidden;
     background: #000;
-    /* Match the source cell's initial "landing" — this is what the
-       click-transition overlay lands on so the seam is invisible. */
   }
   .unesco__hero-image {
     position: absolute;
@@ -67,8 +92,7 @@
     position: absolute;
     left: 0; right: 0; bottom: 0;
     height: 45%;
-    background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
     pointer-events: none;
   }
   .unesco__hero-meta {
@@ -80,8 +104,7 @@
   }
   .unesco__title {
     margin: 0;
-    font-family: "Inter Tight",
-                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(2rem, 5.5vw, 5rem);
     line-height: 0.95;
@@ -90,7 +113,7 @@
   }
   .unesco__tag {
     margin: 0.4rem 0 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(0.8rem, 1.1vw, 1.05rem);
     letter-spacing: 0.12em;
@@ -98,38 +121,321 @@
     opacity: 0.85;
   }
 
-  /* ─── Body copy placeholder ─────────────────────────────────────── */
-  .unesco__body {
-    padding: clamp(4rem, 8vh, 6rem) clamp(1.5rem, 5vw, 3rem) 8rem;
-    max-width: 42em;
-    margin: 0 auto;
-    color: var(--fg);
-    font-family: "Inter Tight",
-                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(1rem, 1.5vw, 1.4rem);
-    line-height: 1.5;
-    letter-spacing: -0.01em;
+  /* ═══════════════════════════════════════════════════════════════════
+     3-COLUMN GRID SKELETON — the underlying structural system for the
+     page. Content blocks span 1, 2, or 3 columns; ratios can break the
+     grid deliberately when the story calls for it. On mobile it
+     collapses to a single stack.
+     ═══════════════════════════════════════════════════════════════════ */
+  .unesco__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 2vw, 2rem) clamp(1rem, 2vw, 2rem);
+    padding: clamp(4rem, 8vh, 7rem) clamp(1rem, 2vw, 2rem);
+    max-width: 100%;
+    box-sizing: border-box;
+    align-items: start;
   }
-  .unesco__body p { margin: 0 0 1.5em; }
-  .unesco__body p:last-child { margin: 0; }
+  .g-span-1 { grid-column: span 1; }
+  .g-span-2 { grid-column: span 2; }
+  .g-span-3 { grid-column: span 3; }
+  /* Positional utilities — for breaking the grid rhythm (indent, right-align). */
+  .g-col-2 { grid-column-start: 2; }
+  .g-col-3 { grid-column-start: 3; }
 
-  /* ─── Landing "unfold" — the incoming page slides + fades in so the
-     handoff from the click-transition overlay lands smoothly instead
-     of snapping. Runs once on load. */
-  .unesco__hero,
-  .unesco__body {
+  @media (max-width: 900px) {
+    .unesco__grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 3rem 1rem;
+    }
+    .g-span-1, .g-span-2, .g-span-3 { grid-column: 1 / -1; }
+    .g-col-2, .g-col-3 { grid-column-start: 1; }
+  }
+
+  /* ─── BIG-TYPE STATEMENT BLOCK (mouthwash-style) ────────────────── */
+  .statement {
+    margin: 0;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3.6vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    text-wrap: pretty;
+  }
+  .statement em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* Read-more toggle (mouthwash-style expand). */
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: clamp(1.25rem, 2vh, 2rem);
+    padding: 0.55rem 1rem 0.55rem 1.1rem;
+    background: rgba(var(--fg-rgb), 0.06);
+    color: var(--fg);
+    border: 1px solid rgba(var(--fg-rgb), 0.14);
+    border-radius: 999px;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: var(--cursor-url) 16 16, pointer;
+    transition:
+      background var(--dur-quick, 220ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+      color      var(--dur-quick, 220ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+      border-color var(--dur-quick, 220ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+  .read-more__glyph {
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .read-more__glyph::before,
+  .read-more__glyph::after {
+    content: "";
+    position: absolute;
+    background: currentColor;
+    transition: transform var(--dur-medium, 400ms) cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .read-more__glyph::before {  /* horizontal bar */
+    top: 50%; left: 0; right: 0; height: 1.5px; margin-top: -0.75px;
+  }
+  .read-more__glyph::after {   /* vertical bar (collapses to make −) */
+    left: 50%; top: 0; bottom: 0; width: 1.5px; margin-left: -0.75px;
+  }
+  .read-more[aria-expanded="true"] .read-more__glyph::after { transform: scaleY(0); }
+  .read-more:hover,
+  .read-more:focus-visible {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    outline: none;
+  }
+  .read-more[aria-expanded="true"] {
+    background: rgba(var(--fg-rgb), 0.1);
+  }
+
+  /* The expandable panel itself — smooth cascade, no layout snap. */
+  .read-more__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition:
+      grid-template-rows var(--dur-cinematic, 700ms) cubic-bezier(0.16, 1, 0.3, 1),
+      opacity            var(--dur-medium, 400ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+      margin-top         var(--dur-medium, 400ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
     opacity: 0;
-    transform: translateY(12px);
-    animation: unesco-land 700ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both;
+    margin-top: 0;
   }
-  .unesco__body { animation-delay: 180ms; }
-  @keyframes unesco-land {
-    to { opacity: 1; transform: translateY(0); }
+  .read-more__panel > .read-more__inner {
+    min-height: 0;
+    overflow: hidden;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .unesco__hero,
-    .unesco__body { animation: none; opacity: 1; transform: none; }
+  .read-more__panel.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: clamp(1.25rem, 2vh, 1.75rem);
+  }
+  .read-more__inner p {
+    margin: 0 0 1em;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    color: rgba(var(--fg-rgb), 0.75);
+    max-width: 42em;
+  }
+  .read-more__inner p:last-child { margin-bottom: 0; }
+
+  /* ─── MEDIA WITH EXPANDABLE INFO TAB (manual-studio waabi-style) ── */
+  .media {
+    position: relative;
+    display: block;
+    width: 100%;
+    border-radius: clamp(10px, 1.1vw, 18px);
+    overflow: hidden;
+    background: rgba(var(--fg-rgb), 0.04);
+    aspect-ratio: 4 / 3;
+  }
+  .media--portrait { aspect-ratio: 3 / 4; }
+  .media--wide     { aspect-ratio: 16 / 9; }
+  .media--square   { aspect-ratio: 1 / 1; }
+  .media__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Tab — sits in the top-right corner, expands horizontally on click.
+     Starts as a small square with a "+" icon; opens into a pill panel
+     revealing the descriptive text. */
+  .media-tab {
+    position: absolute;
+    top: clamp(0.6rem, 1vw, 0.9rem);
+    right: clamp(0.6rem, 1vw, 0.9rem);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    height: clamp(1.75rem, 2.2vw, 2.1rem);
+    max-width: clamp(1.75rem, 2.2vw, 2.1rem);
+    padding: 0;
+    background: rgba(15, 14, 12, 0.55);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    backdrop-filter: blur(10px) saturate(1.05);
+    -webkit-backdrop-filter: blur(10px) saturate(1.05);
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+    text-align: left;
+    overflow: hidden;
+    cursor: var(--cursor-url) 16 16, pointer;
+    transition:
+      max-width  var(--dur-medium, 400ms) cubic-bezier(0.16, 1, 0.3, 1),
+      background var(--dur-quick,  220ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+      border-color var(--dur-quick, 220ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+  .media-tab__glyph {
+    flex-shrink: 0;
+    width: clamp(1.75rem, 2.2vw, 2.1rem);
+    height: clamp(1.75rem, 2.2vw, 2.1rem);
+    position: relative;
+    display: inline-block;
+  }
+  .media-tab__glyph::before,
+  .media-tab__glyph::after {
+    content: "";
+    position: absolute;
+    background: currentColor;
+    transition: transform var(--dur-medium, 400ms) cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .media-tab__glyph::before {
+    top: 50%; left: 30%; right: 30%; height: 1.5px; margin-top: -0.75px;
+  }
+  .media-tab__glyph::after {
+    left: 50%; top: 30%; bottom: 30%; width: 1.5px; margin-left: -0.75px;
+  }
+  .media-tab[aria-expanded="true"] .media-tab__glyph::after { transform: scaleY(0); }
+  .media-tab__panel {
+    padding-right: 0.9rem;
+    max-width: 16rem;
+    opacity: 0;
+    white-space: normal;
+    transition: opacity var(--dur-medium, 400ms) 60ms var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+  .media-tab[aria-expanded="true"] {
+    max-width: 22rem;
+    background: rgba(15, 14, 12, 0.75);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+  .media-tab[aria-expanded="true"] .media-tab__panel { opacity: 1; }
+  .media-tab:hover,
+  .media-tab:focus-visible {
+    background: rgba(15, 14, 12, 0.7);
+    outline: none;
+  }
+
+  /* ─── SMALL META / CAPTION TEXT ─────────────────────────────────── */
+  .caption {
+    margin: 0;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.85rem, 1.05vw, 1rem);
+    line-height: 1.45;
+    letter-spacing: 0;
+    color: rgba(var(--fg-rgb), 0.7);
+    max-width: 28em;
+  }
+  .caption strong {
+    display: block;
+    font-weight: 500;
+    color: var(--fg);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     PREV / NEXT PAGER — above the footer. Two large text links that
+     brighten on hover and animate a subtle arrow.
+     ═══════════════════════════════════════════════════════════════════ */
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding: clamp(4rem, 6vh, 6rem) clamp(1rem, 2vw, 2rem) clamp(3rem, 5vh, 4rem);
+    border-top: 1px solid rgba(var(--fg-rgb), 0.12);
+    border-bottom: 1px solid rgba(var(--fg-rgb), 0.12);
+    margin: 0 clamp(1rem, 2vw, 2rem);
+  }
+  .pager__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--fg);
+    transition: color var(--dur-medium, 400ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+  .pager__link--next {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .pager__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    transition: opacity var(--dur-medium, 400ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+  .pager__arrow {
+    display: inline-block;
+    width: 1.2rem;
+    text-align: center;
+    transition: transform var(--dur-medium, 400ms) cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .pager__link--prev:hover .pager__arrow { transform: translateX(-0.35rem); }
+  .pager__link--next:hover .pager__arrow { transform: translateX(0.35rem); }
+  .pager__title {
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3.4vw, 3.25rem);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+  }
+  .pager__link:hover,
+  .pager__link:focus-visible { color: var(--accent); outline: none; }
+  .pager__link:hover .pager__label,
+  .pager__link:focus-visible .pager__label { opacity: 1; color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .pager {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin: 0 1rem;
+    }
+    .pager__link--next { align-items: flex-start; text-align: left; }
+    .pager__link--next:hover .pager__arrow { transform: translateX(0.25rem); }
   }
 </style>
 </head>
@@ -161,6 +467,7 @@
   <script src="site-header.js" defer></script>
   <script src="site-bg.js" defer></script>
 
+  <!-- ══════════════════════ HERO (breaks the grid) ═════════════════════ -->
   <section class="unesco__hero" aria-label="UNESCO">
     <div class="unesco__hero-media">
       <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
@@ -172,9 +479,122 @@
     </div>
   </section>
 
-  <section class="unesco__body" aria-label="Case study">
-    <p>Case study coming soon.</p>
+  <!-- ═══════════════════ 3-COLUMN GRID (skeleton) ══════════════════════ -->
+  <section class="unesco__grid" aria-label="Case study">
+
+    <!-- Row 1 — full-width statement with expandable "read more". -->
+    <div class="g-span-3">
+      <p class="statement">
+        An identity system for the world's cultural heritage agency —
+        exploring how a global organization can <em>speak in every voice</em>
+        while remaining unmistakably itself.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
+        <span class="read-more__glyph" aria-hidden="true"></span>
+        <span>Read more</span>
+      </button>
+      <div class="read-more__panel" id="rm-overview">
+        <div class="read-more__inner">
+          <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. The redesign needed a system that could hold cultural richness without flattening it — a language that felt as at home in a Nairobi campaign as in a Kyoto exhibition.</p>
+          <p>We approached the wordmark as an anchor, then built outward: a modular typographic scale, a chromatic system tied to region and initiative, and a set of interactive components for the digital archive. Every touchpoint speaks the same grammar, phrased in local dialect.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — media (2 cols) + caption (1 col, right column, top-aligned). -->
+    <figure class="media g-span-2" style="aspect-ratio: 16 / 10;">
+      <img class="media__img" src="ASSETS/IMAGES/UNESCO/02.jpg" alt="UNESCO identity study" />
+      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show detail">
+        <span class="media-tab__glyph" aria-hidden="true"></span>
+        <span class="media-tab__panel">Wordmark exploration — cut-paper studies photographed under directional light.</span>
+      </button>
+    </figure>
+    <div class="g-span-1">
+      <p class="caption">
+        <strong>01 / Wordmark</strong>
+        The mark holds its own at the scale of a museum banner and the size of an app icon — proportions tuned for both.
+      </p>
+    </div>
+
+    <!-- Row 3 — caption (1 col, left) + media (2 cols, right). Deliberate
+         inversion of Row 2 to keep the eye moving across the grid. -->
+    <div class="g-span-1">
+      <p class="caption">
+        <strong>02 / Palette</strong>
+        Chromatic system tied to region and initiative — warm earth tones for heritage, cool greys for archive, saturated brand for campaign.
+      </p>
+    </div>
+    <figure class="media g-span-2" style="aspect-ratio: 16 / 10;">
+      <img class="media__img" src="ASSETS/IMAGES/UNESCO/03.jpg" alt="UNESCO palette study" />
+      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show detail">
+        <span class="media-tab__glyph" aria-hidden="true"></span>
+        <span class="media-tab__panel">Palette derived from seventeen heritage sites — pigment sampled from stone, cloth, and light.</span>
+      </button>
+    </figure>
+
+    <!-- Row 4 — indented statement (starts col 2). Breaks the grid on
+         purpose: the negative space to the left frames the sentence. -->
+    <div class="g-span-2 g-col-2">
+      <p class="statement">
+        A system that respects local nuance while
+        <em>carrying a unified global voice</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-system">
+        <span class="read-more__glyph" aria-hidden="true"></span>
+        <span>Read more</span>
+      </button>
+      <div class="read-more__panel" id="rm-system">
+        <div class="read-more__inner">
+          <p>The typographic scale is built on a single ratio that flexes across sixteen sizes — from a captioned image credit to a wall-scale statement. Regional teams inherit the ratio, not the pixel values, so every locale keeps its own texture.</p>
+          <p>Component library ships as a Figma variables kit and a matching CSS token set — designers and engineers work from the same source of truth.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 5 — three media at 1 col each, tight rhythm. -->
+    <figure class="media g-span-1 media--square">
+      <img class="media__img" src="ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO detail 04" />
+      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show detail">
+        <span class="media-tab__glyph" aria-hidden="true"></span>
+        <span class="media-tab__panel">Signage system — routed brass on limestone, tested on-site in Aleppo.</span>
+      </button>
+    </figure>
+    <figure class="media g-span-1 media--square">
+      <img class="media__img" src="ASSETS/IMAGES/UNESCO/05.jpg" alt="UNESCO detail 05" />
+      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show detail">
+        <span class="media-tab__glyph" aria-hidden="true"></span>
+        <span class="media-tab__panel">Editorial layout — variable-width columns respond to language density.</span>
+      </button>
+    </figure>
+    <figure class="media g-span-1 media--square">
+      <img class="media__img" src="ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO detail 06" />
+      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show detail">
+        <span class="media-tab__glyph" aria-hidden="true"></span>
+        <span class="media-tab__panel">Digital archive — interactive components let visitors trace an artifact's provenance.</span>
+      </button>
+    </figure>
+
+    <!-- Row 6 — full-width closer. Sits alone; grid-breaking whitespace. -->
+    <div class="g-span-3">
+      <p class="statement">
+        Placeholder closing statement —
+        <em>the story ends where the reader begins.</em>
+      </p>
+    </div>
+
   </section>
+
+  <!-- ══════════════════════ PREV / NEXT PAGER ═════════════════════════ -->
+  <nav class="pager" aria-label="Case navigation">
+    <a class="pager__link pager__link--prev" href="mind.html">
+      <span class="pager__label"><span class="pager__arrow" aria-hidden="true">←</span> Previous</span>
+      <span class="pager__title">San Diego FC</span>
+    </a>
+    <a class="pager__link pager__link--next" href="mind.html">
+      <span class="pager__label">Next <span class="pager__arrow" aria-hidden="true">→</span></span>
+      <span class="pager__title">BLLCRW. Melange</span>
+    </a>
+  </nav>
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
@@ -194,5 +614,38 @@
     </div>
   </footer>
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
+
+  <script>
+  /* ══════════════════════════════════════════════════════════════════
+     Interaction — media tabs + read-more expansions.
+     Both use aria-expanded as the source of truth so screen readers
+     see the correct state. The read-more panel uses the grid-rows
+     0fr → 1fr trick so the transition is smooth without hard-coding a
+     max-height that could clip long content.
+     ══════════════════════════════════════════════════════════════════ */
+  (function () {
+    'use strict';
+
+    document.querySelectorAll('.media-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var open = tab.getAttribute('aria-expanded') === 'true';
+        tab.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+    });
+
+    document.querySelectorAll('.read-more').forEach(function (btn) {
+      var targetId = btn.getAttribute('aria-controls');
+      var panel = targetId ? document.getElementById(targetId) : null;
+      if (!panel) return;
+      var labelSpan = btn.querySelector('span:not(.read-more__glyph)');
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+        panel.classList.toggle('is-open', !open);
+        if (labelSpan) labelSpan.textContent = open ? 'Read more' : 'Read less';
+      });
+    });
+  })();
+  </script>
 </body>
 </html>
