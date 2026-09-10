@@ -6,10 +6,9 @@ ffmpeg2pass-*
 *.log
 *.mbtree
 
-# Raw video sources — commit ONLY the web-optimized versions.
-# The raw uploads (e.g. CD5_SP26_David Gomez_Motion Trailer.mp4)
-# are over GitHub's 100 MB push limit; keep them local, commit the
-# compressed trailer.mp4 that lives alongside.
-CD5_SP26_*
+# Raw source uploads (course-code prefixed — CD5_SP26_*, CD5_WEEK*_*,
+# etc.) are always oversized and get compressed to web-friendly JPGs /
+# MP4s that live alongside. Never commit the raw originals.
+CD5_*
 *_Motion Trailer.mp4
 *_MotionTrailer.mp4
