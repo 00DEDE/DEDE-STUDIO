@@ -470,6 +470,14 @@
     user-select: none;
     -webkit-user-drag: none;
   }
+  /* Image 01 (the poster) is narrower than the book mockups; extra
+     inline margin equal to one full gap on each side effectively
+     doubles the breathing room around it, so it reads as an
+     intentional pause between mockups rather than a squeeze. Targets
+     both DOM instances (original + wrap-duplicate) via attribute. */
+  .floating-carousel__slide[src$="carousel-01.png"] {
+    margin-inline: clamp(2rem, 4vw, 4rem);
+  }
   @media (prefers-reduced-motion: reduce) {
     /* No auto-scroll for users who prefer less motion; the JS bails
        out too. Track stays put so the first few slides are visible. */
