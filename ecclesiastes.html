@@ -431,33 +431,50 @@
     outline: none;
   }
 
-  /* ─── FLOATING CAROUSEL — transparent PNGs, no cell chrome ────────
+  /* ─── FLOATING CAROUSEL — transparent PNGs, marquee-style ─────────
      Sits inside the grid but breaks it: full-width row (g-span-3),
-     no rounded container, no background, no cover-crop. The image
-     floats directly on the page background at 50vh natural aspect. */
+     no cell chrome. Slides marquee right→left on their own; hover
+     modulates speed + direction (JS handles the transform). The
+     container clips the moving track so slides can sit off-screen
+     until they scroll in. Height at 75vh — 50% larger than the
+     original 50vh scale as requested. */
   .floating-carousel {
+    position: relative;
+    height: 75vh;
+    height: 75svh;
+    margin: 0;
+    overflow: hidden;
+    /* Bleed edge-to-edge on the viewport since g-span-3 respects the
+       grid's --page-x gutter. Negative margin pulls the container
+       past that gutter so the marquee reads as a full-viewport strip
+       with no seams at the edges. */
+    margin-inline: calc(var(--page-x) * -1);
+  }
+  .floating-carousel__track {
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: 50vh;
-    height: 50svh;
-    margin: 0;
-    /* No border-radius, no overflow: hidden, no background — the
-       transparent PNG shows the page bg through wherever alpha is 0. */
+    height: 100%;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding: 0 clamp(2rem, 4vw, 4rem);
+    width: max-content;              /* let track expand to fit all slides */
+    transform: translate3d(0, 0, 0); /* seed for GPU compositing */
+    will-change: transform;
   }
   .floating-carousel__slide {
     display: block;
-    max-width: 100%;
-    max-height: 100%;
     height: 100%;
     width: auto;
+    max-width: none;                 /* prevent flex from squeezing width */
     object-fit: contain;
-    /* Non-active carousel slides (future) start hidden; the .is-active
-       slide is the one currently visible. */
-    opacity: 0;
-    transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-drag: none;
   }
-  .floating-carousel__slide.is-active { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    /* No auto-scroll for users who prefer less motion; the JS bails
+       out too. Track stays put so the first few slides are visible. */
+    .floating-carousel__track { transform: none; }
+  }
 
   /* ─── Caption below or beside media ──────────────────────────────── */
   .caption {
@@ -733,15 +750,26 @@
       </div>
     </div>
 
-    <!-- Floating carousel — sits ABOVE Media 01, breaking the grid on
-         purpose. No cell chrome (no rounded container, no background,
-         no cover-crop), so the transparent PNG floats directly on the
-         page background. Height fixed at 50vh; width auto so the
-         aspect ratio is preserved. -->
-    <div class="floating-carousel g-span-3">
-      <img class="floating-carousel__slide is-active"
-           src="ASSETS/IMAGES/ECCLESIASTES/carousel-01.png"
-           alt="Ecclesiastes floating composition 01" />
+    <!-- Floating carousel — sits ABOVE Media 01, breaks the grid on
+         purpose. Transparent PNGs marquee right→left on their own,
+         no cell chrome. Hover left half → reverses + speeds up;
+         hover right half → accelerates the natural direction. Slides
+         are duplicated so the wrap is seamless (when the first set
+         scrolls fully off, the duplicate is already in position). -->
+    <div class="floating-carousel g-span-3" aria-label="Ecclesiastes floating composition carousel">
+      <div class="floating-carousel__track">
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="Ecclesiastes floating composition 01" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="Ecclesiastes floating composition 02" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="Ecclesiastes floating composition 04" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="Ecclesiastes floating composition 05" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="Ecclesiastes floating composition 06" />
+        <!-- Duplicate set for seamless wrap — decorative only. -->
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="" aria-hidden="true" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="" aria-hidden="true" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="" aria-hidden="true" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="" aria-hidden="true" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="" aria-hidden="true" />
+      </div>
     </div>
 
     <!-- Media 01 (wide, spans 2 cols) + caption in col 3 -->
@@ -902,6 +930,94 @@
         if (labelSpan) labelSpan.textContent = open ? 'Read more' : 'Read less';
       });
     });
+
+    /* ── Floating carousel marquee ─────────────────────────────────
+       Slides marquee right→left on their own. Cursor position inside
+       the carousel modulates speed + direction:
+         • cursor at center       → base speed (natural leftward drift)
+         • cursor toward the right → accelerates the natural direction
+         • cursor toward the left  → reverses direction and speeds up
+       Distance from center scales the magnitude linearly (-1 to +1).
+       Wrap is seamless: slides are duplicated in the DOM; when the
+       track has scrolled past one full set-width, x resets by that
+       width and the duplicate visually replaces the original mid-frame.
+       Respects prefers-reduced-motion + pauses when off-screen or the
+       tab is hidden (battery + CPU). */
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var carousel = document.querySelector('.floating-carousel');
+      var track    = carousel && carousel.querySelector('.floating-carousel__track');
+      if (!carousel || !track) return;
+
+      var BASE_SPEED   = -0.6;   // px per frame at rest (leftward)
+      var HOVER_BOOST  = 3.5;    // multiplier at the far edges
+      var hoverInf     = 0;      // -1 (left edge) → 0 (center) → +1 (right edge)
+      var x            = 0;
+      var paused       = false;
+      var halfWidth    = 0;
+
+      if (window.matchMedia('(hover: hover)').matches) {
+        carousel.addEventListener('mousemove', function (e) {
+          var rect = carousel.getBoundingClientRect();
+          var t = (e.clientX - rect.left) / rect.width;      // 0..1
+          hoverInf = Math.max(-1, Math.min(1, t * 2 - 1));
+        });
+        carousel.addEventListener('mouseleave', function () { hoverInf = 0; });
+      }
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          paused = !entries[0].isIntersecting;
+        }, { threshold: 0 }).observe(carousel);
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) paused = true;
+        else if ('IntersectionObserver' in window) {
+          /* IO won't re-fire on tab return; poll bounds once here. */
+          var r = carousel.getBoundingClientRect();
+          paused = r.bottom < 0 || r.top > window.innerHeight;
+        } else paused = false;
+      });
+
+      function measure() {
+        /* Half the track width = one full set of slides (before the
+           duplicate). Recompute on load + resize because the track
+           expands to fit however many <img> children the page has. */
+        halfWidth = track.scrollWidth / 2;
+      }
+      window.addEventListener('resize', measure);
+
+      function tick() {
+        if (!paused && halfWidth > 0) {
+          /* Right hover → hoverInf > 0 → speed becomes more negative
+             (faster left). Left hover → hoverInf < 0 → speed flips
+             sign or slows toward positive (reverses direction). */
+          var speed = BASE_SPEED - hoverInf * HOVER_BOOST;
+          x += speed;
+          if (x <= -halfWidth) x += halfWidth;
+          else if (x > 0)      x -= halfWidth;
+          track.style.transform = 'translate3d(' + x + 'px, 0, 0)';
+        }
+        requestAnimationFrame(tick);
+      }
+
+      /* Wait for images so scrollWidth is accurate. */
+      var imgs = track.querySelectorAll('img');
+      var pending = imgs.length;
+      function ready() {
+        if (--pending > 0) return;
+        measure();
+        requestAnimationFrame(tick);
+      }
+      if (pending === 0) { measure(); requestAnimationFrame(tick); return; }
+      imgs.forEach(function (img) {
+        if (img.complete && img.naturalWidth > 0) ready();
+        else {
+          img.addEventListener('load',  ready);
+          img.addEventListener('error', ready);
+        }
+      });
+    })();
 
     /* ── Hero video controls ─────────────────────────────────────────
        Each control button uses data-state as its source of truth so
