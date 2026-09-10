@@ -638,8 +638,9 @@
       </p>
     </div>
 
-    <!-- Media 02 spans full width for impact -->
-    <figure class="media media--cinema g-span-3">
+    <!-- Media 02 spans full width for impact — aspect override matches
+         11.jpg's native 3:2 so the whole frame is visible (no top/bottom crop). -->
+    <figure class="media g-span-3" style="aspect-ratio: 3 / 2;">
       <img class="media__img" src="ASSETS/IMAGES/UNESCO/11.jpg" alt="UNESCO palette study" />
       <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 02 detail">
         <span class="media-tab__num" aria-hidden="true">02</span>
