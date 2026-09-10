@@ -315,17 +315,6 @@
     display: block;
   }
 
-  /* ─── Hover-pan modifier — image shifts under the cursor to reveal
-     whatever part of it was hidden by the cover-crop. Transition on
-     object-position gives the movement a soft trail instead of a
-     rigid 1:1 follow. Only enabled on hover-capable devices; touch
-     falls back to the default centered cover. */
-  @media (hover: hover) {
-    .media--pan .media__img {
-      transition: object-position 260ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-  }
-
   .media-tab {
     position: absolute;
     top: clamp(0.75rem, 1vw, 1rem);
@@ -649,13 +638,9 @@
       </p>
     </div>
 
-    <!-- Media 02 spans full width for impact. Aspect stays cinema (21:9)
-         so the frame reads as a cinematic strip; the media--pan modifier
-         lets the user hover to shift object-position and reveal the rest
-         of the image (11.jpg is 3:2, so vertical slices are hidden by
-         cover-crop — panning surfaces them). -->
-    <figure class="media media--cinema media--pan g-span-3">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/11.jpg" alt="UNESCO palette study" />
+    <!-- Media 02 spans full width for impact -->
+    <figure class="media media--cinema g-span-3">
+      <img class="media__img" src="ASSETS/IMAGES/UNESCO/03.jpg" alt="UNESCO palette study" />
       <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 02 detail">
         <span class="media-tab__num" aria-hidden="true">02</span>
         <span class="media-tab__panel">Palette derived from seventeen heritage sites — pigment sampled from stone, cloth, and light.</span>
@@ -788,36 +773,6 @@
         if (labelSpan) labelSpan.textContent = open ? 'Read more' : 'Read less';
       });
     });
-
-    /* ── Hover pan on .media--pan cells ────────────────────────────────
-       Mouse position inside the cell maps to object-position on the img
-       so the cropped-out portions of the image slide into view under
-       the cursor. requestAnimationFrame throttles updates to the paint
-       rhythm — smooth on high-freq mice, no dropped frames. Only wires
-       on hover-capable devices; touch keeps the default centered crop. */
-    if (window.matchMedia('(hover: hover)').matches) {
-      document.querySelectorAll('.media--pan').forEach(function (cell) {
-        var img = cell.querySelector('.media__img');
-        if (!img) return;
-        var raf = 0, latestX = 0, latestY = 0;
-        function apply() {
-          img.style.objectPosition = latestX + '% ' + latestY + '%';
-          raf = 0;
-        }
-        cell.addEventListener('mousemove', function (e) {
-          var rect = cell.getBoundingClientRect();
-          latestX = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width)  * 100));
-          latestY = Math.max(0, Math.min(100, ((e.clientY - rect.top ) / rect.height) * 100));
-          if (!raf) raf = requestAnimationFrame(apply);
-        });
-        cell.addEventListener('mouseleave', function () {
-          /* Ease back to the default centered position instead of
-             jump-cutting there. Clearing the inline style lets the
-             CSS default (50% 50%) take over via the transition. */
-          img.style.objectPosition = '';
-        });
-      });
-    }
   })();
   </script>
 </body>
