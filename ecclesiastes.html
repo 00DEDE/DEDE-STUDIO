@@ -504,14 +504,35 @@
       height: 52.5svh;
     }
   }
-  .carousel-toggle {
-    display: none;                   /* desktop hides it entirely */
+  /* Controls row wrapping the three pills. Handles show/hide (only
+     on touch devices) + positions the arrows at the screen edges
+     with the pause centered. Spacing: top margin reduced 15% from
+     the previous carousel→toggle gap; bottom margin equals one full
+     grid gap so the space to the image below is doubled (grid gap
+     + margin = 2 × gap). */
+  .carousel-controls {
+    display: none;                         /* desktop hides the whole row */
+    align-items: center;
+    justify-content: space-between;        /* arrows at edges, pause centered */
+    padding: 0 var(--page-x);
+    box-sizing: border-box;
+    margin-top:    clamp(0.85rem, 2.125vh, 1.275rem);
+    margin-bottom: var(--stack-y-tight);
+  }
+  @media (hover: none) {
+    .carousel-controls { display: flex; }
+  }
+
+  /* Shared pill styling — pause toggle + prev/next arrows all share
+     the same visual vocabulary (glass pill, frosted, brand-accent
+     when active). */
+  .carousel-toggle,
+  .carousel-nav {
+    display: flex;
     align-items: center;
     justify-content: center;
-    justify-self: center;            /* grid alignment — sits centered in the row */
     width:  clamp(2.4rem, 8vw, 2.8rem);
     height: clamp(2.4rem, 8vw, 2.8rem);
-    margin-top: clamp(1rem, 2.5vh, 1.5rem);
     padding: 0;
     background: rgba(var(--fg-rgb), 0.08);
     color: var(--fg);
@@ -520,12 +541,31 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     cursor: var(--cursor-url) 16 16, pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;           /* stop iOS long-press menu */
     transition:
       background   240ms cubic-bezier(0.4, 0, 0.2, 1),
       border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
       transform    240ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .carousel-toggle:active { transform: scale(0.94); }
+  .carousel-toggle:active,
+  .carousel-nav:active { transform: scale(0.94); }
+
+  /* Nav arrow active state — brand accent while held (JS sets
+     data-active on touchstart/mousedown, clears on release). */
+  .carousel-nav[data-active="true"] {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+  .carousel-nav__icon {
+    width:  0.8rem;
+    height: 0.8rem;
+    display: block;
+  }
+
+  /* Pause/play icon swap — driven by [data-state] on the toggle. */
   .carousel-toggle__icon {
     width:  0.8rem;
     height: 0.8rem;
@@ -539,10 +579,6 @@
   .carousel-toggle[data-state="playing"] .icon-pause,
   .carousel-toggle[data-state="paused"]  .icon-play {
     display: block;
-  }
-  @media (hover: none) {
-    /* Touch devices always get the toggle. */
-    .carousel-toggle { display: flex; }
   }
 
   /* ─── Caption below or beside media ──────────────────────────────── */
@@ -727,11 +763,10 @@
   <section class="ecclesiastes__intro" aria-label="The Book of Ecclesiastes overview">
     <span class="intro__eyebrow">Case Study · 002</span>
     <h1 class="intro__title">
-      The Book of<br>
-      <!-- Desktop rendering: "Ecclesiastes" on one line. Mobile
-           rendering: hyphen-break at "Ecclesia-" / "stes". CSS
-           toggles which span shows per breakpoint. -->
-      <span class="intro__title-full">Ecclesiastes</span><span class="intro__title-broken">Ecclesia-<br>stes</span>
+      <!-- Desktop: two lines — "The Book of" / "Ecclesiastes".
+           Mobile: four lines — "The" / "Book of" / "Ecclesia-" / "stes".
+           CSS toggles which span shows per breakpoint. -->
+      <span class="intro__title-full">The Book of<br>Ecclesiastes</span><span class="intro__title-broken">The<br>Book of<br>Ecclesia-<br>stes</span>
     </h1>
     <p class="intro__lead">
       A compositional design study — exploring how meaning
@@ -861,21 +896,37 @@
       </div>
     </div>
 
-    <!-- Mobile-only play/pause toggle — sits directly below the
-         carousel because touch devices have no hover to modulate
-         speed. Placed as a grid sibling (not inside .floating-carousel,
-         which has overflow:hidden and would clip it out). Two icons
-         swap via [data-state]; JS wires it to userPaused which the
-         marquee tick loop respects. -->
-    <button class="carousel-toggle g-span-3" type="button" data-state="playing" aria-label="Pause carousel">
-      <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
-        <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
-        <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
-      </svg>
-      <svg class="carousel-toggle__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
-      </svg>
-    </button>
+    <!-- Mobile-only carousel controls — three pills in a row.
+         • Left arrow (hold): reverses direction and speeds up, same
+           effect the desktop cursor gets when hovered on the far
+           left side of the carousel.
+         • Center pause/play: toggles the auto-marquee entirely.
+         • Right arrow (hold): accelerates the natural leftward
+           direction, same effect as far-right desktop hover.
+         Placed as a grid sibling of .floating-carousel (not inside,
+         which has overflow:hidden and would clip). Only visible on
+         touch devices via @media (hover: none). -->
+    <div class="carousel-controls g-span-3">
+      <button class="carousel-nav carousel-nav--prev" type="button" aria-label="Hold to rewind carousel">
+        <svg class="carousel-nav__icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M10 3 L4 8 L10 13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="carousel-toggle" type="button" data-state="playing" aria-label="Pause carousel">
+        <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
+          <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
+          <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
+        </svg>
+        <svg class="carousel-toggle__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
+      <button class="carousel-nav carousel-nav--next" type="button" aria-label="Hold to advance carousel">
+        <svg class="carousel-nav__icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M6 3 L12 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
 
     <!-- Media 01 (wide, spans 2 cols) + caption in col 3 -->
     <figure class="media media--wide g-span-2">
@@ -1054,7 +1105,11 @@
       var track    = carousel && carousel.querySelector('.floating-carousel__track');
       if (!carousel || !track) return;
 
-      var BASE_SPEED   = -0.6;   // px per frame at rest (leftward)
+      /* Mobile baseline is 20% faster than desktop — touch users see
+         the carousel briefly, so the sequence needs to advance a
+         little quicker to feel active. */
+      var IS_TOUCH     = window.matchMedia('(hover: none)').matches;
+      var BASE_SPEED   = IS_TOUCH ? -0.72 : -0.6;  // px per frame at rest (leftward)
       var HOVER_BOOST  = 3.5;    // multiplier at the far edges
       var hoverInf     = 0;      // -1 (left edge) → 0 (center) → +1 (right edge)
       var x            = 0;
@@ -1104,6 +1159,32 @@
             userPaused ? 'Play carousel' : 'Pause carousel');
         });
       }
+
+      /* Hold-to-boost nav arrows — mirror the desktop hover-modulation.
+         Left button held = hoverInf -1 (reverses + speeds up). Right
+         button held = hoverInf +1 (accelerates the natural direction).
+         Release = back to base speed. Applied on both pointer and
+         touch events so it works everywhere. touchstart preventsDefault
+         to stop iOS turning the hold into a text-select / drag. */
+      function bindBoost(btn, direction) {
+        if (!btn) return;
+        function activate(e) {
+          e.preventDefault();
+          hoverInf = direction;
+          btn.setAttribute('data-active', 'true');
+        }
+        function release() {
+          hoverInf = 0;
+          btn.removeAttribute('data-active');
+        }
+        btn.addEventListener('mousedown',  activate);
+        btn.addEventListener('touchstart', activate, { passive: false });
+        ['mouseup', 'mouseleave', 'touchend', 'touchcancel', 'blur'].forEach(function (evt) {
+          btn.addEventListener(evt, release);
+        });
+      }
+      bindBoost(document.querySelector('.carousel-nav--prev'), -1);
+      bindBoost(document.querySelector('.carousel-nav--next'), +1);
 
       function tick() {
         if (!paused && !userPaused && halfWidth > 0) {
