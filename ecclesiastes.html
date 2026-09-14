@@ -508,9 +508,10 @@
     display: none;                   /* desktop hides it entirely */
     align-items: center;
     justify-content: center;
+    justify-self: center;            /* grid alignment — sits centered in the row */
     width:  clamp(2.4rem, 8vw, 2.8rem);
     height: clamp(2.4rem, 8vw, 2.8rem);
-    margin: clamp(1rem, 2.5vh, 1.5rem) auto 0;
+    margin-top: clamp(1rem, 2.5vh, 1.5rem);
     padding: 0;
     background: rgba(var(--fg-rgb), 0.08);
     color: var(--fg);
@@ -541,7 +542,7 @@
   }
   @media (hover: none) {
     /* Touch devices always get the toggle. */
-    .carousel-toggle { display: inline-flex; }
+    .carousel-toggle { display: flex; }
   }
 
   /* ─── Caption below or beside media ──────────────────────────────── */
@@ -858,20 +859,23 @@
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="" aria-hidden="true" />
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="" aria-hidden="true" />
       </div>
-      <!-- Mobile-only play/pause toggle — sits directly below the
-           carousel because touch devices have no hover to modulate
-           speed. Two icons swap via [data-state]; JS wires it to
-           userPaused which the marquee tick loop respects. -->
-      <button class="carousel-toggle" type="button" data-state="playing" aria-label="Pause carousel">
-        <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
-          <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
-          <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
-        </svg>
-        <svg class="carousel-toggle__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
-        </svg>
-      </button>
     </div>
+
+    <!-- Mobile-only play/pause toggle — sits directly below the
+         carousel because touch devices have no hover to modulate
+         speed. Placed as a grid sibling (not inside .floating-carousel,
+         which has overflow:hidden and would clip it out). Two icons
+         swap via [data-state]; JS wires it to userPaused which the
+         marquee tick loop respects. -->
+    <button class="carousel-toggle g-span-3" type="button" data-state="playing" aria-label="Pause carousel">
+      <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
+        <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
+        <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
+      </svg>
+      <svg class="carousel-toggle__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
 
     <!-- Media 01 (wide, spans 2 cols) + caption in col 3 -->
     <figure class="media media--wide g-span-2">
@@ -1091,7 +1095,7 @@
 
       /* Mobile play/pause toggle — sets userPaused, updates its own
          state attributes so the icon swap + aria-label match. */
-      var toggle = carousel.querySelector('.carousel-toggle');
+      var toggle = document.querySelector('.carousel-toggle');
       if (toggle) {
         toggle.addEventListener('click', function () {
           userPaused = !userPaused;
