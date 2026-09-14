@@ -1107,10 +1107,11 @@
 
       /* Mobile baseline is 20% faster than desktop — touch users see
          the carousel briefly, so the sequence needs to advance a
-         little quicker to feel active. */
+         little quicker to feel active. Both speeds bumped 10% from
+         their previous rates for a slightly more energetic drift. */
       var IS_TOUCH     = window.matchMedia('(hover: none)').matches;
-      var BASE_SPEED   = IS_TOUCH ? -0.72 : -0.6;  // px per frame at rest (leftward)
-      var HOVER_BOOST  = 3.5;    // multiplier at the far edges
+      var BASE_SPEED   = IS_TOUCH ? -0.792 : -0.66; // px per frame at rest (leftward)
+      var HOVER_BOOST  = 4.2;    // multiplier at the far edges (+20% from 3.5)
       var hoverInf     = 0;      // -1 (left edge) → 0 (center) → +1 (right edge)
       var x            = 0;
       var paused       = false;  // IO / visibility (auto)
