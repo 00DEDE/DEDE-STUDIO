@@ -484,6 +484,66 @@
     .floating-carousel__track { transform: none; }
   }
 
+  /* ─── Mobile: title hyphen-break "Ecclesia-" / "stes" ────────────
+     The full-word span shows on desktop; the broken span shows on
+     mobile. Uses display:none swap so screen readers see whichever
+     is currently visible (they respect display:none). */
+  .intro__title-broken { display: none; }
+  @media (max-width: 640px) {
+    .intro__title-full   { display: none; }
+    .intro__title-broken { display: inline; }
+  }
+
+  /* ─── Mobile: carousel scaled 30% smaller + play/pause toggle ────
+     Marquee stays on but sits at 52.5vh (0.7 × 75vh); a pill button
+     below the carousel lets touch users pause/resume the sequence
+     (they have no cursor to hover-modulate the speed). */
+  @media (max-width: 900px) {
+    .floating-carousel {
+      height: 52.5vh;
+      height: 52.5svh;
+    }
+  }
+  .carousel-toggle {
+    display: none;                   /* desktop hides it entirely */
+    align-items: center;
+    justify-content: center;
+    width:  clamp(2.4rem, 8vw, 2.8rem);
+    height: clamp(2.4rem, 8vw, 2.8rem);
+    margin: clamp(1rem, 2.5vh, 1.5rem) auto 0;
+    padding: 0;
+    background: rgba(var(--fg-rgb), 0.08);
+    color: var(--fg);
+    border: 1px solid rgba(var(--fg-rgb), 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: var(--cursor-url) 16 16, pointer;
+    transition:
+      background   240ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform    240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .carousel-toggle:active { transform: scale(0.94); }
+  .carousel-toggle__icon {
+    width:  0.8rem;
+    height: 0.8rem;
+    display: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .carousel-toggle[data-state="playing"] .icon-pause,
+  .carousel-toggle[data-state="paused"]  .icon-play {
+    display: block;
+  }
+  @media (hover: none) {
+    /* Touch devices always get the toggle. */
+    .carousel-toggle { display: inline-flex; }
+  }
+
   /* ─── Caption below or beside media ──────────────────────────────── */
   .caption {
     margin: 0;
@@ -665,7 +725,13 @@
   <!-- ══════════════════════ INTRO ══════════════════════ -->
   <section class="ecclesiastes__intro" aria-label="The Book of Ecclesiastes overview">
     <span class="intro__eyebrow">Case Study · 002</span>
-    <h1 class="intro__title">The Book of<br>Ecclesiastes</h1>
+    <h1 class="intro__title">
+      The Book of<br>
+      <!-- Desktop rendering: "Ecclesiastes" on one line. Mobile
+           rendering: hyphen-break at "Ecclesia-" / "stes". CSS
+           toggles which span shows per breakpoint. -->
+      <span class="intro__title-full">Ecclesiastes</span><span class="intro__title-broken">Ecclesia-<br>stes</span>
+    </h1>
     <p class="intro__lead">
       A compositional design study — exploring how meaning
       emerges from arrangement, and how <em>line, form, and space</em>
@@ -775,6 +841,9 @@
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="Ecclesiastes floating composition 08" />
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="Ecclesiastes floating composition 09" />
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="Ecclesiastes floating composition 10" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="Ecclesiastes floating composition 11" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="Ecclesiastes floating composition 12" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="Ecclesiastes floating composition 13" />
         <!-- Duplicate set for seamless wrap — decorative only. -->
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="" aria-hidden="true" />
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="" aria-hidden="true" />
@@ -785,7 +854,23 @@
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="" aria-hidden="true" />
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="" aria-hidden="true" />
         <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="" aria-hidden="true" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="" aria-hidden="true" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="" aria-hidden="true" />
+        <img class="floating-carousel__slide" src="ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="" aria-hidden="true" />
       </div>
+      <!-- Mobile-only play/pause toggle — sits directly below the
+           carousel because touch devices have no hover to modulate
+           speed. Two icons swap via [data-state]; JS wires it to
+           userPaused which the marquee tick loop respects. -->
+      <button class="carousel-toggle" type="button" data-state="playing" aria-label="Pause carousel">
+        <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
+          <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
+          <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
+        </svg>
+        <svg class="carousel-toggle__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
     </div>
 
     <!-- Media 01 (wide, spans 2 cols) + caption in col 3 -->
@@ -969,7 +1054,8 @@
       var HOVER_BOOST  = 3.5;    // multiplier at the far edges
       var hoverInf     = 0;      // -1 (left edge) → 0 (center) → +1 (right edge)
       var x            = 0;
-      var paused       = false;
+      var paused       = false;  // IO / visibility (auto)
+      var userPaused   = false;  // toggle button (mobile)
       var halfWidth    = 0;
 
       if (window.matchMedia('(hover: hover)').matches) {
@@ -1003,8 +1089,20 @@
       }
       window.addEventListener('resize', measure);
 
+      /* Mobile play/pause toggle — sets userPaused, updates its own
+         state attributes so the icon swap + aria-label match. */
+      var toggle = carousel.querySelector('.carousel-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', function () {
+          userPaused = !userPaused;
+          toggle.setAttribute('data-state', userPaused ? 'paused' : 'playing');
+          toggle.setAttribute('aria-label',
+            userPaused ? 'Play carousel' : 'Pause carousel');
+        });
+      }
+
       function tick() {
-        if (!paused && halfWidth > 0) {
+        if (!paused && !userPaused && halfWidth > 0) {
           /* Right hover → hoverInf > 0 → speed becomes more negative
              (faster left). Left hover → hoverInf < 0 → speed flips
              sign or slows toward positive (reverses direction). */
