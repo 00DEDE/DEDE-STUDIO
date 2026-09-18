@@ -24,21 +24,24 @@ body:has(.site-header) {
   align-items: center;
   pointer-events: none;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  /* Palette-driven tint — uses --fg-rgb so the pill auto-swaps:
-     warm cream haze on dark bg, warm dark haze on light bg. Both
-     read as an elevated surface over their respective backdrops
-     without needing per-mode overrides. Softer blur + shadow than
-     the previous "Vision Pro" treatment — reads as glass, not tech. */
-  background: rgba(var(--fg-rgb), 0.06);
+  /* Contrasting neutral scrim — pill stays visible over the full
+     range of backdrops it can end up over (page bg, atmospheric
+     blobs, hero imagery). Dark mode gets a 20% black scrim so the
+     pill DARKENS against lighter regions; light mode gets the
+     opposite (20% white) so it LIGHTENS against darker regions.
+     Previous same-tone tint (rgba(var(--fg-rgb), 0.06)) blended
+     into whichever context was similar to the fg color. */
+  background: rgba(0, 0, 0, 0.20);
   -webkit-backdrop-filter: blur(8px);
           backdrop-filter: blur(8px);
   border-radius: 999px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
 }
 [data-theme="light"] .site-header {
-  /* Lighter drop shadow on the cream backdrop — the fg-rgb tint
-     alone gives enough contrast; heavy shadow would darken the
-     page mood. */
+  /* Opposite in light mode — 20% white scrim brightens the pill so
+     it stands out over darker atmospheric regions. Shadow softens
+     because the white haze already carries the elevation cue. */
+  background: rgba(255, 255, 255, 0.20);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 .site-header > * { pointer-events: auto; }
