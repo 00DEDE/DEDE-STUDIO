@@ -109,16 +109,19 @@
     <!-- Each logo has dedicated cyan (dark) + red (light) files rather than
          relying on hue-rotate — that filter fades anti-aliased edges. The
          theme-img classes in theme.css hide the wrong-theme copy. -->
-    <img class="logo logo--horizontal theme-img theme-img--dark is-visible"
+    <!-- Initial visible state: stacked mark (both theme variants).
+         Horizontal wordmark is unhidden after the swap cycle so it's
+         the LAST logo the viewer sees before the fade-out. -->
+    <img class="logo logo--horizontal theme-img theme-img--dark"
          src="ASSETS/LOGO/IAMDEDE_LOGO-1-loading-cyan.png"
          alt="DĒDĒ STUDIO" />
-    <img class="logo logo--horizontal theme-img theme-img--light is-visible"
+    <img class="logo logo--horizontal theme-img theme-img--light"
          src="ASSETS/LOGO/IAMDEDE_LOGO-1-loading-red.png"
          alt="DĒDĒ STUDIO" />
-    <img class="logo logo--stacked theme-img theme-img--dark"
+    <img class="logo logo--stacked theme-img theme-img--dark is-visible"
          src="ASSETS/LOGO/IAMDEDE_LOGO-2-loading-cyan.png"
          alt="DĒDĒ STUDIO" />
-    <img class="logo logo--stacked theme-img theme-img--light"
+    <img class="logo logo--stacked theme-img theme-img--light is-visible"
          src="ASSETS/LOGO/IAMDEDE_LOGO-2-loading-red.png"
          alt="DĒDĒ STUDIO" />
   </div>
@@ -132,14 +135,17 @@
       const show = (nodes) => nodes.forEach((n) => n.classList.add('is-visible'));
       const hide = (nodes) => nodes.forEach((n) => n.classList.remove('is-visible'));
 
-      // Slow graceful ping-pong between the two logos, ending on the
-      // horizontal DĒDĒ STUDIO wordmark, then a soft fade into
-      // selections. All timings expressed in ms.
-      const INITIAL_HOLD_MS = 900;   // horizontal visible before first swap
+      // Slow graceful ping-pong — starts on the stacked mark and ends
+      // on the horizontal DĒDĒ STUDIO wordmark (last thing the viewer
+      // sees before the fade to home). All timings in ms.
+      // Sequence:  stacked → horizontal → stacked → horizontal (final)
+      // Total: 900 + 3·1200 + 2·700 + 1600 + 500 = 8000ms (1500ms
+      // shorter than the previous ~9500ms run).
+      const INITIAL_HOLD_MS = 900;   // stacked visible before first swap
       const CROSSFADE_MS    = 1200;  // matches the CSS opacity transition
       const HOLD_MS         = 700;   // pause between crossfades
-      const SWAPS           = 4;     // even count → ends on horizontal
-      const FINAL_HOLD_MS   = 1200;  // let the wordmark settle before fade
+      const SWAPS           = 3;     // odd count starting from stacked → ends on horizontal
+      const FINAL_HOLD_MS   = 1600;  // let the wordmark settle before fade
       const REDIRECT_AT_MS  = 500;   // hand off mid-fade for smooth exit
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -147,13 +153,14 @@
         return;
       }
 
-      let step = 0; // 0-based swap counter — even = go to stacked
+      let step = 0; // 0-based swap counter — even = go to horizontal
+                    // (initial state is stacked, so first swap heads to horizontal)
 
       function swap() {
         if (step % 2 === 0) {
-          hide(horizontals); show(stackeds);
-        } else {
           hide(stackeds); show(horizontals);
+        } else {
+          hide(horizontals); show(stackeds);
         }
         step++;
         if (step < SWAPS) {
