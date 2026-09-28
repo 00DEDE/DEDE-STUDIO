@@ -365,6 +365,15 @@ html { background: var(--bg); }
     }
   }
 
+  /* Mobile: type reads 25% larger than the desktop clamp would give
+     at the same viewport widths (min + vw each ×1.25). Max stays at
+     14.4rem so ultrawide desktops are unaffected. */
+  @media (max-width: 640px) {
+    .home-work > .home-quote {
+      font-size: clamp(2.34rem, 11.525vw, 14.4rem);
+    }
+  }
+
   /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
   @media (max-width: 640px) {
     .home-work { padding: 0.5rem; }
