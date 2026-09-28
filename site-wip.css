@@ -22,33 +22,33 @@
   mix-blend-mode: difference;
 }
 
-.site-wip__track {
-  /* Horizontal rows of "WORK IN PROGRESS" stacked vertically inside
-     the track. The TRACK falls downward on a loop (motion is
-     vertical) while each row reads horizontally like normal text. */
-  display: block;
-  will-change: transform;
-  /* Moderate speed — visibly moving without feeling frantic. Loop is
-     seamless because every row is identical: after the track has
-     shifted down by exactly one row-height, the next row occupies
-     the previous row's position, so the animation resets invisibly. */
-  animation: site-wip-fall 12s linear infinite;
-}
-
 .site-wip__row {
+  /* Single instance of "WORK IN PROGRESS" — falls once through the
+     viewport top-to-bottom on page load, then sits offscreen. No
+     loop, no duplication. Absolute-positioned so it can translate
+     from above the viewport to below it without affecting layout. */
   display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;                /* regular */
-  font-size: 12vw;                 /* fills most of the viewport width */
-  line-height: 1.15;               /* small breathing between rows */
+  font-size: 4.8vw;                /* 60% smaller than the previous 12vw */
+  line-height: 1.15;
   letter-spacing: 0;
-  white-space: nowrap;             /* prevents mid-line wrapping */
+  white-space: nowrap;
   /* Dark theme default → 50% white; light theme override below flips
      to 50% black. Combined with mix-blend-mode: difference on the
      parent, both variants invert against the underlying palette so
      the watermark reads on any backdrop within its own theme. */
   color: rgba(255, 255, 255, 0.5);
+  will-change: transform;
+  /* One-shot animation — plays once per page load. 40% faster than
+     the previous 12s → now 7.2s. `both` fill-mode holds the ending
+     transform after the animation so the text stays offscreen and
+     doesn't snap back to its starting position. */
+  animation: site-wip-fall 7.2s linear 1 both;
 }
 
 /* Light theme swap — pure 50% black instead of 50% white. Difference
@@ -59,17 +59,20 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
-/* Track falls down by exactly one row-height per cycle. Because
-   every row is identical, the reset is invisible — when the animation
-   loops, the row that was second is now in the first row's position,
-   and the eye can't detect the jump. Loop distance is 13.8vw =
-   font-size (12vw) × line-height (1.15) — one row exactly. */
+/* Single fall — enters at the top edge (own height above the
+   viewport), exits past the bottom edge (own height below the
+   viewport). Total travel = 100vh + a bit of buffer so the row
+   fully clears both edges. */
 @keyframes site-wip-fall {
-  from { transform: translateY(-13.8vw); }
-  to   { transform: translateY(0);         }
+  from { transform: translateY(-10vh);  }
+  to   { transform: translateY(110vh); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Motion-sensitive users see a static watermark instead of the loop. */
-  .site-wip__track { animation: none; }
+  /* Motion-sensitive users see the watermark parked at a fixed
+     mid-viewport position rather than the falling animation. */
+  .site-wip__row {
+    animation: none;
+    transform: translateY(50vh);
+  }
 }
