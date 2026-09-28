@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>I AM DĒDĒ.STUDIO</title>
+<title>IAMDEDE.COM</title>
 <link rel="canonical" href="https://iamdede.com/home.html" />
 <link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-96.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-180.png" />
@@ -279,6 +279,39 @@ html { background: var(--bg); }
     margin-bottom: var(--cell-gap);
   }
 
+  /* ─── Pull-quote above the first project ─────────────────────────
+     Same edge-to-edge treatment as .marquee-band — negative inline
+     margin cancels .home-work's --cell-gap padding so the block runs
+     from viewport edge to viewport edge. Big display type, italic
+     accent on the emphasis phrases. Manual line-break controls sit
+     under this rule. */
+  .home-work > .home-quote {
+    margin: 0 calc(-1 * var(--cell-gap)) var(--cell-gap);
+    padding: clamp(3rem, 6vh, 5rem) clamp(1.25rem, 4vw, 3rem);
+    box-sizing: border-box;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.3rem, 4.8vw, 4.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    text-wrap: pretty;
+  }
+  .home-quote em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  /* Line-break control — mobile shows a single break after "stars"
+     (2 lines total); desktop shows two breaks after "lines" and "sky,"
+     (3 lines total). The unused breaks are display:none at each
+     breakpoint so they don't inject stray whitespace. */
+  .brk-mob { display: none; }
+  @media (max-width: 640px) {
+    .brk-desk-1,
+    .brk-desk-2 { display: none; }
+    .brk-mob    { display: inline; }
+  }
+
   /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
   @media (max-width: 640px) {
     .home-work { padding: 0.5rem; }
@@ -324,6 +357,17 @@ html { background: var(--bg); }
   <script src="site-marquee.js" defer></script>
 
   <main class="home-work">
+    <!-- Editorial pull-quote — sits above the UNESCO cell, below the
+         header. Breaks .home-work's --cell-gap padding to run edge-
+         to-edge. Manual <br> tags per breakpoint force 3 lines on
+         desktop, 2 lines on mobile. -->
+    <h2 class="home-quote">
+      &ldquo;...As a child might trace lines<br class="brk-desk-1">
+      between the stars<br class="brk-mob">
+      in the sky,<br class="brk-desk-2">
+      until a constellation emerges.&rdquo;
+    </h2>
+
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
          The .work__media below is view-transition-named "unesco-hero"
          (see the @view-transition block in <style>) so the browser
