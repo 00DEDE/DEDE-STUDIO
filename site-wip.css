@@ -34,21 +34,25 @@
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;                /* regular */
-  font-size: 4.8vw;                /* 60% smaller than the previous 12vw */
+  font-size: 3.84vw;               /* 20% smaller than the previous 4.8vw */
   line-height: 1.15;
   letter-spacing: 0;
   white-space: nowrap;
-  /* Dark theme default → 50% white; light theme override below flips
-     to 50% black. Combined with mix-blend-mode: difference on the
+  /* Dark theme default → pure white; light theme override below flips
+     to pure black. Combined with mix-blend-mode: difference on the
      parent, both variants invert against the underlying palette so
      the watermark reads on any backdrop within its own theme. */
-  color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  /* Explicit 50% opacity — semi-transparent so the content behind
+     the watermark is visible through it. Kept as a distinct property
+     (rather than baked into rgba alpha) for clarity of intent. */
+  opacity: 0.5;
   will-change: transform;
-  /* One-shot animation — plays once per page load. 40% faster than
-     the previous 12s → now 7.2s. `both` fill-mode holds the ending
+  /* One-shot animation — plays once per page load. 20% slower than
+     the previous 7.2s → now 8.64s. `both` fill-mode holds the ending
      transform after the animation so the text stays offscreen and
      doesn't snap back to its starting position. */
-  animation: site-wip-fall 7.2s linear 1 both;
+  animation: site-wip-fall 8.64s linear 1 both;
 }
 
 /* Light theme swap — pure 50% black instead of 50% white. Difference
@@ -56,7 +60,7 @@
    against a light backdrop into a visible dark-gray, and against a
    dark backdrop into a visible light-gray. */
 [data-theme="light"] .site-wip__row {
-  color: rgba(0, 0, 0, 0.5);
+  color: #000000;
 }
 
 /* Single fall — enters at the top edge (own height above the
