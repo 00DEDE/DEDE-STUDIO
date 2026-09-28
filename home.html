@@ -311,6 +311,13 @@ html { background: var(--bg); }
     font-style: italic;
     color: var(--accent);
   }
+  /* Second (mid-page) quote — the base rule's top padding is
+     doubled specifically to clear the header for the FIRST quote.
+     The mid-page one has projects above it, so its top padding
+     drops to match its bottom padding for symmetric breathing. */
+  .home-work > .home-quote ~ .home-quote {
+    padding-top: clamp(3rem, 6vh, 5rem);
+  }
 
   /* Per-word cascade reveal — words start hidden + lifted; when
      .is-revealed is added they cascade in with an ease-in-out curve
