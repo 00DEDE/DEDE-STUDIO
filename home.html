@@ -495,22 +495,21 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- Marquee band — carries the studio's guiding line. -->
-    <h2 class="marquee-band" aria-label="What we choose to give life to, will in return give life to us.">
-      <span class="marquee-band__layers" aria-hidden="true">
-        <span class="marquee-band__blur">
-          <span class="marquee-track">
-            <span class="marquee-phrase">what we choose to give life to, will in return give life to us.&nbsp;&nbsp;&nbsp;</span>
-            <span class="marquee-phrase">what we choose to give life to, will in return give life to us.&nbsp;&nbsp;&nbsp;</span>
-          </span>
-        </span>
-        <span class="marquee-band__sharp">
-          <span class="marquee-track">
-            <span class="marquee-phrase">what we choose to give life to, will in return give life to us.&nbsp;&nbsp;&nbsp;</span>
-            <span class="marquee-phrase">what we choose to give life to, will in return give life to us.&nbsp;&nbsp;&nbsp;</span>
-          </span>
-        </span>
-      </span>
+    <!-- Second editorial pull-statement — mirrors the top quote's
+         structure. 3 lines, per-word cascade reveal (via .home-quote
+         CSS), "us." carries the accent italic + brand color as the
+         reversal punch line. -->
+    <h2 class="home-quote">
+      <span class="word" style="--i:0">What</span>
+      <span class="word" style="--i:1">we</span>
+      <span class="word" style="--i:2">choose</span><br>
+      <span class="word" style="--i:5">to</span>
+      <span class="word" style="--i:6">design,</span>
+      <span class="word" style="--i:7">will</span>
+      <span class="word" style="--i:8">in</span>
+      <span class="word" style="--i:9">return</span><br>
+      <span class="word" style="--i:12">design</span>
+      <span class="word word--accent" style="--i:13">us.</span>
     </h2>
 
     <!-- 4. NANA'S BAKERY ─ single cover -->
@@ -638,38 +637,40 @@ html { background: var(--bg); }
 
     /* ─── Pull-quote cascade reveal ────────────────────────────────
        Words start hidden + slightly lifted + blurred (see the .word
-       CSS above). When the quote scrolls into view (or is already in
-       view on load — home puts it right at the top), .is-revealed
+       CSS above). When each quote scrolls into view, .is-revealed
        triggers the per-word transition-delay cascade. After the last
        word settles, .is-settled swaps to a hover-friendly transition
-       so the reader can interact with individual words. */
-    const homeQuote = document.querySelector('.home-quote');
-    if (homeQuote) {
-      const WORD_COUNT   = 12;    // longest --i index used in the HTML + 1
+       so the reader can interact with individual words. Runs on every
+       .home-quote (top pull-statement + mid-page one). */
+    const homeQuotes = document.querySelectorAll('.home-quote');
+    if (homeQuotes.length) {
       const STAGGER_MS_Q = 91;    // matches the CSS delay multiplier
-      const WORD_ANIM_MS = 1449;  // matches the CSS transform duration (+15%)
-      const SETTLE_AT_MS = 15 * STAGGER_MS_Q + WORD_ANIM_MS + 200;
+      const WORD_ANIM_MS = 1449;  // matches the CSS transform duration
+      const MAX_INDEX    = 15;    // upper bound on --i across all quotes
+      const SETTLE_AT_MS = MAX_INDEX * STAGGER_MS_Q + WORD_ANIM_MS + 200;
 
-      function revealQuote() {
-        homeQuote.classList.add('is-revealed');
-        setTimeout(() => homeQuote.classList.add('is-settled'), SETTLE_AT_MS);
+      function revealQuote(quote) {
+        quote.classList.add('is-revealed');
+        setTimeout(() => quote.classList.add('is-settled'), SETTLE_AT_MS);
       }
 
       if (reduced || !('IntersectionObserver' in window)) {
-        homeQuote.classList.add('is-revealed', 'is-settled');
+        homeQuotes.forEach((q) => q.classList.add('is-revealed', 'is-settled'));
       } else {
         /* Small delay so the page settles visually before the cascade
            starts — prevents the reveal from competing with the initial
-           paint / theme flash guard. */
+           paint / theme flash guard. Each quote is observed
+           independently so the top one plays on load and the mid-page
+           one plays when the reader scrolls it into view. */
         const qio = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              setTimeout(revealQuote, 250);
+              setTimeout(() => revealQuote(entry.target), 250);
               qio.unobserve(entry.target);
             }
           });
         }, { threshold: 0.15 });
-        qio.observe(homeQuote);
+        homeQuotes.forEach((q) => qio.observe(q));
       }
     }
 

@@ -311,6 +311,15 @@ body:has(.site-header) {
   }
   .site-header.is-menu-open .site-header__brand { grid-column: 1; grid-row: 1; }
   .site-header.is-menu-open .site-header__menu  { grid-column: 2; grid-row: 1; align-self: start; }
+  /* Menu-open state gets a 25%-bigger DĒDĒ logo — the compact pill
+     stays at 10.3vw / 150 / 84 so the collapsed header is unchanged;
+     when the drawer opens, the brand mark scales up to anchor the
+     full-screen overlay. Values below are each ×1.25 of the pill. */
+  .site-header.is-menu-open .site-header__brand img {
+    width: 12.875vw;
+    max-width: 187.5px;
+    min-width: 105px;
+  }
   /* Bottom-anchored row containing nav (left) + toggle (right level
      with the last nav item). Row occupies the full remaining height,
      children align-items: end so both stick to the bottom edge. */
