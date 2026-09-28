@@ -312,6 +312,56 @@ html { background: var(--bg); }
     color: var(--accent);
   }
 
+  /* Per-word cascade reveal — words start hidden + lifted; when
+     .is-revealed is added they cascade in on a spring, offset by
+     --i * 65ms so the eye tracks the reveal left→right, top→bottom.
+     The accent word ("Dede.") gets its own italic + brand color for
+     the punchline moment on line 3. */
+  .home-quote .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.5em);
+    filter: blur(6px);
+    transition:
+      opacity   700ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 65ms),
+      transform 900ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 65ms),
+      filter    700ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 65ms);
+  }
+  .home-quote.is-revealed .word {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  .home-quote .word--accent {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* Post-reveal — once the cascade finishes, .is-settled swaps the
+     transition to a hover-friendly one so words can respond to
+     the cursor without inheriting the reveal's staggered delay.
+     Each word lifts + shifts to accent when hovered — makes the
+     block feel alive, inviting the reader to linger. */
+  .home-quote.is-settled .word {
+    transition:
+      color     260ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (hover: hover) {
+    .home-quote.is-settled .word:hover {
+      color: var(--accent);
+      transform: translateY(-0.06em);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-quote .word {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
+  }
+
   /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
   @media (max-width: 640px) {
     .home-work { padding: 0.5rem; }
@@ -357,13 +407,26 @@ html { background: var(--bg); }
   <script src="site-marquee.js" defer></script>
 
   <main class="home-work">
-    <!-- Editorial pull-statement — sits above the UNESCO cell, below
-         the header. Breaks .home-work's --cell-gap padding to run
-         edge-to-edge. Single <br> at the period splits it into 2
-         lines on every viewport. -->
+    <!-- Editorial pull-statement — 3 lines, per-word cascade reveal
+         when the quote enters the viewport. Each .word carries a
+         style="--i:N" that controls its transition-delay so the
+         eye tracks left-to-right, top-to-bottom. Line 3 gets an
+         extra --i jump for a dramatic pause before "I am Dede."
+         lands. .word--accent italicizes + colors "Dede." in brand
+         accent so the punch line has a distinct visual signature. -->
     <h2 class="home-quote">
-      I am David Gomez.<br>
-      To those closest to me, I am Dede.
+      <span class="word" style="--i:0">I</span>
+      <span class="word" style="--i:1">am</span>
+      <span class="word" style="--i:2">David</span>
+      <span class="word" style="--i:3">Gomez.</span><br>
+      <span class="word" style="--i:5">To</span>
+      <span class="word" style="--i:6">those</span>
+      <span class="word" style="--i:7">closest</span>
+      <span class="word" style="--i:8">to</span>
+      <span class="word" style="--i:9">me,</span><br>
+      <span class="word" style="--i:12">I</span>
+      <span class="word" style="--i:13">am</span>
+      <span class="word word--accent" style="--i:14">Dede.</span>
     </h2>
 
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
@@ -568,6 +631,43 @@ html { background: var(--bg); }
       });
     } else {
       works.forEach((w) => w.classList.add('is-in-view'));
+    }
+
+    /* ─── Pull-quote cascade reveal ────────────────────────────────
+       Words start hidden + slightly lifted + blurred (see the .word
+       CSS above). When the quote scrolls into view (or is already in
+       view on load — home puts it right at the top), .is-revealed
+       triggers the per-word transition-delay cascade. After the last
+       word settles, .is-settled swaps to a hover-friendly transition
+       so the reader can interact with individual words. */
+    const homeQuote = document.querySelector('.home-quote');
+    if (homeQuote) {
+      const WORD_COUNT   = 12;   // longest --i index used in the HTML + 1
+      const STAGGER_MS_Q = 65;   // matches the CSS delay multiplier
+      const WORD_ANIM_MS = 900;  // matches the CSS transition-duration
+      const SETTLE_AT_MS = 15 * STAGGER_MS_Q + WORD_ANIM_MS + 200;
+
+      function revealQuote() {
+        homeQuote.classList.add('is-revealed');
+        setTimeout(() => homeQuote.classList.add('is-settled'), SETTLE_AT_MS);
+      }
+
+      if (reduced || !('IntersectionObserver' in window)) {
+        homeQuote.classList.add('is-revealed', 'is-settled');
+      } else {
+        /* Small delay so the page settles visually before the cascade
+           starts — prevents the reveal from competing with the initial
+           paint / theme flash guard. */
+        const qio = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setTimeout(revealQuote, 250);
+              qio.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        qio.observe(homeQuote);
+      }
     }
 
     /* ─── Touch: tap-once reveals VIEW CASE, tap-again navigates ─── */
