@@ -365,13 +365,26 @@ html { background: var(--bg); }
     }
   }
 
+  /* Break-marker toggles — each quote has 2 desktop breaks (after
+     line 1 + after line 2) and a hidden mobile-specific break in
+     the middle of line 2. Below 640px the desktop mid-line break
+     hides and the mobile one shows, giving each quote a different
+     line-2 split per breakpoint while keeping the same 3-line count. */
+  .home-quote .brk-mob { display: none; }
+
   /* Mobile: type reads 25% larger than the desktop clamp would give
      at the same viewport widths (min + vw each ×1.25). Max stays at
-     14.4rem so ultrawide desktops are unaffected. */
+     14.4rem so ultrawide desktops are unaffected. white-space: nowrap
+     forces exactly 3 visual lines per quote (matching the .brk-mob
+     placement) — long lines bleed past the viewport edge, which
+     body's overflow-x: clip absorbs without producing a scrollbar. */
   @media (max-width: 640px) {
     .home-work > .home-quote {
       font-size: clamp(2.34rem, 11.525vw, 14.4rem);
+      white-space: nowrap;
     }
+    .home-quote .brk-desk { display: none; }
+    .home-quote .brk-mob  { display: inline; }
   }
 
   /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
@@ -425,7 +438,10 @@ html { background: var(--bg); }
          eye tracks left-to-right, top-to-bottom. Line 3 gets an
          extra --i jump for a dramatic pause before "I am Dede."
          lands. .word--accent italicizes + colors "Dede." in brand
-         accent so the punch line has a distinct visual signature. -->
+         accent so the punch line has a distinct visual signature.
+         Line-2 break moves per breakpoint via .brk-desk / .brk-mob:
+           Desktop:  I am David Gomez. / To those closest to me, / I am Dede.
+           Mobile:   I am David Gomez. / To those closest       / to me, I am Dede. -->
     <h2 class="home-quote">
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">am</span>
@@ -433,9 +449,9 @@ html { background: var(--bg); }
       <span class="word" style="--i:3">Gomez.</span><br>
       <span class="word" style="--i:5">To</span>
       <span class="word" style="--i:6">those</span>
-      <span class="word" style="--i:7">closest</span>
+      <span class="word" style="--i:7">closest</span><br class="brk-mob">
       <span class="word" style="--i:8">to</span>
-      <span class="word" style="--i:9">me,</span><br>
+      <span class="word" style="--i:9">me,</span><br class="brk-desk">
       <span class="word" style="--i:12">I</span>
       <span class="word" style="--i:13">am</span>
       <span class="word word--accent" style="--i:14">Dede.</span>
@@ -506,8 +522,11 @@ html { background: var(--bg); }
 
     <!-- Second editorial pull-statement — mirrors the top quote's
          structure. 3 lines, per-word cascade reveal (via .home-quote
-         CSS), "us." carries the accent italic + brand color as the
-         reversal punch line. -->
+         CSS), "design us." carries the accent italic + brand color
+         as the reversal punch line.
+         Line-2 break moves per breakpoint via .brk-desk / .brk-mob:
+           Desktop:  What we choose / to design, will in return / design us.
+           Mobile:   What we choose / to design, will in       / return design us. -->
     <h2 class="home-quote">
       <span class="word" style="--i:0">What</span>
       <span class="word" style="--i:1">we</span>
@@ -515,8 +534,8 @@ html { background: var(--bg); }
       <span class="word" style="--i:5">to</span>
       <span class="word" style="--i:6">design,</span>
       <span class="word" style="--i:7">will</span>
-      <span class="word" style="--i:8">in</span>
-      <span class="word" style="--i:9">return</span><br>
+      <span class="word" style="--i:8">in</span><br class="brk-mob">
+      <span class="word" style="--i:9">return</span><br class="brk-desk">
       <span class="word word--accent" style="--i:12">design</span>
       <span class="word word--accent" style="--i:13">us.</span>
     </h2>
