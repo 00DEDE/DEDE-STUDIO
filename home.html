@@ -287,13 +287,23 @@ html { background: var(--bg); }
      under this rule. */
   .home-work > .home-quote {
     margin: 0 calc(-1 * var(--cell-gap)) var(--cell-gap);
-    padding: clamp(3rem, 6vh, 5rem) clamp(1.25rem, 4vw, 3rem);
+    /* Minimal horizontal padding = --cell-gap on each side; matches
+       the rest of the home grid's gutter so the type fills the screen
+       edge-to-edge on desktop while still leaving a hair of breathing
+       room at the viewport edges. Top padding doubled (was 3-6vh-5rem
+       → 6-12vh-10rem) so the quote sits noticeably below the header
+       pill instead of tucking up under it. */
+    padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(1.3rem, 4.8vw, 4.5rem);
-    line-height: 1.04;
-    letter-spacing: -0.025em;
+    font-weight: 700;              /* Extrabold registered on Inter Tight */
+    /* Sized so the longest of the three desktop lines
+       ("between the stars in the sky,") fills viewport width almost
+       to the edges. 6.4vw scales cleanly from ~13" laptop up through
+       ultrawide; 10rem cap keeps it sane on 4K displays. */
+    font-size: clamp(1.3rem, 6.4vw, 10rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     color: var(--fg);
     text-wrap: pretty;
   }
