@@ -313,21 +313,22 @@ html { background: var(--bg); }
   }
 
   /* Per-word cascade reveal — words start hidden + lifted; when
-     .is-revealed is added they cascade in on a spring, offset by
-     --i * 91ms so the eye tracks the reveal left→right, top→bottom.
-     Timing values are 40% slower than the previous 700/900/65ms
-     pass so the reveal reads as a deliberate, editorial gesture
-     rather than a quick pop. The accent word ("Dede.") gets its
-     own italic + brand color for the punchline moment on line 3. */
+     .is-revealed is added they cascade in with an ease-in-out curve
+     (starts gently, accelerates through the middle, decelerates
+     dramatically at the end), offset by --i * 91ms so the eye
+     tracks the reveal left→right, top→bottom. Durations bumped
+     +15% from the previous 980/1260 pass so the tail — the
+     "settle" — reads noticeably slower. Curve is tail-heavy
+     (0.5, 0, 0.2, 1) which further emphasizes the ending. */
   .home-quote .word {
     display: inline-block;
     opacity: 0;
     transform: translateY(0.5em);
     filter: blur(6px);
     transition:
-      opacity    980ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 91ms),
-      transform 1260ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 91ms),
-      filter     980ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 91ms);
+      opacity   1127ms cubic-bezier(0.5, 0, 0.2, 1) calc(var(--i) * 91ms),
+      transform 1449ms cubic-bezier(0.5, 0, 0.2, 1) calc(var(--i) * 91ms),
+      filter    1127ms cubic-bezier(0.5, 0, 0.2, 1) calc(var(--i) * 91ms);
   }
   .home-quote.is-revealed .word {
     opacity: 1;
@@ -645,8 +646,8 @@ html { background: var(--bg); }
     const homeQuote = document.querySelector('.home-quote');
     if (homeQuote) {
       const WORD_COUNT   = 12;    // longest --i index used in the HTML + 1
-      const STAGGER_MS_Q = 91;    // matches the CSS delay multiplier (+40%)
-      const WORD_ANIM_MS = 1260;  // matches the CSS transition-duration (+40%)
+      const STAGGER_MS_Q = 91;    // matches the CSS delay multiplier
+      const WORD_ANIM_MS = 1449;  // matches the CSS transform duration (+15%)
       const SETTLE_AT_MS = 15 * STAGGER_MS_Q + WORD_ANIM_MS + 200;
 
       function revealQuote() {
