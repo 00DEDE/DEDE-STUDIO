@@ -297,11 +297,11 @@ html { background: var(--bg); }
     box-sizing: border-box;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 700;              /* Extrabold registered on Inter Tight */
-    /* +20% from the previous clamp(1.3rem, 6.4vw, 10rem). Sized so
-       the second line ("To those closest to me, I am Dede.") reads
-       as a large editorial statement across the viewport; may soft-
-       wrap on narrow phones — the manual <br> is the intended split. */
-    font-size: clamp(1.56rem, 7.68vw, 12rem);
+    /* +20% again from clamp(1.56rem, 7.68vw, 12rem). Each step in
+       the clamp scaled by 1.2 so the type reads even larger at every
+       viewport. May soft-wrap on narrow phones — manual <br>s are
+       the intended splits. */
+    font-size: clamp(1.87rem, 9.22vw, 14.4rem);
     line-height: 1.02;
     letter-spacing: -0.03em;
     color: var(--fg);
@@ -314,18 +314,20 @@ html { background: var(--bg); }
 
   /* Per-word cascade reveal — words start hidden + lifted; when
      .is-revealed is added they cascade in on a spring, offset by
-     --i * 65ms so the eye tracks the reveal left→right, top→bottom.
-     The accent word ("Dede.") gets its own italic + brand color for
-     the punchline moment on line 3. */
+     --i * 91ms so the eye tracks the reveal left→right, top→bottom.
+     Timing values are 40% slower than the previous 700/900/65ms
+     pass so the reveal reads as a deliberate, editorial gesture
+     rather than a quick pop. The accent word ("Dede.") gets its
+     own italic + brand color for the punchline moment on line 3. */
   .home-quote .word {
     display: inline-block;
     opacity: 0;
     transform: translateY(0.5em);
     filter: blur(6px);
     transition:
-      opacity   700ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 65ms),
-      transform 900ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 65ms),
-      filter    700ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 65ms);
+      opacity    980ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 91ms),
+      transform 1260ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 91ms),
+      filter     980ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 91ms);
   }
   .home-quote.is-revealed .word {
     opacity: 1;
@@ -642,9 +644,9 @@ html { background: var(--bg); }
        so the reader can interact with individual words. */
     const homeQuote = document.querySelector('.home-quote');
     if (homeQuote) {
-      const WORD_COUNT   = 12;   // longest --i index used in the HTML + 1
-      const STAGGER_MS_Q = 65;   // matches the CSS delay multiplier
-      const WORD_ANIM_MS = 900;  // matches the CSS transition-duration
+      const WORD_COUNT   = 12;    // longest --i index used in the HTML + 1
+      const STAGGER_MS_Q = 91;    // matches the CSS delay multiplier (+40%)
+      const WORD_ANIM_MS = 1260;  // matches the CSS transition-duration (+40%)
       const SETTLE_AT_MS = 15 * STAGGER_MS_Q + WORD_ANIM_MS + 200;
 
       function revealQuote() {
