@@ -36,7 +36,7 @@
   font-weight: 400;                /* regular */
   font-size: 3.84vw;               /* 20% smaller than the previous 4.8vw */
   line-height: 1.15;
-  letter-spacing: 0;
+  letter-spacing: 0.15em;          /* wide editorial tracking */
   white-space: nowrap;
   /* Dark theme default → pure white; light theme override below flips
      to pure black. Combined with mix-blend-mode: difference on the
@@ -48,11 +48,12 @@
      (rather than baked into rgba alpha) for clarity of intent. */
   opacity: 0.5;
   will-change: transform;
-  /* One-shot animation — plays once per page load. 20% slower than
-     the previous 7.2s → now 8.64s. `both` fill-mode holds the ending
-     transform after the animation so the text stays offscreen and
-     doesn't snap back to its starting position. */
-  animation: site-wip-fall 8.64s linear 1 both;
+  /* Repeating cycle — every 10 seconds a new fall begins. The fall
+     itself takes ~9.5s (10% slower than the previous 8.64s
+     one-shot); the last 0.5s of each cycle holds the row offscreen
+     at the bottom (see the keyframe 95%→100% hold below) before the
+     loop wraps invisibly back to above the viewport. */
+  animation: site-wip-fall 10s linear infinite;
 }
 
 /* Light theme swap — pure 50% black instead of 50% white. Difference
@@ -63,13 +64,15 @@
   color: #000000;
 }
 
-/* Single fall — enters at the top edge (own height above the
-   viewport), exits past the bottom edge (own height below the
-   viewport). Total travel = 100vh + a bit of buffer so the row
-   fully clears both edges. */
+/* Fall cycle — 95% of each cycle is the actual descent (row
+   travels from just above the top edge to just below the bottom
+   edge), the final 5% holds the row parked offscreen at the bottom
+   so the loop wrap is invisible (jump from 110vh at 100% back to
+   -10vh at 0% happens while the row is out of frame). */
 @keyframes site-wip-fall {
-  from { transform: translateY(-10vh);  }
-  to   { transform: translateY(110vh); }
+  0%   { transform: translateY(-10vh);  }
+  95%  { transform: translateY(110vh); }
+  100% { transform: translateY(110vh); }
 }
 
 @media (prefers-reduced-motion: reduce) {
