@@ -23,44 +23,53 @@
 }
 
 .site-wip__track {
-  /* Vertical writing mode + upright orientation = each letter stacks
-     top-to-bottom, still visually upright (readable without tilting). */
-  writing-mode: vertical-lr;
-  text-orientation: upright;
+  /* Horizontal rows of "WORK IN PROGRESS" stacked vertically inside
+     the track. The TRACK falls downward on a loop (motion is
+     vertical) while each row reads horizontally like normal text. */
+  display: block;
+  will-change: transform;
+  /* Moderate speed — visibly moving without feeling frantic. Loop is
+     seamless because every row is identical: after the track has
+     shifted down by exactly one row-height, the next row occupies
+     the previous row's position, so the animation resets invisibly. */
+  animation: site-wip-fall 12s linear infinite;
+}
+
+.site-wip__row {
+  display: block;
+  text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;                /* regular */
-  font-size: 20vmin;               /* ~20% of the smaller viewport dimension */
-  line-height: 1;
+  font-size: 12vw;                 /* fills most of the viewport width */
+  line-height: 1.15;               /* small breathing between rows */
   letter-spacing: 0;
+  white-space: nowrap;             /* prevents mid-line wrapping */
   /* Dark theme default → 50% white; light theme override below flips
      to 50% black. Combined with mix-blend-mode: difference on the
      parent, both variants invert against the underlying palette so
      the watermark reads on any backdrop within its own theme. */
   color: rgba(255, 255, 255, 0.5);
-  white-space: nowrap;
-  will-change: transform;
-  /* Two full copies of the phrase live in the DOM so the marquee
-     loop is seamless: when the track has scrolled one content-length,
-     the second copy is in the position the first copy started —
-     resetting jumps invisibly. 12s duration = moderate — visibly
-     moving without being distracting or frantic. */
-  animation: site-wip-fall 12s linear infinite;
 }
 
 /* Light theme swap — pure 50% black instead of 50% white. Difference
    blend remains applied on the .site-wip parent, so black inverts
    against a light backdrop into a visible dark-gray, and against a
    dark backdrop into a visible light-gray. */
-[data-theme="light"] .site-wip__track {
+[data-theme="light"] .site-wip__row {
   color: rgba(0, 0, 0, 0.5);
 }
 
+/* Track falls down by exactly one row-height per cycle. Because
+   every row is identical, the reset is invisible — when the animation
+   loops, the row that was second is now in the first row's position,
+   and the eye can't detect the jump. Loop distance is 13.8vw =
+   font-size (12vw) × line-height (1.15) — one row exactly. */
 @keyframes site-wip-fall {
-  from { transform: translateY(-50%); }
-  to   { transform: translateY(0);    }
+  from { transform: translateY(-13.8vw); }
+  to   { transform: translateY(0);         }
 }
 
 @media (prefers-reduced-motion: reduce) {
   /* Motion-sensitive users see a static watermark instead of the loop. */
-  .site-wip__track { animation: none; transform: translateY(-25%); }
+  .site-wip__track { animation: none; }
 }
