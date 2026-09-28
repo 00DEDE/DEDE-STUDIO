@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════════════════════════════
+   WORK IN PROGRESS watermark — floats above every page as a subtle
+   vertical marquee falling downward, letting visitors know the site
+   isn't finished yet. Injected on load by site-wip.js so a single
+   include on every page picks it up.
+   ═══════════════════════════════════════════════════════════════════ */
+.site-wip {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;                 /* above every other stacking layer */
+  pointer-events: none;            /* purely decorative, never blocks input */
+  overflow: hidden;                /* clips the falling track at viewport edges */
+  display: flex;
+  justify-content: center;         /* centers the falling column horizontally */
+  /* Blend the whole watermark against whatever sits beneath it in the
+     root stacking context — the text inverts per-pixel to the opposite
+     of the backdrop, so it stays visible on dark bg, light bg, imagery
+     and mid-tones alike. Applied here on the container (not the track)
+     because .site-wip already establishes a stacking context via
+     position:fixed + z-index — the blend then applies against the
+     root, not against .site-wip's own transparent interior. */
+  mix-blend-mode: difference;
+}
+
+.site-wip__track {
+  /* Vertical writing mode + upright orientation = each letter stacks
+     top-to-bottom, still visually upright (readable without tilting). */
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;                /* regular */
+  font-size: 20vmin;               /* ~20% of the smaller viewport dimension */
+  line-height: 1;
+  letter-spacing: 0;
+  /* Dark theme default → 50% white; light theme override below flips
+     to 50% black. Combined with mix-blend-mode: difference on the
+     parent, both variants invert against the underlying palette so
+     the watermark reads on any backdrop within its own theme. */
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  will-change: transform;
+  /* Two full copies of the phrase live in the DOM so the marquee
+     loop is seamless: when the track has scrolled one content-length,
+     the second copy is in the position the first copy started —
+     resetting jumps invisibly. 12s duration = moderate — visibly
+     moving without being distracting or frantic. */
+  animation: site-wip-fall 12s linear infinite;
+}
+
+/* Light theme swap — pure 50% black instead of 50% white. Difference
+   blend remains applied on the .site-wip parent, so black inverts
+   against a light backdrop into a visible dark-gray, and against a
+   dark backdrop into a visible light-gray. */
+[data-theme="light"] .site-wip__track {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+@keyframes site-wip-fall {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0);    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Motion-sensitive users see a static watermark instead of the loop. */
+  .site-wip__track { animation: none; transform: translateY(-25%); }
+}
