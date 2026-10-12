@@ -159,6 +159,35 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
+     INTERACTIVE ATLAS — sub-section between hero and the 3-col grid.
+     Big "Interactive Atlas" statement + read-more expand + rounded
+     video below. Shares the same --page-x gutter and --stack-y
+     rhythm as every other section on the page.
+     ═══════════════════════════════════════════════════════════════════ */
+  .unesco__atlas {
+    padding: var(--stack-y) var(--page-x);
+    box-sizing: border-box;
+  }
+  .unesco__atlas-media {
+    position: relative;
+    width: 100%;
+    margin: clamp(1.5rem, 3vh, 2.5rem) 0 0;
+    aspect-ratio: 16 / 9;
+    border-radius: clamp(12px, 1.25vw, 22px);
+    overflow: hidden;
+    background: #000;
+  }
+  .unesco__atlas-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #000;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
      3-COLUMN GRID SKELETON — every section lives on this rhythm.
      Utility classes span 1/2/3 columns; positional utilities let
      specific rows start in column 2 or 3 to break the grid deliberately.
@@ -547,6 +576,28 @@
     <div class="unesco__hero-media">
       <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
     </div>
+  </section>
+
+  <!-- ══════════════════ INTERACTIVE ATLAS ══════════════════ -->
+  <section class="unesco__atlas" aria-label="Interactive Atlas">
+    <h2 class="statement">Interactive Atlas</h2>
+    <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
+      <span>Read more</span>
+      <span class="read-more__line" aria-hidden="true"></span>
+    </button>
+    <div class="read-more__panel" id="rm-atlas">
+      <div class="read-more__inner">
+        <p>To celebrate UNESCO's 80th year anniversary, I proposed the construction of an &ldquo;interactive atlas&rdquo; that would encourage the audience to activate different parts of the world and by doing so, they would witness just how interconnected we all are in the fabric of human experience and how crucial it is to protect what makes us human.</p>
+      </div>
+    </div>
+    <figure class="unesco__atlas-media">
+      <video class="unesco__atlas-video"
+             autoplay muted loop playsinline preload="metadata" controls
+             poster="ASSETS/IMAGES/UNESCO/01.jpg"
+             aria-label="Interactive Atlas installation">
+        <source src="ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
+      </video>
+    </figure>
   </section>
 
   <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════ -->
