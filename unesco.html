@@ -347,6 +347,121 @@
     background: #000;
   }
 
+  /* ─── Slideshow (section 04 Applications) ────────────────────────
+     Two <img.media__slide> images stack in each cell; they share a
+     10s crossfade cycle so each round holds for ~5s with ~1s fades.
+     ease-in-out on the opacity keeps the transition graceful. All
+     three cells use the same animation + no stagger so round 1 of
+     every cell is visible together, then round 2 of every cell. */
+  .media__slide {
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    will-change: opacity;
+  }
+  .media__slide--1 { animation-name: media-slide-1; opacity: 1; }
+  .media__slide--2 { animation-name: media-slide-2; opacity: 0; }
+
+  @keyframes media-slide-1 {
+    0%, 45%   { opacity: 1; }
+    55%, 95%  { opacity: 0; }
+    100%      { opacity: 1; }
+  }
+  @keyframes media-slide-2 {
+    0%, 45%   { opacity: 0; }
+    55%, 95%  { opacity: 1; }
+    100%      { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Motion-sensitive users see only round 1 (no crossfade). */
+    .media__slide--2 { display: none; }
+    .media__slide    { animation: none; }
+  }
+
+  /* ─── 5-slide celebration slideshow (section 06) ──────────────────
+     Each cell cycles through 5 images on a shared 20s loop. Each
+     slide is "primary" for 4s with a 1s crossfade overlap into the
+     next. Staggered animation-delay keeps the three cells reading as
+     a composed trio where images change together. */
+  .media__cslide {
+    opacity: 0;
+    animation: celebration-slideshow 20s ease-in-out infinite;
+    will-change: opacity;
+  }
+  .media__cslide--1 { animation-delay:  0s; }
+  .media__cslide--2 { animation-delay:  4s; }
+  .media__cslide--3 { animation-delay:  8s; }
+  .media__cslide--4 { animation-delay: 12s; }
+  .media__cslide--5 { animation-delay: 16s; }
+
+  @keyframes celebration-slideshow {
+    0%, 100% { opacity: 0; }   /* starts hidden */
+    5%       { opacity: 1; }   /* 1s fade-in */
+    20%      { opacity: 1; }   /* visible for 3s between fades */
+    25%      { opacity: 0; }   /* 1s fade-out — overlaps next slide's fade-in */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Static — show only the first slide per cell. */
+    .media__cslide { animation: none; }
+    .media__cslide--1 { opacity: 1; }
+  }
+
+  /* ─── Read-more incentive — subtle pulse on the trailing line so
+     the button draws the eye and signals interactivity. Pauses on
+     hover (the hover expansion takes over). */
+  .read-more__line {
+    animation: read-more-line-pulse 2.6s ease-in-out infinite;
+  }
+  .read-more:hover .read-more__line,
+  .read-more:focus-visible .read-more__line,
+  .read-more[aria-expanded="true"] .read-more__line {
+    animation: none;
+  }
+  @keyframes read-more-line-pulse {
+    0%, 100% { opacity: 1;   }
+    50%      { opacity: 0.4; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .read-more__line { animation: none; }
+  }
+
+  /* ─── Scroll cue — small bouncing arrow + "SCROLL" fixed near the
+     bottom of the first viewport. Encourages the viewer to keep
+     reading past the hero. Fades out once the page has scrolled
+     past the hero (JS toggles .is-hidden). */
+  .scroll-cue {
+    position: fixed;
+    bottom: clamp(1rem, 3vh, 2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(var(--fg-rgb), 0.6);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scroll-cue-bounce 2.4s ease-in-out infinite;
+  }
+  .scroll-cue.is-hidden { opacity: 0; }
+  .scroll-cue__arrow { font-size: 1rem; letter-spacing: 0; }
+  @keyframes scroll-cue-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0);      }
+    50%      { transform: translateX(-50%) translateY(0.4rem); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cue { animation: none; }
+  }
+
   .media-tab {
     position: absolute;
     top: clamp(0.75rem, 1vw, 1rem);
@@ -545,6 +660,14 @@
   <script src="site-header.js" defer></script>
   <script src="site-bg.js" defer></script>
 
+  <!-- Scroll incentive — small bouncing arrow + "SCROLL" at the
+       bottom of the first viewport. JS fades it out once the viewer
+       has scrolled past the intro, so it never follows them down. -->
+  <div class="scroll-cue" aria-hidden="true">
+    <span class="scroll-cue__text">Scroll</span>
+    <span class="scroll-cue__arrow">↓</span>
+  </div>
+
   <!-- ══════════════════════ INTRO ══════════════════════ -->
   <section class="unesco__intro" aria-label="UNESCO overview">
     <span class="intro__eyebrow">Case Study · 001</span>
@@ -684,14 +807,91 @@
     <!-- ─── 04 · Applications (three-image row) ──────────────────── -->
     <p class="section-label g-span-3"><span class="section-label__num">04</span>Applications</p>
 
+    <!-- Each cell holds two stacked images that crossfade on a shared
+         10s cycle: round 1 holds for ~5s, graceful 1s fade to round 2,
+         round 2 holds for ~5s, fade back. All three cells animate in
+         sync (same duration + delay) so each round reads as a single
+         composed trio. See .media__slide keyframes in <style>. -->
     <figure class="media media--square g-span-1">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/applications-01.jpg" alt="UNESCO installation application 01" />
+      <img class="media__img media__slide media__slide--1" src="ASSETS/IMAGES/UNESCO/applications-01.jpg" alt="UNESCO installation application — round 1" />
+      <img class="media__img media__slide media__slide--2" src="ASSETS/IMAGES/UNESCO/02.jpg" alt="UNESCO installation application — round 2" />
     </figure>
     <figure class="media media--square g-span-1">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/applications-02.jpg" alt="UNESCO installation application 02" />
+      <img class="media__img media__slide media__slide--1" src="ASSETS/IMAGES/UNESCO/applications-02.jpg" alt="UNESCO installation application — round 1" />
+      <img class="media__img media__slide media__slide--2" src="ASSETS/IMAGES/UNESCO/03.jpg" alt="UNESCO installation application — round 2" />
     </figure>
     <figure class="media media--square g-span-1">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO digital archive" />
+      <img class="media__img media__slide media__slide--1" src="ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO installation application — round 1" />
+      <!-- 04.jpg zoomed +30% so the center poster frames up tighter -->
+      <img class="media__img media__slide media__slide--2" style="transform: scale(1.3);" src="ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO installation application — round 2" />
+    </figure>
+
+    <!-- ─── 05 · Iconography ─────────────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">05</span>Iconography</p>
+    <div class="g-span-2">
+      <p class="statement">
+        Due to the system being made in a modular manner, it
+        facilitated being able to create custom icons for the
+        <em>4 areas</em> that UNESCO protects.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-iconography">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-iconography">
+        <div class="read-more__inner">
+          <p>Each group: Traditions, languages, ecosystems and monuments have their own respective icons that are meant to both look and feel like the zones they are representing. Then to add even more human interconnection to the rebrand, the logo gave me a couple of &ldquo;friends.&rdquo;</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Media 05 — Iconography overview, 16:9 full-width -->
+    <figure class="media media--wide g-span-3">
+      <img class="media__img" src="ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
+    </figure>
+
+    <!-- ─── 06 · Celebrating 80 Years ────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">06</span>Celebrating 80 Years</p>
+    <div class="g-span-2">
+      <p class="statement">
+        I chose to make printed tangible matter that spoke to 80
+        years of UNESCO accomplishments: that is
+        <em>human connection</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-celebration">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-celebration">
+        <div class="read-more__inner">
+          <p>I commissioned a woven blanket to be made, and to get in on the fun I made a hand sewn vegetable tanned leather bag that had all the icons form an image of our world. This same image appears on the printed atlas book. This was the predecessor to the interactive atlas. You never know where one small idea might take you.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-image slideshow × 3 cells = 15 unique images. Shared 20s
+         cycle: each cell cycles through its own 5 images, 4s per
+         image + ~1s crossfade. Keyframes/delay sequencing in CSS. -->
+    <figure class="media media--square g-span-1">
+      <img class="media__img media__cslide media__cslide--1" src="ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Celebration 01" />
+      <img class="media__img media__cslide media__cslide--2" src="ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Celebration 02" />
+      <img class="media__img media__cslide media__cslide--3" src="ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Celebration 03" />
+      <img class="media__img media__cslide media__cslide--4" src="ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Celebration 04" />
+      <img class="media__img media__cslide media__cslide--5" src="ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Celebration 05" />
+    </figure>
+    <figure class="media media--square g-span-1">
+      <img class="media__img media__cslide media__cslide--1" src="ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Celebration 06" />
+      <img class="media__img media__cslide media__cslide--2" src="ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Celebration 07" />
+      <img class="media__img media__cslide media__cslide--3" src="ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Celebration 08" />
+      <img class="media__img media__cslide media__cslide--4" src="ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Celebration 09" />
+      <img class="media__img media__cslide media__cslide--5" src="ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Celebration 10" />
+    </figure>
+    <figure class="media media--square g-span-1">
+      <img class="media__img media__cslide media__cslide--1" src="ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Celebration 11" />
+      <img class="media__img media__cslide media__cslide--2" src="ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Celebration 12" />
+      <img class="media__img media__cslide media__cslide--3" src="ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Celebration 13" />
+      <img class="media__img media__cslide media__cslide--4" src="ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Celebration 14" />
+      <img class="media__img media__cslide media__cslide--5" src="ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Celebration 15" />
     </figure>
 
   </section>
@@ -699,7 +899,7 @@
   <!-- ══════════════════════ CLOSING STATEMENT ══════════════════════ -->
   <section class="unesco__closing" aria-label="Closing statement">
     <p class="statement statement--closing">
-      The story ends <em>where the reader begins</em>.
+      The World Needs U.
     </p>
   </section>
 
@@ -750,6 +950,19 @@
         tab.setAttribute('aria-expanded', open ? 'false' : 'true');
       });
     });
+
+    /* Scroll cue — fade the bouncing arrow once the viewer has
+       scrolled past the first ~viewport-height of the page. */
+    var scrollCue = document.querySelector('.scroll-cue');
+    if (scrollCue) {
+      var hideScrollCue = function () {
+        if (window.scrollY > window.innerHeight * 0.4) {
+          scrollCue.classList.add('is-hidden');
+          window.removeEventListener('scroll', hideScrollCue);
+        }
+      };
+      window.addEventListener('scroll', hideScrollCue, { passive: true });
+    }
 
     document.querySelectorAll('.read-more').forEach(function (btn) {
       var targetId = btn.getAttribute('aria-controls');
