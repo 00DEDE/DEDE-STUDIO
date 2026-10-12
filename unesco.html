@@ -336,13 +336,15 @@
   .media--cinema   { aspect-ratio: 21 / 9; }
   .media--square   { aspect-ratio: 1 / 1; }
   .media--portrait { aspect-ratio: 3 / 4; }
-  .media__img {
+  .media__img,
+  .media__video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    background: #000;
   }
 
   .media-tab {
@@ -607,8 +609,8 @@
     <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundations</p>
     <div class="g-span-2">
       <p class="statement">
-        The mark holds its own at the scale of a museum banner —
-        and at the <em>size of an app icon</em>.
+        Across our existence, we have done one thing. Embed our
+        stories, our pasts, and our futures into <em>textiles</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
         <span>Read more</span>
@@ -616,23 +618,23 @@
       </button>
       <div class="read-more__panel" id="rm-foundations">
         <div class="read-more__inner">
-          <p>Proportions were tuned for both extremes. Optical spacing at large sizes, tightened counters at small — the wordmark reads confidently from a rooftop banner and stays legible on a lockscreen.</p>
+          <p>The rebranded logomark for UNESCO is at its core, 4 interlocking Us coming from all 4 directions of our world. Each U stands for the areas that UNESCO protects: Traditions. Languages. Ecosystems. Monuments. Without these 4 pillars of human history, I argue neither you nor I would have the identity we have today.</p>
         </div>
       </div>
     </div>
 
-    <!-- Media 01 (wide, spans 2 cols) + caption in col 3 -->
-    <figure class="media media--wide g-span-2">
-      <img class="media__img" src="ASSETS/IMAGES/UNESCO/02.jpg" alt="UNESCO wordmark study" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 01 detail">
-        <span class="media-tab__num" aria-hidden="true">01</span>
-        <span class="media-tab__panel">Cut-paper wordmark studies, photographed under directional light to test optical spacing at scale.</span>
-      </button>
+    <!-- Media 01 — UNESCO logo reveal video. Full-width 16:9 to match
+         Media 02's scale. Alpha channel was composited onto #2491d0
+         background during encoding, so the colored field is baked in
+         (no CSS bg needed). Autoplay + muted + loop; native controls
+         let the viewer pause whenever they want. -->
+    <figure class="media media--wide g-span-3">
+      <video class="media__video"
+             autoplay muted loop playsinline preload="metadata" controls
+             aria-label="UNESCO logo reveal animation">
+        <source src="ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
+      </video>
     </figure>
-    <p class="caption g-span-1">
-      <span class="caption__label">Image 01</span>
-      Optical spacing at banner scale, tightened counters at icon scale.
-    </p>
 
     <!-- ─── 02 · Palette ─────────────────────────────────────────── -->
     <p class="section-label g-span-1"><span class="section-label__num">02</span>Palette</p>
@@ -658,10 +660,6 @@
          image renders at 100% scale with no crop or zoom. -->
     <figure class="media media--wide g-span-3">
       <img class="media__img" style="object-fit: contain;" src="ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 02 detail">
-        <span class="media-tab__num" aria-hidden="true">02</span>
-        <span class="media-tab__panel">Palette applied — &ldquo;Protect What Makes Us Human.&rdquo; billboard mockup showing the full iconographic + color system in context.</span>
-      </button>
     </figure>
 
     <!-- ─── 03 · Voice ───────────────────────────────────────────── -->
@@ -688,24 +686,12 @@
 
     <figure class="media media--square g-span-1">
       <img class="media__img" src="ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO signage" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 03 detail">
-        <span class="media-tab__num" aria-hidden="true">03</span>
-        <span class="media-tab__panel">Signage system — routed brass on limestone, tested on-site in Aleppo.</span>
-      </button>
     </figure>
     <figure class="media media--square g-span-1">
       <img class="media__img" src="ASSETS/IMAGES/UNESCO/05.jpg" alt="UNESCO editorial" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 04 detail">
-        <span class="media-tab__num" aria-hidden="true">04</span>
-        <span class="media-tab__panel">Editorial layout — variable-width columns respond to language density.</span>
-      </button>
     </figure>
     <figure class="media media--square g-span-1">
       <img class="media__img" src="ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO digital archive" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 05 detail">
-        <span class="media-tab__num" aria-hidden="true">05</span>
-        <span class="media-tab__panel">Digital archive — interactive components let visitors trace an artifact's provenance.</span>
-      </button>
     </figure>
 
   </section>
