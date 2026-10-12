@@ -341,7 +341,9 @@
     line-height: 1.55;
     letter-spacing: -0.005em;
     color: rgba(var(--fg-rgb), 0.78);
-    max-width: 52em;
+    /* No max-width — let the essay fill the full container
+       (intro section = full viewport minus --page-x) so fewer
+       lines wrap. */
   }
   .read-more__inner p:last-child { margin-bottom: 0; }
 
@@ -611,50 +613,6 @@
     line-height: 0.98;
     letter-spacing: -0.03em;
     max-width: 22em;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════
-     CREDITS.
-     ═══════════════════════════════════════════════════════════════════ */
-  .ecclesiastes__credits {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--stack-y-tight) calc(var(--page-x) * 2);
-    padding: var(--stack-y) 0;
-    border-top: 1px solid var(--line);
-    margin: 0 var(--page-x);
-  }
-  .ecclesiastes__credits .section-label { grid-column: 1; }
-  .credits__list {
-    grid-column: 2 / span 2;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    gap: 1.4rem 2rem;
-    margin: 0;
-  }
-  .credits__list > div { margin: 0; }
-  .credits__list dt {
-    margin: 0 0 0.35rem;
-    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 500;
-    font-size: clamp(0.66rem, 0.78vw, 0.72rem);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(var(--fg-rgb), 0.55);
-  }
-  .credits__list dd {
-    margin: 0;
-    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.95rem, 1.15vw, 1.05rem);
-    color: var(--fg);
-    letter-spacing: -0.005em;
-  }
-
-  @media (max-width: 900px) {
-    .ecclesiastes__credits { grid-template-columns: 1fr; }
-    .ecclesiastes__credits .section-label,
-    .credits__list { grid-column: 1; }
   }
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -1033,19 +991,6 @@
     </p>
   </section>
 
-  <!-- ══════════════════════ CREDITS ══════════════════════ -->
-  <section class="ecclesiastes__credits" aria-label="Credits">
-    <p class="section-label">Credits</p>
-    <dl class="credits__list">
-      <div><dt>Project</dt><dd>The Book of Ecclesiastes</dd></div>
-      <div><dt>Studio</dt><dd>DĒDĒ.STUDIO</dd></div>
-      <div><dt>Creative Direction</dt><dd>David Gómez</dd></div>
-      <div><dt>Design</dt><dd>David Gómez</dd></div>
-      <div><dt>Photography</dt><dd>Studio Archive</dd></div>
-      <div><dt>Development</dt><dd>DĒDĒ.STUDIO</dd></div>
-    </dl>
-  </section>
-
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
   <nav class="pager" aria-label="Case navigation">
     <a class="pager__link pager__link--prev" href="unesco.html">
@@ -1069,7 +1014,7 @@
         <span>DEDE.STUDIO © 2026 ALL RIGHTS RESERVED.</span>
       </div>
       <div class="site-footer__meta-center">
-        <span>DEFINE EXPRESSION. DESIGN EXISTENCE.</span>
+        <span>To Those Closest To Me, I Am Dede.</span>
       </div>
       <div class="site-footer__meta-right">
         <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">BACK TO TOP</a>
