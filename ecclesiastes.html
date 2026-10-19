@@ -17,8 +17,6 @@
 <link rel="stylesheet" href="site-mobile.css" />
 <style>
   /* Per-page cursor — matches mind (Ecclesiastes lives inside mind). */
-  :root                     { --cursor-url: url("ASSETS/LOGO/IAMDEDE_LOGO-2-cursor-cyan.png"); }
-  :root[data-theme="light"] { --cursor-url: url("ASSETS/LOGO/IAMDEDE_LOGO-2-cursor-red.png"); }
 
   /* ─── Page layout tokens ─────────────────────────────────────────
      Every horizontal edge derives from --page-x; every vertical
@@ -55,10 +53,10 @@
     color: var(--fg);
     overflow-x: clip;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    cursor: var(--cursor-url) 16 16, auto;
+    cursor: var(--cursor-url) 12 12, auto;
   }
   body { background: transparent; }
-  a, button, [role="button"] { cursor: var(--cursor-url) 16 16, pointer; }
+  a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
 
   /* ═══════════════════════════════════════════════════════════════════
      INTRO — the case-study anchor. Eyebrow + massive title + tagline
@@ -187,7 +185,7 @@
     border-radius: 999px;
     backdrop-filter: blur(10px) saturate(1.05);
     -webkit-backdrop-filter: blur(10px) saturate(1.05);
-    cursor: var(--cursor-url) 16 16, pointer;
+    cursor: var(--cursor-url) 12 12, pointer;
     transition:
       background   240ms cubic-bezier(0.4, 0, 0.2, 1),
       border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -291,7 +289,7 @@
     font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    cursor: var(--cursor-url) 16 16, pointer;
+    cursor: var(--cursor-url) 12 12, pointer;
     transition: color 320ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   .read-more__line {
@@ -392,7 +390,7 @@
     line-height: 1.4;
     text-align: left;
     overflow: hidden;
-    cursor: var(--cursor-url) 16 16, pointer;
+    cursor: var(--cursor-url) 12 12, pointer;
     transition:
       max-width    460ms cubic-bezier(0.16, 1, 0.3, 1),
       background   240ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -542,7 +540,7 @@
     border-radius: 999px;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    cursor: var(--cursor-url) 16 16, pointer;
+    cursor: var(--cursor-url) 12 12, pointer;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;           /* stop iOS long-press menu */
@@ -704,10 +702,9 @@
     <div class="site-header__end">
       <nav class="site-header__nav" aria-label="Primary">
         <a href="home.html">HOME</a>
-        <a href="mind.html">MIND</a>
-        <a href="hands.html">HANDS</a>
-        <a href="profile.html">PROFILE</a>
-        <a href="contact.html">CONTACT</a>
+        <a href="work.html">WORK</a>
+        <a href="play.html">PLAY</a>
+        <a href="about.html">ABOUT</a>
       </nav>
       <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
         <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
@@ -998,7 +995,7 @@
       <span class="pager__title">UNESCO</span>
       <span class="pager__sub">Case Study · 001</span>
     </a>
-    <a class="pager__link pager__link--next" href="mind.html">
+    <a class="pager__link pager__link--next" href="work.html">
       <span class="pager__label">Next <span class="pager__arrow" aria-hidden="true">→</span></span>
       <span class="pager__title">BLLCRW. Melange</span>
       <span class="pager__sub">Case Study · 003</span>

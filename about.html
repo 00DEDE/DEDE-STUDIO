@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ABOUT — IAMDEDE.COM</title>
+<link rel="canonical" href="https://iamdede.com/about.html" />
+<link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-96.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-180.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#050505" />
+<script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="theme.css" />
+<link rel="stylesheet" href="site-header.css" />
+<link rel="stylesheet" href="site-footer.css" />
+<link rel="stylesheet" href="site-bg.css" />
+<link rel="stylesheet" href="site-mobile.css" />
+<style>
+  /* Per-page cursor — overrides theme.css site-wide default. */
+
+  /* ─── Page layout tokens (same system as the case-study pages) ─── */
+  :root {
+    --page-x:    clamp(10px, 1.25vw, 20px);
+    --stack-top: clamp(6rem, 14vh, 10rem);
+    --stack-y:   clamp(4rem, 8vh, 6rem);
+  }
+
+  html { background: var(--bg); }
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    width: 100%;
+    color: var(--fg);
+    overflow-x: clip;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    cursor: var(--cursor-url) 12 12, auto;
+  }
+  body { background: transparent; }
+  a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     COMBINED PROFILE + CONTACT — 3-column grid, respecting the same
+     column system used across the site. About Me lives in column 1;
+     Contact Me + Resume stack in columns 2–3. Mobile collapses to a
+     single stacked column.
+     ═══════════════════════════════════════════════════════════════════ */
+  .profile-contact {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--stack-y) calc(var(--page-x) * 2);
+    padding: var(--stack-top) var(--page-x) var(--stack-y);
+    box-sizing: border-box;
+    align-items: start;
+  }
+  .profile-contact__about { grid-column: span 1; }
+  .profile-contact__right { grid-column: span 2; display: flex; flex-direction: column; gap: var(--stack-y); }
+
+  @media (max-width: 900px) {
+    .profile-contact {
+      grid-template-columns: 1fr;
+      gap: var(--stack-y);
+    }
+    .profile-contact__about,
+    .profile-contact__right { grid-column: 1 / -1; }
+  }
+
+  /* ─── Section eyebrow labels ("ABOUT ME", "CONTACT ME") ────────── */
+  .profile-contact__label {
+    margin: 0 0 clamp(1rem, 2vh, 1.5rem);
+    font-family: "Inter Tight",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(var(--fg-rgb), 0.55);
+  }
+
+  /* ─── Body copy — About Me + Contact Me share typography:
+     regular weight (400), tracking at -0.025em (user's requested
+     "25% tighter than default 0% tracking"), comfortable reading
+     size that works inside the narrow left column. */
+  .profile-contact__about p,
+  .profile-contact__contact p {
+    margin: 0 0 1.25em;
+    font-family: "Inter Tight",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1rem, 1.3vw, 1.3rem);
+    line-height: 1.4;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    text-wrap: pretty;
+  }
+  .profile-contact__about p:last-child,
+  .profile-contact__contact p:last-child { margin-bottom: 0; }
+
+  /* Inline links keep the quiet-to-accent treatment used elsewhere. */
+  .profile-contact__contact a {
+    color: inherit;
+    text-decoration: none;
+    transition: color       var(--dur-medium) var(--ease-standard),
+                text-shadow var(--dur-medium) var(--ease-standard);
+  }
+  .profile-contact__contact a:hover,
+  .profile-contact__contact a:focus-visible {
+    color: var(--accent);
+    text-shadow:
+      0 0 0.2em rgba(var(--accent-rgb), 0.35),
+      0 0 0.4em rgba(var(--accent-rgb), 0.18);
+  }
+
+  /* Per-word reveal — same JS-driven cascade used elsewhere. */
+  .reveal-words:not(.is-ready) { visibility: hidden; }
+  .word {
+    opacity: 0;
+    transition: opacity var(--dur-cinematic) var(--ease-out-expo);
+  }
+  .word.is-visible { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-words:not(.is-ready) { visibility: visible; }
+    .word { opacity: 1; transition: none; }
+  }
+
+  /* ─── Resume / info block ───────────────────────────────────────
+     Same visual language as before (1:2:4 column ratio, hairlines,
+     monospace-feeling layout) but living inside the right column
+     of this combined page. Padding reduced since the surrounding
+     grid already provides edge gutter. */
+  .resume {
+    color: var(--fg);
+    font-family: "Inter Tight",
+                 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.72rem, 0.85vw, 0.95rem);
+    line-height: 1.5;
+    letter-spacing: 0;
+    box-sizing: border-box;
+    padding: 0;
+  }
+  .resume__contact {
+    display: grid;
+    grid-template-columns: 1fr 2fr 4fr;
+    gap: clamp(1rem, 2vw, 2.5rem);
+    padding: clamp(1rem, 2vh, 1.5rem) 0 clamp(2rem, 4vh, 3rem);
+    border-top: 1px solid var(--line);
+  }
+  .resume__contact strong { font-weight: 600; display: block; }
+  .resume__row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 4fr;
+    gap: clamp(1rem, 2vw, 2.5rem);
+    padding: clamp(1rem, 2vh, 1.5rem) 0;
+  }
+  .resume__row--start { border-top: 1px solid var(--line); }
+  .resume__row:last-child { border-bottom: 1px solid var(--line); }
+  .resume__section { font-weight: 600; }
+  .resume__meta strong {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25em;
+  }
+  .resume__meta span {
+    display: block;
+    color: rgba(var(--fg-rgb), 0.6);
+  }
+  .resume__desc {
+    color: var(--fg);
+    text-wrap: pretty;
+  }
+  .resume__desc-sub {
+    color: rgba(var(--fg-rgb), 0.55);
+    display: block;
+    margin-top: 0.5em;
+  }
+  .resume__desc a {
+    color: inherit;
+    text-decoration: none;
+    transition: color       var(--dur-medium) var(--ease-standard),
+                text-shadow var(--dur-medium) var(--ease-standard);
+  }
+  .resume__desc a:hover,
+  .resume__desc a:focus-visible {
+    color: var(--accent);
+    text-shadow:
+      0 0 0.2em rgba(var(--accent-rgb), 0.35),
+      0 0 0.4em rgba(var(--accent-rgb), 0.18);
+  }
+
+  /* Mobile — resume collapses to single column (3-across is too
+     tight at phone widths). About + contact simply stack above. */
+  @media (max-width: 640px) {
+    .resume { font-size: 0.78rem; }
+    .resume__contact,
+    .resume__row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .resume__row { padding: 1.25rem 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+    <div class="site-bg__blob site-bg__blob--dark-1"></div>
+    <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
+
+  <header class="site-header">
+    <a class="site-header__brand" href="home.html" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/IAMDEDE_LOGO-1-header-cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/IAMDEDE_LOGO-1-header-red.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-header__end">
+      <nav class="site-header__nav" aria-label="Primary">
+        <a href="home.html">HOME</a>
+        <a href="work.html">WORK</a>
+        <a href="play.html">PLAY</a>
+        <a href="about.html">ABOUT</a>
+      </nav>
+      <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
+        <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <script src="site-header.js" defer></script>
+  <script src="site-bg.js" defer></script>
+
+  <!-- ══════════════════════ COMBINED PROFILE + CONTACT ══════════════════════ -->
+  <section class="profile-contact" aria-label="Profile and Contact">
+
+    <!-- ─── Column 1: About Me ─────────────────────────────────── -->
+    <div class="profile-contact__about">
+      <p class="profile-contact__label">About Me</p>
+      <p class="reveal-words">I did not speak until I was six years old. My first attempts were simple: &ldquo;Day... Day...&rdquo; My mother writes it as &ldquo;Dede.&rdquo;</p>
+      <p class="reveal-words">Before words, I communicated with my hands, and this has never left me. Today, I think, feel, and tell stories through creating work that exists between both the digital and the analog. I trace connections between people, places, and ideas the way a child might trace lines in the sand, until their own world begins to emerge.</p>
+      <p class="reveal-words">I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today... a day where you and I create something meaningful.</p>
+    </div>
+
+    <!-- ─── Column 2 + 3: Contact Me (top) and Resume (below) ──── -->
+    <div class="profile-contact__right">
+
+      <div class="profile-contact__contact">
+        <p class="profile-contact__label">Contact Me</p>
+        <p class="reveal-words">Let&rsquo;s get to work!</p>
+        <p class="reveal-words">Contact: <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></p>
+      </div>
+
+      <section class="resume" aria-label="Resume">
+        <div class="resume__contact">
+          <div>
+            <strong>David Gomez</strong>
+            <span>Designer/Diseñador</span>
+            <span>(Dede)</span>
+          </div>
+          <div class="resume__desc">
+            <a href="https://iamdede.com">iamdede.com</a><br>
+            <a href="tel:+16614357379">+1 661 435 7379</a><br>
+            <a href="mailto:iamdede@bllcrw.com">iamdede@bllcrw.com</a>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="resume__row resume__row--start">
+          <div class="resume__section">Education</div>
+          <div class="resume__meta">
+            <strong>ArtCenter College of Design</strong>
+            <span>09.2023–12.2026</span>
+            <span>Pasadena, CA</span>
+          </div>
+          <div class="resume__desc">
+            BFA in Graphic Design — Specialization in Identity&nbsp;Systems
+            <span class="resume__desc-sub">Awarded Scholarships:</span>
+            Honda Endowed Scholarship<br>
+            Martha Chandler Scholarship<br>
+            M.A. Larsen Endowed Scholarship<br>
+            Siras Greiner Memorial Endowed Scholarship<br>
+            Ebell Flint Scholarship
+          </div>
+        </div>
+
+        <div class="resume__row">
+          <div class="resume__section"></div>
+          <div class="resume__meta">
+            <strong>Antelope Valley College</strong>
+            <span>09.2020–05.2023</span>
+            <span>Lancaster, CA</span>
+          </div>
+          <div class="resume__desc">
+            Associates Degree in Graphic Design<br>
+            Associates Degree in Art History
+          </div>
+        </div>
+
+        <div class="resume__row resume__row--start">
+          <div class="resume__section">Experience</div>
+          <div class="resume__meta">
+            <strong>Creative Design Intern</strong>
+            <span>Hulu (Disney)</span>
+            <span>06.2025–01.2026</span>
+            <span>Santa Monica, CA</span>
+          </div>
+          <div class="resume__desc">
+            Assisted in the exploration and development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all touchpoints, which included refreshing campaign assets, refining presentation decks, designing brand merchandise and creating design references for both Hulu&rsquo;s original programming and its overarching&nbsp;brand.
+          </div>
+        </div>
+
+        <div class="resume__row">
+          <div class="resume__section"></div>
+          <div class="resume__meta">
+            <strong>Freelance Designer</strong>
+            <span>Adobe Inc.</span>
+            <span>09.2025–10.2025</span>
+            <span>Los Angeles, CA</span>
+          </div>
+          <div class="resume__desc">
+            Contracted to produce videos showcasing the debut of a new mobile video app from Adobe while also exploring its capabilities with original content. Through this opportunity I was able to collaborate with and learn from Luis Callegari, current Creative Director for EA&nbsp;Sports.
+          </div>
+        </div>
+
+        <div class="resume__row">
+          <div class="resume__section"></div>
+          <div class="resume__meta">
+            <strong>Co-Owner/Designer</strong>
+            <span>BLLCRW. LLC</span>
+            <span>06.2022–Currently</span>
+            <span>Los Angeles, CA</span>
+          </div>
+          <div class="resume__desc">
+            Leading the creative vision for BLLCRW., I oversee garment design, manufacturer and supplier relations, and brand storytelling. I ensure that each collection reflects a cohesive theme, from sketch and concept to the final product, meanwhile also maintaining consistent identity and ethos across the brand&rsquo;s visuals and&nbsp;messaging.
+          </div>
+        </div>
+
+        <div class="resume__row resume__row--start">
+          <div class="resume__section">Expertise</div>
+          <div class="resume__meta">
+            <strong>Proficient In</strong>
+          </div>
+          <div class="resume__desc">
+            After Effects, Premiere Pro, Lightroom, InDesign, Photoshop, Illustrator, Media Encoder, Procreate, Madmapper, Microsoft Powerpoint, Google&nbsp;Workspace.
+          </div>
+        </div>
+
+        <div class="resume__row">
+          <div class="resume__section"></div>
+          <div class="resume__meta">
+            <strong>Familiar With</strong>
+          </div>
+          <div class="resume__desc">
+            Cinema 4D, VS Code, Figma, Keyshot, SolidWorks,&nbsp;Keynote.
+          </div>
+        </div>
+
+        <div class="resume__row">
+          <div class="resume__section"></div>
+          <div class="resume__meta">
+            <strong>Abilities</strong>
+          </div>
+          <div class="resume__desc">
+            Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial &amp; Print Design, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packages, Product Development,&nbsp;Storytelling.
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </section>
+
+  <footer class="site-footer">
+    <a class="site-footer__logo" href="home.html" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="ASSETS/LOGO/IAMDEDE_LOGO-1-footer-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="ASSETS/LOGO/IAMDEDE_LOGO-1-footer-black.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-footer__meta">
+      <div class="site-footer__meta-left">
+        <span>IAMDEDE © 2026 ALL RIGHTS RESERVED.</span>
+      </div>
+      <div class="site-footer__meta-center">
+        <span>To Those Closest To Me, I Am Dede.</span>
+      </div>
+      <div class="site-footer__meta-right">
+        <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">BACK TO TOP</a>
+        <a href="https://www.linkedin.com/in/dedestudio" target="_blank" rel="noopener">LINKEDIN</a>
+      </div>
+    </div>
+  </footer>
+  <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
+
+  <script>
+  /* Per-word reveal — wrap each word of a .reveal-words element in a
+     <span class="word">, then cascade their opacity in on scroll into
+     view. Lightweight; no deps. Honors prefers-reduced-motion. */
+  (function () {
+    'use strict';
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.reveal-words').forEach(function (p) {
+        p.classList.add('is-ready');
+      });
+      return;
+    }
+
+    document.querySelectorAll('.reveal-words').forEach(function (p) {
+      /* Split only direct text nodes into word spans; preserve child
+         elements (like <a>) intact so links keep working. */
+      var fragments = [];
+      p.childNodes.forEach(function (node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          var words = node.textContent.split(/(\s+)/);
+          words.forEach(function (w) {
+            if (/^\s+$/.test(w)) {
+              fragments.push(document.createTextNode(w));
+            } else if (w.length) {
+              var span = document.createElement('span');
+              span.className = 'word';
+              span.textContent = w;
+              fragments.push(span);
+            }
+          });
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          /* Element (anchor, strong, etc.) — wrap it as one "word" so
+             the whole inline link reveals as a single unit. */
+          var span = document.createElement('span');
+          span.className = 'word';
+          span.appendChild(node.cloneNode(true));
+          fragments.push(span);
+        }
+      });
+      p.textContent = '';
+      fragments.forEach(function (f) { p.appendChild(f); });
+      p.classList.add('is-ready');
+    });
+
+    var STAGGER_MS = 60;
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var words = entry.target.querySelectorAll('.word');
+          words.forEach(function (w, i) {
+            setTimeout(function () { w.classList.add('is-visible'); }, i * STAGGER_MS);
+          });
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.3 });
+      document.querySelectorAll('.reveal-words').forEach(function (p) {
+        io.observe(p);
+      });
+    } else {
+      document.querySelectorAll('.word').forEach(function (w) {
+        w.classList.add('is-visible');
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
