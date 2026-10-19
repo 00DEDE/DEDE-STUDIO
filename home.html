@@ -438,27 +438,27 @@ html { background: var(--bg); }
   <main class="home-work">
     <!-- Editorial pull-statement — 3 lines, per-word cascade reveal
          when the quote enters the viewport. Each .word carries a
-         style="--i:N" that controls its transition-delay so the
-         eye tracks left-to-right, top-to-bottom. Line 3 gets an
-         extra --i jump for a dramatic pause before "I am Dede."
-         lands. .word--accent italicizes + colors "Dede." in brand
-         accent so the punch line has a distinct visual signature.
-         Line-2 break moves per breakpoint via .brk-desk / .brk-mob:
-           Desktop:  I am David Gomez. / To those closest to me, / I am Dede.
-           Mobile:   I am David Gomez. / To those closest       / to me, I am Dede. -->
+         style="--i:N" that controls its transition-delay so the eye
+         tracks left-to-right, top-to-bottom. Line 3 gets an extra
+         --i jump for a dramatic pause before "I am Dede." lands.
+         .word--accent italicizes + colors "Dede." in brand accent so
+         the punch line has a distinct visual signature. All three
+         lines are short enough to fit on one viewport line at every
+         breakpoint, so no responsive break-toggle is needed.
+           I am David Gomez.
+           In closer company,
+           I am Dede. -->
     <h2 class="home-quote">
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">am</span>
       <span class="word" style="--i:2">David</span>
       <span class="word" style="--i:3">Gomez.</span><br>
-      <span class="word" style="--i:5">To</span>
-      <span class="word" style="--i:6">those</span>
-      <span class="word" style="--i:7">closest</span><br class="brk-mob">
-      <span class="word" style="--i:8">to</span>
-      <span class="word" style="--i:9">me,</span><br class="brk-desk">
-      <span class="word" style="--i:12">I</span>
-      <span class="word" style="--i:13">am</span>
-      <span class="word word--accent" style="--i:14">Dede.</span>
+      <span class="word" style="--i:5">In</span>
+      <span class="word" style="--i:6">closer</span>
+      <span class="word" style="--i:7">company,</span><br>
+      <span class="word" style="--i:10">I</span>
+      <span class="word" style="--i:11">am</span>
+      <span class="word word--accent" style="--i:12">Dede.</span>
     </h2>
 
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
