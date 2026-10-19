@@ -4,15 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>IAMDEDE.COM</title>
-<link rel="canonical" href="https://iamdede.com/home.html" />
-<link rel="icon" type="image/png" sizes="96x96" href="ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-96.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-180.png" />
-<link rel="manifest" href="site.webmanifest" />
+<link rel="canonical" href="https://iamdede.com/home/" />
+<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-96.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-180.png" />
+<link rel="manifest" href="/site.webmanifest" />
 <meta name="theme-color" content="#050505" />
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-<link rel="stylesheet" href="theme.css" />
-<link rel="stylesheet" href="site-bg.css" />
-<link rel="prefetch" href="home.html" />
+<link rel="stylesheet" href="/theme.css" />
+<link rel="stylesheet" href="/site-bg.css" />
+<link rel="prefetch" href="/home/" />
 <style>
   html { background: var(--bg); }
   html, body {
@@ -113,16 +113,16 @@
          Horizontal wordmark is unhidden after the swap cycle so it's
          the LAST logo the viewer sees before the fade-out. -->
     <img class="logo logo--horizontal theme-img theme-img--dark"
-         src="ASSETS/LOGO/IAMDEDE_LOGO-1-loading-cyan.png"
+         src="/ASSETS/LOGO/IAMDEDE_LOGO-1-loading-cyan.png"
          alt="DĒDĒ STUDIO" />
     <img class="logo logo--horizontal theme-img theme-img--light"
-         src="ASSETS/LOGO/IAMDEDE_LOGO-1-loading-red.png"
+         src="/ASSETS/LOGO/IAMDEDE_LOGO-1-loading-red.png"
          alt="DĒDĒ STUDIO" />
     <img class="logo logo--stacked theme-img theme-img--dark is-visible"
-         src="ASSETS/LOGO/IAMDEDE_LOGO-2-loading-cyan.png"
+         src="/ASSETS/LOGO/IAMDEDE_LOGO-2-loading-cyan.png"
          alt="DĒDĒ STUDIO" />
     <img class="logo logo--stacked theme-img theme-img--light is-visible"
-         src="ASSETS/LOGO/IAMDEDE_LOGO-2-loading-red.png"
+         src="/ASSETS/LOGO/IAMDEDE_LOGO-2-loading-red.png"
          alt="DĒDĒ STUDIO" />
   </div>
 
@@ -149,7 +149,7 @@
       const REDIRECT_AT_MS  = 500;   // hand off mid-fade for smooth exit
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        window.location.replace('home.html');
+        window.location.replace('/home/');
         return;
       }
 
@@ -174,7 +174,7 @@
 
       function fadeOut() {
         horizontals.forEach((h) => h.classList.add('is-fading'));
-        setTimeout(() => window.location.replace('home.html'), REDIRECT_AT_MS);
+        setTimeout(() => window.location.replace('/home/'), REDIRECT_AT_MS);
       }
 
       setTimeout(swap, INITIAL_HOLD_MS);
