@@ -138,16 +138,41 @@
       0 0 0.4em rgba(var(--accent-rgb), 0.18);
   }
 
-  /* Per-word reveal — same JS-driven cascade used elsewhere. */
+  /* Per-word reveal — words start hidden, cascade in via JS. */
   .reveal-words:not(.is-ready) { visibility: hidden; }
   .word {
     opacity: 0;
     transition: opacity var(--dur-cinematic) var(--ease-out-expo);
   }
   .word.is-visible { opacity: 1; }
+
+  /* Element-level reveal — resume rows + headshot fade/rise as the
+     orchestrator (JS below) walks the page top-down. The expertise
+     section sits last in DOM order, so it reveals last. */
+  .resume__contact,
+  .resume__row,
+  .profile-contact__headshot {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity   var(--dur-cinematic) var(--ease-out-expo),
+      transform var(--dur-cinematic) var(--ease-out-expo);
+  }
+  .resume__contact.is-visible,
+  .resume__row.is-visible,
+  .profile-contact__headshot.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal-words:not(.is-ready) { visibility: visible; }
     .word { opacity: 1; transition: none; }
+    .resume__contact,
+    .resume__row,
+    .profile-contact__headshot {
+      opacity: 1; transform: none; transition: none;
+    }
   }
 
   /* ─── Resume / info block ───────────────────────────────────────
@@ -418,29 +443,38 @@
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 
   <script>
-  /* Per-word reveal — wrap each word of a .reveal-words element in a
-     <span class="word">, then cascade their opacity in on scroll into
-     view. Lightweight; no deps. Honors prefers-reduced-motion. */
+  /* Top-down reveal orchestrator.
+     ---------------------------------------------------------------
+     Walks every reveal target in DOM order:
+       1. Prepare: split .reveal-words paragraphs into <span class="word">
+          so each word fades in independently (keeps nested <a> intact
+          as a single word).
+       2. Observe: one IntersectionObserver watches every target
+          (.reveal-words paragraphs + resume blocks + headshot). As
+          targets enter the viewport, they're batched, sorted by
+          vertical position, and revealed sequentially with cumulative
+          delays — so if several elements come into view in the same
+          observer tick they still cascade top → bottom instead of
+          firing simultaneously.
+       3. Expertise naturally lands last because the Expertise rows
+          sit at the bottom of the DOM order inside the resume. */
   (function () {
     'use strict';
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll('.reveal-words').forEach(function (p) {
-        p.classList.add('is-ready');
-      });
+      document.querySelectorAll('.reveal-words').forEach(function (p) { p.classList.add('is-ready'); });
+      document.querySelectorAll('.resume__contact, .resume__row, .profile-contact__headshot')
+        .forEach(function (b) { b.classList.add('is-visible'); });
       return;
     }
 
     document.querySelectorAll('.reveal-words').forEach(function (p) {
-      /* Split only direct text nodes into word spans; preserve child
-         elements (like <a>) intact so links keep working. */
       var fragments = [];
       p.childNodes.forEach(function (node) {
         if (node.nodeType === Node.TEXT_NODE) {
-          var words = node.textContent.split(/(\s+)/);
-          words.forEach(function (w) {
-            if (/^\s+$/.test(w)) {
-              fragments.push(document.createTextNode(w));
-            } else if (w.length) {
+          node.textContent.split(/(\s+)/).forEach(function (w) {
+            if (/^\s+$/.test(w)) fragments.push(document.createTextNode(w));
+            else if (w.length) {
               var span = document.createElement('span');
               span.className = 'word';
               span.textContent = w;
@@ -448,8 +482,6 @@
             }
           });
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-          /* Element (anchor, strong, etc.) — wrap it as one "word" so
-             the whole inline link reveals as a single unit. */
           var span = document.createElement('span');
           span.className = 'word';
           span.appendChild(node.cloneNode(true));
@@ -461,25 +493,52 @@
       p.classList.add('is-ready');
     });
 
-    var STAGGER_MS = 60;
+    var WORD_STAGGER_MS   = 55;    // intra-paragraph word stagger
+    var PARAGRAPH_GAP_MS  = 160;   // pause between paragraphs
+    var BLOCK_GAP_MS      = 140;   // pause between resume blocks / headshot
+
+    function revealParagraph(p, startDelay) {
+      var words = p.querySelectorAll('.word');
+      words.forEach(function (w, i) {
+        setTimeout(function () { w.classList.add('is-visible'); }, startDelay + i * WORD_STAGGER_MS);
+      });
+      return startDelay + Math.max(words.length - 1, 0) * WORD_STAGGER_MS;
+    }
+    function revealBlock(el, startDelay) {
+      setTimeout(function () { el.classList.add('is-visible'); }, startDelay);
+      return startDelay;
+    }
+
     if ('IntersectionObserver' in window) {
+      var seen = new Set();
       var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var words = entry.target.querySelectorAll('.word');
-          words.forEach(function (w, i) {
-            setTimeout(function () { w.classList.add('is-visible'); }, i * STAGGER_MS);
-          });
-          io.unobserve(entry.target);
+        /* Collect fresh entries that are in view, sort top → bottom
+           by DOM-visible Y position, and reveal each in sequence with
+           a cumulative delay so the top-down flow holds even when
+           several elements enter the viewport in the same tick. */
+        var batch = entries
+          .filter(function (e) { return e.isIntersecting && !seen.has(e.target); })
+          .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+
+        var cursor = 0;
+        batch.forEach(function (entry) {
+          seen.add(entry.target);
+          var el = entry.target;
+          if (el.classList.contains('reveal-words')) {
+            cursor = revealParagraph(el, cursor) + PARAGRAPH_GAP_MS;
+          } else {
+            cursor = revealBlock(el, cursor) + BLOCK_GAP_MS;
+          }
+          io.unobserve(el);
         });
-      }, { threshold: 0.3 });
-      document.querySelectorAll('.reveal-words').forEach(function (p) {
-        io.observe(p);
-      });
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+      document.querySelectorAll('.reveal-words, .resume__contact, .resume__row, .profile-contact__headshot')
+        .forEach(function (el) { io.observe(el); });
     } else {
-      document.querySelectorAll('.word').forEach(function (w) {
-        w.classList.add('is-visible');
-      });
+      document.querySelectorAll('.word').forEach(function (w) { w.classList.add('is-visible'); });
+      document.querySelectorAll('.resume__contact, .resume__row, .profile-contact__headshot')
+        .forEach(function (b) { b.classList.add('is-visible'); });
     }
   })();
   </script>
