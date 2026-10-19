@@ -138,41 +138,22 @@
       0 0 0.4em rgba(var(--accent-rgb), 0.18);
   }
 
-  /* Per-word reveal — words start hidden, cascade in via JS. */
-  .reveal-words:not(.is-ready) { visibility: hidden; }
-  .word {
-    opacity: 0;
-    transition: opacity var(--dur-cinematic) var(--ease-out-expo);
-  }
-  .word.is-visible { opacity: 1; }
-
-  /* Element-level reveal — resume rows + headshot fade/rise as the
-     orchestrator (JS below) walks the page top-down. The expertise
-     section sits last in DOM order, so it reveals last. */
-  .resume__contact,
-  .resume__row,
-  .profile-contact__headshot {
+  /* 4-block sequential reveal — About, Contact, Headshot, Resume
+     each fade + rise as a unit, one after another on page load. */
+  .reveal-block {
     opacity: 0;
     transform: translateY(16px);
     transition:
       opacity   var(--dur-cinematic) var(--ease-out-expo),
       transform var(--dur-cinematic) var(--ease-out-expo);
   }
-  .resume__contact.is-visible,
-  .resume__row.is-visible,
-  .profile-contact__headshot.is-visible {
+  .reveal-block.is-visible {
     opacity: 1;
     transform: translateY(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .reveal-words:not(.is-ready) { visibility: visible; }
-    .word { opacity: 1; transition: none; }
-    .resume__contact,
-    .resume__row,
-    .profile-contact__headshot {
-      opacity: 1; transform: none; transition: none;
-    }
+    .reveal-block { opacity: 1; transform: none; transition: none; }
   }
 
   /* ─── Resume / info block ───────────────────────────────────────
@@ -283,27 +264,29 @@
   <!-- ══════════════════════ COMBINED PROFILE + CONTACT ══════════════════════ -->
   <section class="profile-contact" aria-label="Profile and Contact">
 
-    <!-- ─── Column 1: About Me ─────────────────────────────────── -->
+    <!-- ─── Column 1: About Me (text block) + Headshot (separate block) ── -->
     <div class="profile-contact__about">
-      <p class="profile-contact__label">About Me</p>
-      <p class="reveal-words">I did not speak until I was six years old. My first attempts were simple: &ldquo;Day... Day...&rdquo; My mother writes it as &ldquo;Dede.&rdquo;</p>
-      <p class="reveal-words">Before words, I communicated with my hands, and this has never left me. Today, I think, feel, and tell stories through creating work that exists between both the digital and the analog. I trace connections between people, places, and ideas the way a child might trace lines in the sand, until their own world begins to emerge.</p>
-      <p class="reveal-words">I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today... a day where you and I create something meaningful.</p>
-      <figure class="profile-contact__headshot">
+      <div class="profile-contact__about-text reveal-block">
+        <p class="profile-contact__label">About Me</p>
+        <p>I did not speak until I was six years old. My first attempts were simple: &ldquo;Day... Day...&rdquo; My mother writes it as &ldquo;Dede.&rdquo;</p>
+        <p>Before words, I communicated with my hands, and this has never left me. Today, I think, feel, and tell stories through creating work that exists between both the digital and the analog. I trace connections between people, places, and ideas the way a child might trace lines in the sand, until their own world begins to emerge.</p>
+        <p>I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today... a day where you and I create something meaningful.</p>
+      </div>
+      <figure class="profile-contact__headshot reveal-block">
         <img src="ASSETS/IMAGES/headshot.jpg" alt="Portrait of David Gomez" />
       </figure>
     </div>
 
-    <!-- ─── Column 2 + 3: Contact Me (top) and Resume (below) ──── -->
+    <!-- ─── Column 2 + 3: Contact Me block (top) and Resume block (below) ── -->
     <div class="profile-contact__right">
 
-      <div class="profile-contact__contact">
+      <div class="profile-contact__contact reveal-block">
         <p class="profile-contact__label">Contact Me</p>
-        <p class="reveal-words">Let&rsquo;s get to work!</p>
-        <p class="reveal-words">Contact: <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></p>
+        <p>Let&rsquo;s get to work!</p>
+        <p>Contact: <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></p>
       </div>
 
-      <section class="resume" aria-label="Resume">
+      <section class="resume reveal-block" aria-label="Resume">
         <div class="resume__contact">
           <div>
             <strong>David Gomez</strong>
@@ -443,103 +426,37 @@
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 
   <script>
-  /* Top-down reveal orchestrator.
-     ---------------------------------------------------------------
-     Walks every reveal target in DOM order:
-       1. Prepare: split .reveal-words paragraphs into <span class="word">
-          so each word fades in independently (keeps nested <a> intact
-          as a single word).
-       2. Observe: one IntersectionObserver watches every target
-          (.reveal-words paragraphs + resume blocks + headshot). As
-          targets enter the viewport, they're batched, sorted by
-          vertical position, and revealed sequentially with cumulative
-          delays — so if several elements come into view in the same
-          observer tick they still cascade top → bottom instead of
-          firing simultaneously.
-       3. Expertise naturally lands last because the Expertise rows
-          sit at the bottom of the DOM order inside the resume. */
+  /* 4-block sequential reveal.
+     Reveals in the exact order the user specified:
+       1. About Me (text block)   2. Contact Me
+       3. Profile pic (headshot)  4. Resume
+     Each block fades + rises as a unit, 500ms apart. On reduced-motion
+     the blocks are made visible immediately. */
   (function () {
     'use strict';
 
+    var sequence = [
+      '.profile-contact__about-text',
+      '.profile-contact__contact',
+      '.profile-contact__headshot',
+      '.resume'
+    ];
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll('.reveal-words').forEach(function (p) { p.classList.add('is-ready'); });
-      document.querySelectorAll('.resume__contact, .resume__row, .profile-contact__headshot')
-        .forEach(function (b) { b.classList.add('is-visible'); });
+      sequence.forEach(function (sel) {
+        var el = document.querySelector(sel);
+        if (el) el.classList.add('is-visible');
+      });
       return;
     }
 
-    document.querySelectorAll('.reveal-words').forEach(function (p) {
-      var fragments = [];
-      p.childNodes.forEach(function (node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-          node.textContent.split(/(\s+)/).forEach(function (w) {
-            if (/^\s+$/.test(w)) fragments.push(document.createTextNode(w));
-            else if (w.length) {
-              var span = document.createElement('span');
-              span.className = 'word';
-              span.textContent = w;
-              fragments.push(span);
-            }
-          });
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-          var span = document.createElement('span');
-          span.className = 'word';
-          span.appendChild(node.cloneNode(true));
-          fragments.push(span);
-        }
-      });
-      p.textContent = '';
-      fragments.forEach(function (f) { p.appendChild(f); });
-      p.classList.add('is-ready');
+    var START_MS  = 200;   // small lead-in so the first block doesn't fire mid-paint
+    var STEP_MS   = 500;   // gap between each block's reveal
+    sequence.forEach(function (sel, i) {
+      var el = document.querySelector(sel);
+      if (!el) return;
+      setTimeout(function () { el.classList.add('is-visible'); }, START_MS + i * STEP_MS);
     });
-
-    var WORD_STAGGER_MS   = 55;    // intra-paragraph word stagger
-    var PARAGRAPH_GAP_MS  = 160;   // pause between paragraphs
-    var BLOCK_GAP_MS      = 140;   // pause between resume blocks / headshot
-
-    function revealParagraph(p, startDelay) {
-      var words = p.querySelectorAll('.word');
-      words.forEach(function (w, i) {
-        setTimeout(function () { w.classList.add('is-visible'); }, startDelay + i * WORD_STAGGER_MS);
-      });
-      return startDelay + Math.max(words.length - 1, 0) * WORD_STAGGER_MS;
-    }
-    function revealBlock(el, startDelay) {
-      setTimeout(function () { el.classList.add('is-visible'); }, startDelay);
-      return startDelay;
-    }
-
-    if ('IntersectionObserver' in window) {
-      var seen = new Set();
-      var io = new IntersectionObserver(function (entries) {
-        /* Collect fresh entries that are in view, sort top → bottom
-           by DOM-visible Y position, and reveal each in sequence with
-           a cumulative delay so the top-down flow holds even when
-           several elements enter the viewport in the same tick. */
-        var batch = entries
-          .filter(function (e) { return e.isIntersecting && !seen.has(e.target); })
-          .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
-
-        var cursor = 0;
-        batch.forEach(function (entry) {
-          seen.add(entry.target);
-          var el = entry.target;
-          if (el.classList.contains('reveal-words')) {
-            cursor = revealParagraph(el, cursor) + PARAGRAPH_GAP_MS;
-          } else {
-            cursor = revealBlock(el, cursor) + BLOCK_GAP_MS;
-          }
-          io.unobserve(el);
-        });
-      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-
-      document.querySelectorAll('.reveal-words, .resume__contact, .resume__row, .profile-contact__headshot')
-        .forEach(function (el) { io.observe(el); });
-    } else {
-      document.querySelectorAll('.word').forEach(function (w) { w.classList.add('is-visible'); });
-      document.querySelectorAll('.resume__contact, .resume__row, .profile-contact__headshot')
-        .forEach(function (b) { b.classList.add('is-visible'); });
-    }
   })();
   </script>
 </body>
