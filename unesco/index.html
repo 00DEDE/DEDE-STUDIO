@@ -23,10 +23,12 @@
      section beat from --stack-y. --stack-top is the extra clearance
      the first block needs below the fixed header. */
   :root {
-    --page-x:    clamp(10px, 1.25vw, 20px);
-    --stack-top: clamp(2.6rem, 6.4vh, 4.4rem);
-    --stack-y:   clamp(4rem, 8vh, 6rem);
-    --stack-y-tight: clamp(2.5rem, 5vh, 3.5rem);
+    --page-x:    clamp(16px, 2.5vw, 32px);
+    --page-max:  1240px;
+    --stack-top: clamp(3rem, 7vh, 5rem);
+    --stack-y:   clamp(6rem, 14vh, 11rem);
+    --stack-y-tight: clamp(3.5rem, 8vh, 5.5rem);
+    --prose-max: 42em;
   }
 
   /* ─── Cross-document View Transitions ──────────────────────────────
@@ -64,6 +66,8 @@
      for the whole page.
      ═══════════════════════════════════════════════════════════════════ */
   .unesco__intro {
+    max-width: var(--page-max);
+    margin-inline: auto;
     padding: var(--stack-top) var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
@@ -137,6 +141,8 @@
      matches the source cell so the view-transition morph lands clean.
      ═══════════════════════════════════════════════════════════════════ */
   .unesco__hero {
+    max-width: var(--page-max);
+    margin-inline: auto;
     padding: 0 var(--page-x);
     box-sizing: border-box;
   }
@@ -163,6 +169,8 @@
      rhythm as every other section on the page.
      ═══════════════════════════════════════════════════════════════════ */
   .unesco__atlas {
+    max-width: var(--page-max);
+    margin-inline: auto;
     padding: var(--stack-y) var(--page-x);
     box-sizing: border-box;
   }
@@ -191,9 +199,11 @@
      specific rows start in column 2 or 3 to break the grid deliberately.
      ═══════════════════════════════════════════════════════════════════ */
   .unesco__grid {
+    max-width: var(--page-max);
+    margin-inline: auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--stack-y-tight) calc(var(--page-x) * 2);
+    gap: var(--stack-y-tight) calc(var(--page-x) * 1.5);
     padding: var(--stack-y) var(--page-x);
     box-sizing: border-box;
     align-items: start;
@@ -231,10 +241,11 @@
   /* ─── Statement (mouthwash-scale display type) ───────────────────── */
   .statement {
     margin: 0;
+    max-width: 18em;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(1.75rem, 3.6vw, 3.75rem);
-    line-height: 1.02;
+    font-size: clamp(1.75rem, 3.2vw, 3.25rem);
+    line-height: 1.05;
     letter-spacing: -0.025em;
     color: var(--fg);
     text-wrap: pretty;
@@ -305,14 +316,13 @@
   }
   .read-more__inner p {
     margin: 0 0 1em;
+    max-width: var(--prose-max);
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(0.95rem, 1.2vw, 1.15rem);
-    line-height: 1.55;
+    line-height: 1.6;
     letter-spacing: -0.005em;
     color: rgba(var(--fg-rgb), 0.78);
-    /* No max-width — let the essay fill the full container (intro
-       section = full viewport minus --page-x) so fewer lines wrap. */
   }
   .read-more__inner p:last-child { margin-bottom: 0; }
 
@@ -545,7 +555,10 @@
      its own row with generous space above and below.
      ═══════════════════════════════════════════════════════════════════ */
   .unesco__closing {
+    max-width: var(--page-max);
+    margin-inline: auto;
     padding: var(--stack-y) var(--page-x) calc(var(--stack-y) * 1.25);
+    box-sizing: border-box;
   }
   .statement--closing {
     font-size: clamp(2.25rem, 5vw, 5.5rem);
