@@ -1,7 +1,6 @@
 /* Shared footer — included on every content page. */
 .site-footer {
-  /* Reduced by 150% from 72rem baseline (÷2.5 → 28.8rem). */
-  padding: 28.8rem 1.5rem 1.25rem;
+  padding: clamp(5rem, 10vh, 8rem) 1.5rem 1.25rem;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   color: var(--fg);
   background: transparent;
@@ -10,19 +9,15 @@
   display: block;
   outline: none;
   transition: opacity var(--dur-quick) var(--ease-standard);
-  line-height: 0;
+  text-align: center;
+  line-height: 1;
 }
 .site-footer__logo:hover,
 .site-footer__logo:focus-visible {
   opacity: 0.85;
 }
-.site-footer__logo img {
-  display: block;
-  /* Footer variants (-01.png black + -01-white.png) are now 2324px
-     wide native — plenty of resolution to stretch full-viewport-width
-     without any blur even on retina up through ~1440px viewports. */
-  width: 100%;
-  height: auto;
+.site-footer__logo .brand-text {
+  font-size: clamp(3rem, 8vw, 5.5rem);
 }
 /* 3-column grid keeps the tagline in the *exact* horizontal center,
    independent of what's in the left/right groups. */

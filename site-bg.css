@@ -1,135 +1,14 @@
-/* Fluid animated backdrop — blurred blobs of black + cyan drifting slowly.
-   Include on every page and add:
-     <div class="site-bg" aria-hidden="true">
-       <div class="site-bg__blob site-bg__blob--cyan-1"></div>
-       <div class="site-bg__blob site-bg__blob--cyan-2"></div>
-       <div class="site-bg__blob site-bg__blob--dark-1"></div>
-       <div class="site-bg__blob site-bg__blob--dark-2"></div>
-     </div>
-   Body/html should have `background: transparent` for it to show through. */
+/* Solid, refined backdrop — the atmospheric gradient blobs have been
+   retired across light + dark modes. All pages now sit on a flat
+   --bg wash. The .site-bg div (and its empty .site-bg__blob
+   children) can stay in the markup; they render nothing. */
 
 .site-bg {
   position: fixed;
   inset: 0;
   z-index: -1;
-  overflow: hidden;
   background: var(--bg);
   pointer-events: none;
 }
-.site-bg__blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  will-change: transform;
-}
-.site-bg__blob--cyan-1 {
-  width: 82vmin;
-  height: 82vmin;
-  top: -15%;
-  left: -10%;
-  background: radial-gradient(circle at center,
-              rgba(var(--blob-rgb), 0.55) 0%,
-              rgba(var(--blob-rgb), 0) 65%);
-  animation: bg-drift-1 36s var(--ease-in-out) infinite;
-}
-.site-bg__blob--cyan-2 {
-  width: 75vmin;
-  height: 75vmin;
-  bottom: -10%;
-  right: -10%;
-  background: radial-gradient(circle at center,
-              rgba(var(--blob-rgb), 0.42) 0%,
-              rgba(var(--blob-rgb), 0) 65%);
-  animation: bg-drift-2 44s var(--ease-in-out) infinite;
-}
-.site-bg__blob--dark-1 {
-  width: 97vmin;
-  height: 97vmin;
-  top: 25%;
-  left: 35%;
-  background: radial-gradient(circle at center,
-              var(--bg-tint) 0%,
-              transparent 65%);
-  animation: bg-drift-3 40s var(--ease-in-out) infinite;
-}
-.site-bg__blob--dark-2 {
-  width: 105vmin;
-  height: 105vmin;
-  bottom: 15%;
-  left: 15%;
-  background: radial-gradient(circle at center,
-              var(--bg-tint) 0%,
-              transparent 65%);
-  animation: bg-drift-4 48s var(--ease-in-out) infinite;
-}
-
-/* Grain overlay — breaks up the 8-bit banding you get from soft gradients.
-   Static fractal-noise SVG tiled over the blobs at low opacity. */
-.site-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  background-size: 220px 220px;
-  background-repeat: repeat;
-  opacity: 0.08;
-  mix-blend-mode: overlay;
-}
-
-@keyframes bg-drift-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25%      { transform: translate(30vw, 20vh) scale(1.1); }
-  50%      { transform: translate(50vw, 55vh) scale(0.95); }
-  75%      { transform: translate(10vw, 40vh) scale(1.05); }
-}
-@keyframes bg-drift-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(-40vw, -25vh) scale(1.08); }
-  66%      { transform: translate(-20vw, -50vh) scale(0.92); }
-}
-@keyframes bg-drift-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-30vw, 20vh) scale(1.15); }
-}
-@keyframes bg-drift-4 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  40%      { transform: translate(28vw, -18vh) scale(1.1); }
-  70%      { transform: translate(-15vw, -35vh) scale(0.95); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .site-bg__blob { animation: none; }
-}
-
-/* Light mode uses the SAME blob layout as dark mode — the cyan blobs
-   auto-swap to red because their color is `rgba(var(--blob-rgb), α)`
-   and --accent-rgb becomes 222,0,0 under [data-theme="light"]. Nothing
-   is hidden or overridden here on purpose. */
-
-/* Mobile: keep motion, but halve the cost. Only the two accent blobs
-   run (the two neutral dark blobs are the visually cheapest to drop),
-   blur drops from 90 → 40px, the grain overlay + mix-blend-mode are
-   removed entirely, and the accent blobs get their alpha nudged up
-   slightly so they still read at the smaller blur radius. GPU load
-   per frame ends up ~1/4 of the desktop setup while the ambient
-   motion is preserved. */
-@media (max-width: 768px), (pointer: coarse) {
-  .site-bg { background: var(--bg); }
-  .site-bg__blob--dark-1,
-  .site-bg__blob--dark-2,
-  .site-bg::after {
-    display: none;
-  }
-  .site-bg__blob { filter: blur(40px); }
-  .site-bg__blob--cyan-1 {
-    background: radial-gradient(circle at center,
-                rgba(var(--blob-rgb), 0.7) 0%,
-                rgba(var(--blob-rgb), 0)  65%);
-  }
-  .site-bg__blob--cyan-2 {
-    background: radial-gradient(circle at center,
-                rgba(var(--blob-rgb), 0.55) 0%,
-                rgba(var(--blob-rgb), 0)   65%);
-  }
-}
+.site-bg__blob { display: none; }
+.site-bg::after { content: none; }

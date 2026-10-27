@@ -30,12 +30,11 @@
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <link rel="stylesheet" href="/theme.css" />
 
-<!-- Root entry point: send the visitor through the loading splash first;
-     it plays the DĒDĒ logo cycle then redirects to home.html (the work
-     scroll). JS runs before body renders (no flash); meta refresh is a
-     no-JS fallback. -->
-<script>window.location.replace('/loading/');</script>
-<meta http-equiv="refresh" content="0; url=/loading/" />
+<!-- Root entry point: send the visitor straight to /home/ (the work
+     scroll). JS runs before body renders (no flash); meta refresh is
+     a no-JS fallback. -->
+<script>window.location.replace('/home/');</script>
+<meta http-equiv="refresh" content="0; url=/home/" />
 <style>html, body { margin: 0; background: #050505; }</style>
 </head>
 </body>

@@ -38,7 +38,7 @@
     menuBtn.setAttribute('aria-label', 'Menu');
     menuBtn.setAttribute('aria-expanded', 'false');
     menuBtn.innerHTML =
-      '<span></span><span></span><span></span><span></span>';
+      '<span></span><span></span><span></span>';
     // Sits before .site-header__end so grid ordering + flex space-between
     // both keep it on the right in the compact pill.
     var end = header.querySelector('.site-header__end');
