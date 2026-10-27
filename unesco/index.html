@@ -32,6 +32,25 @@
        ~65-char measure that stays well within 2-col width at any
        sensible viewport. Applied to every .read-more__inner p. */
     --prose-max: 48rem;
+    /* RULE: every section on the UNESCO page caps at --content-max.
+       Hero defines the length (−25% from full-bleed → 75%); every
+       other cell matches it. Mobile override below. */
+    --content-max: 75%;
+  }
+
+  @media (max-width: 900px) {
+    :root { --content-max: 100%; }
+  }
+
+  /* All top-level UNESCO sections share the hero's width — matches
+     the --content-max rule. Centered horizontally. */
+  .unesco__intro,
+  .unesco__hero,
+  .unesco__atlas,
+  .unesco__grid,
+  .unesco__closing {
+    max-width: var(--content-max);
+    margin-inline: auto;
   }
 
   /* ─── Cross-document View Transitions ──────────────────────────────
