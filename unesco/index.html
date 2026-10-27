@@ -324,6 +324,31 @@
   }
   .read-more__inner p:last-child { margin-bottom: 0; }
 
+  /* Intro overview essay — 2 paragraphs sit side-by-side as a
+     2-column layout at desktop. Each column caps at --prose-max so
+     the total block tops out around 100rem (never ultra-wide); below
+     900px the layout collapses back to a single-column stack. */
+  .unesco__intro .read-more__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 calc(var(--page-x) * 2);
+    max-width: calc(var(--prose-max) * 2 + var(--page-x) * 2);
+  }
+  .unesco__intro .read-more__inner p {
+    max-width: 100%;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .unesco__intro .read-more__inner {
+      display: block;
+      max-width: var(--prose-max);
+    }
+    .unesco__intro .read-more__inner p {
+      margin: 0 0 1em;
+    }
+    .unesco__intro .read-more__inner p:last-child { margin-bottom: 0; }
+  }
+
   /* ═══════════════════════════════════════════════════════════════════
      MEDIA + NUMBERED INFO TAB (Waabi pattern) — corner tab shows the
      image's number in the case sequence; clicking expands the pill
