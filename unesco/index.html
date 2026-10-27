@@ -27,6 +27,11 @@
     --stack-top: clamp(2.6rem, 6.4vh, 4.4rem);
     --stack-y:   clamp(4rem, 8vh, 6rem);
     --stack-y-tight: clamp(2.5rem, 5vh, 3.5rem);
+    /* RULE: context body copy must never span more than 2 of the 3
+       grid columns. 48rem (≈768px) is the hard cap — a readable
+       ~65-char measure that stays well within 2-col width at any
+       sensible viewport. Applied to every .read-more__inner p. */
+    --prose-max: 48rem;
   }
 
   /* ─── Cross-document View Transitions ──────────────────────────────
@@ -305,14 +310,17 @@
   }
   .read-more__inner p {
     margin: 0 0 1em;
+    /* Hard-capped at --prose-max so body copy never spans more
+       than 2 of the 3 grid columns (see :root rule). Left-aligned
+       within the parent container; blank space to the right at wide
+       viewports is intentional. */
+    max-width: var(--prose-max);
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(0.95rem, 1.2vw, 1.15rem);
-    line-height: 1.55;
+    line-height: 1.6;
     letter-spacing: -0.005em;
     color: rgba(var(--fg-rgb), 0.78);
-    /* No max-width — let the essay fill the full container (intro
-       section = full viewport minus --page-x) so fewer lines wrap. */
   }
   .read-more__inner p:last-child { margin-bottom: 0; }
 
