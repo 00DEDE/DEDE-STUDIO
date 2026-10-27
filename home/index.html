@@ -63,15 +63,15 @@ html { background: var(--bg); }
   /* ─── Work scroll — full-screen project sections ────────────────── */
   .home-work {
     --cell-gap: clamp(10px, 1.25vw, 20px);
+    --page-max: 1680px;
     display: block;
     padding: var(--cell-gap);
-    /* Small vertical gutter between sections comes from each section's
-       own bottom margin (below), not from grid gap — <a> can't be a
-       grid item cleanly here, and margin-collapse is fine for block. */
   }
   .work {
     position: relative;
     display: block;
+    max-width: var(--page-max);
+    margin-inline: auto;
     height: 100vh;
     height: 100svh;                              /* modern viewport unit */
     margin-bottom: var(--cell-gap);
@@ -284,14 +284,13 @@ html { background: var(--bg); }
      accent on the emphasis phrases. Manual line-break controls sit
      under this rule. */
   .home-work > .home-quote {
-    margin: 0 calc(-1 * var(--cell-gap)) var(--cell-gap);
-    /* Minimal horizontal padding = --cell-gap on each side; matches
-       the rest of the home grid's gutter so the type fills the screen
-       edge-to-edge on desktop while still leaving a hair of breathing
-       room at the viewport edges. Top padding doubled (was 3-6vh-5rem
-       → 6-12vh-10rem) so the quote sits noticeably below the header
-       pill instead of tucking up under it. */
-    padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
+    max-width: var(--page-max);
+    margin: 0 auto var(--cell-gap);
+    /* Horizontal padding = --cell-gap matches the home grid's gutter
+       so the quote aligns to the same inner edge as the project cells.
+       Vertical padding bumped (Apple-rhythm) so the quote sits with
+       generous breathing room above and below. */
+    padding: clamp(7rem, 15vh, 13rem) var(--cell-gap) clamp(4rem, 8vh, 7rem);
     box-sizing: border-box;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 700;              /* Extrabold registered on Inter Tight */
@@ -310,11 +309,11 @@ html { background: var(--bg); }
     color: var(--accent);
   }
   /* Second (mid-page) quote — the base rule's top padding is
-     doubled specifically to clear the header for the FIRST quote.
+     bumped specifically to clear the header for the FIRST quote.
      The mid-page one has projects above it, so its top padding
      drops to match its bottom padding for symmetric breathing. */
   .home-work > .home-quote ~ .home-quote {
-    padding-top: clamp(3rem, 6vh, 5rem);
+    padding-top: clamp(4rem, 8vh, 7rem);
   }
 
   /* Per-word cascade reveal — words start hidden + lifted; when
