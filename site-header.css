@@ -61,9 +61,6 @@ body:has(.site-header) {
   height: 31px;
   width: auto;
 }
-.site-header__brand .brand-text {
-  font-size: 1.1rem;
-}
 
 /* Right-side group holds nav + theme toggle so `justify-content: space-between`
    keeps the brand on the left and the whole group on the right. */
@@ -252,15 +249,15 @@ body:has(.site-header) {
   }
 
   /* ─── Hamburger button ──────────────────────────────────────────
-     3-line motif. Injected by site-header.js so every existing page
-     picks it up automatically without touching per-page HTML.
-     Absolute-positioned spans give us precise control for the
-     morph-to-X on open. */
+     4-line motif to match the DĒDĒ cursor icon. Injected by
+     site-header.js so every existing page picks it up automatically
+     without touching per-page HTML. Absolute-positioned spans give
+     us precise control for the morph-to-X on open. */
   .site-header__menu {
     display: block;
     position: relative;
     width: 28px;
-    height: 16px;
+    height: 22px;
     padding: 0;
     background: transparent;
     border: none;
@@ -281,9 +278,10 @@ body:has(.site-header) {
       opacity   var(--dur-medium) var(--ease-out-expo),
       top       var(--dur-medium) var(--ease-out-expo);
   }
-  .site-header__menu span:nth-child(1) { top: 0;   }
-  .site-header__menu span:nth-child(2) { top: 7px; }
-  .site-header__menu span:nth-child(3) { top: 14px; }
+  .site-header__menu span:nth-child(1) { top: 0;    }
+  .site-header__menu span:nth-child(2) { top: 6px;  }
+  .site-header__menu span:nth-child(3) { top: 12px; }
+  .site-header__menu span:nth-child(4) { top: 18px; }
 
   /* Nav + toggle group — hidden in the compact pill. */
   .site-header__end { display: none; }
@@ -322,9 +320,6 @@ body:has(.site-header) {
     max-width: 187.5px;
     min-width: 105px;
   }
-  .site-header.is-menu-open .site-header__brand .brand-text {
-    font-size: clamp(2rem, 7vw, 3rem);
-  }
   /* Bottom-anchored row containing nav (left) + toggle (right level
      with the last nav item). Row occupies the full remaining height,
      children align-items: end so both stick to the bottom edge. */
@@ -347,7 +342,7 @@ body:has(.site-header) {
   }
   .site-header.is-menu-open .site-header__nav a {
     display: block;
-    font-family: "GT America",
+    font-family: "Inter Tight",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(3rem, 13vw, 5.5rem);
@@ -370,18 +365,19 @@ body:has(.site-header) {
     flex: none;
   }
 
-  /* Hamburger → X morph. Middle line fades out; lines 1 + 3 slide
-     to centre and rotate ±45° to form the crossing X. */
-  .site-header.is-menu-open .site-header__menu span:nth-child(2) {
+  /* Hamburger → X morph. Lines 1 + 4 fade out and collapse; lines
+     2 + 3 slide to centre and rotate ±45° to form the crossing X. */
+  .site-header.is-menu-open .site-header__menu span:nth-child(1),
+  .site-header.is-menu-open .site-header__menu span:nth-child(4) {
     opacity: 0;
     transform: scaleX(0);
   }
-  .site-header.is-menu-open .site-header__menu span:nth-child(1) {
-    top: 7px;
+  .site-header.is-menu-open .site-header__menu span:nth-child(2) {
+    top: 10px;
     transform: rotate(45deg);
   }
   .site-header.is-menu-open .site-header__menu span:nth-child(3) {
-    top: 7px;
+    top: 10px;
     transform: rotate(-45deg);
   }
 

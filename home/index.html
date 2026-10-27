@@ -63,15 +63,15 @@ html { background: var(--bg); }
   /* ─── Work scroll — full-screen project sections ────────────────── */
   .home-work {
     --cell-gap: clamp(10px, 1.25vw, 20px);
-    --page-max: 1240px;
     display: block;
     padding: var(--cell-gap);
+    /* Small vertical gutter between sections comes from each section's
+       own bottom margin (below), not from grid gap — <a> can't be a
+       grid item cleanly here, and margin-collapse is fine for block. */
   }
   .work {
     position: relative;
     display: block;
-    max-width: var(--page-max);
-    margin-inline: auto;
     height: 100vh;
     height: 100svh;                              /* modern viewport unit */
     margin-bottom: var(--cell-gap);
@@ -189,6 +189,7 @@ html { background: var(--bg); }
     bottom: clamp(1.25rem, 3vw, 2.5rem);
     z-index: 3;
     color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     pointer-events: none;
     /* Small enter delay after the media reveals — meta cascades in. */
     opacity: 0;
@@ -202,13 +203,13 @@ html { background: var(--bg); }
   }
   .work__title {
     margin: 0;
-    font-family: "GT America", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     /* Regular weight only — no SUPER (900). Keeps the meta reading as
        a quiet caption rather than a display banner. */
     font-weight: 400;
     font-size: clamp(2rem, 5.5vw, 5rem);
     line-height: 0.95;
-    letter-spacing: -0.0345em;
+    letter-spacing: -0.03em;
     text-transform: uppercase;
   }
   .work__desc {
@@ -283,16 +284,17 @@ html { background: var(--bg); }
      accent on the emphasis phrases. Manual line-break controls sit
      under this rule. */
   .home-work > .home-quote {
-    max-width: var(--page-max);
-    margin: 0 auto var(--cell-gap);
-    /* Horizontal padding = --cell-gap matches the home grid's gutter
-       so the quote aligns to the same inner edge as the project cells.
-       Vertical padding bumped (Apple-rhythm) so the quote sits with
-       generous breathing room above and below. */
-    padding: clamp(5rem, 11vh, 9rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
+    margin: 0 calc(-1 * var(--cell-gap)) var(--cell-gap);
+    /* Minimal horizontal padding = --cell-gap on each side; matches
+       the rest of the home grid's gutter so the type fills the screen
+       edge-to-edge on desktop while still leaving a hair of breathing
+       room at the viewport edges. Top padding doubled (was 3-6vh-5rem
+       → 6-12vh-10rem) so the quote sits noticeably below the header
+       pill instead of tucking up under it. */
+    padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
-    font-family: "GT America", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 500;              /* Extrabold registered on Inter Tight */
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;              /* Extrabold registered on Inter Tight */
     /* +20% again from clamp(1.56rem, 7.68vw, 12rem). Each step in
        the clamp scaled by 1.2 so the type reads even larger at every
        viewport. May soft-wrap on narrow phones — manual <br>s are
@@ -308,7 +310,7 @@ html { background: var(--bg); }
     color: var(--accent);
   }
   /* Second (mid-page) quote — the base rule's top padding is
-     bumped specifically to clear the header for the FIRST quote.
+     doubled specifically to clear the header for the FIRST quote.
      The mid-page one has projects above it, so its top padding
      drops to match its bottom padding for symmetric breathing. */
   .home-work > .home-quote ~ .home-quote {
@@ -390,14 +392,14 @@ html { background: var(--bg); }
     .home-quote .brk-mob  { display: inline; }
   }
 
-  /* ─── Mobile: shorter cells, tighter meta padding ─────── */
+  /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
   @media (max-width: 640px) {
     .home-work { padding: 0.5rem; }
     /* Drop reveal blur on mobile. At 100vh × 100vw a 16px filter:blur()
        animation is the dominant per-frame cost during the 1600ms
        transition — killing it removes most of the scroll jitter.
        Translate + scale + opacity still carry the "alive" feel. */
-    .work        { height: 70vh; height: 70svh; filter: none; }
+    .work        { filter: none; }
     .work.is-in-view { filter: none; }
     .work__title { font-size: clamp(2rem, 10vw, 3.5rem); }
     .work__desc  { font-size: 0.75rem; }
@@ -415,7 +417,7 @@ html { background: var(--bg); }
 
   <header class="site-header">
     <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
-      <span class="brand-text">DEDE</span>
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/IAMDEDE_LOGO-1-header-cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/IAMDEDE_LOGO-1-header-red.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-header__end">
       <nav class="site-header__nav" aria-label="Primary">
@@ -566,14 +568,14 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- 6. CAFÉ BUSTELO ─ single cover -->
+    <!-- 6. THE REVENANT ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
         <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/THE_REVENANT.jpg')"></div>
       </div>
       <div class="work__meta">
-        <h2 class="work__title">Café Bustelo</h2>
-        <p class="work__desc">Packaging &amp; Branding</p>
+        <h2 class="work__title">The Revenant</h2>
+        <p class="work__desc">Motion Design</p>
       </div>
       <div class="work__view">VIEW CASE</div>
     </a>
@@ -605,14 +607,14 @@ html { background: var(--bg); }
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="/home/" aria-label="DEDE STUDIO — home">
-      <span class="brand-text">DEDE</span>
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/IAMDEDE_LOGO-1-footer-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/IAMDEDE_LOGO-1-footer-black.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-footer__meta">
       <div class="site-footer__meta-left">
         <span>IAMDEDE © 2026 ALL RIGHTS RESERVED.</span>
       </div>
       <div class="site-footer__meta-center">
-        <span>Let&rsquo;s create something meaningful. <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></span>
+        <span>To Those Closest To Me, I Am Dede.</span>
       </div>
       <div class="site-footer__meta-right">
         <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">BACK TO TOP</a>
