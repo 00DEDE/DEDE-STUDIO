@@ -27,7 +27,7 @@
   padding: 3.44rem 0 3.25rem;       /* top −10% (was 3.825rem), bottom kept tight */
   overflow: hidden;
   color: var(--fg);
-  font-family: "Inter Tight",
+  font-family: "GT America",
                -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   /* Matches the profile / contact pills: regular weight, editorial
      size rather than a display-super banner. Cursor spotlight still
