@@ -20,10 +20,15 @@ body:has(.site-header) {
   left:  calc((100% - var(--content-max)) / 2);
   right: calc((100% - var(--content-max)) / 2);
   z-index: 100;
-  padding: 0.75rem 0;
+  /* Hero padding at top of page — generous top above the mark, a
+     deeper bottom so there's air between the hero mark and the first
+     content block. Collapses hard on .is-scrolled (below). */
+  padding: clamp(1.5rem, 2.5vw, 2.5rem) 0 clamp(3rem, 5vw, 5rem);
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  /* Top-align so the brand can grow down into a hero mark while the
+     nav sits anchored at the top-right. */
+  align-items: flex-start;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   /* Swiss-flat bar: solid page-bg wash + single hairline rule beneath.
      Rule tween: at top of page the rule is the --line hairline; by
@@ -36,8 +41,13 @@ body:has(.site-header) {
     var(--line)   calc((1 - var(--scroll-progress, 0)) * 100%),
     var(--accent) calc(var(--scroll-progress, 0) * 100%)
   );
-  transition: border-bottom-color 180ms linear;
+  transition:
+    padding            var(--dur-medium) var(--ease-out-expo),
+    border-bottom-color 180ms linear;
   border-radius: 0;
+}
+.site-header.is-scrolled {
+  padding: 0.6rem 0 0.6rem;
 }
 .site-header > * { pointer-events: auto; }
 
@@ -52,9 +62,14 @@ body:has(.site-header) {
 }
 .site-header__brand img {
   display: block;
-  /* Desktop-only: 10% bigger (28px → 31px). Mobile uses width-based sizing. */
-  height: 31px;
+  /* Hero mark at top of page — collapses to a small inline mark once
+     the user scrolls (JS toggles .is-scrolled at y > 20px). */
+  height: clamp(2.75rem, 6vw, 4.5rem);
   width: auto;
+  transition: height var(--dur-medium) var(--ease-out-expo);
+}
+.site-header.is-scrolled .site-header__brand img {
+  height: 1.75rem;
 }
 
 /* Right-side group holds nav + theme toggle so `justify-content: space-between`
