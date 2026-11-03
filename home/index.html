@@ -192,12 +192,12 @@ html { background: var(--bg); }
   .work__title {
     margin: 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* High-fashion display: Thin (200) at scale, mixed-case, tight
-       tracking. Reads like a lookbook title over the imagery. */
-    font-weight: 200;
-    font-size: clamp(1.9rem, 4.2vw, 3.75rem);
+    /* Scale pulled back — reads as a careful index entry over the
+       media, not a monumental headline. */
+    font-weight: 300;
+    font-size: clamp(1.25rem, 2.6vw, 2.25rem);
     line-height: 1;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.025em;
     text-transform: none;
   }
   /* Project numbering — CSS counter prefixes every .work__title with
@@ -208,20 +208,21 @@ html { background: var(--bg); }
   .work__title::before {
     content: counter(project, decimal-leading-zero) "  ";
     font-weight: 500;
-    letter-spacing: 0.04em;
-    margin-right: 0.4em;
+    font-size: 0.7em;
+    letter-spacing: 0.08em;
+    margin-right: 0.6em;
     color: var(--accent);
+    vertical-align: 0.08em;
   }
   .work__desc {
-    margin: 0.6rem 0 0;
+    margin: 0.55rem 0 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Tracked-out caption — fashion-house editorial note under the
-       project title. Thin weight, generous letter-spacing. */
+    /* Dense index-style caption. Small, tightly tracked uppercase. */
     font-weight: 400;
-    font-size: clamp(0.68rem, 0.82vw, 0.78rem);
-    letter-spacing: 0.22em;
+    font-size: clamp(0.62rem, 0.76vw, 0.72rem);
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    opacity: 0.78;
+    opacity: 0.75;
   }
 
   /* VIEW CASE hover label, matches the selections cells. */
@@ -295,15 +296,19 @@ html { background: var(--bg); }
     padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* High-fashion weight contrast: body set in Thin (200) so the
-       phrase reads as considered editorial display; .word--accent
-       carries Medium (500) + brand cyan for the "Dede." punch. */
+    /* Thin (200) body, Medium (500) + cyan on .word--accent. Scale
+       dialed back for the atkins-grade curated feel — the phrase
+       reads as a composed statement, not a stage card. */
     font-weight: 200;
-    font-size: clamp(1.1rem, 3.4vw, 3.9rem);
-    line-height: 1.1;
-    letter-spacing: -0.025em;
+    font-size: clamp(0.95rem, 2.4vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
     white-space: nowrap;
     color: var(--fg);
+    /* Architectural rules bracket the quote — thin cyan hairlines
+       above + below, sitewide --line already carries the cyan. */
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
   .home-quote em {
     font-weight: 500;

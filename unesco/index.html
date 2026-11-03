@@ -85,28 +85,26 @@
     color: rgba(var(--fg-rgb), 0.55);
   }
   .intro__title {
-    margin: 0 0 clamp(2rem, 4vh, 3rem);
+    margin: 0 0 clamp(1.5rem, 3vh, 2.5rem);
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Curated editorial display — Thin (200) at scale reads
-       graceful rather than monumental; mixed-case + wider tracking
-       restraint for a composed headline. */
+    /* Scale pulled back for the curated-portfolio feel — composed
+       headline that lets the content below carry the page. */
     font-weight: 200;
-    font-size: clamp(4rem, 11vw, 10.5rem);
-    line-height: 0.9;
-    letter-spacing: -0.045em;
+    font-size: clamp(2.75rem, 6.5vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
     color: var(--fg);
     text-transform: none;
   }
   .intro__lead {
     margin: 0;
-    max-width: 28em;
+    max-width: 30em;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Editorial lede — slightly larger with generous leading so the
-       opening paragraph reads as a proper intro, not a caption. */
+    /* Lede — smaller, graceful leading. Reads as a precise intro. */
     font-weight: 350;
-    font-size: clamp(1.35rem, 2.3vw, 2.1rem);
-    line-height: 1.3;
-    letter-spacing: -0.015em;
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
     color: var(--fg);
     text-wrap: pretty;
   }
@@ -248,11 +246,12 @@
   .statement {
     margin: 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Thin weight at scale — fashion-house editorial pull quote. */
-    font-weight: 200;
-    font-size: clamp(2rem, 3.5vw, 3.5rem);
-    line-height: 1.1;
-    letter-spacing: -0.035em;
+    /* Pulled back a notch — the eyebrow + statement + read-more trio
+       reads as a dense considered block, not a stage card. */
+    font-weight: 300;
+    font-size: clamp(1.4rem, 2.4vw, 2.3rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
     color: var(--fg);
     text-wrap: pretty;
   }
@@ -322,13 +321,14 @@
   }
   .read-more__inner p {
     margin: 0 0 1.1em;
-    /* Hard-capped at --prose-max (42em, editorial measure) so body
-       copy stays within a readable ~60-char line length. */
+    /* Hard-capped at --prose-max so body copy stays within an
+       editorial measure (~60 chars per line). */
     max-width: var(--prose-max);
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Light weight + generous leading for a considered reading rhythm. */
+    /* Dense considered body — smaller size, Light weight, generous
+       leading. Reads like a well-edited portfolio essay. */
     font-weight: 300;
-    font-size: clamp(1rem, 1.2vw, 1.15rem);
+    font-size: clamp(0.86rem, 0.98vw, 0.95rem);
     line-height: 1.7;
     letter-spacing: -0.005em;
     color: rgba(var(--fg-rgb), 0.78);
