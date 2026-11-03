@@ -109,6 +109,13 @@
 
     if (scrollTop) scrollTop.classList.toggle('is-visible', y > TOP_VISIBLE);
 
+    // Publish 0–1 scroll progress on the root as --scroll-progress.
+    // CSS color-mix uses it to fade the header's bottom rule from the
+    // default --line hairline → brand cyan (--accent) by page-end.
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var ratio = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    document.documentElement.style.setProperty('--scroll-progress', ratio);
+
     ticking = false;
   }
 

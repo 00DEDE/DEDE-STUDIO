@@ -26,9 +26,17 @@ body:has(.site-header) {
   align-items: center;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   /* Swiss-flat bar: solid page-bg wash + single hairline rule beneath.
-     No shadow, no scrim, no pill geometry. */
+     Rule tween: at top of page the rule is the --line hairline; by
+     page-end it has eased into solid brand cyan (--accent). JS updates
+     --scroll-progress (0 → 1) in sync with window scroll. */
   background: var(--bg);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid;
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--line)   calc((1 - var(--scroll-progress, 0)) * 100%),
+    var(--accent) calc(var(--scroll-progress, 0) * 100%)
+  );
+  transition: border-bottom-color 180ms linear;
   border-radius: 0;
 }
 .site-header > * { pointer-events: auto; }
@@ -177,7 +185,8 @@ body:has(.site-header) {
     padding: 0.75rem var(--page-x, clamp(10px, 1.25vw, 20px));
     border-radius: 0;
     background: var(--bg);
-    border-bottom: 1px solid var(--line);
+    /* border-bottom inherits from the base rule — same color-mix
+       scroll tween applies at mobile widths too. */
     transition:
       top     var(--dur-medium) var(--ease-out-expo),
       bottom  var(--dur-medium) var(--ease-out-expo),
