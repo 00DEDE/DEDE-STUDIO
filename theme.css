@@ -45,9 +45,7 @@
   --accent:        #00dede;              /* brand cyan — matches logo */
   --accent-rgb:    0, 222, 222;
   --blob-rgb:      77, 77, 77;           /* monochromatic 30% grey — same on both themes */
-  /* Hairlines use brand cyan at reduced alpha — matches the cyan rule
-     system in the DEDE identity collateral. Same on both themes. */
-  --line:          rgba(0, 222, 222, 0.6);
+  --line:          rgba(242, 237, 228, 0.28);
   /* Site-wide cursor — small solid circle (0.25" = 24px at 96 DPI),
      inline SVG so no asset files to maintain. Dark theme uses brand
      cyan #00dede; light theme (below) switches to brand red. The
@@ -122,9 +120,7 @@
   --accent:        #de0000;              /* brand red — matches logo */
   --accent-rgb:    222, 0, 0;
   --blob-rgb:      77, 77, 77;           /* monochromatic 30% grey — matches dark theme (same color on both themes) */
-  /* Light-theme hairlines stay brand cyan — identity collateral uses
-     cyan rules on both dark and light surfaces. */
-  --line:          rgba(0, 222, 222, 0.7);
+  --line:          rgba(15, 14, 12, 0.28);
   /* Light-theme cursor — brand red circle, same 24px geometry. */
   --cursor-url:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23de0000'/%3E%3C/svg%3E");
 }

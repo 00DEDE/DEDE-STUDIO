@@ -295,40 +295,6 @@ html { background: var(--bg); }
     font-style: italic;
     color: var(--accent);
   }
-  /* ─── Palate cleanser — full-bleed cyan interstitial ──────────────
-     Breaks out of .home-work's --content-max cap to span the full
-     viewport width. White outline wordmark centred, with the credo
-     set small beneath. Mirrors the identity-collateral spread. */
-  .home-work > .palate {
-    /* Full-bleed break-out from the capped parent */
-    width: 100vw;
-    margin-inline: calc(50% - 50vw);
-    margin-bottom: var(--cell-gap);
-    padding: clamp(5rem, 14vh, 10rem) var(--cell-gap);
-    box-sizing: border-box;
-    background: var(--accent);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-    gap: clamp(2rem, 6vh, 4rem);
-  }
-  .palate__logo {
-    display: block;
-    width: clamp(140px, 22vw, 360px);
-    height: auto;
-  }
-  .palate__credo {
-    margin: 0;
-    color: #fff;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.75rem, 0.9vw, 0.95rem);
-    letter-spacing: 0.01em;
-    text-align: center;
-  }
-
   /* Second (mid-page) quote — the base rule's top padding is
      doubled specifically to clear the header for the FIRST quote.
      The mid-page one has projects above it, so its top padding
@@ -466,16 +432,6 @@ html { background: var(--bg); }
       <span class="word" style="--i:9">am</span>
       <span class="word word--accent" style="--i:10">Dede.</span>
     </h2>
-
-    <!-- Full-bleed cyan interstitial — the "palate cleanser" page from
-         the DEDE identity collateral. Breaks out of --content-max to
-         span the full viewport. White outline logo + credo, nothing else. -->
-    <section class="palate" aria-label="DEDE credo">
-      <img class="palate__logo"
-           src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png"
-           alt="DEDE" />
-      <p class="palate__credo">What we choose to design, will in return design us.</p>
-    </section>
 
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
          The .work__media below is view-transition-named "unesco-hero"
