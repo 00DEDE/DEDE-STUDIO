@@ -604,7 +604,10 @@
     padding: var(--stack-y) 0;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
-    margin: 0 var(--page-x);
+    /* Sits inside the sitewide --content-max column (via the global
+       rule in theme.css) — same margin as header + content + footer. */
+    max-width: var(--content-max);
+    margin-inline: auto;
   }
   .pager__link {
     display: flex;
