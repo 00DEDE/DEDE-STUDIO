@@ -96,7 +96,7 @@
     text-decoration: none;
     box-sizing: border-box;
     background-color: transparent;
-    border-radius: clamp(10px, 1.1vw, 18px);
+    border-radius: 0;
     overflow: hidden;
     /* Transform gets a subtle-spring cubic-bezier (y2 > 1 → slight
        overshoot) so cells settle with a hint of bounce — the "dancing
@@ -214,7 +214,6 @@
     font-size: clamp(0.72rem, 1vw, 0.95rem);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
     z-index: 3;
     pointer-events: none;
     white-space: nowrap;
@@ -272,7 +271,6 @@
   }
   .cell--cover .cell__view {
     color: #ffffff;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
   }
 
   /* ─── scroll cue ─────────────────────────────────────────────────── */

@@ -105,9 +105,11 @@
     margin: 0 0 clamp(1.75rem, 3.5vh, 2.75rem);
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(4.5rem, 14vw, 14rem);
-    line-height: 0.86;
-    letter-spacing: -0.05em;
+    /* Pulled back from a 14rem display banner so the title reads as a
+       composed Swiss headline rather than a stage curtain. */
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
     color: var(--fg);
     text-transform: uppercase;
   }
@@ -168,7 +170,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 10;
-    border-radius: clamp(12px, 1.25vw, 22px);
+    border-radius: 0;
     overflow: hidden;
     background: #000;
   }
@@ -195,7 +197,7 @@
     width: 100%;
     margin: clamp(1.5rem, 3vh, 2.5rem) 0 0;
     aspect-ratio: 16 / 9;
-    border-radius: clamp(12px, 1.25vw, 22px);
+    border-radius: 0;
     overflow: hidden;
     background: #000;
   }
@@ -257,9 +259,11 @@
     margin: 0;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(1.75rem, 3.6vw, 3.75rem);
-    line-height: 1.02;
-    letter-spacing: -0.025em;
+    /* Editorial — pulled back from a 3.75rem display scale so section
+       statements read as considered type, not a stage banner. */
+    font-size: clamp(1.5rem, 2.6vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
     color: var(--fg);
     text-wrap: pretty;
   }
@@ -378,7 +382,7 @@
     display: block;
     width: 100%;
     margin: 0;
-    border-radius: clamp(10px, 1.1vw, 18px);
+    border-radius: 0;
     overflow: hidden;
     aspect-ratio: 4 / 3;
   }
@@ -482,6 +486,7 @@
      reading past the hero. Fades out once the page has scrolled
      past the hero (JS toggles .is-hidden). */
   .scroll-cue {
+    display: none;
     position: fixed;
     bottom: clamp(1rem, 3vh, 2rem);
     left: 50%;
@@ -526,8 +531,6 @@
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 999px;
-    backdrop-filter: blur(10px) saturate(1.05);
-    -webkit-backdrop-filter: blur(10px) saturate(1.05);
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.4;
     text-align: left;

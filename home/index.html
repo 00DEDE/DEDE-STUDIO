@@ -77,25 +77,14 @@ html { background: var(--bg); }
     margin-bottom: var(--cell-gap);
     color: var(--fg);
     text-decoration: none;
-    /* Reveal state — matches the selections grid cells exactly:
-       opacity 0, 96px lift, 0.9 scale, 16px blur. JS toggles
-       .is-in-view on scroll-into-view and applies a 180ms stagger
-       so sections that enter together cascade top → bottom. Transform
-       carries a subtle-spring cubic-bezier (y2 > 1 → hair of overshoot)
-       so each section lands with a small bounce — the "dancing" feel. */
+    /* Reveal — Swiss-flat: a single opacity fade, no translate, no
+       scale, no blur. Stagger preserved via JS on .is-in-view. */
     opacity: 0;
-    transform: translateY(96px) scale(0.9);
-    filter: blur(16px);
-    transition:
-      opacity   var(--dur-cinematic) var(--ease-out-expo),
-      transform var(--dur-cinematic) cubic-bezier(0.16, 1.15, 0.3, 1),
-      filter    var(--dur-cinematic) var(--ease-out-expo);
+    transition: opacity 600ms var(--ease-standard);
   }
   .work:last-child { margin-bottom: 0; }
   .work.is-in-view {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: none;
   }
 
   /* Rounded media container — fills the whole section. Every media
@@ -105,7 +94,7 @@ html { background: var(--bg); }
   .work__media {
     position: absolute;
     inset: 0;
-    border-radius: clamp(12px, 1.25vw, 22px);
+    border-radius: 0;
     overflow: hidden;
     background: #000;
     isolation: isolate;
@@ -189,7 +178,6 @@ html { background: var(--bg); }
     bottom: clamp(1.25rem, 3vw, 2.5rem);
     z-index: 3;
     color: #ffffff;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     pointer-events: none;
     /* Small enter delay after the media reveals — meta cascades in. */
     opacity: 0;
@@ -204,12 +192,12 @@ html { background: var(--bg); }
   .work__title {
     margin: 0;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Regular weight only — no SUPER (900). Keeps the meta reading as
-       a quiet caption rather than a display banner. */
     font-weight: 400;
-    font-size: clamp(2rem, 5.5vw, 5rem);
-    line-height: 0.95;
-    letter-spacing: -0.03em;
+    /* Editorial scale — tighter than the previous display-banner size.
+       Reads as a Swiss caption rather than a hero statement. */
+    font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
     text-transform: uppercase;
   }
   .work__desc {
@@ -235,7 +223,6 @@ html { background: var(--bg); }
     font-size: clamp(0.95rem, 1.5vw, 1.35rem);
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     opacity: 0;
     transition: opacity var(--dur-medium) var(--ease-out-expo);
     pointer-events: none;
@@ -294,14 +281,12 @@ html { background: var(--bg); }
     padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700;              /* Extrabold registered on Inter Tight */
-    /* +20% again from clamp(1.56rem, 7.68vw, 12rem). Each step in
-       the clamp scaled by 1.2 so the type reads even larger at every
-       viewport. May soft-wrap on narrow phones — manual <br>s are
-       the intended splits. */
-    font-size: clamp(1.87rem, 9.22vw, 14.4rem);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
+    font-weight: 500;
+    /* Editorial — pulled back from a towering 14.4rem display so the
+       quote sits as composed Swiss type rather than a stage banner. */
+    font-size: clamp(1.5rem, 5.5vw, 5.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
     color: var(--fg);
     text-wrap: pretty;
   }
@@ -317,28 +302,15 @@ html { background: var(--bg); }
     padding-top: clamp(3rem, 6vh, 5rem);
   }
 
-  /* Per-word cascade reveal — words start hidden + lifted; when
-     .is-revealed is added they cascade in with an ease-in-out curve
-     (starts gently, accelerates through the middle, decelerates
-     dramatically at the end), offset by --i * 91ms so the eye
-     tracks the reveal left→right, top→bottom. Durations bumped
-     +15% from the previous 980/1260 pass so the tail — the
-     "settle" — reads noticeably slower. Curve is tail-heavy
-     (0.5, 0, 0.2, 1) which further emphasizes the ending. */
+  /* Per-word cascade — Swiss-flat: opacity only, no translate or
+     blur. Stagger kept so the eye still tracks left→right. */
   .home-quote .word {
     display: inline-block;
     opacity: 0;
-    transform: translateY(0.5em);
-    filter: blur(6px);
-    transition:
-      opacity   1127ms cubic-bezier(0.5, 0, 0.2, 1) calc(var(--i) * 91ms),
-      transform 1449ms cubic-bezier(0.5, 0, 0.2, 1) calc(var(--i) * 91ms),
-      filter    1127ms cubic-bezier(0.5, 0, 0.2, 1) calc(var(--i) * 91ms);
+    transition: opacity 500ms var(--ease-standard) calc(var(--i) * 60ms);
   }
   .home-quote.is-revealed .word {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
   }
   .home-quote .word--accent {
     color: var(--accent);
