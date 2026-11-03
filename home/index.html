@@ -282,13 +282,14 @@ html { background: var(--bg); }
     box-sizing: border-box;
     font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 500;
-    /* Editorial — pulled back from a towering 14.4rem display so the
-       quote sits as composed Swiss type rather than a stage banner. */
-    font-size: clamp(1.5rem, 5.5vw, 5.5rem);
+    /* Single-line hero. Calibrated so the full phrase
+       "I am David Gomez. To my loved ones, I am Dede." (~47 chars)
+       fits inside the 75% content column across viewports. */
+    font-size: clamp(0.85rem, 2.65vw, 2.9rem);
     line-height: 1.1;
     letter-spacing: -0.02em;
+    white-space: nowrap;
     color: var(--fg);
-    text-wrap: pretty;
   }
   .home-quote em {
     font-style: italic;
@@ -356,10 +357,8 @@ html { background: var(--bg); }
      placement) — long lines bleed past the viewport edge, which
      body's overflow-x: clip absorbs without producing a scrollbar. */
   @media (max-width: 640px) {
-    .home-work > .home-quote {
-      font-size: clamp(2.34rem, 11.525vw, 14.4rem);
-      white-space: nowrap;
-    }
+    /* Mobile keeps the single-line rule from the base; the clamp
+       already scales down smoothly, no size override needed. */
     .home-quote .brk-desk { display: none; }
     .home-quote .brk-mob  { display: inline; }
   }
@@ -424,14 +423,14 @@ html { background: var(--bg); }
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">am</span>
       <span class="word" style="--i:2">David</span>
-      <span class="word" style="--i:3">Gomez.</span><br>
-      <span class="word" style="--i:5">To</span>
-      <span class="word" style="--i:6">my</span>
-      <span class="word" style="--i:7">loved</span>
-      <span class="word" style="--i:8">ones,</span><br>
-      <span class="word" style="--i:11">I</span>
-      <span class="word" style="--i:12">am</span>
-      <span class="word word--accent" style="--i:13">Dede.</span>
+      <span class="word" style="--i:3">Gomez.</span>
+      <span class="word" style="--i:4">To</span>
+      <span class="word" style="--i:5">my</span>
+      <span class="word" style="--i:6">loved</span>
+      <span class="word" style="--i:7">ones,</span>
+      <span class="word" style="--i:8">I</span>
+      <span class="word" style="--i:9">am</span>
+      <span class="word word--accent" style="--i:10">Dede.</span>
     </h2>
 
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.

@@ -15,17 +15,18 @@ body:has(.site-header) {
 .site-header {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
+  /* Header sits within the same --content-max column the rest of the
+     site uses. (100% − --content-max) ÷ 2 on each side centres it. */
+  left:  calc((100% - var(--content-max)) / 2);
+  right: calc((100% - var(--content-max)) / 2);
   z-index: 100;
-  padding: 0.75rem var(--page-x, clamp(10px, 1.25vw, 20px));
+  padding: 0.75rem 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  /* Swiss-flat: full-width horizontal bar on a solid page-bg wash
-     with a single hairline rule beneath. No shadow, no scrim, no
-     floating pill geometry. */
+  /* Swiss-flat bar: solid page-bg wash + single hairline rule beneath.
+     No shadow, no scrim, no pill geometry. */
   background: var(--bg);
   border-bottom: 1px solid var(--line);
   border-radius: 0;
@@ -171,12 +172,12 @@ body:has(.site-header) {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    /* Mobile: --content-max is 100%, so the derived calc gives 0 side
+       insets — bar spans the viewport with its own padding. */
     padding: 0.75rem var(--page-x, clamp(10px, 1.25vw, 20px));
     border-radius: 0;
     background: var(--bg);
     border-bottom: 1px solid var(--line);
-    /* Transition only the properties that change when the mobile
-       drawer opens — no pill geometry flipping. */
     transition:
       top     var(--dur-medium) var(--ease-out-expo),
       bottom  var(--dur-medium) var(--ease-out-expo),
