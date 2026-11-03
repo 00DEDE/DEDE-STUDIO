@@ -114,7 +114,7 @@ html { background: var(--bg); }
                 transform var(--dur-atmospheric) var(--ease-out-expo);
   }
   @media (hover: hover) {
-    .work:hover .work__cover { opacity: 0.55; transform: scale(1.02); }
+    .work:hover .work__cover { opacity: 0.78; transform: scale(1.01); }
   }
 
   /* Carousel (multi-slide variant) — same crossfade mechanic used on
@@ -155,7 +155,7 @@ html { background: var(--bg); }
   }
   .cover-slide.is-active { opacity: 1; }
   @media (hover: hover) {
-    .work:hover .cover-slide.is-active { opacity: 0.55; transform: scale(1.02); }
+    .work:hover .cover-slide.is-active { opacity: 0.78; transform: scale(1.01); }
   }
 
   /* Bottom scrim — ensures the meta / view-case text reads over any
@@ -192,23 +192,36 @@ html { background: var(--bg); }
   .work__title {
     margin: 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Editorial display: Light (300) weight sits gracefully over the
-       project imagery; mixed-case + tighter tracking reads as a curated
-       title rather than a stencilled label. */
-    font-weight: 300;
+    /* High-fashion display: Thin (200) at scale, mixed-case, tight
+       tracking. Reads like a lookbook title over the imagery. */
+    font-weight: 200;
     font-size: clamp(1.9rem, 4.2vw, 3.75rem);
     line-height: 1;
     letter-spacing: -0.035em;
     text-transform: none;
   }
+  /* Project numbering — CSS counter prefixes every .work__title with
+     a two-digit index (01 — Project). Automatic across the scroll
+     without touching markup; reads as a systematic editorial sequence. */
+  .home-work { counter-reset: project; }
+  .work { counter-increment: project; }
+  .work__title::before {
+    content: counter(project, decimal-leading-zero) "  ";
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-right: 0.4em;
+    color: var(--accent);
+  }
   .work__desc {
-    margin: 0.4rem 0 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    margin: 0.6rem 0 0;
+    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    /* Tracked-out caption — fashion-house editorial note under the
+       project title. Thin weight, generous letter-spacing. */
     font-weight: 400;
-    font-size: clamp(0.8rem, 1.1vw, 1.05rem);
-    letter-spacing: 0.12em;
+    font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    opacity: 0.85;
+    opacity: 0.78;
   }
 
   /* VIEW CASE hover label, matches the selections cells. */
@@ -282,13 +295,10 @@ html { background: var(--bg); }
     padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Editorial weight contrast: body of the quote is light (300),
-       and .word--accent carries weight 500 + cyan for the pop on
-       "Dede." No italics — slant retired sitewide. */
-    font-weight: 300;
-    /* Single-line hero sized up for curated editorial presence while
-       the full 47-char phrase still fits inside the 75% column at
-       every viewport. */
+    /* High-fashion weight contrast: body set in Thin (200) so the
+       phrase reads as considered editorial display; .word--accent
+       carries Medium (500) + brand cyan for the "Dede." punch. */
+    font-weight: 200;
     font-size: clamp(1.1rem, 3.4vw, 3.9rem);
     line-height: 1.1;
     letter-spacing: -0.025em;

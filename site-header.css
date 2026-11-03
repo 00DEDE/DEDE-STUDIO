@@ -67,16 +67,18 @@ body:has(.site-header) {
 
 .site-header__nav {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.75rem;
   align-items: center;
 }
 .site-header__nav a {
   color: var(--fg);
   text-decoration: none;
+  /* High-fashion nav — tracked out, small, Medium weight. */
   font-weight: 500;
-  font-size: 0.85rem;
-  letter-spacing: 0.02em;
-  opacity: 0.45;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.5;
   transition: opacity var(--dur-quick) var(--ease-standard),
               color   var(--dur-medium) var(--ease-standard);
   outline: none;
