@@ -14,33 +14,21 @@ body:has(.site-header) {
 
 .site-header {
   position: fixed;
-  top: 0.75rem;
-  left: 1rem;
-  right: 1rem;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
-  padding: 0.75rem 1.75rem;
+  padding: 0.75rem var(--page-x, clamp(10px, 1.25vw, 20px));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  pointer-events: none;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  /* Contrasting neutral scrim — pill stays visible over the full
-     range of backdrops it can end up over (page bg, atmospheric
-     blobs, hero imagery). Dark mode gets a 20% black scrim so the
-     pill DARKENS against lighter regions; light mode gets the
-     opposite (20% white) so it LIGHTENS against darker regions.
-     Previous same-tone tint (rgba(var(--fg-rgb), 0.06)) blended
-     into whichever context was similar to the fg color. */
-  background: rgba(0, 0, 0, 0.20);
-  border-radius: 2px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
-}
-[data-theme="light"] .site-header {
-  /* Opposite in light mode — 20% white scrim brightens the pill so
-     it stands out over darker atmospheric regions. Shadow softens
-     because the white haze already carries the elevation cue. */
-  background: rgba(255, 255, 255, 0.20);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  /* Swiss-flat: full-width horizontal bar on a solid page-bg wash
+     with a single hairline rule beneath. No shadow, no scrim, no
+     floating pill geometry. */
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
 }
 .site-header > * { pointer-events: auto; }
 
@@ -129,43 +117,22 @@ body:has(.site-header) {
 
 .site-header__theme-toggle-thumb {
   position: absolute;
-  /* Mobile base thumb — fits inside the 20px track (2 + 14 + 2 + 2
-     borders = 20). Desktop overrides further below with a smaller
-     10×10 thumb for the 15px track. */
+  /* Swiss-flat thumb — square, solid fg color, no glow, no scale. */
   top: 2px;
   left: 3px;
   width: 14px;
   height: 14px;
-  border-radius: 50%;
-  background: var(--accent);
-  /* Multi-layer accent glow — reads as cyan in dark mode, red in
-     light mode via --accent-rgb. Base intensity is subtle; hover
-     bumps it. */
-  box-shadow:
-    0 0 0.55em rgba(var(--accent-rgb), 0.5),
-    0 0 1.1em  rgba(var(--accent-rgb), 0.28),
-    0 1px 3px  rgba(0, 0, 0, 0.28);
-  /* `translate` + `scale` are separate transform properties in
-     modern CSS — hover-scale doesn't fight the light-mode slide. */
+  border-radius: 0;
+  background: var(--fg);
   translate: 0 0;
-  scale: 1;
-  transition:
-    translate  var(--dur-medium) cubic-bezier(0.16, 1.15, 0.3, 1),
-    scale      var(--dur-quick)  var(--ease-out-expo),
-    background var(--dur-medium) var(--ease-standard),
-    box-shadow var(--dur-medium) var(--ease-standard);
+  transition: translate var(--dur-medium) var(--ease-out-expo);
 }
 [data-theme="light"] .site-header__theme-toggle-thumb {
   /* Slide: 46 (content) − 3 (left) − 14 (thumb) − 3 (right) = 26. */
   translate: 26px 0;
 }
-.site-header__theme-toggle:hover .site-header__theme-toggle-thumb {
-  scale: 1.08;
-  box-shadow:
-    0 0 0.85em rgba(var(--accent-rgb), 0.75),
-    0 0 1.7em  rgba(var(--accent-rgb), 0.42),
-    0 1px 3px  rgba(0, 0, 0, 0.28);
-}
+/* Swiss toggle has no hover-glow — the border change already carries
+   the state cue. */
 
 /* Desktop: another 25% off the toggle height (20px → 15px). Reads
    as a minimal linear indicator at desktop scale. Thumb shrinks to
@@ -190,28 +157,10 @@ body:has(.site-header) {
    browser's default <button> rendering leaves it visible on desktop. */
 .site-header__menu { display: none; }
 
-/* ─── Desktop scroll state ────────────────────────────────────────────
-   Once the user scrolls (site-header.js flips .is-scrolled at 20px),
-   the pill halves its length — left/right both animate from 1rem →
-   25%, so the pill sits centred at 50% of the viewport. Padding + the
-   internal gaps tighten a hair so the same brand / nav / toggle fit
-   cleanly inside the narrower pill without wrapping.
-   Scoped to (min-width: 641px) so it does not fight the mobile
-   collapse behaviour further below. */
-@media (min-width: 641px) {
-  .site-header {
-    transition: left    var(--dur-medium) var(--ease-out-expo),
-                right   var(--dur-medium) var(--ease-out-expo),
-                padding var(--dur-medium) var(--ease-out-expo);
-  }
-  .site-header.is-scrolled {
-    left: 25%;
-    right: 25%;
-    padding: 0.6rem 1.3rem;
-  }
-  .site-header.is-scrolled .site-header__nav { gap: 1rem;   }
-  .site-header.is-scrolled .site-header__end { gap: 0.9rem; }
-}
+/* Swiss-flat header stays a full-width bar at every scroll position;
+   no pill-collapse animation (that was futuristic). The .is-scrolled
+   class JS still toggles — intentional no-op on desktop so pages that
+   depend on the class don't break. */
 
 @media (max-width: 640px) {
   /* Compact pill (default state on mobile) — DĒDĒ logo far left,
@@ -222,19 +171,16 @@ body:has(.site-header) {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 1.15rem;
-    border-radius: 2px;
-    background: color-mix(in srgb, var(--bg) 65%, transparent);
-    /* Every property that flips between compact-pill and full-screen
-       overlay is transitioned so the open/close feels like one motion. */
+    padding: 0.75rem var(--page-x, clamp(10px, 1.25vw, 20px));
+    border-radius: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    /* Transition only the properties that change when the mobile
+       drawer opens — no pill geometry flipping. */
     transition:
-      top           var(--dur-medium) var(--ease-out-expo),
-      left          var(--dur-medium) var(--ease-out-expo),
-      right         var(--dur-medium) var(--ease-out-expo),
-      bottom        var(--dur-medium) var(--ease-out-expo),
-      padding       var(--dur-medium) var(--ease-out-expo),
-      border-radius var(--dur-medium) var(--ease-out-expo),
-      background    var(--dur-medium) var(--ease-standard);
+      top     var(--dur-medium) var(--ease-out-expo),
+      bottom  var(--dur-medium) var(--ease-out-expo),
+      padding var(--dur-medium) var(--ease-out-expo);
   }
   .site-header__brand img {
     /* Mobile logo −25% from the previous sizing (13.75vw / 200 / 112). */

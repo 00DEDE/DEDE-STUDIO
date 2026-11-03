@@ -69,6 +69,16 @@
   --ease-in-expo:   cubic-bezier(0.7, 0, 0.84, 0);     /* firm departure   */
   --ease-in-out:    cubic-bezier(0.77, 0, 0.175, 1);   /* dramatic S-curve */
   --ease-linear:    linear;                            /* continuous loops */
+
+  /* ─── Shared spacing system ──────────────────────────────────────────
+     Defined once here so every page inherits the same horizontal gutter
+     and vertical rhythm. Pages may still override via a local :root but
+     the defaults are now consistent sitewide.                           */
+  --page-x:        clamp(10px, 1.25vw, 20px);  /* side gutter             */
+  --stack-top:     clamp(2.6rem, 6.4vh, 4.4rem); /* clearance under header */
+  --stack-y:       clamp(4rem, 8vh, 6rem);     /* between-section rhythm  */
+  --stack-y-tight: clamp(2.5rem, 5vh, 3.5rem); /* within-section rhythm   */
+  --prose-max:     48rem;                      /* body-copy width cap     */
 }
 
 [data-theme="light"] {
