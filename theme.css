@@ -79,6 +79,25 @@
   --stack-y:       clamp(4rem, 8vh, 6rem);     /* between-section rhythm  */
   --stack-y-tight: clamp(2.5rem, 5vh, 3.5rem); /* within-section rhythm   */
   --prose-max:     48rem;                      /* body-copy width cap     */
+  --content-max:   75%;                        /* content cap vs viewport */
+}
+
+/* Mobile: content fills the viewport (minus --page-x gutter). */
+@media (max-width: 900px) {
+  :root { --content-max: 100%; }
+}
+
+/* ─── Sitewide content cap ───────────────────────────────────────────
+   Every top-level content wrapper on every page caps at --content-max
+   and centers horizontally. Keeps the whole site reading as a single
+   consistent column, matching the UNESCO page's rhythm. */
+.home-work,
+.selections,
+.profile-contact,
+.unesco__intro, .unesco__hero, .unesco__atlas, .unesco__grid, .unesco__closing,
+.ecclesiastes__intro, .ecclesiastes__hero, .ecclesiastes__grid, .ecclesiastes__closing {
+  max-width: var(--content-max);
+  margin-inline: auto;
 }
 
 [data-theme="light"] {
