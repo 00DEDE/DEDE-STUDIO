@@ -73,10 +73,10 @@ em { font-style: normal; }
      and vertical rhythm. Pages may still override via a local :root but
      the defaults are now consistent sitewide.                           */
   --page-x:        clamp(10px, 1.25vw, 20px);  /* side gutter             */
-  --stack-top:     clamp(2.6rem, 6.4vh, 4.4rem); /* clearance under header */
-  --stack-y:       clamp(4rem, 8vh, 6rem);     /* between-section rhythm  */
-  --stack-y-tight: clamp(2.5rem, 5vh, 3.5rem); /* within-section rhythm   */
-  --prose-max:     48rem;                      /* body-copy width cap     */
+  --stack-top:     clamp(3rem, 7vh, 5rem);     /* clearance under header  */
+  --stack-y:       clamp(5rem, 10vh, 8rem);    /* between-section rhythm  */
+  --stack-y-tight: clamp(3rem, 6vh, 4.5rem);   /* within-section rhythm   */
+  --prose-max:     42em;                       /* editorial body measure  */
   --content-max:   75%;                        /* content cap vs viewport */
 }
 

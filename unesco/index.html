@@ -85,25 +85,27 @@
     color: rgba(var(--fg-rgb), 0.55);
   }
   .intro__title {
-    margin: 0 0 clamp(1.75rem, 3.5vh, 2.75rem);
+    margin: 0 0 clamp(2rem, 4vh, 3rem);
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    /* Editorial display scale — bigger than the Swiss-pulled-back
-       cap, pulled back from the original stage-curtain. Lands as a
-       confident editorial headline with room to breathe. */
-    font-size: clamp(3.5rem, 10vw, 9rem);
-    line-height: 0.95;
-    letter-spacing: -0.035em;
+    /* Curated editorial display — Thin (200) at scale reads
+       graceful rather than monumental; mixed-case + wider tracking
+       restraint for a composed headline. */
+    font-weight: 200;
+    font-size: clamp(4rem, 11vw, 10.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.045em;
     color: var(--fg);
-    text-transform: uppercase;
+    text-transform: none;
   }
   .intro__lead {
     margin: 0;
-    max-width: 32em;
+    max-width: 28em;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(1.25rem, 2.1vw, 1.85rem);
-    line-height: 1.22;
+    /* Editorial lede — slightly larger with generous leading so the
+       opening paragraph reads as a proper intro, not a caption. */
+    font-weight: 350;
+    font-size: clamp(1.35rem, 2.3vw, 2.1rem);
+    line-height: 1.3;
     letter-spacing: -0.015em;
     color: var(--fg);
     text-wrap: pretty;
@@ -125,19 +127,21 @@
   }
   .intro__meta > div { margin: 0; }
   .intro__meta dt {
-    margin: 0 0 0.4rem;
+    margin: 0 0 0.5rem;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    /* Editorial dt — same tracked-out eyebrow treatment as section labels. */
     font-weight: 500;
-    font-size: clamp(0.66rem, 0.78vw, 0.72rem);
-    letter-spacing: 0.18em;
+    font-size: clamp(0.68rem, 0.8vw, 0.74rem);
+    letter-spacing: 0.26em;
     text-transform: uppercase;
     color: rgba(var(--fg-rgb), 0.55);
   }
   .intro__meta dd {
     margin: 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.98rem, 1.2vw, 1.15rem);
+    /* Light weight for the data value — curated, graceful. */
+    font-weight: 300;
+    font-size: clamp(1rem, 1.25vw, 1.2rem);
     letter-spacing: -0.01em;
     color: var(--fg);
   }
@@ -230,25 +234,26 @@
     margin: 0;
     padding-top: 0.55em;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    /* Editorial eyebrow — tracked wider for the curated magazine
+       feel; Medium weight keeps it readable at the small size. */
     font-weight: 500;
-    font-size: clamp(0.7rem, 0.85vw, 0.8rem);
-    letter-spacing: 0.18em;
+    font-size: clamp(0.72rem, 0.88vw, 0.82rem);
+    letter-spacing: 0.26em;
     text-transform: uppercase;
     color: rgba(var(--fg-rgb), 0.55);
   }
-  .section-label__num { color: var(--accent); margin-right: 0.9em; }
+  .section-label__num { color: var(--accent); margin-right: 1.1em; }
 
-  /* ─── Statement (mouthwash-scale display type) ───────────────────── */
+  /* ─── Statement (editorial display) ─────────────────────────────── */
   .statement {
     margin: 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    /* Editorial display scale for section statements — sized up for
-       more expressive presence while staying under the previous
-       stage-banner cap. */
-    font-size: clamp(1.75rem, 3vw, 3rem);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    /* Light weight at scale — reads as a composed editorial pull
+       quote rather than a stencilled banner. */
+    font-weight: 300;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
     color: var(--fg);
     text-wrap: pretty;
   }
@@ -317,16 +322,15 @@
     margin-top: clamp(1.5rem, 2.5vh, 2rem);
   }
   .read-more__inner p {
-    margin: 0 0 1em;
-    /* Hard-capped at --prose-max so body copy never spans more
-       than 2 of the 3 grid columns (see :root rule). Left-aligned
-       within the parent container; blank space to the right at wide
-       viewports is intentional. */
+    margin: 0 0 1.1em;
+    /* Hard-capped at --prose-max (42em, editorial measure) so body
+       copy stays within a readable ~60-char line length. */
     max-width: var(--prose-max);
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
-    line-height: 1.6;
+    /* Light weight + generous leading for a considered reading rhythm. */
+    font-weight: 300;
+    font-size: clamp(1rem, 1.2vw, 1.15rem);
+    line-height: 1.7;
     letter-spacing: -0.005em;
     color: rgba(var(--fg-rgb), 0.78);
   }

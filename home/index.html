@@ -192,13 +192,14 @@ html { background: var(--bg); }
   .work__title {
     margin: 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    /* Editorial scale — tighter than the previous display-banner size.
-       Reads as a Swiss caption rather than a hero statement. */
-    font-size: clamp(1.5rem, 3.2vw, 2.75rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
+    /* Editorial display: Light (300) weight sits gracefully over the
+       project imagery; mixed-case + tighter tracking reads as a curated
+       title rather than a stencilled label. */
+    font-weight: 300;
+    font-size: clamp(1.9rem, 4.2vw, 3.75rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-transform: none;
   }
   .work__desc {
     margin: 0.4rem 0 0;
@@ -281,16 +282,16 @@ html { background: var(--bg); }
     padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Editorial weight contrast: body of the quote is light (400),
+    /* Editorial weight contrast: body of the quote is light (300),
        and .word--accent carries weight 500 + cyan for the pop on
        "Dede." No italics — slant retired sitewide. */
-    font-weight: 400;
-    /* Single-line hero. Sized up for more editorial presence while
-       still fitting the full 47-char phrase inside the 75% column
-       at every viewport. */
-    font-size: clamp(1rem, 3.1vw, 3.4rem);
+    font-weight: 300;
+    /* Single-line hero sized up for curated editorial presence while
+       the full 47-char phrase still fits inside the 75% column at
+       every viewport. */
+    font-size: clamp(1.1rem, 3.4vw, 3.9rem);
     line-height: 1.1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     white-space: nowrap;
     color: var(--fg);
   }
