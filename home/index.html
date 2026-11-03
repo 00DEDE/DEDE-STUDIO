@@ -53,12 +53,11 @@ html { background: var(--bg); }
   body { background: transparent; }
   a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
 
-  /* Home overrides the site-wide body:has(.site-header) padding-top so
-     the header pill can float OVER the first project's media instead
-     of pushing it down — matches the Studio Dumbar edge-to-edge feel.
-     Same specificity as the site-header.css rule; this style block loads
-     after, so it wins the cascade. */
-  body.home { padding-top: 0; }
+  /* Home now opts INTO the sitewide --header-safe-top padding so the
+     hero header has room to breathe above the first content block.
+     (Previous rule set body.home { padding-top: 0 } so the compact
+     pill could float over project #1 — redundant now that the header
+     is a hero at top-of-page.) */
 
   /* ─── Work scroll — full-screen project sections ────────────────── */
   .home-work {
