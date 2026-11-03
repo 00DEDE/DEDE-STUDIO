@@ -102,7 +102,8 @@
 .selections,
 .profile-contact,
 .unesco__intro, .unesco__hero, .unesco__atlas, .unesco__grid, .unesco__closing,
-.ecclesiastes__intro, .ecclesiastes__hero, .ecclesiastes__grid, .ecclesiastes__closing {
+.ecclesiastes__intro, .ecclesiastes__hero, .ecclesiastes__grid, .ecclesiastes__closing,
+.pager {
   max-width: var(--content-max);
   margin-inline: auto;
 }
