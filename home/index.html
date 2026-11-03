@@ -306,6 +306,14 @@ html { background: var(--bg); }
   .home-work > .home-quote ~ .home-quote {
     padding-top: clamp(3rem, 6vh, 5rem);
   }
+  /* .home-quote--wrap: natural 1–2 line flow for the longer credo.
+     Overrides the base nowrap so the phrase breaks gracefully when
+     the viewport can't hold it on one line; text-wrap: balance keeps
+     the two lines close to even length. */
+  .home-quote--wrap {
+    white-space: normal;
+    text-wrap: balance;
+  }
 
   /* Per-word cascade — Swiss-flat: opacity only, no translate or
      blur. Stagger kept so the eye still tracks left→right. */
@@ -501,23 +509,20 @@ html { background: var(--bg); }
     </a>
 
     <!-- Second editorial pull-statement — mirrors the top quote's
-         structure. 3 lines, per-word cascade reveal (via .home-quote
-         CSS), "design us." carries the accent italic + brand color
-         as the reversal punch line.
-         Line-2 break moves per breakpoint via .brk-desk / .brk-mob:
-           Desktop:  What we choose / to design, will in return / design us.
-           Mobile:   What we choose / to design, will in       / return design us. -->
-    <h2 class="home-quote">
+         structure. Flows naturally on 1 line when it fits, 2 lines
+         when the viewport is tight. "design us." carries the accent
+         weight + brand colour as the reversal punch line. -->
+    <h2 class="home-quote home-quote--wrap">
       <span class="word" style="--i:0">What</span>
       <span class="word" style="--i:1">we</span>
-      <span class="word" style="--i:2">choose</span><br>
-      <span class="word" style="--i:5">to</span>
-      <span class="word" style="--i:6">design,</span>
-      <span class="word" style="--i:7">will</span>
-      <span class="word" style="--i:8">in</span><br class="brk-mob">
-      <span class="word" style="--i:9">return</span><br class="brk-desk">
-      <span class="word word--accent" style="--i:12">design</span>
-      <span class="word word--accent" style="--i:13">us.</span>
+      <span class="word" style="--i:2">choose</span>
+      <span class="word" style="--i:3">to</span>
+      <span class="word" style="--i:4">design,</span>
+      <span class="word" style="--i:5">will</span>
+      <span class="word" style="--i:6">in</span>
+      <span class="word" style="--i:7">return</span>
+      <span class="word word--accent" style="--i:8">design</span>
+      <span class="word word--accent" style="--i:9">us.</span>
     </h2>
 
     <!-- 4. NANA'S BAKERY ─ single cover -->
