@@ -88,9 +88,10 @@
     margin: 0 0 clamp(1.75rem, 3.5vh, 2.75rem);
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    /* Pulled back from a 14rem display banner so the title reads as a
-       composed Swiss headline rather than a stage curtain. */
-    font-size: clamp(3rem, 8vw, 7rem);
+    /* Editorial display scale — bigger than the Swiss-pulled-back
+       cap, pulled back from the original stage-curtain. Lands as a
+       confident editorial headline with room to breathe. */
+    font-size: clamp(3.5rem, 10vw, 9rem);
     line-height: 0.95;
     letter-spacing: -0.035em;
     color: var(--fg);
@@ -108,7 +109,7 @@
     text-wrap: pretty;
   }
   .intro__lead em {
-    font-style: italic;
+    font-weight: 500;
     color: var(--accent);
   }
 
@@ -242,16 +243,17 @@
     margin: 0;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    /* Editorial — pulled back from a 3.75rem display scale so section
-       statements read as considered type, not a stage banner. */
-    font-size: clamp(1.5rem, 2.6vw, 2.5rem);
+    /* Editorial display scale for section statements — sized up for
+       more expressive presence while staying under the previous
+       stage-banner cap. */
+    font-size: clamp(1.75rem, 3vw, 3rem);
     line-height: 1.15;
     letter-spacing: -0.02em;
     color: var(--fg);
     text-wrap: pretty;
   }
   .statement em {
-    font-style: italic;
+    font-weight: 500;
     color: var(--accent);
   }
 

@@ -11,20 +11,11 @@
   font-style: normal;
   font-display: swap;
 }
-@font-face {
-  font-family: "ABC Oracle";
-  src: url("ASSETS/FONTS/ABC%20ORACLE/ABCOracle-RegularItalic-Trial.otf") format("opentype");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "ABC Oracle";
-  src: url("ASSETS/FONTS/ABC%20ORACLE/ABCOracle-MediumItalic-Trial.otf") format("opentype");
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
+
+/* Italics intentionally not registered — emphasis is carried by
+   weight + brand-cyan colour, never slant. Any <em> or
+   font-style: italic in page markup falls back to upright. */
+em { font-style: normal; }
 
 /* Theme variables — dark by default, light when [data-theme="light"] is on
    the <html> element. All shared colors point at these vars, so page CSS

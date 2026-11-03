@@ -281,18 +281,21 @@ html { background: var(--bg); }
     padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 500;
-    /* Single-line hero. Calibrated so the full phrase
-       "I am David Gomez. To my loved ones, I am Dede." (~47 chars)
-       fits inside the 75% content column across viewports. */
-    font-size: clamp(0.85rem, 2.65vw, 2.9rem);
+    /* Editorial weight contrast: body of the quote is light (400),
+       and .word--accent carries weight 500 + cyan for the pop on
+       "Dede." No italics — slant retired sitewide. */
+    font-weight: 400;
+    /* Single-line hero. Sized up for more editorial presence while
+       still fitting the full 47-char phrase inside the 75% column
+       at every viewport. */
+    font-size: clamp(1rem, 3.1vw, 3.4rem);
     line-height: 1.1;
     letter-spacing: -0.02em;
     white-space: nowrap;
     color: var(--fg);
   }
   .home-quote em {
-    font-style: italic;
+    font-weight: 500;
     color: var(--accent);
   }
   /* Second (mid-page) quote — the base rule's top padding is
@@ -315,7 +318,7 @@ html { background: var(--bg); }
   }
   .home-quote .word--accent {
     color: var(--accent);
-    font-style: italic;
+    font-weight: 500;
   }
 
   /* Post-reveal — once the cascade finishes, .is-settled swaps the
