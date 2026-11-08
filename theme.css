@@ -22,26 +22,21 @@ em { font-style: normal; }
    automatically adapts. */
 
 :root {
-  /* Warm dark palette — off-black bg + warm cream fg. Accent is the
-     bright brand cyan (matches the top-left logo hex exactly); the
-     dusty teal used to atmospheric-blob the page is decoupled into
-     --blob-rgb below so UI ink stays vivid while the backdrop stays
-     muted / editorial. */
-  --bg:            #0f0e0c;              /* warm off-black */
-  --bg-tint:       #1a1815;              /* warm neutral panel/blob tone */
-  --bg-tint-rgb:   26, 24, 21;
-  --fg:            #f2ede4;              /* warm cream */
-  --fg-rgb:        242, 237, 228;
-  --fg-dim:        rgba(242, 237, 228, 0.65);
-  --accent:        #00dede;              /* brand cyan — matches logo */
-  --accent-rgb:    0, 222, 222;
-  --blob-rgb:      77, 77, 77;           /* monochromatic 30% grey — same on both themes */
-  --line:          rgba(242, 237, 228, 0.28);
-  /* Site-wide cursor — small solid circle (0.25" = 24px at 96 DPI),
-     inline SVG so no asset files to maintain. Dark theme uses brand
-     cyan #00dede; light theme (below) switches to brand red. The
-     hotspot sits at the circle's center (12 12 on a 24×24 canvas). */
-  --cursor-url:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%2300dede'/%3E%3C/svg%3E");
+  /* Black-on-white monochrome palette. One theme, no colour accents —
+     every surface is white, every ink is black. --accent collapses
+     onto --fg so emphasis never pops in colour. */
+  --bg:            #ffffff;
+  --bg-tint:       #f4f4f4;
+  --bg-tint-rgb:   244, 244, 244;
+  --fg:            #000000;
+  --fg-rgb:        0, 0, 0;
+  --fg-dim:        rgba(0, 0, 0, 0.55);
+  --accent:        #000000;
+  --accent-rgb:    0, 0, 0;
+  --blob-rgb:      0, 0, 0;
+  --line:          rgba(0, 0, 0, 0.15);
+  /* Site-wide cursor — small solid black circle, inline SVG. */
+  --cursor-url:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23000000'/%3E%3C/svg%3E");
 
   /* ─── motion system ──────────────────────────────────────────────────
      One source-of-truth for every duration and easing across the site.
@@ -99,23 +94,8 @@ em { font-style: normal; }
   margin-inline: auto;
 }
 
-[data-theme="light"] {
-  /* Warm light palette — mirror inversion of warm dark. Accent is
-     the bright brand red (matches the top-left logo hex); dusty
-     terracotta stays isolated to the blob layer via --blob-rgb. */
-  --bg:            #f2ede4;              /* warm cream (was dark's fg) */
-  --bg-tint:       #e5dfd1;              /* warm light panel tone */
-  --bg-tint-rgb:   229, 223, 209;
-  --fg:            #0f0e0c;              /* warm near-black (was dark's bg) */
-  --fg-rgb:        15, 14, 12;
-  --fg-dim:        rgba(15, 14, 12, 0.65);
-  --accent:        #de0000;              /* brand red — matches logo */
-  --accent-rgb:    222, 0, 0;
-  --blob-rgb:      77, 77, 77;           /* monochromatic 30% grey — matches dark theme (same color on both themes) */
-  --line:          rgba(15, 14, 12, 0.28);
-  /* Light-theme cursor — brand red circle, same 24px geometry. */
-  --cursor-url:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23de0000'/%3E%3C/svg%3E");
-}
+/* Dark-theme override retired — site is monochrome, light-only.
+   [data-theme] attribute on <html> is now a no-op. */
 
 /* Baseline that carries the theme everywhere pages don't override it. */
 html { background: var(--bg); }

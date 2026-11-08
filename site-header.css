@@ -140,6 +140,8 @@ body:has(.site-header) {
    hairline border. Thumb slides on a subtle-spring curve; hover
    scales it up slightly and intensifies the accent glow. */
 .site-header__theme-toggle {
+  /* Theme toggle retired — site is monochrome, light-only. */
+  display: none !important;
   position: relative;
   width: 48px;
   /* Mobile base — 25% shorter than the previous 26px. Desktop takes

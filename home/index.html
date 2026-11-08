@@ -179,20 +179,28 @@ html { background: var(--bg); }
   /* ─── Meta overlay: title + tag, bottom-left ────────────────────── */
   .work__meta {
     position: absolute;
-    left: clamp(1.25rem, 3vw, 3rem);
-    bottom: clamp(1.25rem, 3vw, 2.5rem);
+    /* Chanel-style overlay: centred horizontally, bottom-anchored
+       in the lower third of the cell. Full centring of the inner
+       title + caption. */
+    left: 50%;
+    right: auto;
+    bottom: clamp(2rem, 6vh, 4rem);
+    transform: translateX(-50%);
+    width: calc(100% - 3rem);
+    max-width: 60ch;
+    text-align: center;
     z-index: 3;
     color: #ffffff;
     pointer-events: none;
     /* Small enter delay after the media reveals — meta cascades in. */
     opacity: 0;
-    transform: translateY(20px);
     transition: opacity   var(--dur-cinematic) var(--ease-out-expo) 220ms,
                 transform var(--dur-cinematic) var(--ease-out-expo) 220ms;
   }
   .work.is-in-view .work__meta {
     opacity: 1;
-    transform: translateY(0);
+    /* Keep translateX centering — only animate opacity now */
+    transform: translateX(-50%);
   }
   .work__title {
     margin: 0;
@@ -216,7 +224,10 @@ html { background: var(--bg); }
     font-size: 0.7em;
     letter-spacing: 0.08em;
     margin-right: 0.6em;
-    color: var(--accent);
+    /* Inherits from .work__meta (white over the image), not --accent,
+       so the counter sits on the image scrim at the correct contrast. */
+    color: inherit;
+    opacity: 0.75;
     vertical-align: 0.08em;
   }
   .work__desc {
@@ -420,7 +431,7 @@ html { background: var(--bg); }
 
   <header class="site-header">
     <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
-      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-cyan.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-red.png" alt="DEDE STUDIO" />
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-header__end">
       <nav class="site-header__nav" aria-label="Primary">
@@ -608,7 +619,7 @@ html { background: var(--bg); }
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="/home/" aria-label="DEDE STUDIO — home">
-      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-footer__meta">
       <div class="site-footer__meta-left">
