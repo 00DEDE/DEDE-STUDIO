@@ -219,18 +219,17 @@ html { background: var(--bg); }
   .home-work { counter-reset: project; }
   .work { counter-increment: project; }
   .work__title::before {
-    /* Isolate the index number on its own line, with the project
-       title breaking to the next. */
+    /* Number sits ALONE on line 1. Title breaks beneath via the
+       pseudo-element's display: block. Full title size so the number
+       reads as a confident, isolated first line (not a tiny eyebrow). */
     display: block;
     content: counter(project, decimal-leading-zero);
-    margin-bottom: 0.4em;
-    font-weight: 500;
-    font-size: 0.5em;
-    letter-spacing: 0.18em;
-    /* Inherits from .work__meta (white over the image), not --accent,
-       so the counter sits on the image scrim at the correct contrast. */
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    font-size: 1em;
+    letter-spacing: 0.04em;
     color: inherit;
-    opacity: 0.75;
+    opacity: 0.8;
   }
   .work__desc {
     margin: 0.55rem 0 0;
@@ -433,7 +432,7 @@ html { background: var(--bg); }
 
   <header class="site-header">
     <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
-      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" />
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-header__end">
       <nav class="site-header__nav" aria-label="Primary">
@@ -621,7 +620,7 @@ html { background: var(--bg); }
 
   <footer class="site-footer">
     <a class="site-footer__logo" href="/home/" aria-label="DEDE STUDIO — home">
-      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-footer__meta">
       <div class="site-footer__meta-left">

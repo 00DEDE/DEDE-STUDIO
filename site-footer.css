@@ -1,13 +1,13 @@
-/* Shared footer — included on every content page. */
+/* Shared footer — included on every content page.
+   Inverted (chanel pattern): black panel + white ink. Full-bleed
+   background via margin trick, content still capped at --content-max. */
 .site-footer {
-  /* Matches the sitewide --content-max cap used by the header and
-     every page's top-level content wrapper. */
-  max-width: var(--content-max);
-  margin-inline: auto;
-  padding: 0;
+  max-width: 100%;
+  margin-inline: 0;
+  padding: clamp(3rem, 8vh, 6rem) 1.5rem clamp(1.25rem, 3vh, 2rem);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  color: var(--fg);
-  background: transparent;
+  color: #fff;
+  background: #000;
 }
 .site-footer__logo {
   display: block;
@@ -55,18 +55,17 @@
 }
 .site-footer__meta a,
 .site-footer__meta span {
-  color: var(--fg);
+  color: #fff;
   text-decoration: none;
-  opacity: 0.65;
+  opacity: 0.7;
   transition: opacity var(--dur-quick) var(--ease-standard);
 }
 .site-footer__meta a:focus-visible { opacity: 1; }
 @media (hover: hover) {
   .site-footer__meta a:hover { opacity: 1; }
 }
-/* Tagline in brand cyan, full opacity. */
 .site-footer__meta-center span {
-  color: var(--accent);
+  color: #fff;
   opacity: 1;
 }
 
