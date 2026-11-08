@@ -307,7 +307,7 @@ html { background: var(--bg); }
        room at the viewport edges. Top padding doubled (was 3-6vh-5rem
        → 6-12vh-10rem) so the quote sits noticeably below the header
        pill instead of tucking up under it. */
-    padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
+    padding: clamp(4.5rem, 9vh, 7.5rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     /* Regular weight, sized ~3.75× the atkins-pass scale. Lines fill
@@ -443,30 +443,42 @@ html { background: var(--bg); }
   <script src="/site-marquee.js" defer></script>
 
   <main class="home-work">
-    <!-- Editorial pull-statement — 3 lines, per-word cascade reveal
-         when the quote enters the viewport. Each .word carries a
-         style="--i:N" that controls its transition-delay so the eye
-         tracks left-to-right, top-to-bottom. Line 3 gets an extra
-         --i jump for a dramatic pause before "I am Dede." lands.
-         .word--accent italicizes + colors "Dede." in brand accent so
-         the punch line has a distinct visual signature. All three
-         lines are short enough to fit on one viewport line at every
-         breakpoint, so no responsive break-toggle is needed.
-           I am David Gomez.
-           To my loved ones,
-           I am Dede. -->
+    <!-- Editorial pull-statement — per-word cascade reveal when the
+         quote enters the viewport. Each .word carries style="--i:N"
+         for staggered opacity timing. Wraps greedily on multiple
+         lines across the full viewport width.
+           I am David Gomez. In closer company, I am Dede. I think,
+           feel, and tell stories through creating work that exists
+           between both the digital and the analog. -->
     <h2 class="home-quote">
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">am</span>
       <span class="word" style="--i:2">David</span>
       <span class="word" style="--i:3">Gomez.</span>
-      <span class="word" style="--i:4">To</span>
-      <span class="word" style="--i:5">my</span>
-      <span class="word" style="--i:6">loved</span>
-      <span class="word" style="--i:7">ones,</span>
-      <span class="word" style="--i:8">I</span>
-      <span class="word" style="--i:9">am</span>
-      <span class="word word--accent" style="--i:10">Dede.</span>
+      <span class="word" style="--i:4">In</span>
+      <span class="word" style="--i:5">closer</span>
+      <span class="word" style="--i:6">company,</span>
+      <span class="word" style="--i:7">I</span>
+      <span class="word" style="--i:8">am</span>
+      <span class="word word--accent" style="--i:9">Dede.</span>
+      <span class="word" style="--i:10">I</span>
+      <span class="word" style="--i:11">think,</span>
+      <span class="word" style="--i:12">feel,</span>
+      <span class="word" style="--i:13">and</span>
+      <span class="word" style="--i:14">tell</span>
+      <span class="word" style="--i:15">stories</span>
+      <span class="word" style="--i:16">through</span>
+      <span class="word" style="--i:17">creating</span>
+      <span class="word" style="--i:18">work</span>
+      <span class="word" style="--i:19">that</span>
+      <span class="word" style="--i:20">exists</span>
+      <span class="word" style="--i:21">between</span>
+      <span class="word" style="--i:22">both</span>
+      <span class="word" style="--i:23">the</span>
+      <span class="word" style="--i:24">digital</span>
+      <span class="word" style="--i:25">and</span>
+      <span class="word" style="--i:26">the</span>
+      <span class="word" style="--i:27">analog.</span>
     </h2>
 
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
