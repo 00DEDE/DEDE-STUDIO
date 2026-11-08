@@ -4,8 +4,7 @@
      every page's top-level content wrapper. */
   max-width: var(--content-max);
   margin-inline: auto;
-  /* Reduced by 150% from 72rem baseline (÷2.5 → 28.8rem). */
-  padding: 28.8rem 0 1.25rem;
+  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   color: var(--fg);
   background: transparent;

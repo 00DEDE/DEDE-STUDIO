@@ -219,16 +219,18 @@ html { background: var(--bg); }
   .home-work { counter-reset: project; }
   .work { counter-increment: project; }
   .work__title::before {
-    content: counter(project, decimal-leading-zero) "  ";
+    /* Isolate the index number on its own line, with the project
+       title breaking to the next. */
+    display: block;
+    content: counter(project, decimal-leading-zero);
+    margin-bottom: 0.4em;
     font-weight: 500;
-    font-size: 0.7em;
-    letter-spacing: 0.08em;
-    margin-right: 0.6em;
+    font-size: 0.5em;
+    letter-spacing: 0.18em;
     /* Inherits from .work__meta (white over the image), not --accent,
        so the counter sits on the image scrim at the correct contrast. */
     color: inherit;
     opacity: 0.75;
-    vertical-align: 0.08em;
   }
   .work__desc {
     margin: 0.55rem 0 0;
@@ -312,17 +314,17 @@ html { background: var(--bg); }
     padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Thin (200) body, Medium (500) + cyan on .word--accent. Scale
-       dialed back for the atkins-grade curated feel — the phrase
-       reads as a composed statement, not a stage card. */
-    font-weight: 200;
-    font-size: clamp(0.95rem, 2.4vw, 2.5rem);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    white-space: nowrap;
+    /* Regular weight, 5× the previous scale (was 0.95 / 2.4vw / 2.5rem).
+       Natural wrap allowed so long phrases break gracefully on 2–3 lines
+       at larger viewports instead of overflowing. */
+    font-weight: 400;
+    font-size: clamp(4.75rem, 12vw, 12.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    white-space: normal;
+    text-wrap: balance;
     color: var(--fg);
-    /* Architectural rules bracket the quote — thin cyan hairlines
-       above + below, sitewide --line already carries the cyan. */
+    /* Architectural rules bracket the quote. */
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
@@ -431,7 +433,7 @@ html { background: var(--bg); }
 
   <header class="site-header">
     <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
-      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" />
     </a>
     <div class="site-header__end">
       <nav class="site-header__nav" aria-label="Primary">

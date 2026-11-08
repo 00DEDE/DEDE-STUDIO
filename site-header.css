@@ -14,47 +14,31 @@ body:has(.site-header) {
 
 .site-header {
   position: fixed;
-  top: 0;
-  /* Header sits within the same --content-max column the rest of the
-     site uses. (100% − --content-max) ÷ 2 on each side centres it. */
-  left:  calc((100% - var(--content-max)) / 2);
-  right: calc((100% - var(--content-max)) / 2);
+  /* Floating pill — offset from every edge so it reads as a discrete
+     element on the page rather than a browser chrome bar. */
+  top: 0.9rem;
+  left: 1rem;
+  right: 1rem;
   z-index: 100;
-  /* Hero padding at top of page — generous top above the mark, a
-     deeper bottom so there's air between the hero mark and the first
-     content block. Collapses hard on .is-scrolled (below). */
-  padding: clamp(1.5rem, 2.5vw, 2.5rem) 0 clamp(1.25rem, 2vw, 2rem);
-  /* Chanel-style stacked layout (desktop):
-       row 1  →  [    ]  [ brand ]  [ utilities ]
-       row 2  →  [         centered nav         ]
-     3-col grid gives the brand a dead-centre slot (col 2) while the
-     theme toggle sits flush-right (col 3). .site-header__end uses
-     display: contents so its children land as grid items directly. */
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: auto auto;
+  padding: 0.75rem 1.5rem;
+  /* Inverted scheme — black pill on the white page body (Chanel's
+     colour-inversion pattern, read in reverse). */
+  background: #000;
+  color: #fff;
+  border-radius: 999px;
+  /* Simple flex row: brand left, utilities (nav + toggle) right. */
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  column-gap: 1rem;
-  row-gap: clamp(0.8rem, 1.6vw, 1.5rem);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  /* Swiss-flat bar: solid page-bg wash + single hairline rule beneath.
-     Rule tween: at top of page the rule is the --line hairline; by
-     page-end it has eased into solid brand cyan (--accent). JS updates
-     --scroll-progress (0 → 1) in sync with window scroll. */
-  background: var(--bg);
-  border-bottom: 1px solid;
-  border-bottom-color: color-mix(
-    in srgb,
-    var(--line)   calc((1 - var(--scroll-progress, 0)) * 100%),
-    var(--accent) calc(var(--scroll-progress, 0) * 100%)
-  );
   transition:
-    padding            var(--dur-medium) var(--ease-out-expo),
-    border-bottom-color 180ms linear;
-  border-radius: 0;
+    padding    var(--dur-medium) var(--ease-out-expo),
+    top        var(--dur-medium) var(--ease-out-expo),
+    background var(--dur-medium) var(--ease-standard);
 }
 .site-header.is-scrolled {
-  padding: 0.6rem 0 0.6rem;
+  padding: 0.6rem 1.5rem;
+  top: 0.6rem;
 }
 .site-header > * { pointer-events: auto; }
 
@@ -81,50 +65,28 @@ body:has(.site-header) {
 
 /* Right-side group holds nav + theme toggle so `justify-content: space-between`
    keeps the brand on the left and the whole group on the right. */
-/* .site-header__end participates in the parent grid via contents so
-   its children (nav + theme toggle) land as top-level grid items. */
+/* Right-side group holds nav + theme toggle so `justify-content:
+   space-between` keeps the brand on the left and the group on the
+   right of the pill. */
 .site-header__end {
-  display: contents;
-}
-
-/* Grid placement:
-   - .site-header__brand → row 1, col 2 (dead-centre)
-   - .site-header__theme-toggle → row 1, col 3 (right edge)
-   - .site-header__nav → row 2, full width, centered beneath the brand */
-.site-header__brand {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: center;
-}
-.site-header__theme-toggle {
-  grid-column: 3;
-  grid-row: 1;
-  justify-self: end;
-  align-self: center;
-}
-.site-header__menu {
-  grid-column: 3;
-  grid-row: 1;
-  justify-self: end;
-  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 .site-header__nav {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  justify-self: center;
   display: flex;
   gap: 1.75rem;
   align-items: center;
 }
 .site-header__nav a {
-  color: var(--fg);
+  /* Nav sits inside the inverted black pill, so ink is white. */
+  color: #fff;
   text-decoration: none;
-  /* High-fashion nav — tracked out, small, Medium weight. */
   font-weight: 500;
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.5;
+  opacity: 0.55;
   transition: opacity var(--dur-quick) var(--ease-standard),
               color   var(--dur-medium) var(--ease-standard);
   outline: none;
