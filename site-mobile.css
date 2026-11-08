@@ -1,91 +1,43 @@
-/* Mobile-only enhancements. All rules below are behind the same
-   (max-width: 640px) media query — one block, so a single cascade
-   pass on mobile instead of three. Keyframes / reduced-motion
-   fallbacks live at the file root because they don't need scoping. */
+/* Mobile-only perf + polish. One @media block, cheap rules only. */
 
 @media (max-width: 640px) {
-  /* ─── Marquee mobile spotlight ────────────────────────────────────
-     The desktop cursor-mask has nothing to track on touch, so we
-     auto-animate a radial mask across the sharp copy instead. Mask
-     size sits centred vertically; only X animates → cheap per-frame
-     update (no gradient re-cook). */
-  .marquee-band__sharp {
-    -webkit-mask-image: radial-gradient(circle,
-      #000 30%, transparent 65%);
-            mask-image: radial-gradient(circle,
-      #000 30%, transparent 65%);
-    -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-    -webkit-mask-size: 68.75vw 68.75vw;
-            mask-size: 68.75vw 68.75vw;
-    -webkit-mask-position: -20% 50%;
-            mask-position: -20% 50%;
-    animation: marquee-spotlight 12s ease-in-out infinite;
-    /* Isolate so the mask animation doesn't repaint the whole
-       marquee scene — sharp overlay gets its own compositor layer. */
-    will-change: mask-position;
-    contain: paint;
-  }
-
-  /* Marquee: tighten the top padding another 15% on mobile only. */
-  .marquee-band { padding-top: 2.92rem; }
-  /* Mobile blur is heavy at 20px full-screen — 8px still reads
-     clearly out-of-focus while cutting the blur-radius cost roughly
-     in half (blur cost scales super-linearly with radius). */
-  .marquee-band__blur { filter: blur(8px); }
-
-  /* ─── Scroll-to-top button (shown mobile-only) ────────────────── */
-  .scroll-top { display: block; }
-
-  /* ─── Nav link tap feedback ───────────────────────────────────── */
-  /* Briefly turn accent (cyan / red per theme) while the user's
-     finger is down. Responsive tap signal before navigation. */
+  /* Nav tap feedback — brief accent flash while finger is down. */
   .site-header__nav a:active,
   .site-header__nav a:focus {
     color: var(--accent);
     opacity: 1;
   }
 
-  /* ─── Carousel crossfade — drop plus-lighter blend ─────────────
-     plus-lighter creates a GPU compositor group and does per-pixel
-     math each frame during the crossfade. Significant cost on mobile
-     GPUs. Falling back to normal blending means a barely-perceptible
-     brightness dip halfway through the fade — a trade the phone very
-     much wants to make. */
+  /* Carousel crossfade: drop plus-lighter blend on mobile. */
   .cover-slide { mix-blend-mode: normal; }
 
-  /* ─── CSS containment ──────────────────────────────────────────
-     Tell the browser that layout / paint changes inside a cell or
-     work section can't affect anything outside its own box. Lets the
-     compositor treat each one as an isolated island — reveal blur,
-     hover dim, and image ken-burns stop invalidating the wider page. */
+  /* Tell the browser each cell is an isolated island so a reveal or
+     hover in one can't trigger layout / paint invalidation outside
+     its own box — major scroll-smoothness win. */
   .cell, .work { contain: layout paint; }
+
+  /* Scroll-to-top button — shown mobile-only. */
+  .scroll-top { display: block; }
 }
 
 
-/* ─── Scroll-to-top button (base styles) ─────────────────────────────
-   Bottom-center floating pill with a pulsing accent glow — cyan in
-   dark mode, red in light mode via var(--accent-rgb). Only surfaces
-   inside the mobile @media block above; base styles here so the
-   button can be shipped in every page's HTML without cost. */
+/* Scroll-to-top button — base styles (shown only on mobile). Static
+   button; no pulsing glow, no backdrop blur. */
 .scroll-top {
   display: none;
   position: fixed;
-  bottom: 1.5rem;
+  bottom: 1.25rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 90;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   padding: 0;
-  border: none;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
-  /* Lighter blur than the header (8px vs 14px). The button is small
-     enough that a stronger blur is imperceptible but proportionally
-     expensive to composite behind. */
-  color: var(--accent);
-  font-size: 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 1.1rem;
   line-height: 1;
   cursor: var(--cursor-url) 16 16, pointer;
   opacity: 0;
@@ -95,45 +47,7 @@
 .scroll-top.is-visible {
   opacity: 1;
   pointer-events: auto;
-  animation: scroll-top-pulse 2.8s ease-in-out infinite;
 }
 .scroll-top:active {
   transform: translateX(-50%) scale(0.94);
-}
-
-/* Ambient pulsing glow — two shadow rings expand/contract on a slow
-   2.8s cycle. Two layers instead of three: cheaper to paint each
-   frame with imperceptible difference in intensity. */
-@keyframes scroll-top-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 22px  rgba(var(--accent-rgb), 0.45),
-      0 8px 20px rgba(0, 0, 0, 0.3);
-  }
-  50% {
-    box-shadow:
-      0 0 38px  rgba(var(--accent-rgb), 0.75),
-      0 8px 20px rgba(0, 0, 0, 0.3);
-  }
-}
-@keyframes marquee-spotlight {
-  0%, 100% {
-    -webkit-mask-position: -20% 50%;
-            mask-position: -20% 50%;
-  }
-  50% {
-    -webkit-mask-position: 120% 50%;
-            mask-position: 120% 50%;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .scroll-top.is-visible {
-    animation: none;
-    box-shadow:
-      0 0 28px rgba(var(--accent-rgb), 0.55),
-      0 8px 20px rgba(0, 0, 0, 0.3);
-  }
-  @media (max-width: 640px) {
-    .marquee-band__sharp { animation: none; }
-  }
 }

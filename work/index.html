@@ -121,7 +121,6 @@
   .cell.needs-reveal:not(.is-in-view) {
     opacity: 0;
     transform: translateY(96px) scale(0.9);
-    filter: blur(16px);
   }
 
   /* Bottom scrim so the tag reads over any imagery. */
@@ -179,7 +178,6 @@
     transition: opacity   var(--dur-cinematic)   var(--ease-in-out),
                 transform var(--dur-atmospheric) var(--ease-out-expo);
     will-change: opacity;
-    mix-blend-mode: plus-lighter;
   }
   video.cover-slide {
     width: 100%;

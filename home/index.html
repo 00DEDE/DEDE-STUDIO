@@ -140,7 +140,6 @@ html { background: var(--bg); }
     transition: opacity   var(--dur-cinematic)   var(--ease-in-out),
                 transform var(--dur-atmospheric) var(--ease-out-expo);
     will-change: opacity;
-    mix-blend-mode: plus-lighter;
   }
   video.cover-slide {
     width: 100%;
@@ -397,18 +396,17 @@ html { background: var(--bg); }
     .home-quote .brk-mob  { display: inline; }
   }
 
-  /* ─── Mobile: same fullscreen scroll, tighter meta padding ─────── */
+  /* ─── Mobile ─ perf-tuned ────────────────────────────────────── */
   @media (max-width: 640px) {
-    .home-work { padding: 0.5rem; }
-    /* Drop reveal blur on mobile. At 100vh × 100vw a 16px filter:blur()
-       animation is the dominant per-frame cost during the 1600ms
-       transition — killing it removes most of the scroll jitter.
-       Translate + scale + opacity still carry the "alive" feel. */
-    .work        { filter: none; }
-    .work.is-in-view { filter: none; }
-    .work__title { font-size: clamp(2rem, 10vw, 3.5rem); }
-    .work__desc  { font-size: 0.75rem; }
-    .work__meta  { left: 1rem; bottom: 1rem; }
+    /* Shorter cells so the viewport churns less per scroll tick, and
+       so the reader sees multiple projects per page. */
+    .work          { height: 70vh; height: 70svh; }
+    .work__title   { font-size: clamp(1.1rem, 4vw, 1.75rem); }
+    .work__desc    { font-size: 0.6rem; letter-spacing: 0.18em; }
+    .work__meta    { width: calc(100% - 2rem); bottom: clamp(1.25rem, 4vw, 2rem); }
+    /* Carousel crossfade is too chatty on cheap mobile GPUs — freeze
+       to the first slide. (Site-mobile.css also drops plus-lighter.) */
+    .cover-slide { animation: none !important; transition: none; }
   }
 </style>
 </head>
