@@ -530,11 +530,11 @@
       }, { passive: true });
     }
 
-    /* ─── auto-advancing carousel(s) ─────────────────────────────────── */
-    // Cycle .is-active across .cover-slide children on a per-slide timer
-    // (data-duration ms, default 5s). Video slides play when active,
-    // pause when not. Whole carousel pauses when its cell is off-screen
-    // so we don't burn CPU + video decode on unseen content.
+    /* ─── auto-advancing carousel(s) ─ desktop only ──────────────────
+       On touch devices the mobile CSS freezes slides to the first
+       .is-active (no crossfade transition), so an auto-advance would
+       be a hard image swap — read as a flicker. Skip the whole setup. */
+    if (window.matchMedia('(hover: none)').matches) return;
     const DEFAULT_MS = 5000;
     document.querySelectorAll('.cover-carousel').forEach((carousel) => {
       const slides = Array.from(carousel.querySelectorAll('.cover-slide'));

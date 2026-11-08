@@ -16,6 +16,29 @@
      its own box — major scroll-smoothness win. */
   .cell, .work { contain: layout paint; }
 
+  /* ─── Global mobile reveal-animation kill-switch ───────────────
+     Any scroll-tied reveal (on home .work, work-page .cell, about's
+     .reveal-block, and their .needs-reveal / is-in-view / is-visible
+     companions) is forced to the final visible state — no opacity or
+     transform tween runs on scroll. This removes every flicker tied
+     to IntersectionObserver class-toggle paints. */
+  .work,
+  .work.is-in-view,
+  .cell,
+  .cell.needs-reveal,
+  .cell.needs-reveal:not(.is-in-view),
+  .cell.is-in-view,
+  .reveal-block {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  /* Freeze every multi-slide carousel to the first .is-active slide. */
+  .cover-slide                 { opacity: 0 !important; transition: none !important; animation: none !important; }
+  .cover-slide.is-active       { opacity: 1 !important; transform: none !important; }
+
   /* Scroll-to-top button — shown mobile-only. */
   .scroll-top { display: block; }
 }
