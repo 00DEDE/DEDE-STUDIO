@@ -687,10 +687,11 @@ html { background: var(--bg); }
 
     /* Touch: single tap navigates directly (no two-tap preview). */
 
-    /* ─── Auto-advancing carousels (UNESCO + ECCLESIASTES) ────────── */
-    // Only cycle carousels whose section is currently in view — save
-    // battery + CPU when the user is elsewhere on the page. Video
-    // slides play/pause with their active state.
+    /* ─── Auto-advancing carousels ─ desktop only ─────────────────
+       On touch devices the mobile CSS disables the crossfade, so each
+       auto-advance would hard-swap the image (reads as a flicker).
+       Skip the whole setup; first .is-active slide stays shown. */
+    if (isTouch) return;
     const DEFAULT_MS = 5000;
     document.querySelectorAll('.cover-carousel').forEach((carousel) => {
       const slides = Array.from(carousel.querySelectorAll('.cover-slide'));
