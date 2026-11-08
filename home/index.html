@@ -398,15 +398,34 @@ html { background: var(--bg); }
 
   /* ─── Mobile ─ perf-tuned ────────────────────────────────────── */
   @media (max-width: 640px) {
-    /* Shorter cells so the viewport churns less per scroll tick, and
-       so the reader sees multiple projects per page. */
+    /* Shorter cells so the viewport churns less per scroll tick. */
     .work          { height: 70vh; height: 70svh; }
     .work__title   { font-size: clamp(1.1rem, 4vw, 1.75rem); }
     .work__desc    { font-size: 0.6rem; letter-spacing: 0.18em; }
-    .work__meta    { width: calc(100% - 2rem); bottom: clamp(1.25rem, 4vw, 2rem); }
-    /* Carousel crossfade is too chatty on cheap mobile GPUs — freeze
-       to the first slide. (Site-mobile.css also drops plus-lighter.) */
-    .cover-slide { animation: none !important; transition: none; }
+
+    /* Kill the reveal animation: cells + meta render visible from
+       the start. This removes the mobile flicker — no fade-in paint
+       on every scroll into view. */
+    .work,
+    .work.is-in-view {
+      opacity: 1 !important;
+      transition: none !important;
+    }
+    /* Meta: full opacity + no translateY, but KEEP translateX(-50%)
+       which is doing the horizontal centring (not animation). */
+    .work__meta,
+    .work.is-in-view .work__meta {
+      opacity: 1 !important;
+      transform: translateX(-50%) !important;
+      transition: none !important;
+      width: calc(100% - 2rem);
+      bottom: clamp(1.25rem, 4vw, 2rem);
+    }
+    /* Freeze carousel to the first slide — no animated crossfades. */
+    .cover-slide          { animation: none !important; transition: none; opacity: 0; }
+    .cover-slide.is-active { opacity: 1; }
+    /* No hover state on touch — the VIEW CASE overlay is meaningless. */
+    .work__view { display: none; }
   }
 </style>
 </head>
@@ -666,26 +685,7 @@ html { background: var(--bg); }
       }
     }
 
-    /* ─── Touch: tap-once reveals VIEW CASE, tap-again navigates ─── */
-    if (isTouch) {
-      let active = null, timer = null;
-      const RESET_MS = 2000;
-      function reset() {
-        if (active) active.classList.remove('is-active');
-        active = null;
-        clearTimeout(timer); timer = null;
-      }
-      works.forEach((w) => {
-        w.addEventListener('click', (e) => {
-          if (active === w) { reset(); return; }  // 2nd tap → navigate
-          e.preventDefault();
-          reset();
-          active = w;
-          w.classList.add('is-active');
-          timer = setTimeout(reset, RESET_MS);
-        });
-      });
-    }
+    /* Touch: single tap navigates directly (no two-tap preview). */
 
     /* ─── Auto-advancing carousels (UNESCO + ECCLESIASTES) ────────── */
     // Only cycle carousels whose section is currently in view — save

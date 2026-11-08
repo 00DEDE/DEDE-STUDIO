@@ -84,12 +84,20 @@
   }
 
   @media (max-width: 900px) {
+    /* Flatten the two containers so their children stack as one
+       single column, then reorder on mobile: headshot → about →
+       contact → resume. */
     .profile-contact {
-      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: column;
       gap: var(--stack-y);
     }
     .profile-contact__about,
-    .profile-contact__right { grid-column: 1 / -1; }
+    .profile-contact__right { display: contents; }
+    .profile-contact__headshot   { order: 1; }
+    .profile-contact__about-text { order: 2; }
+    .profile-contact__contact    { order: 3; }
+    .resume                      { order: 4; }
   }
 
   /* ─── Section eyebrow labels ("ABOUT ME", "CONTACT ME") ────────── */
