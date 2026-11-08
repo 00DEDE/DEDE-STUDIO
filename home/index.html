@@ -465,8 +465,7 @@ html { background: var(--bg); }
 
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
          The .work__media below is view-transition-named "unesco-hero"
-         (see the @view-transition block in <style>) so the browser
-         morphs it into the destination page's hero seamlessly. -->
+         so the browser morphs it into the destination page's hero. -->
     <a class="work work--unesco" href="/unesco/">
       <div class="work__media">
         <div class="cover-carousel" aria-hidden="true">
@@ -485,37 +484,20 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- 2. ECCLESIASTES ─ carousel (image + video + poster) — links to case page.
-         The .work__media inside is view-transition-named "ecclesiastes-hero"
-         (see the @view-transition block in <style>) so the browser morphs
-         it into ecclesiastes.html's hero seamlessly. -->
-    <a class="work work--ecclesiastes" href="/ecclesiastes/">
+    <!-- 2. CAFÉ BUSTELO ─ single cover -->
+    <a class="work" href="#">
       <div class="work__media">
-        <div class="cover-carousel" aria-hidden="true">
-          <div class="cover-slide is-active"
-               data-duration="4000"
-               style="background-image:url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
-          <video class="cover-slide"
-                 data-duration="10000"
-                 style="--cover-y: 100%; --poster: url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"
-                 muted playsinline preload="auto"
-                 poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
-            <source src="/ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
-          </video>
-          <div class="cover-slide"
-               data-duration="4000"
-               style="background-image:url('/ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
-        </div>
+        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/THE_REVENANT.jpg')"></div>
       </div>
       <div class="work__meta">
-        <h2 class="work__title">Ecclesiastes</h2>
-        <p class="work__desc">Compositional Design</p>
+        <h2 class="work__title">Café Bustelo</h2>
+        <p class="work__desc">Packaging &amp; Branding</p>
       </div>
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- Second editorial pull-statement — moved one cell up so it
-         sits directly above the BLLCRW cell. -->
+    <!-- Second editorial pull-statement — sits between Café Bustelo
+         and San Diego FC. -->
     <h2 class="home-quote home-quote--wrap">
       <span class="word" style="--i:0">What</span>
       <span class="word" style="--i:1">we</span>
@@ -529,44 +511,20 @@ html { background: var(--bg); }
       <span class="word word--accent" style="--i:9">us.</span>
     </h2>
 
-    <!-- 3. BLLCRW. MELANGE CAPSULE ─ single cover -->
+    <!-- 3. SAN DIEGO FOOTBALL CLUB ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/BLLCRW_MELANGE.jpg'); --cover-y: 90%"></div>
+        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/POSTER_MOCKUP.jpg')"></div>
       </div>
       <div class="work__meta">
-        <h2 class="work__title">BLLCRW.</h2>
-        <p class="work__desc">Melange Capsule</p>
+        <h2 class="work__title">San Diego Football Club</h2>
+        <p class="work__desc">Branding &amp; Motion</p>
       </div>
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- 4. NANA'S BAKERY ─ single cover -->
-    <a class="work" href="#">
-      <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/NANAS_BAKERY.jpg'); --cover-y: 20%"></div>
-      </div>
-      <div class="work__meta">
-        <h2 class="work__title">Nana&rsquo;s Bakery</h2>
-        <p class="work__desc">Packaging &amp; Branding</p>
-      </div>
-      <div class="work__view">VIEW CASE</div>
-    </a>
-
-    <!-- 5. MEMOIRS ─ single cover -->
-    <a class="work" href="#">
-      <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/MEMOIRS.jpg')"></div>
-      </div>
-      <div class="work__meta">
-        <h2 class="work__title">Memoirs</h2>
-        <p class="work__desc">Motion Design</p>
-      </div>
-      <div class="work__view">VIEW CASE</div>
-    </a>
-
-    <!-- Third editorial pull-statement — sits two cells after the
-         second quote (above the Café Bustelo cell). -->
+    <!-- Third editorial pull-statement — sits between San Diego FC
+         and Trader Joe's. -->
     <h2 class="home-quote home-quote--wrap">
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">think,</span>
@@ -588,19 +546,7 @@ html { background: var(--bg); }
       <span class="word word--accent" style="--i:17">analog.</span>
     </h2>
 
-    <!-- 6. THE REVENANT ─ single cover -->
-    <a class="work" href="#">
-      <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/THE_REVENANT.jpg')"></div>
-      </div>
-      <div class="work__meta">
-        <h2 class="work__title">The Revenant</h2>
-        <p class="work__desc">Motion Design</p>
-      </div>
-      <div class="work__view">VIEW CASE</div>
-    </a>
-
-    <!-- 7. TRADER JOE'S ─ single cover -->
+    <!-- 4. TRADER JOE'S ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
         <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/TRADER_JOES.jpg')"></div>
@@ -612,14 +558,14 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- 8. SAN DIEGO FOOTBALL CLUB ─ single cover -->
+    <!-- 5. MEMOIRS ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/POSTER_MOCKUP.jpg')"></div>
+        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/MEMOIRS.jpg')"></div>
       </div>
       <div class="work__meta">
-        <h2 class="work__title">San Diego Football Club</h2>
-        <p class="work__desc">Branding &amp; Motion</p>
+        <h2 class="work__title">Memoirs</h2>
+        <p class="work__desc">Motion Design</p>
       </div>
       <div class="work__view">VIEW CASE</div>
     </a>
