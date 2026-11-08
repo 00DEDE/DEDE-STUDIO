@@ -64,6 +64,12 @@ html { background: var(--bg); }
     --cell-gap: clamp(10px, 1.25vw, 20px);
     display: block;
     padding: var(--cell-gap);
+    /* Home opts OUT of the sitewide --content-max 75% cap — content
+       fills the viewport edge-to-edge for the klim.co.nz full-bleed
+       aesthetic. This local rule has the same specificity as the
+       global one in theme.css but loads after, so it wins. */
+    max-width: 100%;
+    margin-inline: 0;
     /* Small vertical gutter between sections comes from each section's
        own bottom margin (below), not from grid gap — <a> can't be a
        grid item cleanly here, and margin-collapse is fine for block. */
