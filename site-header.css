@@ -15,20 +15,21 @@ body:has(.site-header) {
 .site-header {
   position: fixed;
   top: 0;
-  /* Header sits within the same --content-max column the rest of the
-     site uses. (100% − --content-max) ÷ 2 on each side centres it. */
-  left:  calc((100% - var(--content-max)) / 2);
-  right: calc((100% - var(--content-max)) / 2);
+  /* Full-bleed edge-to-edge — spans the viewport like the home cells
+     below. Internal padding (below) keeps the brand + utilities off
+     the raw edge. */
+  left: 0;
+  right: 0;
   z-index: 100;
+  padding: clamp(1.5rem, 2.5vw, 2.5rem) clamp(1rem, 2vw, 2rem) clamp(1.25rem, 2vw, 2rem);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 0;
   /* Chanel-style stacked layout:
        row 1  →  [    ]  [ brand (centre) ]  [ utilities (right) ]
        row 2  →  [        nav spans full width, centred          ]
      3-col grid gives the brand a dead-centre slot; .site-header__end
      uses display: contents so children land as grid items directly. */
-  padding: clamp(1.5rem, 2.5vw, 2.5rem) 0 clamp(1.25rem, 2vw, 2rem);
-  background: var(--bg);
-  color: var(--fg);
-  border-radius: 0;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   grid-template-rows: auto auto;

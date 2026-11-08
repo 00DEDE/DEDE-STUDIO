@@ -310,15 +310,16 @@ html { background: var(--bg); }
     padding: clamp(6rem, 12vh, 10rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
     box-sizing: border-box;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Regular weight, sized ~3.75× the atkins-pass scale (was 5×, now
-       −25%). Natural wrap allowed so long phrases break gracefully
-       on 2–3 lines at larger viewports instead of overflowing. */
+    /* Regular weight, sized ~3.75× the atkins-pass scale. Lines fill
+       greedily (default wrap, not balanced) so each line uses the
+       full width of the viewport before breaking; centre-aligned. */
     font-weight: 400;
     font-size: clamp(3.5rem, 9vw, 9.4rem);
     line-height: 1.02;
     letter-spacing: -0.035em;
     white-space: normal;
-    text-wrap: balance;
+    text-wrap: wrap;
+    text-align: center;
     color: var(--fg);
     /* Architectural rules bracket the quote. */
     border-top: 1px solid var(--line);
@@ -335,14 +336,8 @@ html { background: var(--bg); }
   .home-work > .home-quote ~ .home-quote {
     padding-top: clamp(3rem, 6vh, 5rem);
   }
-  /* .home-quote--wrap: natural 1–2 line flow for the longer credo.
-     Overrides the base nowrap so the phrase breaks gracefully when
-     the viewport can't hold it on one line; text-wrap: balance keeps
-     the two lines close to even length. */
-  .home-quote--wrap {
-    white-space: normal;
-    text-wrap: balance;
-  }
+  /* .home-quote--wrap kept for marker parity; base rule now already
+     handles greedy wrapping + centre alignment, so nothing extra. */
 
   /* Per-word cascade — Swiss-flat: opacity only, no translate or
      blur. Stagger kept so the eye still tracks left→right. */
