@@ -264,6 +264,8 @@ body:has(.site-header) {
       0 6px 16px rgba(0, 0, 0, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
+  /* Lines pick up the brand cyan when the pill is tapped. */
+  .site-menu-btn:active span { background: var(--accent); }
   .site-menu-btn span {
     position: absolute;
     left: 50%;

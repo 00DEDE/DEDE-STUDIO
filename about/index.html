@@ -65,13 +65,15 @@
   .profile-contact__headshot   { grid-column: 1;      grid-row: 2; }
   .resume                      { grid-column: 2 / -1; grid-row: 2; align-self: start; }
 
-  /* Headshot — full image visible (not cropped). Container sizes to
-     the image's natural aspect; img fills the column width. */
+  /* Headshot — full image visible (not cropped). Sizes to the image's
+     natural aspect, aligned to the top of the row so no empty space
+     is painted beneath when the sibling (resume) is taller. */
   .profile-contact__headshot {
     margin: clamp(2rem, 4vh, 3rem) 0 0;
+    align-self: start;
     overflow: hidden;
     border-radius: 0;
-    background: #000;
+    background: transparent;
   }
   .profile-contact__headshot img {
     width: 100%;

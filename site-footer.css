@@ -4,8 +4,10 @@
 .site-footer {
   max-width: 100%;
   margin-inline: 0;
-  /* Vertical length +50% (top 3→4.5rem/8→12vh/6→9rem; bottom 1.25→2rem/3→4.5vh/2→3rem). */
-  padding: clamp(4.5rem, 12vh, 9rem) 1.5rem clamp(2rem, 4.5vh, 3rem);
+  /* Top padding +50% from the previous bump (was 4.5–9rem, now 6.75–13.5rem)
+     so at the end of the page the footer owns the viewport — the home
+     parallax reveals mostly black beneath the last pull-quote. */
+  padding: clamp(6.75rem, 18vh, 13.5rem) 1.5rem clamp(2rem, 4.5vh, 3rem);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   color: #fff;
   background: #000;
@@ -15,6 +17,10 @@
   outline: none;
   transition: opacity var(--dur-quick) var(--ease-standard);
   line-height: 0;
+  text-align: center;
+  /* Cap so the lockup never blows up past a sensible display size. */
+  max-width: 28rem;
+  margin: 0 auto;
 }
 .site-footer__logo:hover,
 .site-footer__logo:focus-visible {
@@ -22,9 +28,6 @@
 }
 .site-footer__logo img {
   display: block;
-  /* Footer variants (-01.png black + -01-white.png) are now 2324px
-     wide native — plenty of resolution to stretch full-viewport-width
-     without any blur even on retina up through ~1440px viewports. */
   width: 100%;
   height: auto;
 }

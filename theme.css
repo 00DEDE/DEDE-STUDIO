@@ -23,6 +23,19 @@
    font-style: italic in page markup falls back to upright. */
 em { font-style: normal; }
 
+/* ─── Click / tap accent ──────────────────────────────────────────
+   Deliberate: text links and buttons flash the brand cyan while
+   held (and on keyboard focus). Imagery + surface elements are
+   intentionally excluded — the accent appears only on things a
+   user has just acted on. */
+a:active,
+a:focus-visible,
+button:active,
+button:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
 /* Theme variables — dark by default, light when [data-theme="light"] is on
    the <html> element. All shared colors point at these vars, so page CSS
    automatically adapts. */
