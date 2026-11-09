@@ -72,7 +72,8 @@
 
   /* Suppress Safari / Chrome Android's default tap-highlight overlay.
      On image-filled cells it reads as a flash on every tap. */
-  html, body, a, button, [role="button"], .cell, .work {
+  html, body, a, button, [role="button"],
+  .cell, .work, .selections-grid, .home-work {
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -107,14 +108,17 @@
      covers / scrims / overlays stay in their rest state regardless of
      what the browser is doing in the background. */
   .work, .work *, .work::before, .work::after,
-  .cell, .cell *, .cell::before, .cell::after {
+  .cell, .cell *, .cell::before, .cell::after,
+  .selections-grid, .selections-grid *,
+  .home-work, .home-work * {
     transition: none !important;
     animation: none !important;
   }
   /* Tell the browser taps on cells are single-purpose (navigate) so
      it skips the 300ms double-tap-to-zoom delay AND the focus/hover
-     synthesis that fires alongside. */
-  .cell, .work {
+     synthesis that fires alongside. Applied to both home + work
+     grid wrappers and their cells. */
+  .cell, .work, .selections-grid, .home-work {
     touch-action: manipulation;
   }
 }
