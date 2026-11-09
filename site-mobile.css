@@ -39,38 +39,75 @@
   .cover-slide                 { opacity: 0 !important; transition: none !important; animation: none !important; }
   .cover-slide.is-active       { opacity: 1 !important; transform: none !important; }
 
-  /* Scroll-to-top button — shown mobile-only. */
-  .scroll-top { display: block; }
 }
 
 
-/* Scroll-to-top button — base styles (shown only on mobile). Static
-   button; no pulsing glow, no backdrop blur. */
+/* ─── "Scroll up" pill ──────────────────────────────────────────────
+   Shown on the home page (which includes the <button class="scroll-top">
+   element). Appears when the user has scrolled past TOP_VISIBLE, pinned
+   bottom-right of the viewport, out of the way of the mobile hamburger
+   at bottom-centre. The arrow glyph bounces gently to signal the
+   invitation to scroll back up. */
 .scroll-top {
-  display: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   position: fixed;
-  bottom: 1.25rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 90;
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0;
+  bottom: clamp(1rem, 2.5vh, 1.75rem);
+  right:  clamp(1rem, 2vw, 1.75rem);
+  z-index: 180;
+  padding: 0.7rem 1.1rem;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 75%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+          backdrop-filter: blur(16px) saturate(1.3);
   color: var(--fg);
-  font-size: 1.1rem;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   line-height: 1;
-  cursor: var(--cursor-url) 16 16, pointer;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--dur-medium) var(--ease-standard);
+  transform: translateY(8px);
+  transition:
+    opacity   var(--dur-medium) var(--ease-standard),
+    transform var(--dur-medium) var(--ease-out-expo);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 10px 24px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 .scroll-top.is-visible {
   opacity: 1;
   pointer-events: auto;
+  transform: translateY(0);
 }
-.scroll-top:active {
-  transform: translateX(-50%) scale(0.94);
+.scroll-top__arrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  line-height: 1;
+  animation: scroll-up-bounce 1.6s var(--ease-in-out) infinite;
+}
+.scroll-top:hover,
+.scroll-top:focus-visible {
+  border-color: rgba(var(--fg-rgb), 0.35);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 14px 32px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.scroll-top:active { transform: translateY(0) scale(0.97); }
+@keyframes scroll-up-bounce {
+  0%, 100% { transform: translateY(0); }
+  40%      { transform: translateY(-4px); }
+  70%      { transform: translateY(1px); }
+}
+@media (max-width: 640px) {
+  .scroll-top {
+    /* Lift above the fixed bottom-centre hamburger pill. */
+    bottom: calc(1.4rem + 2.5rem + 0.75rem);
+  }
 }

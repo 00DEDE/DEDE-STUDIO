@@ -287,19 +287,19 @@ body:has(.site-header) {
    class JS still toggles — intentional no-op on desktop so pages that
    depend on the class don't break. */
 
-/* ─── Hamburger pill (shared, desktop + mobile) ──────────────────────
-   Frosted rounded pill with three lines morphing to × on open. Fixed
-   to the viewport. Defaults positioned just below the header brand
-   mark (centred horizontally) via left:50% / transform:translateX(-50%).
-   Once the user drags it, site-header.js sets inline `left` / `top`
-   (and clears the transform) and stores the position in localStorage
-   so it persists across pages and reloads. Injected into <body> by JS. */
+/* ─── Hamburger pill (shared visuals; positioning differs per viewport)
+   Frosted rounded pill with three equal-width lines morphing to × on
+   open. Flex layout guarantees all three lines are the same width and
+   crisply pixel-aligned. Positioning rules are set in the per-viewport
+   blocks below (mobile = bottom-centre fixed; desktop = sticky to the
+   header's bottom edge, draggable along that line). Injected by JS. */
 .site-menu-btn {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   position: fixed;
-  top: calc(var(--header-safe-top, 7rem) + 0.75rem);
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 200;
   width: 4.75rem;
   height: 2.5rem;
@@ -318,43 +318,23 @@ body:has(.site-header) {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  transition:
-    box-shadow var(--dur-medium) var(--ease-standard),
-    top        var(--dur-medium) var(--ease-out-expo);
-}
-.site-menu-btn.is-placed {
-  /* Once JS has set inline left/top from storage or drag, drop the
-     centering transform + the top-transition so the pill lives
-     exactly where it was placed. */
-  transform: none;
   transition: box-shadow var(--dur-medium) var(--ease-standard);
-}
-.site-menu-btn.is-dragging {
-  transition: none;
 }
 .site-menu-btn:active span { background: var(--accent); }
 .site-menu-btn span {
-  position: absolute;
-  left: 50%;
+  display: block;
   width: 1.3rem;
-  height: 1.25px;
+  height: 1.5px;
   background: var(--fg);
-  transform: translateX(-50%);
+  transform-origin: center;
   transition:
     transform var(--dur-medium) var(--ease-out-expo),
-    opacity   var(--dur-medium) var(--ease-out-expo),
-    top       var(--dur-medium) var(--ease-out-expo);
+    opacity   var(--dur-medium) var(--ease-out-expo);
 }
-.site-menu-btn span:nth-child(1) { top: 36%; }
-.site-menu-btn span:nth-child(2) { top: 50%; }
-.site-menu-btn span:nth-child(3) { top: 64%; }
+/* × morph — translate the outer bars onto the centre line, rotate. */
 body.is-nav-open .site-menu-btn span:nth-child(2) { opacity: 0; }
-body.is-nav-open .site-menu-btn span:nth-child(1) {
-  top: 50%; transform: translateX(-50%) rotate(45deg);
-}
-body.is-nav-open .site-menu-btn span:nth-child(3) {
-  top: 50%; transform: translateX(-50%) rotate(-45deg);
-}
+body.is-nav-open .site-menu-btn span:nth-child(1) { transform: translateY(6.5px)  rotate(45deg); }
+body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 @media (max-width: 640px) {
   /* Mobile header: logo alone, centred at the top. Nav drops to an
@@ -366,8 +346,16 @@ body.is-nav-open .site-menu-btn span:nth-child(3) {
   .site-header__brand img { height: clamp(1.75rem, 7vw, 2.75rem); }
   .site-header__nav       { display: none; }   /* collapsed until overlay opens */
 
-  /* Pill visuals + ×-morph live in the shared .site-menu-btn block
-     above. Nothing mobile-specific needed here. */
+  /* Mobile pill: fixed bottom-centre, NOT draggable. Any inline
+     left/top JS may have set gets overridden here so the mobile
+     placement is always the original one. */
+  .site-menu-btn {
+    top: auto !important;
+    bottom: 1.4rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    animation: none !important;
+  }
 
   /* Nav overlay — full-viewport panel with a semi-transparent scrim
      + light backdrop blur. Nav items centered on the screen. */
@@ -388,14 +376,22 @@ body.is-nav-open .site-menu-btn span:nth-child(3) {
     text-align: center;
   }
   body.is-nav-open .site-header__nav a {
-    font-size: clamp(2.5rem, 12vw, 5rem);
+    /* 15% smaller than the previous clamp(2.5rem, 12vw, 5rem);
+       tighter tracking for a more refined set. */
+    font-size: clamp(2.125rem, 10.2vw, 4.25rem);
     line-height: 1.02;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.035em;
     text-transform: none;
     color: var(--fg);
     opacity: 0.4;
     padding: 0;
     transition: opacity var(--dur-quick) var(--ease-standard);
+  }
+  /* Lower the overlay's block of titles by ~25% of viewport height so
+     it no longer crowds the vertical centre — reads as deliberate. */
+  body.is-nav-open .site-header__nav {
+    padding-top: calc(4rem + 25vh);
+    justify-content: flex-start;
   }
   /* Desktop nav's catalogue numeral + underline don't belong on the
      oversized mobile overlay — suppress them here. */
@@ -435,9 +431,47 @@ body.is-nav-open .site-menu-btn span:nth-child(3) {
     row-gap: clamp(0.6rem, 1vw, 1rem);
   }
 
-  /* Pill visuals + ×-morph live in the shared .site-menu-btn block
-     earlier in this file. Only the dropdown rectangle (below) is
-     desktop-specific. */
+  /* Desktop pill: sticky to the HEADER'S BOTTOM EDGE — the pill is
+     centred vertically on the header's bottom border (half overlapping
+     into the content). Horizontally the user can drag it anywhere
+     between the viewport's left and right edges, but Y is locked here.
+     A slow breathing shadow invites interaction. */
+  .site-menu-btn {
+    top: calc(var(--header-safe-top, 7rem) - 1.25rem);
+    left: 50%;
+    transform: translateX(-50%);
+    animation: pill-breathe 4.2s ease-in-out infinite;
+    cursor: grab;
+    transition: box-shadow var(--dur-medium) var(--ease-standard),
+                top        var(--dur-medium) var(--ease-out-expo);
+  }
+  .site-menu-btn.is-placed {
+    /* JS has set an inline `left:` from storage or drag; clear the
+       centering transform so the pill lives exactly where it was placed.
+       Keep the `top` from the CSS calc above (Y is locked). */
+    transform: none;
+  }
+  .site-menu-btn.is-dragging {
+    animation: none;
+    cursor: grabbing;
+    transition: box-shadow var(--dur-medium) var(--ease-standard);
+  }
+  @keyframes pill-breathe {
+    0%, 100% {
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.06),
+        0 12px 32px rgba(0, 0, 0, 0.12),
+        0 3px 10px  rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px rgba(67, 222, 222, 0.22),
+        0 18px 44px rgba(0, 0, 0, 0.18),
+        0 4px 14px  rgba(67, 222, 222, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+  }
 
   /* Dropdown rectangle — appears when the pill is active. Semi-
      transparent like the mobile overlay, backdrop-blurred, rounded,
@@ -475,9 +509,10 @@ body.is-nav-open .site-menu-btn span:nth-child(3) {
   body.is-nav-open .site-header__nav a {
     display: block;
     padding: 0.2rem 0.5rem;
-    font-size: clamp(2.5rem, 12vw, 5rem);
+    /* 15% smaller + tighter tracking, matching the mobile overlay. */
+    font-size: clamp(2.125rem, 10.2vw, 4.25rem);
     line-height: 1.02;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.035em;
     text-transform: none;
     color: var(--fg);
     opacity: 0.4;

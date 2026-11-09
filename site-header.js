@@ -100,119 +100,97 @@
     setMenu(false);
   });
 
-  // --- Drag + persistence ---------------------------------------------
-  var PILL_KEY    = 'dedeMenuBtnPos';
-  var PILL_MARGIN = 8;
-  var DRAG_THRESHOLD = 4;  // px before pointermove counts as a drag
+  // --- Drag + persistence (DESKTOP ONLY; horizontal only) --------------
+  // Mobile pill is static at bottom-centre (CSS + !important). Desktop
+  // pill is sticky to the header's bottom edge; only X moves, and only
+  // between the viewport left/right. Position is saved in localStorage
+  // so the pill stays where the user parked it across pages/reloads.
+  var PILL_KEY       = 'dedeMenuBtnX';
+  var PILL_MARGIN    = 8;
+  var DRAG_THRESHOLD = 4;
+  var mqDesktop      = window.matchMedia('(min-width: 641px)');
 
-  function footerEl() { return document.querySelector('.site-footer'); }
-
-  // Allowed drop zone: strictly BELOW the header and ABOVE the footer.
-  // When the footer is scrolled off below the viewport, the viewport
-  // bottom acts as the lower bound instead.
-  function dropBounds() {
-    var hb = header.getBoundingClientRect().bottom + PILL_MARGIN;
-    var f  = footerEl();
-    var fTop = f ? f.getBoundingClientRect().top : window.innerHeight;
-    var yMax = Math.min(window.innerHeight, fTop) - PILL_MARGIN;
-    var w = menuBtn.offsetWidth  || 76;
-    var h = menuBtn.offsetHeight || 40;
-    return {
-      minX: PILL_MARGIN,
-      maxX: window.innerWidth - w - PILL_MARGIN,
-      minY: hb,
-      maxY: yMax - h
-    };
+  function clampX(x) {
+    var w = menuBtn.offsetWidth || 76;
+    return Math.max(PILL_MARGIN, Math.min(window.innerWidth - w - PILL_MARGIN, x));
   }
-  function clampTo(bounds, pt) {
-    return {
-      x: Math.max(bounds.minX, Math.min(bounds.maxX, pt.x)),
-      y: Math.max(bounds.minY, Math.min(bounds.maxY, pt.y))
-    };
-  }
-  function applyPos(x, y) {
+  function applyX(x) {
     menuBtn.style.left = x + 'px';
-    menuBtn.style.top  = y + 'px';
     menuBtn.classList.add('is-placed');
   }
-  function savePos(x, y) {
-    try { localStorage.setItem(PILL_KEY, JSON.stringify({ x: x, y: y })); } catch (_) {}
+  function saveX(x) {
+    try { localStorage.setItem(PILL_KEY, String(x)); } catch (_) {}
   }
-  function loadPos() {
+  function loadX() {
     try {
-      var raw = localStorage.getItem(PILL_KEY);
-      var o = raw ? JSON.parse(raw) : null;
-      if (o && typeof o.x === 'number' && typeof o.y === 'number') return o;
-    } catch (_) {}
-    return null;
+      var v = parseFloat(localStorage.getItem(PILL_KEY));
+      return isFinite(v) ? v : null;
+    } catch (_) { return null; }
   }
 
-  // Restore saved position after layout settles (so header/footer rects
-  // are accurate when we clamp).
+  // Restore saved X on desktop after layout settles.
   requestAnimationFrame(function () {
-    var saved = loadPos();
-    if (!saved) return;
-    var p = clampTo(dropBounds(), saved);
-    applyPos(p.x, p.y);
+    if (!mqDesktop.matches) return;
+    var x = loadX();
+    if (x != null) applyX(clampX(x));
   });
 
   var dragging = false, moved = false;
-  var startCX, startCY, startX, startY;
+  var startCX, startX;
 
   menuBtn.addEventListener('pointerdown', function (e) {
-    // Don't drag while the menu is open — the open pill is a close-button.
+    if (!mqDesktop.matches) return;                          // mobile: no drag
     if (document.body.classList.contains('is-nav-open')) return;
     dragging = true; moved = false;
-    startCX = e.clientX; startCY = e.clientY;
-    var r = menuBtn.getBoundingClientRect();
-    startX = r.left; startY = r.top;
+    startCX = e.clientX;
+    startX = menuBtn.getBoundingClientRect().left;
     try { menuBtn.setPointerCapture(e.pointerId); } catch (_) {}
     menuBtn.classList.add('is-dragging');
   });
   menuBtn.addEventListener('pointermove', function (e) {
     if (!dragging) return;
     var dx = e.clientX - startCX;
-    var dy = e.clientY - startCY;
-    if (!moved && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) moved = true;
+    if (!moved && Math.abs(dx) > DRAG_THRESHOLD) moved = true;
     if (!moved) return;
-    var p = clampTo(dropBounds(), { x: startX + dx, y: startY + dy });
-    applyPos(p.x, p.y);
+    applyX(clampX(startX + dx));
   });
   function endDrag(e) {
     if (!dragging) return;
     dragging = false;
     try { menuBtn.releasePointerCapture(e.pointerId); } catch (_) {}
     menuBtn.classList.remove('is-dragging');
-    if (moved) {
-      var r = menuBtn.getBoundingClientRect();
-      savePos(r.left, r.top);
-    }
+    if (moved) saveX(menuBtn.getBoundingClientRect().left);
   }
-  menuBtn.addEventListener('pointerup', endDrag);
+  menuBtn.addEventListener('pointerup',     endDrag);
   menuBtn.addEventListener('pointercancel', endDrag);
 
-  // Click → toggle menu, but only when the pointer didn't travel enough
-  // to count as a drag. Clear the moved flag after swallowing the click.
+  // Click (no drag) toggles the menu.
   menuBtn.addEventListener('click', function (e) {
     if (moved) { e.preventDefault(); e.stopImmediatePropagation(); moved = false; return; }
     setMenu(!document.body.classList.contains('is-nav-open'));
   });
 
-  // Keep the pill in bounds when the viewport or header/footer sizes change.
+  // Keep the pill in bounds when the viewport resizes.
   function reclamp() {
-    if (!menuBtn.classList.contains('is-placed')) return;
-    var r = menuBtn.getBoundingClientRect();
-    var p = clampTo(dropBounds(), { x: r.left, y: r.top });
-    applyPos(p.x, p.y);
-    savePos(p.x, p.y);
+    if (!mqDesktop.matches || !menuBtn.classList.contains('is-placed')) return;
+    var x = clampX(menuBtn.getBoundingClientRect().left);
+    applyX(x);
+    saveX(x);
   }
   window.addEventListener('resize', reclamp, { passive: true });
-  if (window.ResizeObserver) {
-    var ro = new ResizeObserver(reclamp);
-    ro.observe(header);
-    var f = footerEl();
-    if (f) ro.observe(f);
-  }
+
+  // When the viewport crosses the mobile/desktop breakpoint, reset the
+  // mobile placement so the CSS !important rules take hold cleanly.
+  mqDesktop.addEventListener('change', function (e) {
+    if (e.matches) {
+      var x = loadX();
+      if (x != null) applyX(clampX(x));
+    } else {
+      menuBtn.classList.remove('is-placed');
+      menuBtn.style.left = '';
+      menuBtn.style.top  = '';
+    }
+  });
 
   // ---- Header-safe-top CSS variable -------------------------------------
   // Publish the header's bottom-edge Y (px, viewport-relative) as
@@ -256,7 +234,13 @@
       setTimeout(setHeaderTop, 600);
     }
 
-    if (scrollTop) scrollTop.classList.toggle('is-visible', y > TOP_VISIBLE);
+    if (scrollTop) {
+      // Only reveal the "Scroll up" pill when the user is near the
+      // bottom of the page — the invitation makes sense there, not
+      // after a single viewport of scroll.
+      var nearBottom = (max > 0) && (max - y) < window.innerHeight * 0.75;
+      scrollTop.classList.toggle('is-visible', nearBottom);
+    }
 
     // Publish 0–1 scroll progress on the root as --scroll-progress.
     // CSS color-mix uses it to fade the header's bottom rule from the
