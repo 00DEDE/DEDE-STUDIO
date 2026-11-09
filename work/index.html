@@ -231,16 +231,18 @@
       font-size: 0.85rem;
       white-space: normal;
       line-height: 1.2;
-      /* Reserve enough height for a two-line title so single-line
-         titles start at the SAME Y as the longest tag in the sequence.
-         The <strong> first line + an optional second line both fit
-         above the bottom; shorter tags pin their first line to the top
-         of this block, so first-lines align across successive cells. */
+      /* Reserve the height of two text lines so every cell's title
+         starts at the same Y (the first line) and the context sits on
+         line two — a steady 2-line slot across every cell. */
       min-height: 2.6em;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
     }
+    /* Force the project title onto its own line; the context words
+       (what follows the <strong>) drop to line two. Two lines total,
+       always, regardless of title length. */
+    .cell-tags strong { display: block; }
   }
 
   .cell__view {
