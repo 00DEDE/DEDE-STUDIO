@@ -23,7 +23,7 @@ body:has(.site-header) {
   /* Sits above the nav overlay (z-index 150) so the brand mark
      stays visible at the top when the mobile menu opens. */
   z-index: 180;
-  padding: clamp(1.5rem, 2.5vw, 2.5rem) clamp(1rem, 2vw, 2rem) clamp(1.25rem, 2vw, 2rem);
+  padding: clamp(1.5rem, 2.5vw, 2.5rem) clamp(1rem, 2vw, 2rem) 0;
   background: var(--bg);
   color: var(--fg);
   border-radius: 0;
@@ -107,7 +107,6 @@ body:has(.site-header) {
   gap: 1.75rem;
   align-items: center;
   padding: clamp(0.55rem, 1.2vw, 0.95rem) 0;
-  margin-bottom: calc(-1 * clamp(1.25rem, 2vw, 2rem));
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -121,12 +120,12 @@ body:has(.site-header) {
   top: 100%;
   left: 0;
   right: 0;
-  height: clamp(2rem, 3.5vw, 3rem);
+  height: clamp(2.5rem, 4.4vw, 3.75rem);
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
 }
 .site-header__nav a {
   color: var(--fg);
