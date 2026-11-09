@@ -63,16 +63,16 @@
   .profile-contact__about,
   .profile-contact__right { display: contents; }
 
-  .profile-contact__headshot   { grid-column: 1;      grid-row: 1; }
-  .profile-contact__about-text { grid-column: 2 / -1; grid-row: 1; }
-  .profile-contact__contact    { grid-column: 1;      grid-row: 2; align-self: start; }
+  .profile-contact__about-text { grid-column: 1;      grid-row: 1; }
+  .profile-contact__contact    { grid-column: 2 / -1; grid-row: 1; }
+  .profile-contact__headshot   { grid-column: 1;      grid-row: 2; }
   .resume                      { grid-column: 2 / -1; grid-row: 2; align-self: start; }
 
   /* Headshot — full image visible (not cropped). Sizes to the image's
      natural aspect, aligned to the top of the row so no empty space
      is painted beneath when the sibling (resume) is taller. */
   .profile-contact__headshot {
-    margin: 0;
+    margin: clamp(2rem, 4vh, 3rem) 0 0;
     align-self: start;
     overflow: hidden;
     border-radius: 0;
@@ -102,16 +102,20 @@
     .resume                      { order: 4; }
   }
 
-  /* ─── Section eyebrow labels ("ABOUT ME", "CONTACT ME") ────────── */
+  /* ─── Section titles ("ABOUT", "CONTACT", "RESUME") ───────────────
+     One typography for all three section heads: bold Oracle 700,
+     uppercase, no tracking flourish, full --fg colour. The three
+     titles must read as a matched set. */
   .profile-contact__label {
     margin: 0 0 clamp(1rem, 2vh, 1.5rem);
     font-family: "ABC Oracle",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400 !important;   /* bold eyebrow — ExtraBold on Inter Tight variable axis */
-    font-size: clamp(0.68rem, 0.82vw, 0.78rem);
-    letter-spacing: 0.22em;
+    font-weight: 700 !important;
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
     text-transform: uppercase;
-    color: rgba(var(--fg-rgb), 0.55);
+    color: var(--fg);
   }
 
   /* ─── Body copy — About Me + Contact Me share typography:
