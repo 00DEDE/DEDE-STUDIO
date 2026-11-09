@@ -53,11 +53,10 @@ html { background: var(--bg); }
   body { background: transparent; }
   a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
 
-  /* Home now opts INTO the sitewide --header-safe-top padding so the
-     hero header has room to breathe above the first content block.
-     (Previous rule set body.home { padding-top: 0 } so the compact
-     pill could float over project #1 — redundant now that the header
-     is a hero at top-of-page.) */
+  /* Home reduces the sitewide header-safe padding by 50% so the hero
+     pull-quote sits tighter under the header rule (and the blurred
+     band below). */
+  body.home { padding-top: calc(var(--header-safe-top, 5rem) * 0.5); }
 
   /* ─── Work scroll — full-screen project sections ────────────────── */
   .home-work {
