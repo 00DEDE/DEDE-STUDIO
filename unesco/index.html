@@ -256,6 +256,19 @@
   }
   .section-label__num { color: var(--accent); margin-right: 1.4em; }
 
+  /* Hairline separator between numbered sections inside the case
+     grid (01 Foundations / 02 Palette / 03 Voice / …). Spans the
+     full 3-col width. */
+  .unesco__section-rule {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 0;
+    padding: 0;
+    margin: clamp(2rem, 4vh, 3.5rem) 0 clamp(1rem, 2vh, 1.75rem);
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+
   /* ─── Statement (editorial display) ─────────────────────────────── */
   .statement {
     margin: 0;
@@ -740,8 +753,8 @@
     </button>
     <div class="read-more__panel" id="rm-overview">
       <div class="read-more__inner">
-        <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. Behind every site is a story, a people, a piece of our shared humanity that deserves to be carried forward. I wanted this redesign to honor that &mdash; an identity that feels as alive in a Nairobi campaign as in a Kyoto exhibition, without asking any culture to fit the same mold.</p>
-        <p>I started with the wordmark and built outward. What do we all have in common? Stories. We weave them into textiles, into shapes repeated across generations. From there the system flourished: a modular icon set, a palette shaped by human experience, and interactive components for a digital archive &mdash; every element part of one symphony.</p>
+        <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. Behind every site is a story, a people, a piece of our shared humanity that deserves to be carried forward. I wanted this redesign to honor that: an identity that feels as alive in a Nairobi campaign as in a Kyoto exhibition, without asking any culture to fit the same mold.</p>
+        <p>I started with the wordmark and built outward. What do we all have in common? Stories. We weave them into textiles, into shapes repeated across generations. From there the system flourished: a modular icon set, a palette shaped by human experience, and interactive components for a digital archive. Every element, part of one symphony.</p>
       </div>
     </div>
 
@@ -769,7 +782,7 @@
     </button>
     <div class="read-more__panel" id="rm-atlas">
       <div class="read-more__inner">
-        <p>To celebrate UNESCO&rsquo;s 80th anniversary, I proposed an interactive atlas &mdash; a piece that invites the audience to activate different parts of the world and witness just how interconnected we are in the fabric of human experience, and how crucial it is to protect what makes us human.</p>
+        <p>To celebrate UNESCO&rsquo;s 80th anniversary, I proposed an interactive atlas. A piece that invites the audience to activate different parts of the world and witness just how interconnected we are in the fabric of human experience, and how crucial it is to protect what makes us human.</p>
       </div>
     </div>
     <figure class="unesco__atlas-media">
@@ -810,12 +823,14 @@
          let the viewer pause whenever they want. -->
     <figure class="media media--wide g-span-3">
       <video class="media__video"
-             autoplay muted loop playsinline preload="metadata" controls
+             autoplay muted loop playsinline preload="auto"
+             disablepictureinpicture disableremoteplayback
              aria-label="UNESCO logo reveal animation">
         <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
       </video>
     </figure>
 
+    <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 02 · Palette ─────────────────────────────────────────── -->
     <p class="section-label g-span-1"><span class="section-label__num">02</span>Palette</p>
     <div class="g-span-2">
@@ -830,7 +845,7 @@
       </button>
       <div class="read-more__panel" id="rm-palette">
         <div class="read-more__inner">
-          <p>Six colors. Two groups. Blue for knowledge, green for life, yellow for culture. Then ash grey for memory, brown for ancestry, and a rich dark brown I call &ldquo;deep earth&rdquo; for heritage. Human expression &mdash; the vibrancy of life &mdash; and human experience &mdash; the hues of our Earth &mdash; coming together to form the fabric of human existence.</p>
+          <p>Six colors. Two groups. Blue for knowledge, green for life, yellow for culture. Then ash grey for memory, brown for ancestry, and a rich dark brown I call &ldquo;deep earth&rdquo; for heritage. Human expression (the vibrancy of life) and human experience (the hues of our Earth) coming together to form the fabric of human existence.</p>
         </div>
       </div>
     </div>
@@ -842,6 +857,7 @@
       <img class="media__img" style="object-fit: contain;" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
     </figure>
 
+    <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 03 · Voice ───────────────────────────────────────────── -->
     <p class="section-label g-span-1"><span class="section-label__num">03</span>Voice</p>
     <div class="g-span-2">
@@ -855,12 +871,13 @@
       </button>
       <div class="read-more__panel" id="rm-voice">
         <div class="read-more__inner">
-          <p>The typography is direct and inclusive, most evident in the slogan and secondary taglines. &ldquo;The World Needs U&rdquo; is a play on words &mdash; yes, it&rsquo;s the first letter of UNESCO, no coincidence there, but more than that, the slogan is meant to tell the world how much better this life is with you in it.</p>
+          <p>The typography is direct and inclusive, most evident in the slogan and secondary taglines. &ldquo;The World Needs U&rdquo; is a play on words. Yes, it&rsquo;s the first letter of UNESCO, no coincidence there, but more than that, the slogan is meant to tell the world how much better this life is with you in it.</p>
           <p>The secondary taglines, &ldquo;Safeguard Humanity&rsquo;s Inheritance&rdquo; and &ldquo;Protect What Makes Us Human,&rdquo; are the calls to action. It is our turn to forge the way forward, with our heritage on our backs. A tree&rsquo;s roots must grow deep into the Earth for its branches to reach into the skies.</p>
         </div>
       </div>
     </div>
 
+    <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 04 · Applications (three-image row) ──────────────────── -->
     <p class="section-label g-span-3"><span class="section-label__num">04</span>Applications</p>
 
@@ -883,6 +900,7 @@
       <img class="media__img media__slide media__slide--2" style="transform: scale(1.3);" src="/ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO installation application — round 2" />
     </figure>
 
+    <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 05 · Iconography ─────────────────────────────────────── -->
     <p class="section-label g-span-1"><span class="section-label__num">05</span>Iconography</p>
     <div class="g-span-2">
@@ -897,7 +915,7 @@
       </button>
       <div class="read-more__panel" id="rm-iconography">
         <div class="read-more__inner">
-          <p>Each group &mdash; Traditions, Languages, Ecosystems, Monuments &mdash; has its own set of icons, each one meant to look and feel like the zone it represents. Then, to add even more human interconnection to the rebrand, the logo gave me a couple of &ldquo;friends.&rdquo;</p>
+          <p>Each group (Traditions, Languages, Ecosystems, Monuments) has its own set of icons, each one meant to look and feel like the zone it represents. Then, to add even more human interconnection to the rebrand, the logo gave me a couple of &ldquo;friends.&rdquo;</p>
         </div>
       </div>
     </div>
@@ -907,6 +925,7 @@
       <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
     </figure>
 
+    <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 06 · Celebrating 80 Years ────────────────────────────── -->
     <p class="section-label g-span-1"><span class="section-label__num">06</span>Celebrating 80 Years</p>
     <div class="g-span-2">
@@ -921,7 +940,7 @@
       </button>
       <div class="read-more__panel" id="rm-celebration">
         <div class="read-more__inner">
-          <p>I commissioned a woven blanket, and to get in on the fun I made a hand-sewn, vegetable-tanned leather bag with all the icons forming an image of our world. The same image appears on the printed atlas book &mdash; the predecessor to the interactive atlas. You never know where one small idea might take you.</p>
+          <p>I commissioned a woven blanket, and to get in on the fun I made a hand-sewn, vegetable-tanned leather bag with all the icons forming an image of our world. The same image appears on the printed atlas book, the predecessor to the interactive atlas. You never know where one small idea might take you.</p>
         </div>
       </div>
     </div>
