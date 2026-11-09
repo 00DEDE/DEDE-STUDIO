@@ -51,7 +51,10 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--stack-y) calc(var(--page-x) * 2);
-    padding: var(--stack-top) var(--page-x) var(--stack-y);
+    /* Top padding zeroed so the intro paragraph hugs the header's
+       bottom rule — no breathing gap between the two. Side + bottom
+       padding preserved. */
+    padding: 0 var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
   /* Flatten the two column containers so their children render as
