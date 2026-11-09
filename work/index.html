@@ -452,28 +452,10 @@
       });
     }
 
-    /* ─── per-cell interaction (touch) ───────────────────────────────── */
-    // Touch: 1st tap reveals VIEW CASE; 2nd tap navigates.
-    if (isTouch) {
-      let activeCell = null, timer = null;
-      const RESET_MS = 2000;
-      function reset() {
-        if (activeCell) activeCell.classList.remove('is-active');
-        activeCell = null;
-        clearTimeout(timer);
-        timer = null;
-      }
-      cells.forEach((cell) => {
-        cell.addEventListener('click', (e) => {
-          if (activeCell === cell) { reset(); return; }
-          e.preventDefault();
-          reset();
-          activeCell = cell;
-          cell.classList.add('is-active');
-          timer = setTimeout(reset, RESET_MS);
-        });
-      });
-    }
+    /* Touch: single tap navigates directly. The old two-tap
+       (preview-then-navigate) pattern caused per-tap flicker from the
+       .is-active class toggling bg-color / scrim / image-scale
+       transitions, so it's removed. */
 
     /* ─── scroll cue fade-out ────────────────────────────────────────── */
     const cue = document.querySelector('.scroll-cue');

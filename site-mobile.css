@@ -69,6 +69,34 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
+
+  /* Suppress Safari / Chrome Android's default tap-highlight overlay.
+     On image-filled cells it reads as a flash on every tap. */
+  html, body, a, button, [role="button"], .cell, .work {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Freeze the .is-active state on mobile cells. The two-tap preview
+     (1st tap toggles .is-active → background-color + scrim + image
+     scale transitions, 2nd tap navigates) was the second source of
+     per-click flicker. Taps go straight through to the href now. */
+  .cell.is-active,
+  .cell--cover.is-active,
+  .cell--carousel.is-active,
+  .cell.is-active .cell__view,
+  .cell--cover.is-active::before,
+  .cell--carousel.is-active .cover-slide.is-active,
+  .work.is-active,
+  .work.is-active .work__view {
+    background: transparent !important;
+    background-color: transparent !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  /* The view-case overlay is hover-only UX — hide it on touch so it
+     can't appear on any tap. */
+  .cell__view, .work__view { display: none !important; }
 }
 
 
