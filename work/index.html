@@ -131,7 +131,30 @@
     z-index: 2;
   }
 
-  /* ─── cover cells (single-image variant) ─────────────────────────── */
+  /* Real-<img> cover — rendered as DOM content so iOS Safari can't
+     throw away the texture during fast scroll. Replaces the old
+     .cell--cover::before CSS background-image layer. */
+  .cell__cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    transform: scale(1);
+    transform-origin: center;
+    transition: opacity   var(--dur-medium)      var(--ease-standard),
+                transform var(--dur-atmospheric) var(--ease-out-expo);
+    will-change: transform;
+    backface-visibility: hidden;
+    z-index: 0;
+  }
+  @media (hover: hover) {
+    .cell:hover .cell__cover-img { opacity: 0.4; transform: scale(1.02); }
+  }
+
+  /* ─── cover cells (single-image variant) — legacy CSS-bg path ─── */
   .cell--cover::before {
     content: '';
     position: absolute;
@@ -343,44 +366,48 @@
     <script src="/site-bg.js" defer></script>
 
     <div class="selections-grid">
+      <!-- Covers are rendered as real <img> elements (not CSS
+           background-image) so iOS Safari can't throw away the
+           texture during fast scroll. -->
+
       <!-- 1. UNESCO — mirrors the home page cell. -->
-      <a class="cell cell--cover cell--unesco" href="/unesco/"
-         style="--cover: url('/ASSETS/IMAGES/UNESCO/01.jpg')">
+      <a class="cell cell--unesco" href="/unesco/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/UNESCO/01.jpg" alt="UNESCO cover" decoding="async" fetchpriority="high" />
         <div class="cell-tags"><strong>UNESCO</strong> BRANDING &amp; INTERACTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
 
       <!-- 2. CAFÉ BUSTELO -->
-      <a class="cell cell--cover" href="#"
-         style="--cover: url('/ASSETS/IMAGES/THE_REVENANT.jpg')">
+      <a class="cell" href="#">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/THE_REVENANT.jpg" alt="Café Bustelo cover" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>CAFÉ BUSTELO</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
 
       <!-- 3. SAN DIEGO FOOTBALL CLUB -->
-      <a class="cell cell--cover" href="#"
-         style="--cover: url('/ASSETS/IMAGES/POSTER_MOCKUP.jpg')">
+      <a class="cell" href="#">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/POSTER_MOCKUP.jpg" alt="San Diego F.C. cover" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>SAN DIEGO F.C.</strong> BRANDING &amp; MOTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
 
       <!-- 4. ECCLESIASTES — mirrors the home page cell. -->
-      <a class="cell cell--cover cell--ecclesiastes" href="/ecclesiastes/"
-         style="--cover: url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); --cover-x: 60%">
+      <a class="cell cell--ecclesiastes" href="/ecclesiastes/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg" alt="Ecclesiastes cover" decoding="async" loading="lazy" style="object-position: 60% 50%" />
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
 
       <!-- 5. TRADER JOE'S -->
-      <a class="cell cell--cover" href="#"
-         style="--cover: url('/ASSETS/IMAGES/TRADER_JOES.jpg')">
+      <a class="cell" href="#">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/TRADER_JOES.jpg" alt="Trader Joe’s cover" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>TRADER JOE&rsquo;S</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
 
       <!-- 6. MEMOIRS -->
-      <a class="cell cell--cover" href="#"
-         style="--cover: url('/ASSETS/IMAGES/MEMOIRS.jpg')">
+      <a class="cell" href="#">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/MEMOIRS.jpg" alt="Memoirs cover" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>MEMOIRS</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
