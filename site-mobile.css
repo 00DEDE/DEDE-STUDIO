@@ -97,6 +97,26 @@
   /* The view-case overlay is hover-only UX — hide it on touch so it
      can't appear on any tap. */
   .cell__view, .work__view { display: none !important; }
+
+  /* Nuclear: disable EVERY transition + animation anywhere under a
+     cell or work section on mobile. The long transform transition on
+     .cell--cover::before (6s --dur-atmospheric) and the opacity
+     transition on the scrim were being retriggered by native tap
+     events (focus synthesis, touch-callout prep) — read as flicker.
+     On mobile we don't need those motion polishes; the cells + their
+     covers / scrims / overlays stay in their rest state regardless of
+     what the browser is doing in the background. */
+  .work, .work *, .work::before, .work::after,
+  .cell, .cell *, .cell::before, .cell::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  /* Tell the browser taps on cells are single-purpose (navigate) so
+     it skips the 300ms double-tap-to-zoom delay AND the focus/hover
+     synthesis that fires alongside. */
+  .cell, .work {
+    touch-action: manipulation;
+  }
 }
 
 
