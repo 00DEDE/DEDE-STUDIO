@@ -339,8 +339,15 @@ body:has(.site-header) {
     transform var(--dur-medium) var(--ease-out-expo),
     opacity   var(--dur-medium) var(--ease-out-expo);
 }
-/* × morph — translate the outer bars onto the centre line, rotate. */
-body.is-nav-open .site-menu-btn span:nth-child(2) { opacity: 0; }
+/* × morph — translate the outer bars onto the centre line, rotate.
+   The middle bar is collapsed (scale 0) AND hidden (visibility) so
+   no residual dot or ghost end-cap is left visible when the menu is
+   open on mobile. */
+body.is-nav-open .site-menu-btn span:nth-child(2) {
+  opacity: 0;
+  visibility: hidden;
+  transform: scaleX(0);
+}
 body.is-nav-open .site-menu-btn span:nth-child(1) { transform: translateY(6.5px)  rotate(45deg); }
 body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 

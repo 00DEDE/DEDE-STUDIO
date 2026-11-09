@@ -440,6 +440,12 @@ html { background: var(--bg); }
   .home-quote .word--cyan {
     color: #43dede;
   }
+  /* Mobile-only cyan accent — applied alongside word--accent on words
+     that should read cyan only on narrow viewports and keep their
+     original (black) accent on desktop. */
+  @media (max-width: 640px) {
+    .home-quote .word--cyan-mob { color: #43dede; }
+  }
 
   /* Post-reveal — once the cascade finishes, .is-settled swaps the
      transition to a hover-friendly one so words can respond to
@@ -579,7 +585,7 @@ html { background: var(--bg); }
       <span class="word" style="--i:3">Gomez.</span><br class="brk-mob">
       <span class="word" style="--i:4">In</span>
       <span class="word" style="--i:5">closer</span>
-      <span class="word" style="--i:6">company,</span>
+      <span class="word" style="--i:6">company,</span><br class="brk-mob">
       <span class="word" style="--i:7">I</span>
       <span class="word" style="--i:8">am</span>
       <span class="word word--accent" style="--i:9">Dede.</span>
@@ -629,9 +635,9 @@ html { background: var(--bg); }
       <span class="word" style="--i:11">between</span>
       <span class="word" style="--i:12">both</span>
       <span class="word" style="--i:13">the</span>
-      <span class="word word--accent" style="--i:14">digital</span>
+      <span class="word word--accent word--cyan-mob" style="--i:14">digital</span>
       <span class="word" style="--i:15">and</span>
-      <span class="word" style="--i:16">the</span>&nbsp;<span class="word word--accent" style="--i:17">analog.</span>
+      <span class="word" style="--i:16">the</span>&nbsp;<span class="word word--accent word--cyan-mob" style="--i:17">analog.</span>
     </span>
     </h2>
 
@@ -715,7 +721,7 @@ html { background: var(--bg); }
       <span class="word" style="--i:2">today</span><br class="brk-mob">
       <span class="word" style="--i:3">a</span>
       <span class="word" style="--i:4">day</span><br class="brk-desk">
-      <span class="word" style="--i:5">where</span>
+      <span class="word" style="--i:5">where</span><br class="brk-mob">
       <span class="word" style="--i:6">you</span><br class="brk-mob">
       <span class="word" style="--i:7">and</span>
       <span class="word" style="--i:8">I</span>
