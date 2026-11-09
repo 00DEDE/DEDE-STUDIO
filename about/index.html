@@ -63,16 +63,16 @@
   .profile-contact__about,
   .profile-contact__right { display: contents; }
 
-  .profile-contact__about-text { grid-column: 1;      grid-row: 1; }
-  .profile-contact__contact    { grid-column: 2 / -1; grid-row: 1; }
-  .profile-contact__headshot   { grid-column: 1;      grid-row: 2; }
+  .profile-contact__headshot   { grid-column: 1;      grid-row: 1; }
+  .profile-contact__about-text { grid-column: 2 / -1; grid-row: 1; }
+  .profile-contact__contact    { grid-column: 1;      grid-row: 2; align-self: start; }
   .resume                      { grid-column: 2 / -1; grid-row: 2; align-self: start; }
 
   /* Headshot — full image visible (not cropped). Sizes to the image's
      natural aspect, aligned to the top of the row so no empty space
      is painted beneath when the sibling (resume) is taller. */
   .profile-contact__headshot {
-    margin: clamp(2rem, 4vh, 3rem) 0 0;
+    margin: 0;
     align-self: start;
     overflow: hidden;
     border-radius: 0;
@@ -188,8 +188,7 @@
        lines; column 3 narrowed slightly to give column 1 the room. */
     grid-template-columns: 2fr 2fr 3fr;
     gap: clamp(1rem, 2vw, 2.5rem);
-    padding: clamp(1rem, 2vh, 1.5rem) 0 clamp(2rem, 4vh, 3rem);
-    border-top: 1px solid var(--line);
+    padding: 0 0 clamp(2rem, 4vh, 3rem);
   }
   .resume__contact strong { font-weight: 400; display: block; }
   .resume__row {
@@ -292,7 +291,7 @@
     <!-- ─── Column 1: About Me (text block) + Headshot (separate block) ── -->
     <div class="profile-contact__about">
       <div class="profile-contact__about-text reveal-block">
-        <p class="profile-contact__label">About Me</p>
+        <p class="profile-contact__label">About</p>
         <p>I did not speak until I was six years old. My first attempts were simple: &ldquo;Day... Day...&rdquo; My mother writes it as &ldquo;Dede.&rdquo;</p>
         <p>Before words, I communicated with my hands, and this has never left me. Today, I think, feel, and tell stories through creating work that exists between both the digital and the analog. I trace connections between people, places, and ideas the way a child might trace lines in the sand, until their own world begins to emerge.</p>
         <p>I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today a day where you and I create something meaningful.</p>
@@ -306,9 +305,9 @@
     <div class="profile-contact__right">
 
       <div class="profile-contact__contact reveal-block">
-        <p class="profile-contact__label">Contact Me</p>
+        <p class="profile-contact__label">Contact</p>
         <p>Let&rsquo;s get to work!</p>
-        <p>Contact: <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></p>
+        <p><a href="mailto:hello@iamdede.com">hello@iamdede.com</a></p>
       </div>
 
       <section class="resume reveal-block" aria-label="Resume">

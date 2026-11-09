@@ -102,6 +102,20 @@ html { background: var(--bg); }
     color: #43dede;
     animation: scroll-cue-drift-down 2.4s var(--ease-in-out, cubic-bezier(0.77,0,0.175,1)) infinite;
   }
+  /* Mobile: move the cue to the bottom-right corner so it clears the
+     centred hamburger pill. Bottom-aligned with the pill (1.4rem). */
+  @media (max-width: 640px) {
+    .home-scroll-cue {
+      left: auto;
+      right: clamp(0.75rem, 3vw, 1.25rem);
+      bottom: 1.4rem;
+      transform: none;
+      align-items: flex-end;
+    }
+    .home-scroll-cue.is-hidden {
+      transform: translateY(10px);
+    }
+  }
   @keyframes scroll-cue-drift-down {
     0%, 100% { transform: translateY(0); }
     50%      { transform: translateY(6px); }
