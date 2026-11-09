@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ABOUT — IAMDEDE.COM</title>
 <link rel="canonical" href="https://iamdede.com/about/" />
-<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-96.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-180.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/favicon-96.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/favicon-180.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="theme-color" content="#050505" />
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -21,7 +21,9 @@
   /* ─── Page layout tokens (same system as the case-study pages) ─── */
   :root {
     --page-x:    clamp(10px, 1.25vw, 20px);
-    --stack-top: clamp(6rem, 14vh, 10rem);
+    /* About section top padding (clearance under header) reduced 50%:
+       was clamp(6rem, 14vh, 10rem). Same on mobile via the shared token. */
+    --stack-top: clamp(3rem, 7vh, 5rem);
     --stack-y:   clamp(4rem, 8vh, 6rem);
   }
 
@@ -278,7 +280,7 @@
         <p class="profile-contact__label">About Me</p>
         <p>I did not speak until I was six years old. My first attempts were simple: &ldquo;Day... Day...&rdquo; My mother writes it as &ldquo;Dede.&rdquo;</p>
         <p>Before words, I communicated with my hands, and this has never left me. Today, I think, feel, and tell stories through creating work that exists between both the digital and the analog. I trace connections between people, places, and ideas the way a child might trace lines in the sand, until their own world begins to emerge.</p>
-        <p>I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today... a day where you and I create something meaningful.</p>
+        <p>I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today a day where you and I create something meaningful.</p>
       </div>
       <figure class="profile-contact__headshot reveal-block">
         <img src="/ASSETS/IMAGES/headshot.jpg" alt="Portrait of David Gomez" />
@@ -297,14 +299,13 @@
       <section class="resume reveal-block" aria-label="Resume">
         <div class="resume__contact">
           <div>
-            <strong>David Gomez</strong>
-            <span>Designer/Diseñador</span>
-            <span>(Dede)</span>
+            <strong>David A. Gomez Grillo</strong>
+            <span>Graphic Designer | Diseñador Gráfico</span>
           </div>
           <div class="resume__desc">
-            <a href="https://iamdede.com">iamdede.com</a><br>
             <a href="tel:+16614357379">+1 661 435 7379</a><br>
-            <a href="mailto:iamdede@bllcrw.com">iamdede@bllcrw.com</a>
+            <a href="mailto:hello@iamdede.com">hello@iamdede.com</a><br>
+            <a href="https://iamdede.com">iamdede.com</a>
           </div>
           <div></div>
         </div>
@@ -317,13 +318,7 @@
             <span>Pasadena, CA</span>
           </div>
           <div class="resume__desc">
-            BFA in Graphic Design — Specialization in Identity&nbsp;Systems
-            <span class="resume__desc-sub">Awarded Scholarships:</span>
-            Honda Endowed Scholarship<br>
-            Martha Chandler Scholarship<br>
-            M.A. Larsen Endowed Scholarship<br>
-            Siras Greiner Memorial Endowed Scholarship<br>
-            Ebell Flint Scholarship
+            BFA in Graphic Design with Honors — Specialization in Identity Systems, and Packaging Design
           </div>
         </div>
 
@@ -331,25 +326,38 @@
           <div class="resume__section"></div>
           <div class="resume__meta">
             <strong>Antelope Valley College</strong>
-            <span>09.2020–05.2023</span>
+            <span>09.2019–05.2023</span>
             <span>Lancaster, CA</span>
           </div>
           <div class="resume__desc">
-            Associates Degree in Graphic Design<br>
-            Associates Degree in Art History
+            AA in Graphic Design<br>
+            AA in Art History
           </div>
         </div>
 
         <div class="resume__row resume__row--start">
           <div class="resume__section">Experience</div>
           <div class="resume__meta">
+            <strong>Co-Owner</strong>
+            <span>BLLCRW.</span>
+            <span>04.2020–Present</span>
+            <span>Los Angeles, CA</span>
+          </div>
+          <div class="resume__desc">
+            Currently directing the creative vision for BLLCRW., leading apparel design, overseas supplier partnerships, and brand strategy. Developing collections from concept all the way through production while maintaining a cohesive identity across products, campaigns and brand communications.
+          </div>
+        </div>
+
+        <div class="resume__row">
+          <div class="resume__section"></div>
+          <div class="resume__meta">
             <strong>Creative Design Intern</strong>
-            <span>Hulu (Disney)</span>
+            <span>Hulu (The Walt Disney Co.)</span>
             <span>06.2025–01.2026</span>
             <span>Santa Monica, CA</span>
           </div>
           <div class="resume__desc">
-            Assisted in the exploration and development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all touchpoints, which included refreshing campaign assets, refining presentation decks, designing brand merchandise and creating design references for both Hulu&rsquo;s original programming and its overarching&nbsp;brand.
+            Assisted in the development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all their touchpoints, which included refreshing campaign assets, creating presentation decks, designing brand merchandise, and designing references for both Hulu&rsquo;s original programming, and its overarching brand.
           </div>
         </div>
 
@@ -358,24 +366,52 @@
           <div class="resume__meta">
             <strong>Freelance Designer</strong>
             <span>Adobe Inc.</span>
-            <span>09.2025–10.2025</span>
+            <span>09.2025–12.2025</span>
             <span>Los Angeles, CA</span>
           </div>
           <div class="resume__desc">
-            Contracted to produce videos showcasing the debut of a new mobile video app from Adobe while also exploring its capabilities with original content. Through this opportunity I was able to collaborate with and learn from Luis Callegari, current Creative Director for EA&nbsp;Sports.
+            Contracted to produce videos showcasing the debut of a new mobile video app from Adobe, with original content. Collaborated with, and learned from Luis Callegari, current Creative Director for EA Sports.
           </div>
         </div>
 
         <div class="resume__row">
           <div class="resume__section"></div>
           <div class="resume__meta">
-            <strong>Co-Owner/Designer</strong>
-            <span>BLLCRW. LLC</span>
-            <span>06.2022–Currently</span>
+            <strong>Graphic Designer</strong>
+            <span>Humanities and Sciences Department</span>
+            <span>ArtCenter College of Design</span>
+            <span>01.2025–12.2025</span>
+            <span>Pasadena, CA</span>
+          </div>
+          <div class="resume__desc">
+            Designed print and digital communications for ArtCenter&rsquo;s Humanities and Sciences Department, including posters, infographics, signage, pamphlets, curriculum maps, and student-facing guides. Collaborated with multiple department leaders to develop clear, engaging materials that supported academic programs, and student success.
+          </div>
+        </div>
+
+        <div class="resume__row resume__row--start">
+          <div class="resume__section">Scholarships</div>
+          <div class="resume__meta">
+            <strong>ArtCenter College of Design</strong>
+            <span>Pasadena, CA</span>
+          </div>
+          <div class="resume__desc">
+            Honda Endowed Scholarship (09.2025–12.2026)<br>
+            M.A. Larsen Endowed Scholarship (09.2025–12.2026)<br>
+            Martha Chandler Scholarship (09.2025–12.2026)<br>
+            Siras Greiner Memorial Endowed Scholarship (09.2025–05.2026)<br>
+            UG Diversity Scholarship (09.2024–12.2026)<br>
+            Transfer Student Scholarship (09.2024–12.2026)
+          </div>
+        </div>
+
+        <div class="resume__row">
+          <div class="resume__section"></div>
+          <div class="resume__meta">
+            <strong>The Ebell Scholarship Program</strong>
             <span>Los Angeles, CA</span>
           </div>
           <div class="resume__desc">
-            Leading the creative vision for BLLCRW., I oversee garment design, manufacturer and supplier relations, and brand storytelling. I ensure that each collection reflects a cohesive theme, from sketch and concept to the final product, meanwhile also maintaining consistent identity and ethos across the brand&rsquo;s visuals and&nbsp;messaging.
+            Ebell/Flint Scholarship (05.2025–12.2026)
           </div>
         </div>
 
@@ -385,7 +421,7 @@
             <strong>Proficient In</strong>
           </div>
           <div class="resume__desc">
-            After Effects, Premiere Pro, Lightroom, InDesign, Photoshop, Illustrator, Media Encoder, Procreate, Madmapper, Microsoft Powerpoint, Google&nbsp;Workspace.
+            Illustrator, After Effects, Photoshop, InDesign, Premiere Pro, Lightroom, Media Encoder, Bridge, Acrobat, Procreate, MadMapper, Claude Code, Keynote, Microsoft PowerPoint, Google Workspace, Weavy, Krea.
           </div>
         </div>
 
@@ -395,7 +431,7 @@
             <strong>Familiar With</strong>
           </div>
           <div class="resume__desc">
-            Cinema 4D, VS Code, Figma, Keyshot, SolidWorks,&nbsp;Keynote.
+            SolidWorks, KeyShot, Adobe Neo, Visual Studio Code, Figma, Cinema 4D, Redshift.
           </div>
         </div>
 
@@ -405,7 +441,15 @@
             <strong>Abilities</strong>
           </div>
           <div class="resume__desc">
-            Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial &amp; Print Design, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packages, Product Development,&nbsp;Storytelling.
+            Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial and Print, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packs, Product Development, Storytelling, Rapid Prototyping, Handcrafting, Leatherwork.
+          </div>
+        </div>
+
+        <div class="resume__row resume__row--start">
+          <div class="resume__section">Languages</div>
+          <div class="resume__meta"></div>
+          <div class="resume__desc">
+            Fluent in Spanish and English.
           </div>
         </div>
       </section>

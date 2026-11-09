@@ -80,7 +80,7 @@
   padding-right: 0.5em;
 }
 /* Mask + background-color renders the icon in var(--accent) — pure
-   #00dede in dark mode, pure #de0000 in light mode — no hue-rotate
+   #43dede in dark mode, pure #de0000 in light mode — no hue-rotate
    fade on anti-aliased edges. The black icon PNG acts as the shape
    mask; the color comes entirely from --accent. */
 .marquee-mark {

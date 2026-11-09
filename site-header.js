@@ -23,7 +23,35 @@
 
   var header = document.querySelector('.site-header');
   if (!header) return;
-  // Hamburger retired — nav is inline at every breakpoint.
+
+  // ---- Mobile hamburger (bottom-centre floating button) ----------------
+  // Injected into <body> so it floats at the viewport bottom, independent
+  // of header geometry. 3-line icon; morphs to × on open. Toggles the
+  // body class .is-nav-open which shows the nav as a full-screen overlay.
+  var menuBtn = document.querySelector('.site-menu-btn');
+  if (!menuBtn) {
+    menuBtn = document.createElement('button');
+    menuBtn.className = 'site-menu-btn';
+    menuBtn.type = 'button';
+    menuBtn.setAttribute('aria-label', 'Menu');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    menuBtn.innerHTML = '<span></span><span></span><span></span>';
+    document.body.appendChild(menuBtn);
+  }
+  function setMenu(open) {
+    document.body.classList.toggle('is-nav-open', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  menuBtn.addEventListener('click', function () {
+    setMenu(!document.body.classList.contains('is-nav-open'));
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setMenu(false);
+  });
+  // Tapping a nav link closes the overlay before navigating.
+  header.querySelectorAll('.site-header__nav a').forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
+  });
 
   // ---- Header-safe-top CSS variable -------------------------------------
   // Publish the header's bottom-edge Y (px, viewport-relative) as

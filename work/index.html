@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>WORK — IAMDEDE.COM</title>
 <link rel="canonical" href="https://iamdede.com/work/" />
-<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-96.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-180.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/favicon-96.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/favicon-180.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="theme-color" content="#121212" />
 <!-- Read saved theme + apply BEFORE any style loads. Prevents theme-flash. -->
@@ -307,6 +307,9 @@
      its bottom edge (--header-safe-top) with a small extra gap. */
   .selections {
     padding-top: var(--cell-gap, 1rem);
+    /* Padding between the last row of cells and the footer doubled
+       (+100%) so the footer has breathing room beneath the grid. */
+    padding-bottom: clamp(4rem, 10vh, 8rem);
   }
 </style>
 </head>

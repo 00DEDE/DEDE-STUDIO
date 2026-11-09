@@ -4,7 +4,8 @@
 .site-footer {
   max-width: 100%;
   margin-inline: 0;
-  padding: clamp(3rem, 8vh, 6rem) 1.5rem clamp(1.25rem, 3vh, 2rem);
+  /* Vertical length +50% (top 3→4.5rem/8→12vh/6→9rem; bottom 1.25→2rem/3→4.5vh/2→3rem). */
+  padding: clamp(4.5rem, 12vh, 9rem) 1.5rem clamp(2rem, 4.5vh, 3rem);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   color: #fff;
   background: #000;

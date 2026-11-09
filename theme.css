@@ -72,12 +72,16 @@ em { font-style: normal; }
   --stack-y:       clamp(6rem, 13vh, 10rem);   /* between-section rhythm  */
   --stack-y-tight: clamp(3.5rem, 7vh, 5.5rem); /* within-section rhythm   */
   --prose-max:     42em;                       /* editorial body measure  */
-  --content-max:   75%;                        /* content cap vs viewport */
+  /* Content cap. Default = 100% (full-bleed) so the site reads
+     edge-to-edge up through a 16" MacBook Pro viewport (1728px CSS
+     wide). Only above that does the sitewide margin kick in. */
+  --content-max:   100%;
 }
 
-/* Mobile: content fills the viewport (minus --page-x gutter). */
-@media (max-width: 900px) {
-  :root { --content-max: 100%; }
+/* Above a 16" MBP viewport, apply the editorial 75% cap so content
+   doesn't sprawl end-to-end on ultra-wide displays. */
+@media (min-width: 1729px) {
+  :root { --content-max: 75%; }
 }
 
 /* ─── Sitewide content cap ───────────────────────────────────────────
@@ -104,7 +108,7 @@ html { background: var(--bg); }
    light variant), and CSS toggles which is visible. Pure pixel color per
    theme — no filter hacks, no faded edges from hue-rotating anti-aliased
    cyan. White/cyan assets serve dark mode; the red asset serves light.
-   Principle: #de0000 red is *only* for light mode, #00dede cyan is *only*
+   Principle: #de0000 red is *only* for light mode, #43dede cyan is *only*
    for dark mode — never both. !important guards against page-specific
    img rules in site-header.css / site-footer.css winning on cascade order
    and rendering the wrong-mode logo. */
@@ -113,7 +117,7 @@ html { background: var(--bg); }
 :root[data-theme="light"] .theme-img--light { display: block !important; }
 
 /* Non-theme-swapped cyan-tinted images (home cycle, marquee icons, per-page
-   brand marks without a light variant) fall back to hue-rotate. Pure #00dede
+   brand marks without a light variant) fall back to hue-rotate. Pure #43dede
    → #de0000 exactly, but with anti-aliasing artifacts on soft edges. The
    `i` flag makes the attribute match case-insensitive so filenames using
    either _cyan or _CYAN both hit. */

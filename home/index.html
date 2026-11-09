@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>IAMDEDE.COM</title>
 <link rel="canonical" href="https://iamdede.com/home/" />
-<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-96.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/IAMDEDE_LOGO-2-favicon-180.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/favicon-96.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/favicon-180.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="theme-color" content="#121212" />
 <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -70,6 +70,24 @@ html { background: var(--bg); }
     padding: 0;
     max-width: 100%;
     margin-inline: 0;
+    /* Parallax: main sits ABOVE a fixed footer with its own opaque
+       background. Bottom margin reveals the footer as the last cell
+       scrolls past (the footer is pinned to the viewport bottom
+       behind this layer, so content slides up over it). */
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
+    margin-bottom: clamp(20rem, 42vh, 30rem);
+  }
+  /* Pin the footer to the viewport bottom behind main. As .home-work
+     scrolls past its own bottom edge, the footer is uncovered — not
+     attached to the cells. */
+  body.home .site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
   }
   .work {
     position: relative;
@@ -514,23 +532,23 @@ html { background: var(--bg); }
     <!-- Pull-statement A — sits between Café Bustelo and San Diego FC. -->
     <h2 class="home-quote home-quote--wrap">
       <span class="word" style="--i:0">I</span>
-      <span class="word" style="--i:1">think,</span>
-      <span class="word" style="--i:2">feel,</span>
-      <span class="word" style="--i:3">and</span>
-      <span class="word" style="--i:4">tell</span>
-      <span class="word" style="--i:5">stories</span>
-      <span class="word" style="--i:6">through</span>
-      <span class="word" style="--i:7">creating</span>
-      <span class="word" style="--i:8">work</span>
-      <span class="word" style="--i:9">that</span>
-      <span class="word" style="--i:10">exists</span>
-      <span class="word" style="--i:11">between</span>
-      <span class="word" style="--i:12">both</span>
-      <span class="word" style="--i:13">the</span>
-      <span class="word word--accent" style="--i:14">digital</span>
-      <span class="word" style="--i:15">and</span>
+      <span class="word" style="--i:1">trace</span>
+      <span class="word" style="--i:2">connections</span>
+      <span class="word" style="--i:3">between</span>
+      <span class="word" style="--i:4">people,</span>
+      <span class="word" style="--i:5">places,</span>
+      <span class="word" style="--i:6">and</span>
+      <span class="word" style="--i:7">ideas</span>
+      <span class="word" style="--i:8">the</span>
+      <span class="word" style="--i:9">way</span>
+      <span class="word" style="--i:10">a</span>
+      <span class="word" style="--i:11">child</span>
+      <span class="word" style="--i:12">might</span>
+      <span class="word" style="--i:13">trace</span>
+      <span class="word word--accent" style="--i:14">lines</span>
+      <span class="word" style="--i:15">in</span>
       <span class="word" style="--i:16">the</span>
-      <span class="word word--accent" style="--i:17">analog.</span>
+      <span class="word word--accent" style="--i:17">sand.</span>
     </h2>
 
     <!-- 3. SAN DIEGO FOOTBALL CLUB ─ single cover -->
@@ -545,7 +563,33 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- Pull-statement B — sits between San Diego FC and Trader Joe's.
+    <!-- 4. ECCLESIASTES ─ carousel (image + video + poster). -->
+    <a class="work work--ecclesiastes" href="/ecclesiastes/">
+      <div class="work__media">
+        <div class="cover-carousel" aria-hidden="true">
+          <div class="cover-slide is-active"
+               data-duration="4000"
+               style="background-image:url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
+          <video class="cover-slide"
+                 data-duration="10000"
+                 style="--cover-y: 100%; --poster: url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"
+                 muted playsinline preload="auto"
+                 poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
+            <source src="/ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+          </video>
+          <div class="cover-slide"
+               data-duration="4000"
+               style="background-image:url('/ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
+        </div>
+      </div>
+      <div class="work__meta">
+        <h2 class="work__title">Ecclesiastes</h2>
+        <p class="work__desc">Compositional Design</p>
+      </div>
+      <div class="work__view">VIEW CASE</div>
+    </a>
+
+    <!-- Pull-statement B — sits between Ecclesiastes and Trader Joe's.
          Line break forced after "belief:" so "what we choose..." drops
          to the next line. -->
     <h2 class="home-quote home-quote--wrap">
@@ -577,7 +621,7 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- 5. MEMOIRS ─ single cover -->
+    <!-- 6. MEMOIRS ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
         <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/MEMOIRS.jpg')"></div>
@@ -588,6 +632,22 @@ html { background: var(--bg); }
       </div>
       <div class="work__view">VIEW CASE</div>
     </a>
+
+    <!-- Pull-statement C — closing credo directly before the footer. -->
+    <h2 class="home-quote home-quote--wrap">
+      <span class="word" style="--i:0">Let&rsquo;s</span>
+      <span class="word" style="--i:1">make</span>
+      <span class="word" style="--i:2">today...</span>
+      <span class="word" style="--i:3">a</span>
+      <span class="word" style="--i:4">day</span>
+      <span class="word" style="--i:5">where</span>
+      <span class="word" style="--i:6">you</span>
+      <span class="word" style="--i:7">and</span>
+      <span class="word" style="--i:8">I</span>
+      <span class="word word--accent" style="--i:9">create</span>
+      <span class="word word--accent" style="--i:10">something</span>
+      <span class="word word--accent" style="--i:11">meaningful.</span>
+    </h2>
   </main>
 
   <footer class="site-footer">

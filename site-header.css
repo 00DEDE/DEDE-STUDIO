@@ -95,10 +95,16 @@ body:has(.site-header) {
 .site-header__nav {
   grid-column: 1 / -1;
   grid-row: 2;
-  justify-self: center;
+  /* Full-width row bracketed by hairline rules above + below, so the
+     stack reads: logo → rule → nav → rule. */
+  justify-self: stretch;
   display: flex;
+  justify-content: center;
   gap: 1.75rem;
   align-items: center;
+  padding: clamp(0.55rem, 1.2vw, 0.95rem) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 .site-header__nav a {
   color: var(--fg);
@@ -204,15 +210,82 @@ body:has(.site-header) {
    class JS still toggles — intentional no-op on desktop so pages that
    depend on the class don't break. */
 
-/* Mobile — same centred-stacked layout as desktop, just scaled down.
-   Brand img shrinks, nav row uses tighter type + gap. Hamburger stays
-   hidden at every breakpoint (nav is always inline below the brand). */
+/* ─── Hamburger button (mobile only) ────────────────────────────────
+   Fixed to the viewport bottom-centre. Three-line icon that morphs to
+   an × on open. Hidden at desktop widths. Injected into <body> by JS. */
+.site-menu-btn { display: none; }
+
 @media (max-width: 640px) {
+  /* Mobile header: logo alone, centred at the top. Nav drops to an
+     overlay opened by the bottom-centre hamburger. */
   .site-header {
+    grid-template-rows: auto;
     padding: clamp(1rem, 4vw, 1.5rem) var(--page-x, 12px);
-    row-gap: clamp(0.5rem, 2vw, 0.9rem);
   }
   .site-header__brand img { height: clamp(1.75rem, 7vw, 2.75rem); }
-  .site-header__nav       { gap: clamp(0.9rem, 3.5vw, 1.4rem); }
-  .site-header__nav a     { font-size: 0.65rem; letter-spacing: 0.14em; }
+  .site-header__nav       { display: none; }   /* collapsed until overlay opens */
+
+  /* Hamburger */
+  .site-menu-btn {
+    display: block;
+    position: fixed;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: var(--cursor-url) 16 16, pointer;
+    outline: none;
+  }
+  .site-menu-btn span {
+    position: absolute;
+    left: 50%;
+    width: 1.1rem;
+    height: 1.5px;
+    background: var(--fg);
+    transform: translateX(-50%);
+    transition:
+      transform var(--dur-medium) var(--ease-out-expo),
+      opacity   var(--dur-medium) var(--ease-out-expo),
+      top       var(--dur-medium) var(--ease-out-expo);
+  }
+  .site-menu-btn span:nth-child(1) { top: 36%; }
+  .site-menu-btn span:nth-child(2) { top: 50%; }
+  .site-menu-btn span:nth-child(3) { top: 64%; }
+  /* Open state — morph to × */
+  body.is-nav-open .site-menu-btn span:nth-child(2) { opacity: 0; }
+  body.is-nav-open .site-menu-btn span:nth-child(1) {
+    top: 50%; transform: translateX(-50%) rotate(45deg);
+  }
+  body.is-nav-open .site-menu-btn span:nth-child(3) {
+    top: 50%; transform: translateX(-50%) rotate(-45deg);
+  }
+
+  /* Nav overlay — full-screen, shown while body has .is-nav-open */
+  body.is-nav-open .site-header__nav {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+    background: var(--bg);
+    border: 0;
+  }
+  body.is-nav-open .site-header__nav a {
+    font-size: clamp(1.75rem, 8vw, 3rem);
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    color: var(--fg);
+  }
+  body.is-nav-open { overflow: hidden; }
 }
