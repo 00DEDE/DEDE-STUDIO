@@ -372,6 +372,12 @@ html { background: var(--bg); }
   .home-quote .word--accent {
     color: var(--accent);
   }
+  /* Brand cyan accent — specific words in each pull quote light up in
+     #43dede regardless of theme. Separate from --word-accent (which
+     tracks theme ink) so this cyan is intentional, never incidental. */
+  .home-quote .word--cyan {
+    color: #43dede;
+  }
 
   /* Post-reveal — once the cascade finishes, .is-settled swaps the
      transition to a hover-friendly one so words can respond to
@@ -502,19 +508,12 @@ html { background: var(--bg); }
     </span>
     </h2>
 
-    <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
+    <!-- 1. UNESCO ─ single cover — links to case-study page.
          The .work__media below is view-transition-named "unesco-hero"
          so the browser morphs it into the destination page's hero. -->
     <a class="work work--unesco" href="/unesco/">
       <div class="work__media">
-        <div class="cover-carousel" aria-hidden="true">
-          <div class="cover-slide is-active" style="background-image:url('/ASSETS/IMAGES/UNESCO/01.jpg')"></div>
-          <div class="cover-slide" style="background-image:url('/ASSETS/IMAGES/UNESCO/02.jpg')"></div>
-          <div class="cover-slide" style="background-image:url('/ASSETS/IMAGES/UNESCO/03.jpg')"></div>
-          <div class="cover-slide" style="background-image:url('/ASSETS/IMAGES/UNESCO/04.jpg')"></div>
-          <div class="cover-slide" style="background-image:url('/ASSETS/IMAGES/UNESCO/05.jpg')"></div>
-          <div class="cover-slide" style="background-image:url('/ASSETS/IMAGES/UNESCO/06.jpg')"></div>
-        </div>
+        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/UNESCO/01.jpg')"></div>
       </div>
       <div class="work__meta">
         <h2 class="work__title">UNESCO</h2>
@@ -542,8 +541,8 @@ html { background: var(--bg); }
       <span class="word" style="--i:1">think,</span>
       <span class="word" style="--i:2">feel,</span>
       <span class="word" style="--i:3">and</span>
-      <span class="word" style="--i:4">tell</span>
-      <span class="word" style="--i:5">stories</span>
+      <span class="word word--cyan" style="--i:4">tell</span>
+      <span class="word word--cyan" style="--i:5">stories</span>
       <span class="word" style="--i:6">through</span>
       <span class="word" style="--i:7">creating</span>
       <span class="word" style="--i:8">work</span>
@@ -570,24 +569,10 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- 4. ECCLESIASTES ─ carousel (image + video + poster). -->
+    <!-- 4. ECCLESIASTES ─ single cover. -->
     <a class="work work--ecclesiastes" href="/ecclesiastes/">
       <div class="work__media">
-        <div class="cover-carousel" aria-hidden="true">
-          <div class="cover-slide is-active"
-               data-duration="4000"
-               style="background-image:url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); background-size:115% auto; background-position:60% 50%"></div>
-          <video class="cover-slide"
-                 data-duration="10000"
-                 style="--cover-y: 100%; --poster: url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg')"
-                 muted playsinline preload="auto"
-                 poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg">
-            <source src="/ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
-          </video>
-          <div class="cover-slide"
-               data-duration="4000"
-               style="background-image:url('/ASSETS/IMAGES/ECCLESIASTES/poster.jpg'); background-position:50% 35%"></div>
-        </div>
+        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); --cover-x: 60%"></div>
       </div>
       <div class="work__meta">
         <h2 class="work__title">Ecclesiastes</h2>
@@ -603,10 +588,10 @@ html { background: var(--bg); }
       <span class="word" style="--i:1">trace</span>
       <span class="word" style="--i:2">connections</span>
       <span class="word" style="--i:3">between</span>
-      <span class="word" style="--i:4">people,</span>
-      <span class="word" style="--i:5">places,</span>
+      <span class="word word--cyan" style="--i:4">people,</span>
+      <span class="word word--cyan" style="--i:5">places,</span>
       <span class="word" style="--i:6">and</span>
-      <span class="word" style="--i:7">ideas</span>
+      <span class="word word--cyan" style="--i:7">ideas</span>
       <span class="word" style="--i:8">the</span>
       <span class="word" style="--i:9">way</span>
       <span class="word" style="--i:10">a</span>
@@ -658,7 +643,7 @@ html { background: var(--bg); }
       <span class="word" style="--i:8">I</span>
       <span class="word word--accent" style="--i:9">create</span><br>
       <span class="word word--accent" style="--i:10">something</span><br>
-      <span class="word word--accent" style="--i:11">meaningful.</span>
+      <span class="word word--cyan" style="--i:11">meaningful.</span>
     </span>
     </h2>
   </main>
@@ -765,58 +750,6 @@ html { background: var(--bg); }
     }
 
     /* Touch: single tap navigates directly (no two-tap preview). */
-
-    /* ─── Auto-advancing carousels ─ desktop only ─────────────────
-       On touch devices the mobile CSS disables the crossfade, so each
-       auto-advance would hard-swap the image (reads as a flicker).
-       Skip the whole setup; first .is-active slide stays shown. */
-    if (isTouch) return;
-    const DEFAULT_MS = 5000;
-    document.querySelectorAll('.cover-carousel').forEach((carousel) => {
-      const slides = Array.from(carousel.querySelectorAll('.cover-slide'));
-      if (slides.length < 2) return;
-      const section = carousel.closest('.work');
-      let timer = null, idx = 0, visible = false;
-
-      function step(i) {
-        idx = i;
-        slides.forEach((s, si) => {
-          const on = si === idx;
-          s.classList.toggle('is-active', on);
-          if (s.tagName === 'VIDEO') {
-            if (on && visible) { s.currentTime = 0; s.play().catch(() => {}); }
-            else               { s.pause(); }
-          }
-        });
-      }
-      function schedule() {
-        clearTimeout(timer);
-        const dur = parseInt(slides[idx].dataset.duration, 10) || DEFAULT_MS;
-        timer = setTimeout(() => { if (visible) step((idx + 1) % slides.length); schedule(); }, dur);
-      }
-
-      if ('IntersectionObserver' in window) {
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            visible = entry.isIntersecting;
-            if (visible) {
-              // Kick the active slide back on if it's a video.
-              const s = slides[idx];
-              if (s.tagName === 'VIDEO') s.play().catch(() => {});
-              schedule();
-            } else {
-              clearTimeout(timer);
-              const s = slides[idx];
-              if (s.tagName === 'VIDEO') s.pause();
-            }
-          });
-        }, { threshold: 0.25 });
-        io.observe(section);
-      } else {
-        visible = true;
-        schedule();
-      }
-    });
   })();
   </script>
 </body>
