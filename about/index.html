@@ -106,12 +106,13 @@
      One typography for all three section heads: bold Oracle 700,
      uppercase, no tracking flourish, full --fg colour. The three
      titles must read as a matched set. */
-  .profile-contact__label {
+  .profile-contact__label,
+  .resume .profile-contact__label {
     margin: 0 0 clamp(1rem, 2vh, 1.5rem);
     font-family: "ABC Oracle",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 700 !important;
-    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem) !important;
     line-height: 1.05;
     letter-spacing: -0.015em;
     text-transform: uppercase;
@@ -185,6 +186,9 @@
     letter-spacing: 0;
     box-sizing: border-box;
     padding: 0;
+    /* Match the headshot's top margin so the "Resume" title aligns
+       with the top edge of the picture in the same row. */
+    margin-top: clamp(2rem, 4vh, 3rem);
   }
   .resume__contact {
     display: grid;
