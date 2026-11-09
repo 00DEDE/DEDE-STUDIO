@@ -71,27 +71,17 @@
     padding: 0 var(--cell-gap);
   }
   @media (max-width: 640px) {
-    /* Mobile matches the home page's cell lineup: one cell per
-       viewport, full-bleed, stacked vertically. Fills the screen the
-       same way the home .work sections do. */
+    /* Mobile: 2-col grid, 3:4 portrait cells (previous layout). */
     .selections-grid {
-      display: block;
-      padding: 0;
-      gap: 0;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: unset;
     }
     .cell {
-      display: block;
-      width: 100%;
-      height: 100vh;
-      height: 100svh;
-      aspect-ratio: auto;
-      margin-bottom: 0;
+      aspect-ratio: 3 / 4;
     }
-    /* Shrink the bottom scrim on a full-screen cell so it doesn't
-       darken half the viewport — matches home's proportions. */
-    .cell::after { height: 28%; }
     /* Drop the 16px reveal blur on mobile — biggest per-frame cost
-       during the transition. */
+       during the transition. Translate + scale + opacity still carry
+       the reveal. */
     .cell.needs-reveal:not(.is-in-view) { filter: none; }
   }
 
@@ -225,23 +215,20 @@
   .cell-tags strong { font-weight: 700; }
   @media (max-width: 640px) {
     .cell-tags {
-      left: clamp(1rem, 4vw, 1.5rem);
-      right: clamp(1rem, 4vw, 1.5rem);
-      bottom: clamp(1.75rem, 5vh, 2.75rem);
-      font-size: 0.85rem;
+      left: 0.6rem;
+      right: 0.6rem;
+      bottom: 0.6rem;
+      font-size: 0.6rem;
       white-space: normal;
       line-height: 1.2;
-      /* Reserve the height of two text lines so every cell's title
-         starts at the same Y (the first line) and the context sits on
-         line two — a steady 2-line slot across every cell. */
+      /* Reserve two lines of height so one-line titles start at the
+         same Y as two-line titles in the neighbouring cell. */
       min-height: 2.6em;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
     }
-    /* Force the project title onto its own line; the context words
-       (what follows the <strong>) drop to line two. Two lines total,
-       always, regardless of title length. */
+    /* Project title (<strong>) on line 1; context words drop to line 2. */
     .cell-tags strong { display: block; }
   }
 
