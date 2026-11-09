@@ -86,12 +86,35 @@
   menuBtn.addEventListener('click', function () {
     setMenu(!document.body.classList.contains('is-nav-open'));
   });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') setMenu(false);
+
+  // ---- Desktop side-drawer hamburger (top-left floating pill) ----------
+  // Injected into <body>. CSS hides it under 641px; the mobile hamburger
+  // handles small viewports. Toggles body.is-sidenav-open, which slides
+  // in the left drawer and pushes header + content right by --sidenav-w.
+  var sideBtn = document.querySelector('.site-sidenav-btn');
+  if (!sideBtn) {
+    sideBtn = document.createElement('button');
+    sideBtn.className = 'site-sidenav-btn';
+    sideBtn.type = 'button';
+    sideBtn.setAttribute('aria-label', 'Menu');
+    sideBtn.setAttribute('aria-expanded', 'false');
+    sideBtn.innerHTML = '<span></span><span></span><span></span>';
+    document.body.appendChild(sideBtn);
+  }
+  function setSideNav(open) {
+    document.body.classList.toggle('is-sidenav-open', open);
+    sideBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  sideBtn.addEventListener('click', function () {
+    setSideNav(!document.body.classList.contains('is-sidenav-open'));
   });
-  // Tapping a nav link closes the overlay before navigating.
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { setMenu(false); setSideNav(false); }
+  });
+  // Tapping a nav link closes whichever variant was open before navigating.
   header.querySelectorAll('.site-header__nav a').forEach(function (a) {
-    a.addEventListener('click', function () { setMenu(false); });
+    a.addEventListener('click', function () { setMenu(false); setSideNav(false); });
   });
 
   // ---- Header-safe-top CSS variable -------------------------------------
