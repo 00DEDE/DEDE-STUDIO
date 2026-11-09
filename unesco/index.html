@@ -74,6 +74,20 @@
     padding: var(--stack-top) var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
+
+  /* Hairline rule separating the UNESCO page's major sections — a
+     single 1px --line across the content, inset by --page-x on both
+     sides so it matches the page's gutter. Added to every section
+     after the intro and to the pager/footer as well, so the whole
+     page reads as discrete chapters. */
+  .unesco__hero,
+  .unesco__atlas,
+  .unesco__grid,
+  .unesco__closing,
+  .pager,
+  body > .site-footer {
+    border-top: 1px solid var(--line);
+  }
   .intro__eyebrow {
     display: block;
     margin: 0 0 clamp(1.25rem, 2.5vh, 2rem);
@@ -726,8 +740,8 @@
     </button>
     <div class="read-more__panel" id="rm-overview">
       <div class="read-more__inner">
-        <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. Behind every site is a story, a people, a piece of our shared humanity that deserves to be carried forward. I wanted this redesign to reflect that responsibility. To create something that could embrace the richness of our world without asking every culture to fit the same mold. An identity that could feel just as alive in a Nairobi campaign as in a Kyoto exhibition, while honoring what makes each place, and the people who call it home, unique.</p>
-        <p>I began with the wordmark as an anchor and built the identity outward. I asked myself, what do we all have in common? What is innately in us? Stories! Our stories are embedded in us, and we embed those same stories into our textiles through weaving and repetition of shapes. When I realized that, the system flourished and continuously expanded. Through the woven identity, I created a modular iconographic system, a color palette shaped by human experience, and interactive components for a digital archive that became part of the larger visual language. Every element works together like a true symphony, not one note is forgotten or left behind. To me, preservation is not only about protecting what we have inherited. It is about making sure the stories, languages, and traditions that shape us have a future, and that generations after us can still discover what makes our world extraordinary.</p>
+        <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. Behind every site is a story, a people, a piece of our shared humanity that deserves to be carried forward. I wanted this redesign to honor that &mdash; an identity that feels as alive in a Nairobi campaign as in a Kyoto exhibition, without asking any culture to fit the same mold.</p>
+        <p>I started with the wordmark and built outward. What do we all have in common? Stories. We weave them into textiles, into shapes repeated across generations. From there the system flourished: a modular icon set, a palette shaped by human experience, and interactive components for a digital archive &mdash; every element part of one symphony.</p>
       </div>
     </div>
 
@@ -755,7 +769,7 @@
     </button>
     <div class="read-more__panel" id="rm-atlas">
       <div class="read-more__inner">
-        <p>To celebrate UNESCO's 80th year anniversary, I proposed the construction of an &ldquo;interactive atlas&rdquo; that would encourage the audience to activate different parts of the world and by doing so, they would witness just how interconnected we all are in the fabric of human experience and how crucial it is to protect what makes us human.</p>
+        <p>To celebrate UNESCO&rsquo;s 80th anniversary, I proposed an interactive atlas &mdash; a piece that invites the audience to activate different parts of the world and witness just how interconnected we are in the fabric of human experience, and how crucial it is to protect what makes us human.</p>
       </div>
     </div>
     <figure class="unesco__atlas-media">
@@ -784,7 +798,7 @@
       </button>
       <div class="read-more__panel" id="rm-foundations">
         <div class="read-more__inner">
-          <p>The rebranded logomark for UNESCO is at its core, 4 interlocking Us coming from all 4 directions of our world. Each U stands for the areas that UNESCO protects: Traditions. Languages. Ecosystems. Monuments. Without these 4 pillars of human history, I argue neither you nor I would have the identity we have today.</p>
+          <p>The rebranded logomark is, at its core, four interlocking U&rsquo;s coming from all four directions of our world. Each U stands for an area UNESCO protects: Traditions. Languages. Ecosystems. Monuments. Without these four pillars of human history, I believe neither you nor I would have the identity we carry today.</p>
         </div>
       </div>
     </div>
@@ -816,7 +830,7 @@
       </button>
       <div class="read-more__panel" id="rm-palette">
         <div class="read-more__inner">
-          <p>6 colors. 2 groups. Blue for knowledge, green for life, and yellow for culture. Then there is ash grey for memory, brown for ancestry and rich dark brown, I called &ldquo;deep earth&rdquo; for heritage. This is human expression (vibrancy of life) and human experience (hues of our Earth) coming together to be the fabric of human existence.</p>
+          <p>Six colors. Two groups. Blue for knowledge, green for life, yellow for culture. Then ash grey for memory, brown for ancestry, and a rich dark brown I call &ldquo;deep earth&rdquo; for heritage. Human expression &mdash; the vibrancy of life &mdash; and human experience &mdash; the hues of our Earth &mdash; coming together to form the fabric of human existence.</p>
         </div>
       </div>
     </div>
@@ -841,8 +855,8 @@
       </button>
       <div class="read-more__panel" id="rm-voice">
         <div class="read-more__inner">
-          <p>The typography is direct and inclusive. This is most evident in the proposed slogan and secondary taglines. &ldquo;The World Needs U&rdquo; is a play of words. Yes it is the first letter of UNESCO, no coincidence there but further than that, this slogan is meant to communicate to the world how much better this life is with you in it.</p>
-          <p>The secondary taglines, &ldquo;Safeguard Humanity's Inheritance&rdquo; and &ldquo;Protect What Makes Us Human&rdquo; are the call-to-actions. It is our turn to do our part in forging the way forward to the future but with our heritage on our backs. A tree's roots must grow deep into the Earth for its branches to reach into the skies.</p>
+          <p>The typography is direct and inclusive, most evident in the slogan and secondary taglines. &ldquo;The World Needs U&rdquo; is a play on words &mdash; yes, it&rsquo;s the first letter of UNESCO, no coincidence there, but more than that, the slogan is meant to tell the world how much better this life is with you in it.</p>
+          <p>The secondary taglines, &ldquo;Safeguard Humanity&rsquo;s Inheritance&rdquo; and &ldquo;Protect What Makes Us Human,&rdquo; are the calls to action. It is our turn to forge the way forward, with our heritage on our backs. A tree&rsquo;s roots must grow deep into the Earth for its branches to reach into the skies.</p>
         </div>
       </div>
     </div>
@@ -883,7 +897,7 @@
       </button>
       <div class="read-more__panel" id="rm-iconography">
         <div class="read-more__inner">
-          <p>Each group: Traditions, languages, ecosystems and monuments have their own respective icons that are meant to both look and feel like the zones they are representing. Then to add even more human interconnection to the rebrand, the logo gave me a couple of &ldquo;friends.&rdquo;</p>
+          <p>Each group &mdash; Traditions, Languages, Ecosystems, Monuments &mdash; has its own set of icons, each one meant to look and feel like the zone it represents. Then, to add even more human interconnection to the rebrand, the logo gave me a couple of &ldquo;friends.&rdquo;</p>
         </div>
       </div>
     </div>
@@ -907,7 +921,7 @@
       </button>
       <div class="read-more__panel" id="rm-celebration">
         <div class="read-more__inner">
-          <p>I commissioned a woven blanket to be made, and to get in on the fun I made a hand sewn vegetable tanned leather bag that had all the icons form an image of our world. This same image appears on the printed atlas book. This was the predecessor to the interactive atlas. You never know where one small idea might take you.</p>
+          <p>I commissioned a woven blanket, and to get in on the fun I made a hand-sewn, vegetable-tanned leather bag with all the icons forming an image of our world. The same image appears on the printed atlas book &mdash; the predecessor to the interactive atlas. You never know where one small idea might take you.</p>
         </div>
       </div>
     </div>
