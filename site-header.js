@@ -250,9 +250,11 @@
   // scroll frame instead of only on the flip.
   var THRESHOLD    = 20;
   var TOP_VISIBLE  = 400;
+  var CUE_HIDE_AT  = 60;        // px of scroll before the "Scroll" cue fades
   var isScrolled   = false;
   var ticking      = false;
   var scrollTop    = document.querySelector('.scroll-top');
+  var scrollCue    = document.querySelector('.home-scroll-cue');
 
   function update() {
     var y = window.scrollY;
@@ -269,11 +271,13 @@
     }
 
     if (scrollTop) {
-      // Only reveal the "Scroll up" pill when the user is near the
-      // bottom of the page — the invitation makes sense there, not
-      // after a single viewport of scroll.
       var nearBottom = (max > 0) && (max - y) < window.innerHeight * 0.75;
       scrollTop.classList.toggle('is-visible', nearBottom);
+    }
+    if (scrollCue) {
+      // Hero "Scroll" cue retreats once the user has moved past the
+      // top of the page — its job was to invite the first scroll.
+      scrollCue.classList.toggle('is-hidden', y > CUE_HIDE_AT);
     }
 
     // Publish 0–1 scroll progress on the root as --scroll-progress.
