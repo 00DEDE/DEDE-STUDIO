@@ -49,7 +49,11 @@ body:has(.site-header) {
     background var(--dur-medium) var(--ease-standard);
 }
 .site-header.is-scrolled {
-  padding: 0.6rem 0;
+  /* Compact mode: top padding deliberately larger than bottom so the
+     logo sits visually centred against the extra space created by the
+     pill (which hangs half below the header's bottom edge on desktop)
+     and the bottom hairline. */
+  padding: 1.15rem 0 0.65rem;
 }
 .site-header > * { pointer-events: auto; }
 
@@ -440,22 +444,21 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
 
   /* Desktop pill: sticky to the HEADER'S BOTTOM EDGE — the pill is
      centred vertically on the header's bottom border (half overlapping
-     into the content). Horizontally the user can drag it anywhere
-     between the viewport's left and right edges, but Y is locked here.
-     A slow breathing shadow invites interaction. */
+     into the content). Default X is the LEFT of the viewport; the user
+     can drag it anywhere along the header's bottom line. A slow
+     breathing shadow invites interaction. */
   .site-menu-btn {
     top: calc(var(--header-safe-top, 7rem) - 1.25rem);
-    left: 50%;
-    transform: translateX(-50%);
+    left: clamp(1rem, 2vw, 1.75rem);
+    transform: none;
     animation: pill-breathe 4.2s ease-in-out infinite;
     cursor: grab;
     transition: box-shadow var(--dur-medium) var(--ease-standard),
                 top        var(--dur-medium) var(--ease-out-expo);
   }
   .site-menu-btn.is-placed {
-    /* JS has set an inline `left:` from storage or drag; clear the
-       centering transform so the pill lives exactly where it was placed.
-       Keep the `top` from the CSS calc above (Y is locked). */
+    /* JS has set an inline `left:` from storage or drag; the inline
+       value wins over the CSS default. Y is already locked above. */
     transform: none;
   }
   .site-menu-btn.is-dragging {
@@ -481,15 +484,16 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
   }
 
   /* Dropdown rectangle — appears when the pill is active. Semi-
-     transparent like the mobile overlay, backdrop-blurred, rounded,
-     centered horizontally just below the header. Nav items keep the
-     same type size the mobile overlay uses, stacked vertically. */
+     transparent, backdrop-blurred, rounded. Positioned by JS on open:
+     it anchors to the pill's current viewport rect so the rectangle
+     tracks wherever the pill is dragged. Defaults here are a safe
+     fallback if JS hasn't run yet. */
   body.is-nav-open .site-header__nav {
     display: flex;
     position: fixed;
     top: calc(var(--header-safe-top, 10rem) + 0.75rem);
-    left: 50%;
-    transform: translateX(-50%);
+    left: clamp(1rem, 2vw, 1.75rem);
+    transform: none;
     z-index: 190;
     flex-direction: column;
     align-items: center;

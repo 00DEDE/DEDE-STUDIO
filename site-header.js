@@ -83,6 +83,37 @@
   function setMenu(open) {
     document.body.classList.toggle('is-nav-open', open);
     menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) {
+      positionDropdown();
+    } else {
+      // Clear the inline positioning so the next open starts fresh.
+      var nav = document.querySelector('.site-header__nav');
+      if (nav) { nav.style.left = ''; nav.style.top = ''; nav.style.transform = ''; nav.style.visibility = ''; }
+    }
+  }
+
+  // Anchor the dropdown rectangle under the pill (desktop only). Called
+  // when the menu opens and on resize while open, so the rectangle
+  // tracks whatever position the pill was dragged to.
+  function positionDropdown() {
+    if (!window.matchMedia('(min-width: 641px)').matches) return;
+    var nav = document.querySelector('.site-header__nav');
+    if (!nav) return;
+    var pillRect = menuBtn.getBoundingClientRect();
+    // Measure the dropdown offscreen so we can clamp its left edge
+    // into the viewport before showing it in place.
+    nav.style.visibility = 'hidden';
+    nav.style.left = '0px';
+    nav.style.top  = '0px';
+    nav.style.transform = 'none';
+    var navW = nav.offsetWidth || 240;
+    var x = pillRect.left;
+    var margin = 8;
+    if (x + navW > window.innerWidth - margin) x = window.innerWidth - navW - margin;
+    if (x < margin) x = margin;
+    nav.style.left = x + 'px';
+    nav.style.top  = (pillRect.bottom + 8) + 'px';
+    nav.style.visibility = '';
   }
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') setMenu(false);
@@ -177,7 +208,10 @@
     applyX(x);
     saveX(x);
   }
-  window.addEventListener('resize', reclamp, { passive: true });
+  window.addEventListener('resize', function () {
+    reclamp();
+    if (document.body.classList.contains('is-nav-open')) positionDropdown();
+  }, { passive: true });
 
   // When the viewport crosses the mobile/desktop breakpoint, reset the
   // mobile placement so the CSS !important rules take hold cleanly.
