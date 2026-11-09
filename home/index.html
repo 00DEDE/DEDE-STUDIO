@@ -492,12 +492,41 @@ html { background: var(--bg); }
     .home-quote .brk-mob  { display: inline; }
   }
 
-  /* ─── Mobile ─ perf-tuned ────────────────────────────────────── */
+  /* ─── Mobile ─ perf-tuned ──────────────────────────────────────
+     Mobile Safari was discarding the .work__cover background-image
+     layer during fast scroll, leaving cells momentarily empty with
+     just the title visible. Flatten the stacking context so the
+     compositor doesn't have to juggle sticky quotes + z-indexed
+     cells + their own backgrounds on top of each other. */
   @media (max-width: 640px) {
-    /* Shorter cells so the viewport churns less per scroll tick. */
-    .work          { height: 70vh; height: 70svh; }
+    .work          { height: 70vh; height: 70svh; z-index: auto; isolation: auto; }
     .work__title   { font-size: clamp(1.1rem, 4vw, 1.75rem); }
     .work__desc    { font-size: 0.6rem; letter-spacing: 0.18em; }
+
+    /* Quotes no longer stick / layer under the cells on mobile — they
+       scroll by in normal flow like any other block. Kills the whole
+       parallax paint-boundary problem that was dropping covers. */
+    .home-work > .home-quote {
+      position: static;
+      min-height: auto;
+      padding: clamp(5rem, 15vh, 10rem) var(--cell-gap);
+      z-index: auto;
+    }
+    /* Home page's fixed-footer parallax is a desktop luxury — on
+       mobile let the footer sit in normal flow at the bottom, so cells
+       aren't fighting a fixed element for paint space. */
+    body.home .site-footer { position: static; }
+    .home-work { margin-bottom: 0; }
+
+    /* Keep the cover layer alive: give the browser a persistent hint
+       that this element composits so the texture isn't thrown away. */
+    .work__cover {
+      will-change: transform;
+      transform: translateZ(0);
+    }
+    /* Also pin the media container so the cover has a stable paint
+       boundary of its own (prevents the layer discard). */
+    .work__media { contain: layout paint; }
 
     /* Kill the reveal animation: cells + meta render visible from
        the start. This removes the mobile flicker — no fade-in paint
