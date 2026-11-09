@@ -51,10 +51,10 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--stack-y) calc(var(--page-x) * 2);
-    /* Top padding zeroed so the intro paragraph hugs the header's
-       bottom rule — no breathing gap between the two. Side + bottom
-       padding preserved. */
-    padding: 0 var(--page-x) var(--stack-y);
+    /* Comfortable editorial breathing room above the intro paragraph,
+       scaling with viewport height. Tighter than the old --stack-top
+       (which felt cavernous) but no longer flush to the header rule. */
+    padding: clamp(2.5rem, 5vh, 4rem) var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
   /* Flatten the two column containers so their children render as
@@ -273,10 +273,10 @@
     </a>
     <div class="site-header__end">
       <nav class="site-header__nav" aria-label="Primary">
-        <a href="/home/">HOME</a>
-        <a href="/work/">WORK</a>
-        <a href="/play/">PLAY</a>
-        <a href="/about/">ABOUT</a>
+        <a href="/home/">Home</a>
+        <a href="/work/">Work</a>
+        <a href="/play/">Play</a>
+        <a href="/about/">About</a>
       </nav>
       <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
         <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>

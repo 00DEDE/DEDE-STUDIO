@@ -112,27 +112,15 @@ body:has(.site-header) {
   counter-reset: nav;
 }
 
-/* Soft blur strip directly below the header. Content that scrolls up
-   to the header's lower edge is visually softened through this band —
-   a frosted-glass transition between header and body. */
-.site-header::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  height: clamp(2.5rem, 4.4vw, 3.75rem);
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
-          mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
-}
-/* Mirror strip pinned to the viewport bottom — same height, same blur,
-   mask flipped so the opaque edge hugs the bottom and feathers upward.
-   Injected into body by site-header.js so every page gets it, desktop
-   + mobile. Sits above content (z 170) but below the floating menu
-   button (z 200) and the header pill (z 180). */
+/* Header blur strip retired — the frosted band under the header was
+   competing with the crisp hairline rules; the header now reads as a
+   clean edge. The bottom-of-viewport blur is kept; see below. */
+
+/* Bottom strip pinned to the viewport bottom — frosted feather so the
+   last line of any page softens into the viewport edge. Injected into
+   body by site-header.js so every page gets it, desktop + mobile.
+   Sits above content (z 170) but below the floating menu button
+   (z 200) and the header pill (z 180). */
 .site-fade-bottom {
   position: fixed;
   bottom: 0;
@@ -146,61 +134,71 @@ body:has(.site-header) {
   -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
           mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
 }
-/* ─── Desktop nav — editorial index pattern ──────────────────────────
-   Each link reads as a numbered entry (01 Home, 02 Work …) in the
-   brand cyan, with a hairline underline that draws in from the left
-   on hover and settles under the current page. Smaller, wider type
-   than a template nav; the numeral is the quiet detail that signals
-   intent. */
+/* ─── Desktop nav — editorial index, high-fashion restraint ─────────
+   Each link reads as a catalog entry: a tiny raised cyan numeral
+   (01, 02, 03, 04) sits as a superscript above a title-case label
+   set in Oracle at a confident reading size with tight, considered
+   tracking. A hairline underline draws in from the centre on hover
+   and rests under the current page; the current label itself sits
+   in brand cyan. Markup stays `<a>Home</a>` etc. — uppercase is not
+   forced, so the HTML labels (Home/Work/Play/About) render as-cast. */
 .site-header__nav a {
   counter-increment: nav;
   position: relative;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.55em;
-  padding: 0.25rem 0;
+  display: inline-block;
+  padding: 0.35rem 0 0.4rem;
   font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   color: var(--fg);
   text-decoration: none;
   font-weight: 400;
-  font-size: 0.66rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  opacity: 0.72;
+  font-size: 0.92rem;
+  letter-spacing: 0.015em;
+  text-transform: none;
+  opacity: 0.78;
   transition: opacity var(--dur-quick)  var(--ease-standard),
               color   var(--dur-medium) var(--ease-standard);
   outline: none;
 }
+/* Numeral sits ABOVE the label, slightly off to the left — reads as
+   a magazine item number, not an inline prefix. */
 .site-header__nav a::before {
   content: counter(nav, decimal-leading-zero);
-  font-size: 0.52rem;
-  letter-spacing: 0.14em;
+  position: absolute;
+  top: -0.65rem;
+  left: -0.05em;
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
   color: #43dede;
   opacity: 0.85;
-  transform: translateY(-0.1em);
   transition: opacity var(--dur-medium) var(--ease-standard);
 }
+/* Hairline underline — expands from the centre of the label outward. */
 .site-header__nav a::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 100%;
-  bottom: -0.15rem;
+  left: 50%;
+  bottom: 0.05rem;
+  width: 0;
   height: 1px;
   background: currentColor;
-  transition: right var(--dur-medium) var(--ease-out-expo);
+  transition: width var(--dur-medium) var(--ease-out-expo),
+              left  var(--dur-medium) var(--ease-out-expo);
 }
 .site-header__nav a.is-current {
   opacity: 1;
   color: #43dede;
 }
 .site-header__nav a.is-current::before { opacity: 1; }
-.site-header__nav a.is-current::after  { right: 0; }
+.site-header__nav a.is-current::after,
+.site-header__nav a:focus-visible::after {
+  left: 0;
+  width: 100%;
+}
 .site-header__nav a:focus-visible { opacity: 1; }
-.site-header__nav a:focus-visible::after { right: 0; }
 @media (hover: hover) {
   .site-header__nav a:hover { opacity: 1; }
-  .site-header__nav a:hover::after { right: 0; }
+  .site-header__nav a:hover::after { left: 0; width: 100%; }
 }
 
 /* Theme toggle — refined pill. Softer proportions (48×26 with a
@@ -392,8 +390,13 @@ body:has(.site-header) {
     text-transform: none;
     color: var(--fg);
     opacity: 0.4;
+    padding: 0;
     transition: opacity var(--dur-quick) var(--ease-standard);
   }
+  /* Desktop nav's catalogue numeral + underline don't belong on the
+     oversized mobile overlay — suppress them here. */
+  body.is-nav-open .site-header__nav a::before,
+  body.is-nav-open .site-header__nav a::after { display: none; }
   body.is-nav-open .site-header__nav a.is-current,
   body.is-nav-open .site-header__nav a:active {
     opacity: 1;
