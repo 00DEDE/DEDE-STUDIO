@@ -65,10 +65,11 @@
   var header = document.querySelector('.site-header');
   if (!header) return;
 
-  // ---- Mobile hamburger (bottom-centre floating button) ----------------
-  // Injected into <body> so it floats at the viewport bottom, independent
-  // of header geometry. 3-line icon; morphs to × on open. Toggles the
-  // body class .is-nav-open which shows the nav as a full-screen overlay.
+  // ---- Hamburger pill (draggable, position persisted) ------------------
+  // Injected into <body>. Default spot: below the header brand mark
+  // (CSS). The user can drag it anywhere in the band BELOW the header
+  // and ABOVE the footer; the position is saved to localStorage and
+  // restored on every page / reload. Click (no drag) toggles the nav.
   var menuBtn = document.querySelector('.site-menu-btn');
   if (!menuBtn) {
     menuBtn = document.createElement('button');
@@ -83,9 +84,6 @@
     document.body.classList.toggle('is-nav-open', open);
     menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
-  menuBtn.addEventListener('click', function () {
-    setMenu(!document.body.classList.contains('is-nav-open'));
-  });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') setMenu(false);
   });
@@ -93,6 +91,128 @@
   header.querySelectorAll('.site-header__nav a').forEach(function (a) {
     a.addEventListener('click', function () { setMenu(false); });
   });
+  // Click anywhere outside the pill + dropdown closes the menu.
+  document.addEventListener('pointerdown', function (e) {
+    if (!document.body.classList.contains('is-nav-open')) return;
+    if (menuBtn.contains(e.target)) return;
+    var nav = document.querySelector('.site-header__nav');
+    if (nav && nav.contains(e.target)) return;
+    setMenu(false);
+  });
+
+  // --- Drag + persistence ---------------------------------------------
+  var PILL_KEY    = 'dedeMenuBtnPos';
+  var PILL_MARGIN = 8;
+  var DRAG_THRESHOLD = 4;  // px before pointermove counts as a drag
+
+  function footerEl() { return document.querySelector('.site-footer'); }
+
+  // Allowed drop zone: strictly BELOW the header and ABOVE the footer.
+  // When the footer is scrolled off below the viewport, the viewport
+  // bottom acts as the lower bound instead.
+  function dropBounds() {
+    var hb = header.getBoundingClientRect().bottom + PILL_MARGIN;
+    var f  = footerEl();
+    var fTop = f ? f.getBoundingClientRect().top : window.innerHeight;
+    var yMax = Math.min(window.innerHeight, fTop) - PILL_MARGIN;
+    var w = menuBtn.offsetWidth  || 76;
+    var h = menuBtn.offsetHeight || 40;
+    return {
+      minX: PILL_MARGIN,
+      maxX: window.innerWidth - w - PILL_MARGIN,
+      minY: hb,
+      maxY: yMax - h
+    };
+  }
+  function clampTo(bounds, pt) {
+    return {
+      x: Math.max(bounds.minX, Math.min(bounds.maxX, pt.x)),
+      y: Math.max(bounds.minY, Math.min(bounds.maxY, pt.y))
+    };
+  }
+  function applyPos(x, y) {
+    menuBtn.style.left = x + 'px';
+    menuBtn.style.top  = y + 'px';
+    menuBtn.classList.add('is-placed');
+  }
+  function savePos(x, y) {
+    try { localStorage.setItem(PILL_KEY, JSON.stringify({ x: x, y: y })); } catch (_) {}
+  }
+  function loadPos() {
+    try {
+      var raw = localStorage.getItem(PILL_KEY);
+      var o = raw ? JSON.parse(raw) : null;
+      if (o && typeof o.x === 'number' && typeof o.y === 'number') return o;
+    } catch (_) {}
+    return null;
+  }
+
+  // Restore saved position after layout settles (so header/footer rects
+  // are accurate when we clamp).
+  requestAnimationFrame(function () {
+    var saved = loadPos();
+    if (!saved) return;
+    var p = clampTo(dropBounds(), saved);
+    applyPos(p.x, p.y);
+  });
+
+  var dragging = false, moved = false;
+  var startCX, startCY, startX, startY;
+
+  menuBtn.addEventListener('pointerdown', function (e) {
+    // Don't drag while the menu is open — the open pill is a close-button.
+    if (document.body.classList.contains('is-nav-open')) return;
+    dragging = true; moved = false;
+    startCX = e.clientX; startCY = e.clientY;
+    var r = menuBtn.getBoundingClientRect();
+    startX = r.left; startY = r.top;
+    try { menuBtn.setPointerCapture(e.pointerId); } catch (_) {}
+    menuBtn.classList.add('is-dragging');
+  });
+  menuBtn.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - startCX;
+    var dy = e.clientY - startCY;
+    if (!moved && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) moved = true;
+    if (!moved) return;
+    var p = clampTo(dropBounds(), { x: startX + dx, y: startY + dy });
+    applyPos(p.x, p.y);
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    try { menuBtn.releasePointerCapture(e.pointerId); } catch (_) {}
+    menuBtn.classList.remove('is-dragging');
+    if (moved) {
+      var r = menuBtn.getBoundingClientRect();
+      savePos(r.left, r.top);
+    }
+  }
+  menuBtn.addEventListener('pointerup', endDrag);
+  menuBtn.addEventListener('pointercancel', endDrag);
+
+  // Click → toggle menu, but only when the pointer didn't travel enough
+  // to count as a drag. Clear the moved flag after swallowing the click.
+  menuBtn.addEventListener('click', function (e) {
+    if (moved) { e.preventDefault(); e.stopImmediatePropagation(); moved = false; return; }
+    setMenu(!document.body.classList.contains('is-nav-open'));
+  });
+
+  // Keep the pill in bounds when the viewport or header/footer sizes change.
+  function reclamp() {
+    if (!menuBtn.classList.contains('is-placed')) return;
+    var r = menuBtn.getBoundingClientRect();
+    var p = clampTo(dropBounds(), { x: r.left, y: r.top });
+    applyPos(p.x, p.y);
+    savePos(p.x, p.y);
+  }
+  window.addEventListener('resize', reclamp, { passive: true });
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(reclamp);
+    ro.observe(header);
+    var f = footerEl();
+    if (f) ro.observe(f);
+  }
 
   // ---- Header-safe-top CSS variable -------------------------------------
   // Publish the header's bottom-edge Y (px, viewport-relative) as
