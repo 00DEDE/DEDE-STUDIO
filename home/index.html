@@ -333,10 +333,18 @@ html { background: var(--bg); }
     padding: 0 var(--cell-gap);
     min-height: 100vh;
     box-sizing: border-box;
+    /* Flex centres the inner wrapper; the inner wrapper owns the
+       actual text layout so inter-word whitespace isn't collapsed
+       by the parent's flex context. */
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg);
+    color: var(--fg);
+  }
+  .home-quote__inner {
+    display: block;
+    max-width: 100%;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(3.15rem, 8.1vw, 8.45rem);
@@ -345,7 +353,6 @@ html { background: var(--bg); }
     white-space: normal;
     text-wrap: wrap;
     text-align: center;
-    color: var(--fg);
   }
   .home-quote em {
     color: var(--accent);
@@ -482,6 +489,7 @@ html { background: var(--bg); }
            feel, and tell stories through creating work that exists
            between both the digital and the analog. -->
     <h2 class="home-quote">
+      <span class="home-quote__inner">
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">am</span>
       <span class="word" style="--i:2">David</span>
@@ -492,6 +500,7 @@ html { background: var(--bg); }
       <span class="word" style="--i:7">I</span>
       <span class="word" style="--i:8">am</span>
       <span class="word word--accent" style="--i:9">Dede.</span>
+    </span>
     </h2>
 
     <!-- 1. UNESCO ─ carousel (6 stills) — links to case-study page.
@@ -529,6 +538,7 @@ html { background: var(--bg); }
 
     <!-- Pull-statement #2 — between Café Bustelo and San Diego FC. -->
     <h2 class="home-quote home-quote--wrap">
+      <span class="home-quote__inner">
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">think,</span>
       <span class="word" style="--i:2">feel,</span>
@@ -547,6 +557,7 @@ html { background: var(--bg); }
       <span class="word" style="--i:15">and</span>
       <span class="word" style="--i:16">the</span>
       <span class="word word--accent" style="--i:17">analog.</span>
+    </span>
     </h2>
 
     <!-- 3. SAN DIEGO FOOTBALL CLUB ─ single cover -->
@@ -589,6 +600,7 @@ html { background: var(--bg); }
 
     <!-- Pull-statement #3 — between Ecclesiastes and Trader Joe's. -->
     <h2 class="home-quote home-quote--wrap">
+      <span class="home-quote__inner">
       <span class="word" style="--i:0">I</span>
       <span class="word" style="--i:1">trace</span>
       <span class="word" style="--i:2">connections</span>
@@ -607,6 +619,7 @@ html { background: var(--bg); }
       <span class="word" style="--i:15">in</span>
       <span class="word" style="--i:16">the</span>
       <span class="word word--accent" style="--i:17">sand.</span>
+    </span>
     </h2>
 
     <!-- 4. TRADER JOE'S ─ single cover -->
@@ -635,6 +648,7 @@ html { background: var(--bg); }
 
     <!-- Pull-statement #4 — closing credo directly before the footer. -->
     <h2 class="home-quote home-quote--wrap">
+      <span class="home-quote__inner">
       <span class="word" style="--i:0">Let&rsquo;s</span>
       <span class="word" style="--i:1">make</span>
       <span class="word" style="--i:2">today</span>
@@ -647,6 +661,7 @@ html { background: var(--bg); }
       <span class="word word--accent" style="--i:9">create</span>
       <span class="word word--accent" style="--i:10">something</span>
       <span class="word word--accent" style="--i:11">meaningful.</span>
+    </span>
     </h2>
   </main>
 

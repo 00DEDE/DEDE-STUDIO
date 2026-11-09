@@ -65,23 +65,19 @@
   .profile-contact__headshot   { grid-column: 1;      grid-row: 2; }
   .resume                      { grid-column: 2 / -1; grid-row: 2; align-self: start; }
 
-  /* Headshot — sits below the About Me copy, grows to fill the
-     remaining column height so its bottom edge lands flush with
-     the resume's bottom hairline across the row. object-fit: cover
-     keeps the portrait composition framed as the container stretches. */
+  /* Headshot — full image visible (not cropped). Container sizes to
+     the image's natural aspect; img fills the column width. */
   .profile-contact__headshot {
     margin: clamp(2rem, 4vh, 3rem) 0 0;
-    flex: 1 1 auto;
-    min-height: clamp(16rem, 40vh, 32rem);
     overflow: hidden;
     border-radius: 0;
     background: #000;
   }
   .profile-contact__headshot img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     display: block;
+    object-fit: contain;
   }
 
   @media (max-width: 900px) {
@@ -324,7 +320,7 @@
           </div>
           <div>
             <a class="resume__download"
-               href="/ASSETS/IMAGES/DAVID%20GOMEZ_WEEK%2009_FOR%20ID%20PDF.pdf"
+               href="/ASSETS/IMAGES/DAVID%20GOMEZ_WEEK%2009_RESUME.pdf"
                download="David-Gomez_Resume.pdf">Download PDF</a>
           </div>
         </div>
