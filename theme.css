@@ -1,13 +1,19 @@
 /* ─── Site font ───────────────────────────────────────────────────────
-   ABC Oracle — single variable TTF with the full weight axis (100–950).
-   Italics ride the regular axis via italic static fallbacks below so
-   emphasis still slants without pulling another file in. Registered
-   once here so every page picks up the complete range. */
+   ABC Oracle — only TWO weights used sitewide: Book (400) and Bold
+   (700). Everything else maps onto one of these. Two static OTFs
+   are smaller than the variable TTF when only two instances are
+   needed. */
 @font-face {
   font-family: "ABC Oracle";
-  src: url("ASSETS/FONTS/ABC%20ORACLE/ABCOracleVariable-Trial.ttf") format("truetype-variations"),
-       url("ASSETS/FONTS/ABC%20ORACLE/ABCOracleVariable-Trial.ttf") format("truetype");
-  font-weight: 100 950;
+  src: url("ASSETS/FONTS/ABC%20ORACLE/ABCOracle-Book-Trial.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ABC Oracle";
+  src: url("ASSETS/FONTS/ABC%20ORACLE/ABCOracle-Bold-Trial.otf") format("opentype");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
