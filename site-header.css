@@ -289,23 +289,22 @@ body:has(.site-header) {
   }
 
   /* Nav overlay — full-viewport panel with a semi-transparent scrim
-     + light backdrop blur (perf-conscious 8px). Nav items stack in
-     the bottom-LEFT corner, mixed-case display type. Hamburger stays
-     clickable above the overlay via its higher z-index (200 vs 150). */
+     + light backdrop blur. Nav items centered on the screen. */
   body.is-nav-open .site-header__nav {
     display: flex;
     position: fixed;
     inset: 0;
     z-index: 150;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    gap: 0.35rem;
-    padding: 1.5rem 1.5rem calc(2.75rem + 2.5rem);   /* bottom clears hamburger */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 4rem 1.5rem calc(2.75rem + 2.5rem);   /* top clears header, bottom clears hamburger */
     background: color-mix(in srgb, var(--bg) 82%, transparent);
     -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
     border: 0;
+    text-align: center;
   }
   body.is-nav-open .site-header__nav a {
     font-size: clamp(2.5rem, 12vw, 5rem);
@@ -319,6 +318,13 @@ body:has(.site-header) {
   body.is-nav-open .site-header__nav a.is-current,
   body.is-nav-open .site-header__nav a:active {
     opacity: 1;
+  }
+  /* Brand stays visible at the top of the screen when the menu
+     opens — raise its z-index inside the header stacking context
+     above the overlay (150). */
+  body.is-nav-open .site-header__brand {
+    position: relative;
+    z-index: 200;
   }
   body.is-nav-open { overflow: hidden; }
 }

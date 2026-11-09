@@ -91,6 +91,11 @@ html { background: var(--bg); }
   }
   .work {
     position: relative;
+    /* Parallax: cells sit above the sticky pull-quotes with their own
+       opaque background, so they visibly cover the quote as they
+       scroll up into view. */
+    z-index: 1;
+    background: var(--bg);
     display: block;
     height: 100vh;
     height: 100svh;                              /* modern viewport unit */
@@ -317,19 +322,22 @@ html { background: var(--bg); }
      accent on the emphasis phrases. Manual line-break controls sit
      under this rule. */
   .home-work > .home-quote {
-    margin: 0 calc(-1 * var(--cell-gap)) var(--cell-gap);
-    /* Minimal horizontal padding = --cell-gap on each side; matches
-       the rest of the home grid's gutter so the type fills the screen
-       edge-to-edge on desktop while still leaving a hair of breathing
-       room at the viewport edges. Top padding doubled (was 3-6vh-5rem
-       → 6-12vh-10rem) so the quote sits noticeably below the header
-       pill instead of tucking up under it. */
-    padding: clamp(4.5rem, 9vh, 7.5rem) var(--cell-gap) clamp(3rem, 6vh, 5rem);
+    /* Parallax layer: each quote sits sticky at the top of the
+       viewport inside .home-work. The cells before it scroll up
+       to uncover it; the next cell (z-index 1, opaque) scrolls up
+       OVER it — the same parallax-reveal mechanic the footer uses. */
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    margin: 0;
+    padding: 0 var(--cell-gap);
+    min-height: 100vh;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    /* Regular weight, sized ~3.75× the atkins-pass scale. Lines fill
-       greedily (default wrap, not balanced) so each line uses the
-       full width of the viewport before breaking; centre-aligned. */
     font-weight: 400;
     font-size: clamp(3.15rem, 8.1vw, 8.45rem);
     line-height: 1.02;
@@ -338,22 +346,12 @@ html { background: var(--bg); }
     text-wrap: wrap;
     text-align: center;
     color: var(--fg);
-    /* Architectural rules bracket the quote. */
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
   }
   .home-quote em {
     color: var(--accent);
   }
-  /* Second (mid-page) quote — the base rule's top padding is
-     doubled specifically to clear the header for the FIRST quote.
-     The mid-page one has projects above it, so its top padding
-     drops to match its bottom padding for symmetric breathing. */
-  .home-work > .home-quote ~ .home-quote {
-    padding-top: clamp(3rem, 6vh, 5rem);
-  }
-  /* .home-quote--wrap kept for marker parity; base rule now already
-     handles greedy wrapping + centre alignment, so nothing extra. */
+  /* .home-quote--wrap kept for marker parity; sticky parallax now
+     applies uniformly to every quote via the base rule. */
 
   /* Per-word cascade — Swiss-flat: opacity only, no translate or
      blur. Stagger kept so the eye still tracks left→right. */
@@ -529,26 +527,26 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- Pull-statement A — sits between Café Bustelo and San Diego FC. -->
+    <!-- Pull-statement #2 — between Café Bustelo and San Diego FC. -->
     <h2 class="home-quote home-quote--wrap">
       <span class="word" style="--i:0">I</span>
-      <span class="word" style="--i:1">trace</span>
-      <span class="word" style="--i:2">connections</span>
-      <span class="word" style="--i:3">between</span>
-      <span class="word" style="--i:4">people,</span>
-      <span class="word" style="--i:5">places,</span>
-      <span class="word" style="--i:6">and</span>
-      <span class="word" style="--i:7">ideas</span>
-      <span class="word" style="--i:8">the</span>
-      <span class="word" style="--i:9">way</span>
-      <span class="word" style="--i:10">a</span>
-      <span class="word" style="--i:11">child</span>
-      <span class="word" style="--i:12">might</span>
-      <span class="word" style="--i:13">trace</span>
-      <span class="word word--accent" style="--i:14">lines</span>
-      <span class="word" style="--i:15">in</span>
+      <span class="word" style="--i:1">think,</span>
+      <span class="word" style="--i:2">feel,</span>
+      <span class="word" style="--i:3">and</span>
+      <span class="word" style="--i:4">tell</span>
+      <span class="word" style="--i:5">stories</span>
+      <span class="word" style="--i:6">through</span>
+      <span class="word" style="--i:7">creating</span>
+      <span class="word" style="--i:8">work</span>
+      <span class="word" style="--i:9">that</span>
+      <span class="word" style="--i:10">exists</span>
+      <span class="word" style="--i:11">between</span>
+      <span class="word" style="--i:12">both</span>
+      <span class="word" style="--i:13">the</span>
+      <span class="word word--accent" style="--i:14">digital</span>
+      <span class="word" style="--i:15">and</span>
       <span class="word" style="--i:16">the</span>
-      <span class="word word--accent" style="--i:17">sand.</span>
+      <span class="word word--accent" style="--i:17">analog.</span>
     </h2>
 
     <!-- 3. SAN DIEGO FOOTBALL CLUB ─ single cover -->
@@ -589,24 +587,26 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- Pull-statement B — sits between Ecclesiastes and Trader Joe's.
-         Line break forced after "belief:" so "what we choose..." drops
-         to the next line. -->
+    <!-- Pull-statement #3 — between Ecclesiastes and Trader Joe's. -->
     <h2 class="home-quote home-quote--wrap">
-      <span class="word" style="--i:0">core</span>
-      <span class="word" style="--i:1">belief:</span><br>
-      <span class="word" style="--i:2">what</span>
-      <span class="word" style="--i:3">we</span>
-      <span class="word" style="--i:4">choose</span>
-      <span class="word" style="--i:5">to</span>
-      <span class="word" style="--i:6">design,</span>
-      <span class="word" style="--i:7">undoubtedly</span>
-      <span class="word" style="--i:8">always</span>
-      <span class="word" style="--i:9">will</span>
-      <span class="word" style="--i:10">in</span>
-      <span class="word" style="--i:11">return</span>
-      <span class="word word--accent" style="--i:12">design</span>
-      <span class="word word--accent" style="--i:13">us.</span>
+      <span class="word" style="--i:0">I</span>
+      <span class="word" style="--i:1">trace</span>
+      <span class="word" style="--i:2">connections</span>
+      <span class="word" style="--i:3">between</span>
+      <span class="word" style="--i:4">people,</span>
+      <span class="word" style="--i:5">places,</span>
+      <span class="word" style="--i:6">and</span>
+      <span class="word" style="--i:7">ideas</span>
+      <span class="word" style="--i:8">the</span>
+      <span class="word" style="--i:9">way</span>
+      <span class="word" style="--i:10">a</span>
+      <span class="word" style="--i:11">child</span>
+      <span class="word" style="--i:12">might</span>
+      <span class="word" style="--i:13">trace</span>
+      <span class="word word--accent" style="--i:14">lines</span>
+      <span class="word" style="--i:15">in</span>
+      <span class="word" style="--i:16">the</span>
+      <span class="word word--accent" style="--i:17">sand.</span>
     </h2>
 
     <!-- 4. TRADER JOE'S ─ single cover -->
@@ -633,11 +633,11 @@ html { background: var(--bg); }
       <div class="work__view">VIEW CASE</div>
     </a>
 
-    <!-- Pull-statement C — closing credo directly before the footer. -->
+    <!-- Pull-statement #4 — closing credo directly before the footer. -->
     <h2 class="home-quote home-quote--wrap">
       <span class="word" style="--i:0">Let&rsquo;s</span>
       <span class="word" style="--i:1">make</span>
-      <span class="word" style="--i:2">today...</span>
+      <span class="word" style="--i:2">today</span>
       <span class="word" style="--i:3">a</span>
       <span class="word" style="--i:4">day</span>
       <span class="word" style="--i:5">where</span>

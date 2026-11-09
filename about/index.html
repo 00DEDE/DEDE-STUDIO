@@ -53,18 +53,17 @@
     gap: var(--stack-y) calc(var(--page-x) * 2);
     padding: var(--stack-top) var(--page-x) var(--stack-y);
     box-sizing: border-box;
-    /* No align-items override — grid stretches cells to row height
-       by default, which lets the headshot (below About Me text) fill
-       whatever vertical space remains until the column bottom lands
-       flush with the resume's bottom hairline in cols 2–3. */
   }
-  .profile-contact__about {
-    grid-column: span 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-  .profile-contact__right { grid-column: span 2; display: flex; flex-direction: column; gap: var(--stack-y); }
+  /* Flatten the two column containers so their children render as
+     direct grid items. This lets the headshot and the resume share
+     a row — Resume title top-aligns with the top of the image. */
+  .profile-contact__about,
+  .profile-contact__right { display: contents; }
+
+  .profile-contact__about-text { grid-column: 1;      grid-row: 1; }
+  .profile-contact__contact    { grid-column: 2 / -1; grid-row: 1; }
+  .profile-contact__headshot   { grid-column: 1;      grid-row: 2; }
+  .resume                      { grid-column: 2 / -1; grid-row: 2; align-self: start; }
 
   /* Headshot — sits below the About Me copy, grows to fill the
      remaining column height so its bottom edge lands flush with
@@ -184,7 +183,9 @@
   }
   .resume__contact {
     display: grid;
-    grid-template-columns: 1fr 2fr 4fr;
+    /* Column 1 doubled (was 1fr) so the name + title read on fewer
+       lines; column 3 narrowed slightly to give column 1 the room. */
+    grid-template-columns: 2fr 2fr 3fr;
     gap: clamp(1rem, 2vw, 2.5rem);
     padding: clamp(1rem, 2vh, 1.5rem) 0 clamp(2rem, 4vh, 3rem);
     border-top: 1px solid var(--line);
@@ -192,10 +193,23 @@
   .resume__contact strong { font-weight: 500; display: block; }
   .resume__row {
     display: grid;
-    grid-template-columns: 1fr 2fr 4fr;
+    grid-template-columns: 2fr 2fr 3fr;
     gap: clamp(1rem, 2vw, 2.5rem);
     padding: clamp(1rem, 2vh, 1.5rem) 0;
   }
+  /* Download PDF link — small tracked button in resume row 1 col 3. */
+  .resume__download {
+    align-self: start;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: opacity var(--dur-quick) var(--ease-standard);
+  }
+  .resume__download:hover { opacity: 1; }
+  .resume__download::after { content: " ↓"; }
   .resume__row--start { border-top: 1px solid var(--line); }
   .resume__row:last-child { border-bottom: 1px solid var(--line); }
   .resume__section { font-weight: 500; }
@@ -297,6 +311,7 @@
       </div>
 
       <section class="resume reveal-block" aria-label="Resume">
+        <p class="profile-contact__label">Resume</p>
         <div class="resume__contact">
           <div>
             <strong>David A. Gomez Grillo</strong>
@@ -307,7 +322,11 @@
             <a href="mailto:hello@iamdede.com">hello@iamdede.com</a><br>
             <a href="https://iamdede.com">iamdede.com</a>
           </div>
-          <div></div>
+          <div>
+            <a class="resume__download"
+               href="/ASSETS/IMAGES/DAVID%20GOMEZ_WEEK%2009_FOR%20ID%20PDF.pdf"
+               download="David-Gomez_Resume.pdf">Download PDF</a>
+          </div>
         </div>
 
         <div class="resume__row resume__row--start">
