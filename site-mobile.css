@@ -107,10 +107,12 @@
      On mobile we don't need those motion polishes; the cells + their
      covers / scrims / overlays stay in their rest state regardless of
      what the browser is doing in the background. */
-  .work, .work *, .work::before, .work::after,
+  /* Narrow the sweep — don't match .home-quote / .word descendants
+     so the per-word type-reveal animations still fire on mobile. */
   .cell, .cell *, .cell::before, .cell::after,
   .selections-grid, .selections-grid *,
-  .home-work, .home-work * {
+  .work, .work::before, .work::after,
+  .work__media, .work__media *, .work__cover, .work__meta {
     transition: none !important;
     animation: none !important;
   }

@@ -187,7 +187,32 @@ html { background: var(--bg); }
     isolation: isolate;
   }
 
-  /* Single-image cover — used for projects without a carousel. */
+  /* Real-<img> cover — replaces the old CSS background-image cover.
+     Rendered as DOM content so iOS Safari doesn't throw away the
+     texture during fast scroll (which was what caused the UNESCO
+     cell to momentarily lose its image and show just the "01 UNESCO"
+     title on a blank background). */
+  .work__cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    transform: scale(1);
+    transform-origin: center;
+    transition: opacity   var(--dur-medium)      var(--ease-standard),
+                transform var(--dur-atmospheric) var(--ease-out-expo);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  @media (hover: hover) {
+    .work:hover .work__cover-img { opacity: 0.78; transform: scale(1.01); }
+  }
+
+  /* Legacy background-image cover rule — kept for pages still on the
+     old markup, unused on home now. */
   .work__cover {
     position: absolute;
     inset: 0;
@@ -492,41 +517,12 @@ html { background: var(--bg); }
     .home-quote .brk-mob  { display: inline; }
   }
 
-  /* ─── Mobile ─ perf-tuned ──────────────────────────────────────
-     Mobile Safari was discarding the .work__cover background-image
-     layer during fast scroll, leaving cells momentarily empty with
-     just the title visible. Flatten the stacking context so the
-     compositor doesn't have to juggle sticky quotes + z-indexed
-     cells + their own backgrounds on top of each other. */
+  /* ─── Mobile ─ perf-tuned ────────────────────────────────────── */
   @media (max-width: 640px) {
-    .work          { height: 70vh; height: 70svh; z-index: auto; isolation: auto; }
+    /* Shorter cells so the viewport churns less per scroll tick. */
+    .work          { height: 70vh; height: 70svh; }
     .work__title   { font-size: clamp(1.1rem, 4vw, 1.75rem); }
     .work__desc    { font-size: 0.6rem; letter-spacing: 0.18em; }
-
-    /* Quotes no longer stick / layer under the cells on mobile — they
-       scroll by in normal flow like any other block. Kills the whole
-       parallax paint-boundary problem that was dropping covers. */
-    .home-work > .home-quote {
-      position: static;
-      min-height: auto;
-      padding: clamp(5rem, 15vh, 10rem) var(--cell-gap);
-      z-index: auto;
-    }
-    /* Home page's fixed-footer parallax is a desktop luxury — on
-       mobile let the footer sit in normal flow at the bottom, so cells
-       aren't fighting a fixed element for paint space. */
-    body.home .site-footer { position: static; }
-    .home-work { margin-bottom: 0; }
-
-    /* Keep the cover layer alive: give the browser a persistent hint
-       that this element composits so the texture isn't thrown away. */
-    .work__cover {
-      will-change: transform;
-      transform: translateZ(0);
-    }
-    /* Also pin the media container so the cover has a stable paint
-       boundary of its own (prevents the layer discard). */
-    .work__media { contain: layout paint; }
 
     /* Kill the reveal animation: cells + meta render visible from
        the start. This removes the mobile flicker — no fade-in paint
@@ -626,7 +622,7 @@ html { background: var(--bg); }
          so the browser morphs it into the destination page's hero. -->
     <a class="work work--unesco" href="/unesco/">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/UNESCO/01.jpg')"></div>
+        <img class="work__cover-img" src="/ASSETS/IMAGES/UNESCO/01.jpg" alt="UNESCO cover" decoding="async" fetchpriority="high" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">UNESCO</h2>
@@ -638,7 +634,7 @@ html { background: var(--bg); }
     <!-- 2. CAFÉ BUSTELO ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/THE_REVENANT.jpg')"></div>
+        <img class="work__cover-img" src="/ASSETS/IMAGES/THE_REVENANT.jpg" alt="Café Bustelo cover" decoding="async" loading="lazy" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">Café Bustelo</h2>
@@ -673,7 +669,7 @@ html { background: var(--bg); }
     <!-- 3. SAN DIEGO FOOTBALL CLUB ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/POSTER_MOCKUP.jpg')"></div>
+        <img class="work__cover-img" src="/ASSETS/IMAGES/POSTER_MOCKUP.jpg" alt="San Diego Football Club cover" decoding="async" loading="lazy" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">San Diego Football Club</h2>
@@ -685,7 +681,7 @@ html { background: var(--bg); }
     <!-- 4. ECCLESIASTES ─ single cover. -->
     <a class="work work--ecclesiastes" href="/ecclesiastes/">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/ECCLESIASTES/cover.jpg'); --cover-x: 60%"></div>
+        <img class="work__cover-img" src="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg" alt="Ecclesiastes cover" decoding="async" loading="lazy" style="object-position: 60% 50%" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">Ecclesiastes</h2>
@@ -721,7 +717,7 @@ html { background: var(--bg); }
     <!-- 4. TRADER JOE'S ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/TRADER_JOES.jpg')"></div>
+        <img class="work__cover-img" src="/ASSETS/IMAGES/TRADER_JOES.jpg" alt="Trader Joe’s cover" decoding="async" loading="lazy" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">Trader Joe&rsquo;s</h2>
@@ -733,7 +729,7 @@ html { background: var(--bg); }
     <!-- 6. MEMOIRS ─ single cover -->
     <a class="work" href="#">
       <div class="work__media">
-        <div class="work__cover" style="--cover: url('/ASSETS/IMAGES/MEMOIRS.jpg')"></div>
+        <img class="work__cover-img" src="/ASSETS/IMAGES/MEMOIRS.jpg" alt="Memoirs cover" decoding="async" loading="lazy" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">Memoirs</h2>
