@@ -23,7 +23,11 @@ body:has(.site-header) {
   /* Sits above the nav overlay (z-index 150) so the brand mark
      stays visible at the top when the mobile menu opens. */
   z-index: 180;
-  padding: clamp(1.5rem, 2.5vw, 2.5rem) clamp(1rem, 2vw, 2rem) 0;
+  /* Base header padding. Values below are the desktop set already
+     expanded +20% around the brand mark; the mobile block further
+     down overrides top/bottom with its own +40% set. Horizontal
+     padding is written once as a single value so left = right. */
+  padding: clamp(1.8rem, 3vw, 3rem) clamp(1.2rem, 2.4vw, 2.4rem) 0;
   background: var(--bg);
   color: var(--fg);
   border-radius: 0;
@@ -341,7 +345,10 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
      overlay opened by the bottom-centre hamburger. */
   .site-header {
     grid-template-rows: auto;
-    padding: clamp(1rem, 4vw, 1.5rem) var(--page-x, 12px);
+    /* Mobile top/bottom padding expanded +40% around the brand mark
+       (1rem→1.4rem, 1.5rem→2.1rem). Horizontal padding stays at
+       --page-x and is written once so left = right. */
+    padding: clamp(1.4rem, 5.6vw, 2.1rem) var(--page-x, 12px);
   }
   .site-header__brand img { height: clamp(1.75rem, 7vw, 2.75rem); }
   .site-header__nav       { display: none; }   /* collapsed until overlay opens */
@@ -426,7 +433,7 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
   .site-header__nav { display: none; }
 
   .site-header {
-    padding-bottom: clamp(0.85rem, 1.4vw, 1.4rem);
+    padding-bottom: clamp(1.02rem, 1.68vw, 1.68rem);
     border-bottom: 1px solid var(--line);
     row-gap: clamp(0.6rem, 1vw, 1rem);
   }
