@@ -409,8 +409,11 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
   body.is-nav-open .site-header__nav a::before,
   body.is-nav-open .site-header__nav a::after { display: none; }
   body.is-nav-open .site-header__nav a.is-current,
-  body.is-nav-open .site-header__nav a:active {
+  body.is-nav-open .site-header__nav a:hover,
+  body.is-nav-open .site-header__nav a:active,
+  body.is-nav-open .site-header__nav a:focus-visible {
     opacity: 1;
+    color: #43dede;
   }
   /* Brand stays visible at the top of the screen when the menu
      opens — raise its z-index inside the header stacking context
@@ -532,9 +535,11 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
   }
   body.is-nav-open .site-header__nav a::before,
   body.is-nav-open .site-header__nav a::after { display: none; }
-  body.is-nav-open .site-header__nav a.is-current {
+  body.is-nav-open .site-header__nav a.is-current,
+  body.is-nav-open .site-header__nav a:hover,
+  body.is-nav-open .site-header__nav a:active,
+  body.is-nav-open .site-header__nav a:focus-visible {
     opacity: 1;
     color: #43dede;
   }
-  body.is-nav-open .site-header__nav a:hover { opacity: 1; }
 }
