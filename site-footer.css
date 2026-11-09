@@ -71,8 +71,10 @@
 }
 
 @media (max-width: 640px) {
-  /* Mobile top padding reduced by 150% from 45rem (÷2.5 → 18rem). */
-  .site-footer { padding: 18rem 0 1rem; }
+  /* Mobile: top padding tight; bottom padding bumped so the fixed
+     hamburger pill (bottom-centre, ~4rem tall-plus-inset) has clear
+     breathing room above the last line of footer meta. */
+  .site-footer { padding: clamp(5rem, 14vh, 9rem) 1rem clamp(6rem, 10vh, 7rem); }
   .site-footer__meta {
     grid-template-columns: 1fr;
     justify-items: center;

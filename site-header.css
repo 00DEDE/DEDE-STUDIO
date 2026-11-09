@@ -20,7 +20,9 @@ body:has(.site-header) {
      the raw edge. */
   left: 0;
   right: 0;
-  z-index: 100;
+  /* Sits above the nav overlay (z-index 150) so the brand mark
+     stays visible at the top when the mobile menu opens. */
+  z-index: 180;
   padding: clamp(1.5rem, 2.5vw, 2.5rem) clamp(1rem, 2vw, 2rem) clamp(1.25rem, 2vw, 2rem);
   background: var(--bg);
   color: var(--fg);
