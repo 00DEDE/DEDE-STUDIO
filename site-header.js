@@ -1,4 +1,45 @@
 (function () {
+  // ---- Custom cursor ----------------------------------------------------
+  // The native OS cursor is hidden (theme.css) and replaced with a fixed
+  // DOM element rendering the brand plus mark. mix-blend-mode: difference
+  // keeps the mark readable over any surface — black on white, white on
+  // black. Pointer-fine only: touch devices skip the whole setup.
+  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (fine) {
+    var cursor = document.createElement('div');
+    cursor.id = 'site-cursor';
+    cursor.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(cursor);
+    var cx = -100, cy = -100, pending = false;
+    function paint() {
+      pending = false;
+      cursor.style.transform = 'translate3d(' + cx + 'px, ' + cy + 'px, 0)';
+    }
+    window.addEventListener('pointermove', function (e) {
+      cx = e.clientX; cy = e.clientY;
+      if (!pending) { pending = true; requestAnimationFrame(paint); }
+    }, { passive: true });
+    document.addEventListener('pointerleave', function () {
+      cursor.classList.add('is-hidden');
+    });
+    document.addEventListener('pointerenter', function () {
+      cursor.classList.remove('is-hidden');
+    });
+    window.addEventListener('blur',  function () { cursor.classList.add('is-hidden'); });
+    window.addEventListener('focus', function () { cursor.classList.remove('is-hidden'); });
+  }
+
+  // ---- Bottom blur band ------------------------------------------------
+  // Mirrors the frosted strip under the header at the viewport bottom
+  // (styles in site-header.css). Injected sitewide so every page gets
+  // the same softened edge; desktop + mobile.
+  if (!document.querySelector('.site-fade-bottom')) {
+    var fade = document.createElement('div');
+    fade.className = 'site-fade-bottom';
+    fade.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(fade);
+  }
+
   // Highlight the current page in the nav.
   var path = (location.pathname.split('/').pop() || 'home.html').toLowerCase();
   document.querySelectorAll('.site-header__nav a').forEach(function (a) {

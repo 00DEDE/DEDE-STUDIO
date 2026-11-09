@@ -127,6 +127,24 @@ body:has(.site-header) {
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
           mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
 }
+/* Mirror strip pinned to the viewport bottom — same height, same blur,
+   mask flipped so the opaque edge hugs the bottom and feathers upward.
+   Injected into body by site-header.js so every page gets it, desktop
+   + mobile. Sits above content (z 170) but below the floating menu
+   button (z 200) and the header pill (z 180). */
+.site-fade-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: clamp(2.5rem, 4.4vw, 3.75rem);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  pointer-events: none;
+  z-index: 170;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
+          mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.4) 60%, transparent 100%);
+}
 .site-header__nav a {
   color: var(--fg);
   text-decoration: none;

@@ -54,7 +54,12 @@ button:focus-visible {
   --accent-rgb:    0, 0, 0;
   --blob-rgb:      0, 0, 0;
   --line:          rgba(0, 0, 0, 0.15);
-  /* Site-wide cursor — small solid black circle, inline SVG. */
+  /* Site-wide cursor — the brand plus mark drawn into a fixed DOM
+     element (#site-cursor) by site-header.js. The native OS cursor is
+     hidden; the plus is painted with mix-blend-mode: difference so it
+     reads black on light surfaces and white on black surfaces, auto-
+     inverting as it touches dark areas. --cursor-url is retained as a
+     non-invert fallback for the few places that still reference it. */
   --cursor-url:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23000000'/%3E%3C/svg%3E");
 
   /* ─── motion system ──────────────────────────────────────────────────
@@ -122,6 +127,40 @@ button:focus-visible {
 
 /* Baseline that carries the theme everywhere pages don't override it. */
 html { background: var(--bg); }
+
+/* ─── Custom cursor ─────────────────────────────────────────────────
+   A fixed DOM element follows the pointer and renders the brand plus
+   mark in white, blended with mix-blend-mode: difference. On white
+   surfaces the blend returns black (white XOR white → black); on
+   black surfaces it returns white — the mark naturally inverts as it
+   touches dark areas. Pointer-events off so it never intercepts
+   clicks. Touch devices get nothing (no :hover media). */
+@media (hover: hover) and (pointer: fine) {
+  /* High-specificity blanket override — per-page rules set
+     `cursor: var(--cursor-url) ...` on html/body and interactive
+     elements, so the plain `html, body { cursor: none }` loses the
+     cascade. `*` + !important flattens everything on pointer-fine
+     devices so the custom DOM cursor is the only indicator. */
+  *, *::before, *::after { cursor: none !important; }
+  #site-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 20px;
+    margin-left: -14px;
+    margin-top: -10px;
+    background: url("ASSETS/LOGO/cursor-plus.png") no-repeat center / contain;
+    pointer-events: none;
+    z-index: 2147483647;
+    mix-blend-mode: difference;
+    transform: translate3d(-100px, -100px, 0);
+    will-change: transform;
+    transition: opacity 180ms var(--ease-standard),
+                transform 90ms linear;
+  }
+  #site-cursor.is-hidden { opacity: 0; }
+}
 
 /* Theme-swappable logos: pages render two <img>s per logo (dark variant +
    light variant), and CSS toggles which is visible. Pure pixel color per
