@@ -1,6 +1,6 @@
 /* Shared footer — included on every content page.
-   Inverted (chanel pattern): black panel + white ink. Full-bleed
-   background via margin trick, content still capped at --content-max. */
+   Inverted panel: black background, white ink. Full-bleed background
+   via margin trick, content still capped at --content-max. */
 .site-footer {
   max-width: 100%;
   margin-inline: 0;

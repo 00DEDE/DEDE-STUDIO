@@ -61,9 +61,9 @@ html { background: var(--bg); }
   /* ─── Work scroll — full-screen project sections ────────────────── */
   .home-work {
     /* No horizontal or vertical gutters — cells sit directly on top
-       of one another, each full-bleed edge-to-edge. klim.co.nz
-       pattern. (--cell-gap kept at 0 so the few descendants that
-       still reference it compute to nothing.) */
+       of one another, each full-bleed edge-to-edge. --cell-gap kept
+       at 0 so the few descendants that still read it compute to
+       nothing. */
     --cell-gap: 0px;
     display: block;
     padding: 0;
@@ -197,9 +197,8 @@ html { background: var(--bg); }
   /* ─── Meta overlay: title + tag, bottom-left ────────────────────── */
   .work__meta {
     position: absolute;
-    /* Chanel-style overlay: centred horizontally, bottom-anchored
-       in the lower third of the cell. Full centring of the inner
-       title + caption. */
+    /* Overlay centred horizontally, bottom-anchored in the lower
+       third of the cell. Inner title + caption fully centred. */
     left: 50%;
     right: auto;
     bottom: clamp(2rem, 6vh, 4rem);

@@ -27,7 +27,7 @@ body:has(.site-header) {
   background: var(--bg);
   color: var(--fg);
   border-radius: 0;
-  /* Chanel-style stacked layout:
+  /* Stacked two-row layout:
        row 1  →  [    ]  [ brand (centre) ]  [ utilities (right) ]
        row 2  →  [        nav spans full width, centred          ]
      3-col grid gives the brand a dead-centre slot; .site-header__end
@@ -97,12 +97,18 @@ body:has(.site-header) {
 .site-header__nav {
   grid-column: 1 / -1;
   grid-row: 2;
+  /* Full-width row bracketed by hairline rules above + below, so the
+     stack reads: logo → rule → nav → rule. No bottom padding on the
+     header itself — the nav's border-bottom IS the bottom edge of
+     the header (no empty white strip below it). */
   justify-self: stretch;
   display: flex;
   justify-content: center;
   gap: clamp(2.25rem, 4.5vw, 4.5rem);
   align-items: center;
   padding: clamp(0.6rem, 1.3vw, 1rem) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   counter-reset: nav;
 }
 
@@ -403,182 +409,4 @@ body:has(.site-header) {
     z-index: 200;
   }
   body.is-nav-open { overflow: hidden; }
-}
-
-/* ═════════════════════════════════════════════════════════════════════
-   DESKTOP SIDE-DRAWER NAV
-   ─────────────────────────────────────────────────────────────────────
-   Replaces the in-header horizontal nav on desktop. A hamburger pill
-   lives top-left of the viewport; clicking it slides a left drawer in
-   and shifts the entire page right by the drawer width — the site is
-   pushed, not overlaid. The drawer reuses .site-header__nav as its
-   content (same markup every page already has).
-   ═════════════════════════════════════════════════════════════════════ */
-@media (min-width: 641px) {
-  :root { --sidenav-w: clamp(260px, 22vw, 340px); }
-
-  /* The header on desktop becomes a single row: centred brand + a
-     thin bottom hairline. Nav is removed from the header grid and
-     lives in the drawer instead. */
-  .site-header {
-    grid-template-rows: auto;
-    padding-bottom: clamp(1rem, 1.6vw, 1.5rem);
-    border-bottom: 1px solid var(--line);
-  }
-
-  /* Nav as drawer. Rendered permanently as a fixed left panel; closed
-     state parks it off-screen via translateX(-100%). No display:none
-     so the transform transition can animate. */
-  .site-header__nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: var(--sidenav-w);
-    z-index: 170;
-    background: var(--bg);
-    border-right: 1px solid var(--line);
-    padding: clamp(5.5rem, 10vh, 7.5rem) 2rem 3rem 3.75rem;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 1.1rem;
-    grid-column: unset;
-    grid-row: unset;
-    justify-self: unset;
-    transform: translateX(-100%);
-    transition: transform var(--dur-medium) var(--ease-out-expo);
-    will-change: transform;
-    counter-reset: nav;
-  }
-  body.is-sidenav-open .site-header__nav {
-    transform: translateX(0);
-  }
-
-  /* Each drawer link is a bigger editorial entry — stacked, left-
-     aligned, with the cyan catalogue numeral to its left and the
-     underline sliding in from the left. */
-  body.is-sidenav-open .site-header__nav a,
-  .site-header__nav a {
-    display: block;
-    padding: 0.35rem 0;
-    font-size: 1.35rem;
-    letter-spacing: 0.005em;
-    opacity: 0.78;
-  }
-  .site-header__nav a::before {
-    top: 0.4rem;
-    left: -2.2rem;
-    font-size: 0.55rem;
-    letter-spacing: 0.22em;
-  }
-  .site-header__nav a::after {
-    left: 0;
-    bottom: 0.15rem;
-    width: 0;
-  }
-  .site-header__nav a:hover::after,
-  .site-header__nav a.is-current::after,
-  .site-header__nav a:focus-visible::after {
-    width: 100%;
-    left: 0;
-  }
-
-  /* Hamburger pill — fixed top-left of the viewport. Travels with the
-     content when the drawer opens (translateX by --sidenav-w) so it
-     stays at the top-left corner of the visible page. */
-  .site-sidenav-btn {
-    position: fixed;
-    top: clamp(1.1rem, 1.6vw, 1.75rem);
-    left: clamp(1.1rem, 1.6vw, 1.75rem);
-    z-index: 200;
-    width: 2.75rem;
-    height: 2.5rem;
-    padding: 0;
-    background: color-mix(in srgb, var(--bg) 85%, transparent);
-    -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0.4rem;
-    outline: none;
-    transition:
-      transform  var(--dur-medium) var(--ease-out-expo),
-      background var(--dur-medium) var(--ease-standard),
-      border-color var(--dur-medium) var(--ease-standard);
-  }
-  .site-sidenav-btn span {
-    display: block;
-    width: 1.1rem;
-    height: 1.25px;
-    background: var(--fg);
-    transform-origin: 50% 50%;
-    transition:
-      transform var(--dur-medium) var(--ease-out-expo),
-      opacity   var(--dur-medium) var(--ease-out-expo);
-  }
-  .site-sidenav-btn:hover {
-    background: var(--bg);
-    border-color: rgba(var(--fg-rgb), 0.35);
-  }
-  /* Morph the three lines into × when drawer is open. */
-  body.is-sidenav-open .site-sidenav-btn span:nth-child(1) {
-    transform: translateY(0.52rem) rotate(45deg);
-  }
-  body.is-sidenav-open .site-sidenav-btn span:nth-child(2) {
-    opacity: 0;
-  }
-  body.is-sidenav-open .site-sidenav-btn span:nth-child(3) {
-    transform: translateY(-0.52rem) rotate(-45deg);
-  }
-
-  /* Push the page — body shifts via margin-left (keeps body width at
-     100vw so fixed-position descendants still address the viewport),
-     while fixed elements get a matching transform so they travel with
-     the shifted page. */
-  body {
-    width: 100vw;
-    margin-left: 0;
-    transition: margin-left var(--dur-medium) var(--ease-out-expo);
-  }
-  body.is-sidenav-open {
-    margin-left: var(--sidenav-w);
-  }
-  .site-header,
-  .site-fade-bottom,
-  .site-sidenav-btn {
-    transition:
-      transform  var(--dur-medium) var(--ease-out-expo),
-      background var(--dur-medium) var(--ease-standard),
-      border-color var(--dur-medium) var(--ease-standard);
-  }
-  body.is-sidenav-open .site-header,
-  body.is-sidenav-open .site-fade-bottom,
-  body.is-sidenav-open .site-sidenav-btn {
-    transform: translateX(var(--sidenav-w));
-  }
-  /* The home page pins its footer as a fixed layer (parallax under the
-     scrolling cells). It needs the same shift so it tracks the rest
-     of the page; static footers on other pages inherit body margin. */
-  body.home .site-footer {
-    transition: transform var(--dur-medium) var(--ease-out-expo);
-  }
-  body.home.is-sidenav-open .site-footer {
-    transform: translateX(var(--sidenav-w));
-  }
-  /* The mobile overlay logic doesn't belong on desktop — keep the
-     drawer system the only nav state here. */
-  body.is-nav-open .site-header__nav { /* no-op on desktop */ }
-}
-
-/* Mobile keeps the existing full-screen overlay; hide the desktop
-   hamburger here. */
-@media (max-width: 640px) {
-  .site-sidenav-btn { display: none; }
 }
