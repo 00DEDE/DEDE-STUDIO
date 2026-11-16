@@ -84,7 +84,9 @@
     width: 100%;
     color: var(--fg);
     overflow-x: clip;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    /* ABC Oracle is the single brand typeface for this page; system
+       stacks are only a last-ditch fallback if the webfont fails. */
+    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     cursor: var(--cursor-url) 12 12, auto;
   }
   body { background: transparent; }
@@ -368,16 +370,23 @@
     width: 2.75rem;
   }
 
-  /* Expandable panel — grid-rows 0fr → 1fr trick, no max-height clip. */
+  /* Expandable panel — grid-rows 0fr → 1fr trick. visibility is
+     toggled alongside so the panel is guaranteed invisible once
+     collapsed (iOS Safari sometimes leaves the grid row at an
+     intermediate height, which showed the first line of copy as a
+     ghost after "Read less"). visibility flips immediately on open,
+     and after the full collapse duration on close. */
   .read-more__panel {
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
     margin-top: 0;
+    visibility: hidden;
     transition:
       grid-template-rows 700ms cubic-bezier(0.16, 1, 0.3, 1),
       opacity            400ms cubic-bezier(0.4, 0, 0.2, 1),
-      margin-top         400ms cubic-bezier(0.4, 0, 0.2, 1);
+      margin-top         400ms cubic-bezier(0.4, 0, 0.2, 1),
+      visibility         0s    700ms;
   }
   .read-more__panel > .read-more__inner {
     min-height: 0;
@@ -387,6 +396,12 @@
     grid-template-rows: 1fr;
     opacity: 1;
     margin-top: clamp(1.5rem, 2.5vh, 2rem);
+    visibility: visible;
+    transition:
+      grid-template-rows 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity            400ms cubic-bezier(0.4, 0, 0.2, 1),
+      margin-top         400ms cubic-bezier(0.4, 0, 0.2, 1),
+      visibility         0s    0s;
   }
   .read-more__inner p {
     margin: 0 0 1.1em;
@@ -458,19 +473,39 @@
   }
 
   /* ─── Interactive Palette ─────────────────────────────────────────
-     Six swatches in a 3×2 grid (desktop) / 2×3 (mobile). Each cell
-     reveals in sequence once the grid enters the viewport (.is-in
-     class added by IntersectionObserver). Hover/focus lays a subtle
-     scrim over the color and surfaces its name centered inside. */
+     The original palette billboard image is the base. A 3×2 grid of
+     hover regions sits on top (assuming the image lays out six colors
+     in three columns, two rows). A veil (page-bg colored overlay)
+     covers each region at the start and fades away in sequence when
+     the grid enters the viewport, so each color on the image "appears"
+     one by one. Hover/focus lays a soft dark scrim over the region
+     and surfaces its name centered inside. */
   .palette-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: clamp(6px, 0.5vw, 12px);
+    position: relative;
+    display: block;
     width: min(100%, calc(75vh * 16 / 9));
     aspect-ratio: 16 / 9;
     justify-self: center;
     margin-inline: auto;
+    overflow: hidden;
+  }
+  .palette-grid__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: var(--bg);
+  }
+  .palette-grid__cells {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    /* Image is a strict 6-column billboard (no rows), so the hover
+       regions sit in one row of six to match each color panel. */
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: 1fr;
   }
   .palette-swatch {
     position: relative;
@@ -479,28 +514,32 @@
     height: 100%;
     padding: 0;
     margin: 0;
-    background: var(--swatch);
+    background: none;
     border: 0;
     border-radius: 0;
     overflow: hidden;
     cursor: var(--cursor-url) 12 12, pointer;
-    opacity: 0;
-    transform: translateY(14px);
-    will-change: transform, opacity;
   }
-  .palette-grid.is-in .palette-swatch {
-    animation: palette-reveal 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  /* Reveal veil — covers the cell at start, fades to 0 when .is-in
+     is applied to the parent grid. Colored to match the page bg so
+     the image appears to "develop" one color at a time. */
+  .palette-swatch__veil {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 720ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .palette-grid.is-in .palette-swatch:nth-child(1) { animation-delay:   0ms; }
-  .palette-grid.is-in .palette-swatch:nth-child(2) { animation-delay: 110ms; }
-  .palette-grid.is-in .palette-swatch:nth-child(3) { animation-delay: 220ms; }
-  .palette-grid.is-in .palette-swatch:nth-child(4) { animation-delay: 330ms; }
-  .palette-grid.is-in .palette-swatch:nth-child(5) { animation-delay: 440ms; }
-  .palette-grid.is-in .palette-swatch:nth-child(6) { animation-delay: 550ms; }
-  @keyframes palette-reveal {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0);    }
-  }
+  .palette-grid.is-in .palette-swatch__veil { opacity: 0; }
+  .palette-grid.is-in .palette-swatch:nth-child(1) .palette-swatch__veil { transition-delay:   0ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(2) .palette-swatch__veil { transition-delay: 150ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(3) .palette-swatch__veil { transition-delay: 300ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(4) .palette-swatch__veil { transition-delay: 450ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(5) .palette-swatch__veil { transition-delay: 600ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(6) .palette-swatch__veil { transition-delay: 750ms; }
+
   .palette-swatch__scrim {
     position: absolute;
     inset: 0;
@@ -541,23 +580,9 @@
   }
   .palette-swatch:focus-visible { outline: none; }
 
-  @media (max-width: 720px) {
-    .palette-grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      aspect-ratio: 2 / 3;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .palette-swatch {
-      animation: none !important;
-      opacity: 1;
-      transform: none;
-    }
-    .palette-swatch__name {
-      transition: opacity 180ms linear;
-    }
+    .palette-swatch__veil { transition: none; opacity: 0; }
+    .palette-swatch__name { transition: opacity 180ms linear; }
   }
 
   /* ─── Foundations Before / After ──────────────────────────────────
@@ -1036,36 +1061,46 @@
       </div>
     </div>
 
-    <!-- Interactive palette — six color swatches in a 3×2 grid. Each
-         swatch reveals in sequence when the grid enters the viewport
-         (via IntersectionObserver → .is-in). Hover/focus lays a
-         slightly darker scrim over the color and surfaces its name
-         centered inside the cell. -->
-    <div class="palette-grid g-span-3" role="list" aria-label="UNESCO color palette">
-      <button class="palette-swatch" type="button" style="--swatch: #1E5B9E;" aria-label="World Blue" role="listitem">
-        <span class="palette-swatch__scrim" aria-hidden="true"></span>
-        <span class="palette-swatch__name">World Blue</span>
-      </button>
-      <button class="palette-swatch" type="button" style="--swatch: #3A7D5E;" aria-label="Sea Green" role="listitem">
-        <span class="palette-swatch__scrim" aria-hidden="true"></span>
-        <span class="palette-swatch__name">Sea Green</span>
-      </button>
-      <button class="palette-swatch" type="button" style="--swatch: #E8AE2E;" aria-label="Sol Yellow" role="listitem">
-        <span class="palette-swatch__scrim" aria-hidden="true"></span>
-        <span class="palette-swatch__name">Sol Yellow</span>
-      </button>
-      <button class="palette-swatch" type="button" style="--swatch: #9E9A8F;" aria-label="Ash Grey" role="listitem">
-        <span class="palette-swatch__scrim" aria-hidden="true"></span>
-        <span class="palette-swatch__name">Ash Grey</span>
-      </button>
-      <button class="palette-swatch" type="button" style="--swatch: #8C5A3A;" aria-label="Umber Brown" role="listitem">
-        <span class="palette-swatch__scrim" aria-hidden="true"></span>
-        <span class="palette-swatch__name">Umber Brown</span>
-      </button>
-      <button class="palette-swatch" type="button" style="--swatch: #3C2518;" aria-label="Deep Earth" role="listitem">
-        <span class="palette-swatch__scrim" aria-hidden="true"></span>
-        <span class="palette-swatch__name">Deep Earth</span>
-      </button>
+    <!-- Interactive palette — original billboard image as the base,
+         six hover regions overlaid in a 3×2 grid. A veil covers each
+         region at the start and fades out in sequence once the grid
+         enters the viewport (via IntersectionObserver → .is-in), so
+         each color "appears" one by one. On hover/focus a soft dark
+         scrim overlays that region and surfaces its name centered. -->
+    <div class="palette-grid g-span-3" aria-label="UNESCO color palette">
+      <img class="palette-grid__img" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
+      <div class="palette-grid__cells" role="list">
+        <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name">World Blue</span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Sea Green" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name">Sea Green</span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name">Sol Yellow</span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Ash Grey" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name">Ash Grey</span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Umber Brown" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name">Umber Brown</span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Deep Earth" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name">Deep Earth</span>
+        </button>
+      </div>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
