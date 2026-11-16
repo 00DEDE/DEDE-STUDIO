@@ -352,79 +352,46 @@ body.is-nav-open .site-menu-btn span:nth-child(1) { transform: translateY(6.5px)
 body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 @media (max-width: 640px) {
-  /* Mobile header: logo pinned to the top-left, "Pronounced Day-Day."
-     mirrored on the top-right. Nav drops to an overlay opened by the
-     bottom-right pill. */
+  /* Mobile header: logo alone, centred at the top. Nav drops to an
+     overlay opened by the bottom-centre hamburger. */
   .site-header {
     grid-template-rows: auto;
+    /* Mobile top/bottom padding expanded +40% around the brand mark
+       (1rem→1.4rem, 1.5rem→2.1rem). Horizontal padding stays at
+       --page-x and is written once so left = right. */
     padding: clamp(1.4rem, 5.6vw, 2.1rem) var(--page-x, 12px);
-  }
-  /* Brand to the far left of the header grid. */
-  .site-header__brand {
-    grid-column: 1;
-    justify-self: start;
   }
   .site-header__brand img { height: clamp(1.75rem, 7vw, 2.75rem); }
   .site-header__nav       { display: none; }   /* collapsed until overlay opens */
 
-  /* Theme toggle sits in col 3 on desktop. On mobile the new
-     "Pronounced Day-Day." tagline occupies that slot, so the toggle
-     is hidden here. Theme switching still available on desktop. */
-  .site-header__theme-toggle { display: none; }
-
-  /* "Pronounced Day-Day." tagline mirrored on the right edge of the
-     top header row. ABC Oracle, same size as the section labels on
-     content pages (eyebrow scale), with tracking set to 0 per spec.
-     Injected via ::after so every page gets it without HTML changes. */
-  .site-header::after {
-    content: "Pronounced Day-Day.";
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: end;
-    align-self: center;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.85rem, 2.6vw, 1.1rem);
-    letter-spacing: 0;
-    line-height: 1.1;
-    text-transform: none;
-    color: var(--fg);
-    white-space: nowrap;
-    pointer-events: none;
-  }
-
-  /* Mobile pill: fixed bottom-right, mirroring the brand mark on the
-     top-left. NOT draggable; any inline left/top JS may have set is
-     overridden so the mobile placement is always the new spec. */
+  /* Mobile pill: fixed bottom-centre, NOT draggable. Any inline
+     left/top JS may have set gets overridden here so the mobile
+     placement is always the original one. */
   .site-menu-btn {
     top: auto !important;
     bottom: 1.4rem !important;
-    right: 1.4rem !important;
-    left: auto !important;
-    transform: none !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
     animation: none !important;
   }
 
   /* Nav overlay — full-viewport panel with a semi-transparent scrim
-     + light backdrop blur. Page names stack at the bottom-left,
-     mirror of the X pill at the bottom-right. The block's bottom
-     baseline sits at the same height as the pill (1.4rem offset +
-     ~2.75rem pill height). */
+     + light backdrop blur. Nav items centered on the screen. */
   body.is-nav-open .site-header__nav {
     display: flex;
     position: fixed;
     inset: 0;
     z-index: 150;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    gap: 0.35rem;
-    padding: 4rem 1.5rem 1.4rem 1.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 4rem 1.5rem calc(2.75rem + 2.5rem);   /* top clears header, bottom clears hamburger */
     background: color-mix(in srgb, var(--bg) 82%, transparent);
     -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
     border: 0;
-    text-align: left;
+    text-align: center;
   }
   body.is-nav-open .site-header__nav a {
     /* 15% smaller than the previous clamp(2.5rem, 12vw, 5rem);
@@ -437,6 +404,12 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
     opacity: 0.4;
     padding: 0;
     transition: opacity var(--dur-quick) var(--ease-standard);
+  }
+  /* Lower the overlay's block of titles by ~25% of viewport height so
+     it no longer crowds the vertical centre — reads as deliberate. */
+  body.is-nav-open .site-header__nav {
+    padding-top: calc(4rem + 25vh);
+    justify-content: flex-start;
   }
   /* Desktop nav's catalogue numeral + underline don't belong on the
      oversized mobile overlay — suppress them here. */
