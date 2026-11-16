@@ -112,7 +112,7 @@
      sides so it matches the page's gutter. Added to every section
      after the intro and to the pager/footer as well, so the whole
      page reads as discrete chapters. */
-  .unesco__hero,
+  .unesco__intro,
   .unesco__atlas,
   .unesco__grid,
   .unesco__foundations,
@@ -195,19 +195,18 @@
      HERO — clean full-bleed image (Manual pattern). Rounded container
      matches the source cell so the view-transition morph lands clean.
      ═══════════════════════════════════════════════════════════════════ */
+  /* Full-bleed cover at the very top of the page. No gutters, no
+     border-top, no width cap: the image goes edge to edge of the
+     viewport and anchors the whole case study. */
   .unesco__hero {
-    padding: 0 var(--page-x);
+    padding: 0;
     box-sizing: border-box;
   }
   .unesco__hero-media {
     position: relative;
-    /* Width is capped by the aspect-ratio against a 75vh height ceiling
-       so the whole image fits in one viewport while scrolling. On
-       narrow screens 100% wins; on tall/wide screens the width shrinks
-       and the element centers. */
-    width: min(100%, calc(75vh * 16 / 10));
+    width: 100%;
     aspect-ratio: 16 / 10;
-    margin-inline: auto;
+    margin: 0;
     border-radius: 0;
     overflow: hidden;
     background: #000;
@@ -972,11 +971,21 @@
     <span class="scroll-cue__arrow">↓</span>
   </div>
 
-  <!-- ══════════════════════ HERO COVER ══════════════════════
-       Case Study 01 eyebrow + UNESCO title only. No border-top: the
-       site-header already carries a rule in that exact spot, and
-       stacking another would read as a thicker double line. -->
-  <section class="unesco__intro" aria-label="UNESCO cover">
+  <!-- ══════════════════════ FULL-BLEED COVER ══════════════════════
+       UNESCO project cover sits at the very top of the page, edge to
+       edge. No gutter, no border-top (butts directly against the
+       header's bottom rule). Also the morph target for the /work/
+       cell view-transition. -->
+  <section class="unesco__hero" aria-label="UNESCO cover">
+    <div class="unesco__hero-media">
+      <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ HERO TITLE ══════════════════════
+       Case Study 01 eyebrow + UNESCO title. Border-top separates
+       it from the cover image above. -->
+  <section class="unesco__intro" aria-label="UNESCO title">
     <span class="intro__eyebrow">Case Study 01</span>
     <h1 class="intro__title">UNESCO</h1>
   </section>
@@ -1285,16 +1294,6 @@
       <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Celebration 15" />
     </figure>
 
-  </section>
-
-  <!-- ══════════════════════ HERO (final image) ══════════════════════
-       Moved from the top to the very end of the case study, so it is
-       the last image the viewer takes with them before the closing
-       statement. -->
-  <section class="unesco__hero" aria-label="UNESCO cover">
-    <div class="unesco__hero-media">
-      <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
-    </div>
   </section>
 
   <!-- ══════════════════════ CLOSING STATEMENT ══════════════════════ -->
