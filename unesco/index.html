@@ -197,7 +197,10 @@
      ═══════════════════════════════════════════════════════════════════ */
   /* Full-bleed cover at the very top of the page. No gutters, no
      border-top, no width cap: the image goes edge to edge of the
-     viewport and anchors the whole case study. */
+     viewport. Height is capped by viewport so the Case Study title
+     and the top of the Overview section are visible on first paint,
+     without the viewer having to scroll. background-size: cover on
+     .unesco__hero-image crops the 16:10 artwork to this height. */
   .unesco__hero {
     padding: 0;
     box-sizing: border-box;
@@ -205,11 +208,24 @@
   .unesco__hero-media {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 10;
+    height: 62vh;
     margin: 0;
     border-radius: 0;
     overflow: hidden;
     background: #000;
+  }
+
+  /* ─── Keep the site-header locked to its compact (is-scrolled)
+     state on this page. Only the home page should show the expanded
+     big-logo look at the top; every other page, UNESCO included,
+     stays small so the hero cover reads as the first real content. */
+  body.unesco .site-header,
+  body.unesco .site-header.is-scrolled {
+    padding: 1.15rem 0 0.65rem;
+  }
+  body.unesco .site-header .site-header__brand img,
+  body.unesco .site-header.is-scrolled .site-header__brand img {
+    height: 1.75rem;
   }
   .unesco__hero-image {
     position: absolute;
