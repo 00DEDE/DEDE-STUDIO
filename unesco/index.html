@@ -101,6 +101,18 @@
     padding: var(--stack-top) var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
+  /* Intro uses the main 3-col grid layout now. Keep its extra top
+     breathing room (--stack-top), keep the eyebrow on its own row
+     above the title/body row, and make sure the lead sits visually
+     top-aligned with the big UNESCO title (align-items: start on
+     .unesco__grid already handles the row alignment). */
+  .unesco__intro.unesco__grid {
+    padding-top: var(--stack-top);
+    padding-bottom: var(--stack-y);
+  }
+  .unesco__intro .intro__eyebrow { margin-bottom: 0; }
+  .unesco__intro .intro__title { margin-bottom: 0; }
+  .unesco__intro .intro__body { margin-top: 0; }
 
   /* Hairline rule separating the UNESCO page's major sections — a
      single 1px --line across the content, inset by --page-x on both
@@ -419,30 +431,17 @@
   }
   .read-more__inner p:last-child { margin-bottom: 0; }
 
-  /* Intro overview essay — 2 paragraphs sit side-by-side as a
-     2-column layout at desktop. Each column caps at --prose-max so
-     the total block tops out around 100rem (never ultra-wide); below
-     900px the layout collapses back to a single-column stack. */
+  /* Intro overview essay — single-column stack, since the intro body
+     now lives in g-span-2 (2/3 of the grid width) instead of spanning
+     full-width. Keeps paragraphs within the shared --prose-max measure. */
   .unesco__intro .read-more__inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 calc(var(--page-x) * 2);
-    max-width: calc(var(--prose-max) * 2 + var(--page-x) * 2);
+    max-width: var(--prose-max);
   }
   .unesco__intro .read-more__inner p {
     max-width: 100%;
-    margin: 0;
+    margin: 0 0 1em;
   }
-  @media (max-width: 900px) {
-    .unesco__intro .read-more__inner {
-      display: block;
-      max-width: var(--prose-max);
-    }
-    .unesco__intro .read-more__inner p {
-      margin: 0 0 1em;
-    }
-    .unesco__intro .read-more__inner p:last-child { margin-bottom: 0; }
-  }
+  .unesco__intro .read-more__inner p:last-child { margin-bottom: 0; }
 
   /* ═══════════════════════════════════════════════════════════════════
      MEDIA + NUMBERED INFO TAB (Waabi pattern) — corner tab shows the
@@ -942,25 +941,29 @@
     <span class="scroll-cue__arrow">↓</span>
   </div>
 
-  <!-- ══════════════════════ INTRO ══════════════════════ -->
-  <section class="unesco__intro" aria-label="UNESCO overview">
-    <span class="intro__eyebrow">Case Study 01</span>
-    <h1 class="intro__title">UNESCO</h1>
-    <p class="intro__lead">
-      Creating a new identity system to help UNESCO feel
-      <em>as human as what it protects</em>.
-    </p>
-    <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
-      <span>Read more</span>
-      <span class="read-more__line" aria-hidden="true"></span>
-    </button>
-    <div class="read-more__panel" id="rm-overview">
-      <div class="read-more__inner">
-        <p>For 80 years, UNESCO has safeguarded what makes us human. Somewhere along the way, it lost touch with the people it serves. Most don&rsquo;t know what UNESCO does, and those who do think it only protects monuments.</p>
-        <p>That gap became my window of opportunity: an identity that speaks to people of every background, culture, and belief, and that feels open and alive instead of rigid and cold. The following is my speculative proposal for a UNESCO rebrand.</p>
+  <!-- ══════════════════════ INTRO ══════════════════════
+       Uses the same 3-col grid structure as the numbered sections
+       below. UNESCO title sits in column 1; the lead statement and
+       read-more sit in columns 2-3, top-aligned to the UNESCO title. -->
+  <section class="unesco__intro unesco__grid" aria-label="UNESCO overview">
+    <span class="intro__eyebrow g-span-3">Case Study 01</span>
+    <h1 class="intro__title g-span-1">UNESCO</h1>
+    <div class="g-span-2 intro__body">
+      <p class="intro__lead">
+        The creation of an identity system where UNESCO feels just as
+        <em>human as what it protects</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-overview">
+        <div class="read-more__inner">
+          <p>For 80 years, UNESCO has safeguarded what makes us human. Somewhere along the way, it lost touch with the people it serves. Most don&rsquo;t know what UNESCO does, and those who do think it only protects monuments.</p>
+          <p>That gap became my window of opportunity: an identity that speaks to people of every background, culture, and belief, and that feels open and alive instead of rigid and cold. The following is my speculative proposal for a UNESCO rebrand.</p>
+        </div>
       </div>
     </div>
-
   </section>
 
   <!-- ══════════════════════ 01 · FOUNDATIONS ══════════════════════
@@ -1015,24 +1018,32 @@
     </div>
   </section>
 
-  <!-- ══════════════════ 02 · INTERACTION ══════════════════ -->
-  <section class="unesco__atlas" aria-label="Interaction">
-    <p class="section-label"><span class="section-label__num">02</span>Interaction</p>
-    <h2 class="statement">The <em>Digital Atlas</em>.</h2>
-    <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
-      <span>Read more</span>
-      <span class="read-more__line" aria-hidden="true"></span>
-    </button>
-    <div class="read-more__panel" id="rm-atlas">
-      <div class="read-more__inner">
-        <p>To mark UNESCO&rsquo;s 80th anniversary, I designed and built the Digital Atlas, an installation meant to be touched as much as seen. A tabletop map presents the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. When visitors place an icon on the map, the overhead display opens a window into that piece of humanity. The Digital Atlas shows how connected we are, how distinct we are, and why what makes us human is worth preserving.</p>
+  <!-- ══════════════════ 02 · INTERACTION ══════════════════
+       Uses the same 3-col grid structure as the numbered sections
+       below (03 Palette, 04 Iconography, etc.). -->
+  <section class="unesco__atlas unesco__grid" aria-label="Interaction">
+    <p class="section-label g-span-1"><span class="section-label__num">02</span>Interaction</p>
+    <div class="g-span-2">
+      <p class="statement">
+        A digital window into <em>your world</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-atlas">
+        <div class="read-more__inner">
+          <p>To mark UNESCO&rsquo;s 80th anniversary, I designed and built the Digital Atlas, an installation meant to be touched as much as seen. A tabletop map presents the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. When visitors place an icon on the map, the overhead display opens a window into that piece of humanity. The Digital Atlas shows how connected we are, how distinct we are, and why what makes us human is worth preserving.</p>
+        </div>
       </div>
     </div>
-    <figure class="unesco__atlas-media">
-      <video class="unesco__atlas-video"
-             autoplay muted loop playsinline preload="metadata" controls
+
+    <figure class="media media--wide g-span-3">
+      <video class="media__video"
+             autoplay muted loop playsinline preload="metadata"
+             disablepictureinpicture disableremoteplayback
              poster="/ASSETS/IMAGES/UNESCO/01.jpg"
-             aria-label="Interactive Atlas installation">
+             aria-label="Digital Atlas installation">
         <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
       </video>
     </figure>
@@ -1056,7 +1067,7 @@
       </button>
       <div class="read-more__panel" id="rm-palette">
         <div class="read-more__inner">
-          <p>The palette has two sides: what can be seen and what can be felt. World Blue, Sea Green, and Sol Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
+          <p>The palette has two sides: what can be seen and what can be felt. World Blue, Vivre Green, and Sol Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
         </div>
       </div>
     </div>
@@ -1075,10 +1086,10 @@
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
           <span class="palette-swatch__name">World Blue</span>
         </button>
-        <button class="palette-swatch" type="button" aria-label="Sea Green" role="listitem">
+        <button class="palette-swatch" type="button" aria-label="Vivre Green" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name">Sea Green</span>
+          <span class="palette-swatch__name">Vivre Green</span>
         </button>
         <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
