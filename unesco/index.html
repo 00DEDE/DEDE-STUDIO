@@ -595,6 +595,52 @@
     .palette-swatch__name { transition: opacity 180ms linear; }
   }
 
+  /* ─── Scans marquee ────────────────────────────────────────────
+     Two independent horizontal ticker rows between Overview and
+     Foundation. Each row's .scans__track is driven by JS via
+     translateX, with each image duplicated inline so the wrap is
+     seamless. Hover pauses that row; vertical mouse wheel over the
+     carousel is captured and scrubs the row horizontally.
+
+     White paper is removed via mix-blend-mode: multiply against the
+     white page background (--bg is #ffffff). Spiral binding shadows
+     and binder holes will still ghost through faintly since this is
+     a blend-mode trick, not a true alpha mask. */
+  .scans {
+    padding: var(--stack-y) 0;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  .scans__row {
+    position: relative;
+    overflow: hidden;
+    /* Capture vertical wheel to scrub, per the JS handler. */
+    overscroll-behavior: contain;
+  }
+  .scans__row + .scans__row {
+    margin-top: clamp(0.75rem, 1.5vh, 1.25rem);
+  }
+  .scans__track {
+    display: flex;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    width: max-content;
+    will-change: transform;
+  }
+  .scans__track > img {
+    /* "Half size" reference: each page thumbnail sits at about a
+       third of viewport height so a row of them reads as a stream
+       of notes, not a gallery of posters. */
+    height: clamp(220px, 30vh, 320px);
+    width: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    mix-blend-mode: multiply;
+    background: transparent;
+  }
+
   /* ─── Logo reveal ping-pong ───────────────────────────────────────
      Two overlapping <video> elements inside one figure. Only one is
      visible at a time: forward plays with reverse hidden, then after
@@ -1033,7 +1079,87 @@
     </div>
   </section>
 
-  <!-- ══════════════════════ 01 · FOUNDATIONS ══════════════════════
+  <!-- ══════════════════════ SCANS MARQUEE ══════════════════════
+       Two independent ticker rows of notebook scans sit between the
+       Overview and Foundation sections. Each row loops continuously
+       to the left; hover pauses that row, and a vertical mouse wheel
+       over the carousel scrubs it horizontally. Row 1 carries scans
+       1-15, row 2 carries scans 16-30 (at a different speed so the
+       rows drift out of sync). Each image is duplicated inline so
+       the transform wrap is seamless. White paper is removed via
+       mix-blend-mode: multiply against the white page bg. -->
+  <section class="scans" aria-label="Project scans and process notes">
+    <div class="scans__row scans__row--top" data-speed="0.55">
+      <div class="scans__track">
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-01.jpg" alt="UNESCO project scan 01" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-02.jpg" alt="UNESCO project scan 02" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-03.jpg" alt="UNESCO project scan 03" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-04.jpg" alt="UNESCO project scan 04" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-05.jpg" alt="UNESCO project scan 05" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-06.jpg" alt="UNESCO project scan 06" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-07.jpg" alt="UNESCO project scan 07" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-08.jpg" alt="UNESCO project scan 08" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-09.jpg" alt="UNESCO project scan 09" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-10.jpg" alt="UNESCO project scan 10" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-11.jpg" alt="UNESCO project scan 11" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-12.jpg" alt="UNESCO project scan 12" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-13.jpg" alt="UNESCO project scan 13" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-14.jpg" alt="UNESCO project scan 14" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-15.jpg" alt="UNESCO project scan 15" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-01.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-02.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-03.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-04.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-05.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-06.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-07.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-08.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-09.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-10.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-11.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-12.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-13.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-14.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-15.jpg" alt="" aria-hidden="true" loading="lazy" />
+      </div>
+    </div>
+    <div class="scans__row scans__row--bot" data-speed="0.78">
+      <div class="scans__track">
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-16.jpg" alt="UNESCO project scan 16" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-17.jpg" alt="UNESCO project scan 17" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-18.jpg" alt="UNESCO project scan 18" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-19.jpg" alt="UNESCO project scan 19" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-20.jpg" alt="UNESCO project scan 20" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-21.jpg" alt="UNESCO project scan 21" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-22.jpg" alt="UNESCO project scan 22" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-23.jpg" alt="UNESCO project scan 23" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-24.jpg" alt="UNESCO project scan 24" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-25.jpg" alt="UNESCO project scan 25" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-26.jpg" alt="UNESCO project scan 26" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-27.jpg" alt="UNESCO project scan 27" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-28.jpg" alt="UNESCO project scan 28" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-29.jpg" alt="UNESCO project scan 29" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-30.jpg" alt="UNESCO project scan 30" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-16.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-17.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-18.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-19.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-20.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-21.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-22.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-23.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-24.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-25.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-26.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-27.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-28.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-29.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-30.jpg" alt="" aria-hidden="true" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ 02 · FOUNDATION ══════════════════════
        Moved up to be the first chapter after the intro. Shares the
        unesco__grid layout so the section-label | statement | media
        rhythm stays identical to the chapters below. -->
@@ -1382,6 +1508,83 @@
       };
       window.addEventListener('scroll', hideScrollCue, { passive: true });
     }
+
+    /* Scans marquee — two independent rows of notebook scans. Each
+       row loops continuously leftward driven by requestAnimationFrame.
+       Hover pauses that row. A vertical wheel over the row is captured
+       (preventDefault) and translated into horizontal scrub; auto
+       playback resumes 1.5s after the viewer stops wheeling. */
+    (function () {
+      var rows = document.querySelectorAll('.scans__row');
+      if (!rows.length) return;
+      var state = Array.prototype.map.call(rows, function (row) {
+        return {
+          row: row,
+          track: row.querySelector('.scans__track'),
+          speed: parseFloat(row.getAttribute('data-speed') || '0.5'),
+          offset: 0,
+          halfWidth: 0,
+          paused: false,
+          wheelTO: null
+        };
+      });
+
+      function measure() {
+        state.forEach(function (s) {
+          /* The track holds the full set twice; one wrap cycle is
+             half the track's measured scroll width. */
+          s.halfWidth = s.track ? s.track.scrollWidth / 2 : 0;
+        });
+      }
+      /* Measure once images have reported their intrinsic sizes. */
+      window.addEventListener('load', measure);
+      window.addEventListener('resize', measure);
+      /* Also re-measure whenever any scan image finishes loading,
+         since lazy-loaded images change the track width late. */
+      state.forEach(function (s) {
+        s.track && s.track.querySelectorAll('img').forEach(function (img) {
+          if (!img.complete) img.addEventListener('load', measure, { once: true });
+        });
+      });
+      measure();
+
+      function tick() {
+        state.forEach(function (s) {
+          if (!s.halfWidth) return;
+          if (!s.paused) s.offset -= s.speed;
+          /* Wrap offset into [-halfWidth, 0) so the duplicate set
+             seamlessly takes over as the first one scrolls past. */
+          while (s.offset <= -s.halfWidth) s.offset += s.halfWidth;
+          while (s.offset > 0) s.offset -= s.halfWidth;
+          s.track.style.transform = 'translateX(' + s.offset + 'px)';
+        });
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      state.forEach(function (s) {
+        s.row.addEventListener('mouseenter', function () { s.paused = true; });
+        s.row.addEventListener('mouseleave', function () {
+          /* Only resume if no wheel scrub is still in its cooldown. */
+          if (!s.wheelTO) s.paused = false;
+        });
+        s.row.addEventListener('wheel', function (e) {
+          e.preventDefault();
+          s.paused = true;
+          var dy = e.deltaY || 0;
+          var dx = e.deltaX || 0;
+          /* Prefer whichever axis the user is scrolling on, so a
+             natural vertical swipe still scrubs horizontally. */
+          var delta = Math.abs(dy) > Math.abs(dx) ? dy : dx;
+          s.offset -= delta;
+          if (s.wheelTO) clearTimeout(s.wheelTO);
+          s.wheelTO = setTimeout(function () {
+            s.wheelTO = null;
+            if (!s.row.matches(':hover')) s.paused = false;
+          }, 1500);
+        }, { passive: false });
+      });
+    })();
 
     /* Logo reveal ping-pong — play forward video to end, pause 2s,
        play reverse video to end, pause 2s, repeat. Each video's
