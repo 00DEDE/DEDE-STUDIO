@@ -63,16 +63,18 @@
   .profile-contact__about,
   .profile-contact__right { display: contents; }
 
-  .profile-contact__about-text { grid-column: 1;      grid-row: 1; }
-  .profile-contact__contact    { grid-column: 2 / -1; grid-row: 1; }
-  .profile-contact__headshot   { grid-column: 1;      grid-row: 2; }
+  /* Layout: image top-left, about top-right, contact bottom-left,
+     resume bottom-right. */
+  .profile-contact__headshot   { grid-column: 1;      grid-row: 1; }
+  .profile-contact__about-text { grid-column: 2 / -1; grid-row: 1; }
+  .profile-contact__contact    { grid-column: 1;      grid-row: 2; }
   .resume                      { grid-column: 2 / -1; grid-row: 2; align-self: start; }
 
   /* Headshot — full image visible (not cropped). Sizes to the image's
      natural aspect, aligned to the top of the row so no empty space
      is painted beneath when the sibling (resume) is taller. */
   .profile-contact__headshot {
-    margin: clamp(2rem, 4vh, 3rem) 0 0;
+    margin: 0;
     align-self: start;
     overflow: hidden;
     border-radius: 0;
@@ -186,9 +188,7 @@
     letter-spacing: 0;
     box-sizing: border-box;
     padding: 0;
-    /* Match the headshot's top margin so the "Resume" title aligns
-       with the top edge of the picture in the same row. */
-    margin-top: clamp(2rem, 4vh, 3rem);
+    margin-top: 0;
   }
   .resume__contact {
     display: grid;

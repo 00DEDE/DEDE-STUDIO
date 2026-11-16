@@ -313,6 +313,39 @@
     .g-col-2, .g-col-3 { grid-column-start: 1; }
   }
 
+  /* ─── Section split: text left (col 1), media right (cols 2-3) ────
+     Every numbered section on desktop now mirrors the hero's layout
+     — label + statement + read-more stacked in col 1, and the section's
+     media (single figure or a stack of figures) living in cols 2-3.
+     On mobile the parent grid collapses to one column via the rule
+     above, so everything stacks naturally. */
+  .section-text {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.9rem, 2vh, 1.5rem);
+  }
+  /* Read-more button already carries its own top margin (matches
+     the section pattern elsewhere), so zero it out inside the stack
+     to avoid double spacing against the flex gap. */
+  .section-text > .read-more { margin-top: 0; }
+  .section-media {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 3vh, 2.5rem);
+    min-width: 0;
+  }
+  .section-media > * { width: 100%; }
+  /* Three-cell row (06 Applications, 08 Celebrating) inside a
+     section-media column. Sub-grids to a 3-col track, stacks on mobile. */
+  .section-media__triptych {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+  @media (max-width: 900px) {
+    .section-media__triptych { grid-template-columns: 1fr; }
+  }
+
   /* ─── Section label (numbered eyebrow) ───────────────────────────
      Sits in column 1 next to a statement in columns 2–3. Casa's
      chaptered rhythm — "01 / Foundations", "02 / Palette". */
@@ -1170,9 +1203,8 @@
        unesco__grid layout so the section-label | statement | media
        rhythm stays identical to the chapters below. -->
   <section class="unesco__foundations unesco__grid" aria-label="Foundation">
-    <!-- Foundation context leads the section. -->
-    <p class="section-label g-span-1"><span class="section-label__num">02</span>Foundation</p>
-    <div class="g-span-2">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">02</span>Foundation</p>
       <p class="statement">
         An identity that excludes no one, and <em>invites everyone</em>.
       </p>
@@ -1188,40 +1220,37 @@
       </div>
     </div>
 
-    <!-- Logo reveal — ping-pong playback: forward video plays, 2s
-         pause, reversed video plays, 2s pause, repeat. Controls are
-         hidden and pointer-events are off so the viewer can't play,
-         pause or scrub. JS in the <script> block below drives the
-         cycle via each video's `ended` event + setTimeout. -->
-    <figure class="media media--wide g-span-3 logo-reveal">
-      <video class="media__video logo-reveal__fwd"
-             muted playsinline preload="auto"
-             disablepictureinpicture disableremoteplayback
-             aria-label="UNESCO logo reveal animation">
-        <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-      </video>
-      <video class="media__video logo-reveal__rev" aria-hidden="true"
-             muted playsinline preload="auto"
-             disablepictureinpicture disableremoteplayback>
-        <source src="/ASSETS/IMAGES/UNESCO/logo-reveal-reverse.mp4" type="video/mp4">
-      </video>
-    </figure>
+    <div class="g-span-2 section-media">
+      <!-- Logo reveal — ping-pong forward + reverse with 2s pauses,
+           no controls, no pointer events. -->
+      <figure class="media media--wide logo-reveal">
+        <video class="media__video logo-reveal__fwd"
+               muted playsinline preload="auto"
+               disablepictureinpicture disableremoteplayback
+               aria-label="UNESCO logo reveal animation">
+          <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
+        </video>
+        <video class="media__video logo-reveal__rev" aria-hidden="true"
+               muted playsinline preload="auto"
+               disablepictureinpicture disableremoteplayback>
+          <source src="/ASSETS/IMAGES/UNESCO/logo-reveal-reverse.mp4" type="video/mp4">
+        </video>
+      </figure>
 
-    <!-- BEFORE / AFTER comparison. Two equal half-width cells with a
-         gap between them. Labels above each use the same tracked-out
-         section-label style as "Foundations". -->
-    <div class="foundations-ba g-span-3">
-      <div class="foundations-ba__col">
-        <p class="section-label foundations-ba__label">Before</p>
-        <figure class="media">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/before.jpg" alt="UNESCO existing logo — Greco-Roman temple" />
-        </figure>
-      </div>
-      <div class="foundations-ba__col">
-        <p class="section-label foundations-ba__label">After</p>
-        <figure class="media">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/after.jpg" alt="UNESCO rebranded logomark — four interlocking U's" />
-        </figure>
+      <!-- BEFORE / AFTER comparison pair. -->
+      <div class="foundations-ba">
+        <div class="foundations-ba__col">
+          <p class="section-label foundations-ba__label">Before</p>
+          <figure class="media">
+            <img class="media__img" src="/ASSETS/IMAGES/UNESCO/before.jpg" alt="UNESCO existing logo — Greco-Roman temple" />
+          </figure>
+        </div>
+        <div class="foundations-ba__col">
+          <p class="section-label foundations-ba__label">After</p>
+          <figure class="media">
+            <img class="media__img" src="/ASSETS/IMAGES/UNESCO/after.jpg" alt="UNESCO rebranded logomark — four interlocking U's" />
+          </figure>
+        </div>
       </div>
     </div>
   </section>
@@ -1229,8 +1258,8 @@
   <!-- ══════════════════ 03 · INTERACTION ══════════════════
        Uses the same 3-col grid structure as the numbered sections. -->
   <section class="unesco__atlas unesco__grid" aria-label="Interaction">
-    <p class="section-label g-span-1"><span class="section-label__num">03</span>Interaction</p>
-    <div class="g-span-2">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">03</span>Interaction</p>
       <p class="statement">
         A digital window into the world happening <em>all around you</em>.
       </p>
@@ -1245,15 +1274,17 @@
       </div>
     </div>
 
-    <figure class="media media--wide g-span-3">
-      <video class="media__video"
-             autoplay muted loop playsinline preload="metadata"
-             disablepictureinpicture disableremoteplayback
-             poster="/ASSETS/IMAGES/UNESCO/01.jpg"
-             aria-label="Digital Atlas installation">
-        <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
-      </video>
-    </figure>
+    <div class="g-span-2 section-media">
+      <figure class="media media--wide">
+        <video class="media__video"
+               autoplay muted loop playsinline preload="metadata"
+               disablepictureinpicture disableremoteplayback
+               poster="/ASSETS/IMAGES/UNESCO/01.jpg"
+               aria-label="Digital Atlas installation">
+          <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </div>
   </section>
 
   <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════
@@ -1262,8 +1293,8 @@
   <section class="unesco__grid" aria-label="Case study">
 
     <!-- ─── 04 · Palette ─────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">04</span>Palette</p>
-    <div class="g-span-2">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">04</span>Palette</p>
       <p class="statement" style="text-wrap: pretty;">
         A hue palette that is an homage to our shared home. <em>Planet Earth</em>.
       </p>
@@ -1278,13 +1309,15 @@
       </div>
     </div>
 
+    <div class="g-span-2 section-media">
     <!-- Interactive palette — original billboard image as the base,
-         six hover regions overlaid in a 3×2 grid. A veil covers each
-         region at the start and fades out in sequence once the grid
-         enters the viewport (via IntersectionObserver → .is-in), so
-         each color "appears" one by one. On hover/focus a soft dark
-         scrim overlays that region and surfaces its name centered. -->
-    <div class="palette-grid g-span-3" aria-label="UNESCO color palette">
+         six hover regions overlaid as a single 6-column row. A veil
+         covers each region at the start and fades out in sequence
+         once the grid enters the viewport (via IntersectionObserver
+         → .is-in), so each color "appears" one by one. On hover/focus
+         a soft dark scrim overlays that region and surfaces its name
+         centered. -->
+    <div class="palette-grid" aria-label="UNESCO color palette">
       <img class="palette-grid__img" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
       <div class="palette-grid__cells" role="list">
         <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
@@ -1319,13 +1352,14 @@
         </button>
       </div>
     </div>
+    </div><!-- /04 section-media -->
 
     <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 05 · Iconography ─────────────────────────────────────────
          Sits directly below Palette so the identity system
          (color + marks) reads as one continuous chapter. -->
-    <p class="section-label g-span-1"><span class="section-label__num">05</span>Iconography</p>
-    <div class="g-span-2">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">05</span>Iconography</p>
       <p class="statement">
         Taken apart and rebuilt, the new logo became
         <em>so much more than one single asset</em>.
@@ -1341,15 +1375,17 @@
       </div>
     </div>
 
-    <!-- Media 05 — Iconography overview, 16:9 full-width -->
-    <figure class="media media--wide g-span-3">
-      <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
-    </figure>
+    <div class="g-span-2 section-media">
+      <!-- Iconography overview, 16:9 -->
+      <figure class="media media--wide">
+        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
+      </figure>
+    </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 06 · Typography ────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">06</span>Typography</p>
-    <div class="g-span-2">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">06</span>Typography</p>
       <p class="statement">
         A system must be able to flex. So, how far can the logo
         <em>be pushed</em>?
@@ -1366,44 +1402,51 @@
       </div>
     </div>
 
-    <!-- Two custom typefaces side by side. Portrait 2:3 to match the
-         PDF page ratio each was exported from. -->
-    <div class="media-pair g-span-3">
-      <figure class="media" style="aspect-ratio: 2 / 3;">
-        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-01.jpg" alt="Custom Typeface 1 — Building Blocks" />
-      </figure>
-      <figure class="media" style="aspect-ratio: 2 / 3;">
-        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-02.jpg" alt="Custom Typeface 2 — Woven Textiles" />
-      </figure>
+    <div class="g-span-2 section-media">
+      <!-- Two custom typefaces side by side. Portrait 2:3 to match
+           the PDF page ratio each was exported from. -->
+      <div class="media-pair">
+        <figure class="media" style="aspect-ratio: 2 / 3;">
+          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-01.jpg" alt="Custom Typeface 1 — Building Blocks" />
+        </figure>
+        <figure class="media" style="aspect-ratio: 2 / 3;">
+          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-02.jpg" alt="Custom Typeface 2 — Woven Textiles" />
+        </figure>
+      </div>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
-    <p class="section-label g-span-3"><span class="section-label__num">07</span>Applications</p>
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">07</span>Applications</p>
+    </div>
 
-    <!-- Each cell holds two stacked images that crossfade on a shared
-         10s cycle: round 1 holds for ~5s, graceful 1s fade to round 2,
-         round 2 holds for ~5s, fade back. All three cells animate in
-         sync (same duration + delay) so each round reads as a single
-         composed trio. See .media__slide keyframes in <style>. -->
-    <figure class="media media--square g-span-1">
-      <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/applications-01.jpg" alt="UNESCO installation application — round 1" />
-      <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/02.jpg" alt="UNESCO installation application — round 2" />
-    </figure>
-    <figure class="media media--square g-span-1">
-      <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/applications-02.jpg" alt="UNESCO installation application — round 1" />
-      <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/03.jpg" alt="UNESCO installation application — round 2" />
-    </figure>
-    <figure class="media media--square g-span-1">
-      <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO installation application — round 1" />
-      <!-- 04.jpg zoomed +30% so the center poster frames up tighter -->
-      <img class="media__img media__slide media__slide--2" style="transform: scale(1.3);" src="/ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO installation application — round 2" />
-    </figure>
+    <div class="g-span-2 section-media">
+      <!-- Each cell holds two stacked images that crossfade on a
+           shared 10s cycle. Three cells animate in sync so each round
+           reads as a single composed trio. See .media__slide keyframes
+           in <style>. -->
+      <div class="section-media__triptych">
+        <figure class="media media--square">
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/applications-01.jpg" alt="UNESCO installation application — round 1" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/02.jpg" alt="UNESCO installation application — round 2" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/applications-02.jpg" alt="UNESCO installation application — round 1" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/03.jpg" alt="UNESCO installation application — round 2" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO installation application — round 1" />
+          <!-- 04.jpg zoomed +30% so the center poster frames up tighter -->
+          <img class="media__img media__slide media__slide--2" style="transform: scale(1.3);" src="/ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO installation application — round 2" />
+        </figure>
+      </div>
+    </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 08 · Celebrating 80 Years ────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">08</span>Celebrating 80 Years</p>
-    <div class="g-span-2">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">08</span>Celebrating 80 Years</p>
       <p class="statement">
         I chose to make printed tangible matter that spoke to 80
         years of UNESCO accomplishments: that is
@@ -1420,30 +1463,34 @@
       </div>
     </div>
 
-    <!-- 5-image slideshow × 3 cells = 15 unique images. Shared 20s
-         cycle: each cell cycles through its own 5 images, 4s per
-         image + ~1s crossfade. Keyframes/delay sequencing in CSS. -->
-    <figure class="media media--square g-span-1">
-      <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Celebration 01" />
-      <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Celebration 02" />
-      <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Celebration 03" />
-      <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Celebration 04" />
-      <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Celebration 05" />
-    </figure>
-    <figure class="media media--square g-span-1">
-      <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Celebration 06" />
-      <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Celebration 07" />
-      <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Celebration 08" />
-      <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Celebration 09" />
-      <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Celebration 10" />
-    </figure>
-    <figure class="media media--square g-span-1">
-      <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Celebration 11" />
-      <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Celebration 12" />
-      <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Celebration 13" />
-      <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Celebration 14" />
-      <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Celebration 15" />
-    </figure>
+    <div class="g-span-2 section-media">
+      <!-- 5-image slideshow × 3 cells = 15 unique images. Shared 20s
+           cycle: each cell cycles through its own 5 images, 4s per
+           image + ~1s crossfade. Keyframes/delay in CSS. -->
+      <div class="section-media__triptych">
+        <figure class="media media--square">
+          <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Celebration 01" />
+          <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Celebration 02" />
+          <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Celebration 03" />
+          <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Celebration 04" />
+          <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Celebration 05" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Celebration 06" />
+          <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Celebration 07" />
+          <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Celebration 08" />
+          <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Celebration 09" />
+          <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Celebration 10" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Celebration 11" />
+          <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Celebration 12" />
+          <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Celebration 13" />
+          <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Celebration 14" />
+          <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Celebration 15" />
+        </figure>
+      </div>
+    </div>
 
   </section>
 
