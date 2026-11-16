@@ -168,8 +168,13 @@
   }
   .unesco__hero-media {
     position: relative;
-    width: 100%;
+    /* Width is capped by the aspect-ratio against a 75vh height ceiling
+       so the whole image fits in one viewport while scrolling. On
+       narrow screens 100% wins; on tall/wide screens the width shrinks
+       and the element centers. */
+    width: min(100%, calc(75vh * 16 / 10));
     aspect-ratio: 16 / 10;
+    margin-inline: auto;
     border-radius: 0;
     overflow: hidden;
     background: #000;
@@ -194,8 +199,10 @@
   }
   .unesco__atlas-media {
     position: relative;
-    width: 100%;
-    margin: clamp(1.5rem, 3vh, 2.5rem) 0 0;
+    /* Capped at 75vh * 16/9 so the atlas video fits in a single
+       viewport while the viewer scrolls through this section. */
+    width: min(100%, calc(75vh * 16 / 9));
+    margin: clamp(1.5rem, 3vh, 2.5rem) auto 0;
     aspect-ratio: 16 / 9;
     border-radius: 0;
     overflow: hidden;
@@ -402,6 +409,16 @@
     aspect-ratio: 4 / 3;
   }
   .media--wide     { aspect-ratio: 16 / 9; }
+  /* Full-width singular media inside the 3-col grid (logo-reveal,
+     palette billboard, iconography overview). Capped at 75vh so the
+     whole piece is visible in a single viewport without expanding. The
+     cell is centered inside its 3-col span when the cap kicks in.
+     Does NOT apply to the 3-up slideshows (.media--square), so the
+     bottom slideshow rows stay untouched. */
+  .unesco__grid > .media--wide {
+    width: min(100%, calc(75vh * 16 / 9));
+    justify-self: center;
+  }
   .media--cinema   { aspect-ratio: 21 / 9; }
   .media--square   { aspect-ratio: 1 / 1; }
   .media--portrait { aspect-ratio: 3 / 4; }
@@ -743,9 +760,8 @@
     <span class="intro__eyebrow">Case Study · 001</span>
     <h1 class="intro__title">UNESCO</h1>
     <p class="intro__lead">
-      A rebranded identity system for the world's cultural heritage
-      agency that is both western and eastern minded,
-      <em>alive and ever present</em>.
+      Creating a new identity system to help UNESCO feel
+      <em>as human as what it protects</em>.
     </p>
     <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
       <span>Read more</span>
@@ -753,8 +769,8 @@
     </button>
     <div class="read-more__panel" id="rm-overview">
       <div class="read-more__inner">
-        <p>UNESCO safeguards over eleven hundred sites across one hundred and sixty-seven countries. Behind every site is a story, a people, a piece of our shared humanity that deserves to be carried forward. I wanted this redesign to honor that: an identity that feels as alive in a Nairobi campaign as in a Kyoto exhibition, without asking any culture to fit the same mold.</p>
-        <p>I started with the wordmark and built outward. What do we all have in common? Stories. We weave them into textiles, into shapes repeated across generations. From there the system flourished: a modular icon set, a palette shaped by human experience, and interactive components for a digital archive. Every element, part of one symphony.</p>
+        <p>For 80 years, UNESCO has safeguarded what makes us human. Somewhere along the way, it lost touch with the people it serves. Most don&rsquo;t know what UNESCO does, and those who do think it only protects monuments.</p>
+        <p>That gap became my window of opportunity: an identity that speaks to people of every background, culture, and belief, and that feels open and alive instead of rigid and cold. The following is my speculative proposal for a UNESCO rebrand.</p>
       </div>
     </div>
 
