@@ -112,7 +112,6 @@
      sides so it matches the page's gutter. Added to every section
      after the intro and to the pager/footer as well, so the whole
      page reads as discrete chapters. */
-  .unesco__intro,
   .unesco__atlas,
   .unesco__grid,
   .unesco__foundations,
@@ -121,6 +120,10 @@
   body > .site-footer {
     border-top: 1px solid var(--line);
   }
+  /* Hero sits at the very top of the page. The site-header already
+     carries a hairline in that spot; a border-top here would stack
+     with it and read as a double rule. */
+  .unesco__hero.unesco__grid { border-top: 0; }
   .intro__eyebrow {
     display: block;
     margin: 0 0 clamp(1.25rem, 2.5vh, 2rem);
@@ -195,22 +198,28 @@
      HERO — clean full-bleed image (Manual pattern). Rounded container
      matches the source cell so the view-transition morph lands clean.
      ═══════════════════════════════════════════════════════════════════ */
-  /* Full-bleed cover at the very top of the page. No gutters, no
-     border-top, no width cap: the image goes edge to edge of the
-     viewport. Height is capped by viewport so the Case Study title
-     and the top of the Overview section are visible on first paint,
-     without the viewer having to scroll. background-size: cover on
-     .unesco__hero-image crops the 16:10 artwork to this height. */
-  .unesco__hero {
-    padding: 0;
-    box-sizing: border-box;
+  /* Hero uses the shared .unesco__grid layout (title in col 1, image
+     in cols 2-3) with extra top breathing room for the first row
+     of content below the header. */
+  .unesco__hero.unesco__grid {
+    padding-top: var(--stack-top);
   }
+  .unesco__hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.9rem, 2vh, 1.5rem);
+  }
+  .unesco__hero-title .intro__eyebrow { margin-bottom: 0; }
+  .unesco__hero-title .intro__title { margin-bottom: 0; }
   .unesco__hero-media {
     position: relative;
     width: 100%;
-    height: 62vh;
+    /* 16:10 to match the source artwork; capped at 60vh so the whole
+       image, plus the top of the Overview section below, stays in
+       the first viewport. */
+    aspect-ratio: 16 / 10;
+    max-height: 60vh;
     margin: 0;
-    border-radius: 0;
     overflow: hidden;
     background: #000;
   }
@@ -1036,23 +1045,20 @@
     <span class="scroll-cue__arrow">↓</span>
   </div>
 
-  <!-- ══════════════════════ FULL-BLEED COVER ══════════════════════
-       UNESCO project cover sits at the very top of the page, edge to
-       edge. No gutter, no border-top (butts directly against the
-       header's bottom rule). Also the morph target for the /work/
-       cell view-transition. -->
-  <section class="unesco__hero" aria-label="UNESCO cover">
-    <div class="unesco__hero-media">
+  <!-- ══════════════════════ HERO ══════════════════════
+       Grid layout like the numbered sections, but with the cover
+       image in cols 2-3 instead of context. Title + eyebrow sit
+       top-left in col 1. No border-top (header's bottom rule already
+       sits in the same spot). The cover is also the morph target for
+       the /work/ cell view-transition. -->
+  <section class="unesco__hero unesco__grid" aria-label="UNESCO cover">
+    <div class="g-span-1 unesco__hero-title">
+      <span class="intro__eyebrow">Case Study 01</span>
+      <h1 class="intro__title">UNESCO</h1>
+    </div>
+    <div class="unesco__hero-media g-span-2">
       <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
     </div>
-  </section>
-
-  <!-- ══════════════════════ HERO TITLE ══════════════════════
-       Case Study 01 eyebrow + UNESCO title. Border-top separates
-       it from the cover image above. -->
-  <section class="unesco__intro" aria-label="UNESCO title">
-    <span class="intro__eyebrow">Case Study 01</span>
-    <h1 class="intro__title">UNESCO</h1>
   </section>
 
   <!-- ══════════════════════ 01 · OVERVIEW ══════════════════════
@@ -1569,14 +1575,16 @@
           if (!s.wheelTO) s.paused = false;
         });
         s.row.addEventListener('wheel', function (e) {
-          e.preventDefault();
-          s.paused = true;
           var dy = e.deltaY || 0;
           var dx = e.deltaX || 0;
-          /* Prefer whichever axis the user is scrolling on, so a
-             natural vertical swipe still scrubs horizontally. */
-          var delta = Math.abs(dy) > Math.abs(dx) ? dy : dx;
-          s.offset -= delta;
+          /* Only capture when the user is scrubbing horizontally
+             (trackpad side-swipe or shift+wheel). A plain vertical
+             wheel passes through so the page keeps scrolling normally
+             even when the pointer is over the marquee. */
+          if (Math.abs(dx) <= Math.abs(dy)) return;
+          e.preventDefault();
+          s.paused = true;
+          s.offset -= dx;
           if (s.wheelTO) clearTimeout(s.wheelTO);
           s.wheelTO = setTimeout(function () {
             s.wheelTO = null;
