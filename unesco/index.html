@@ -97,22 +97,15 @@
      lead + read-more + metadata capsule (Casa pattern). Sets scale
      for the whole page.
      ═══════════════════════════════════════════════════════════════════ */
+  /* Hero cover — Case Study eyebrow + UNESCO title. No border-top
+     (the header rule sits in the same spot) and the big title gets
+     no bottom margin since the Overview section below provides its
+     own top padding + hairline. */
   .unesco__intro {
     padding: var(--stack-top) var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
-  /* Intro uses the main 3-col grid layout now. Keep its extra top
-     breathing room (--stack-top), keep the eyebrow on its own row
-     above the title/body row, and make sure the lead sits visually
-     top-aligned with the big UNESCO title (align-items: start on
-     .unesco__grid already handles the row alignment). */
-  .unesco__intro.unesco__grid {
-    padding-top: var(--stack-top);
-    padding-bottom: var(--stack-y);
-  }
-  .unesco__intro .intro__eyebrow { margin-bottom: 0; }
   .unesco__intro .intro__title { margin-bottom: 0; }
-  .unesco__intro .intro__body { margin-top: 0; }
 
   /* Hairline rule separating the UNESCO page's major sections — a
      single 1px --line across the content, inset by --page-x on both
@@ -584,17 +577,42 @@
     .palette-swatch__name { transition: opacity 180ms linear; }
   }
 
+  /* ─── Logo reveal ping-pong ───────────────────────────────────────
+     Two overlapping <video> elements inside one figure. Only one is
+     visible at a time: forward plays with reverse hidden, then after
+     a 2s pause they swap. pointer-events disabled so the viewer can
+     never pause or scrub. */
+  .logo-reveal { position: relative; }
+  .logo-reveal .media__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+  .logo-reveal__rev { opacity: 0; }
+  .logo-reveal.is-rev .logo-reveal__fwd { opacity: 0; }
+  .logo-reveal.is-rev .logo-reveal__rev { opacity: 1; }
+
   /* ─── Media pair — two side-by-side cells inside a grid section
-     (used by 05 Typography for the two custom typeface specimens).
-     Spans all 3 columns of the main grid and splits into two equal
-     cells with a page-x-sized gap between them. Stacks under 900px. */
+     (used by 06 Typography for the two custom typeface specimens).
+     Spans all 3 columns of the main grid but narrows to 80% so the
+     specimens sit at a composed scale (20% smaller than full-bleed).
+     Centered inside the g-span-3 row. Stacks under 900px. */
   .media-pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(0.85rem, 1.75vh, 1.4rem) calc(var(--page-x) * 2);
+    width: 80%;
+    justify-self: center;
+    margin-inline: auto;
   }
   @media (max-width: 900px) {
-    .media-pair { grid-template-columns: 1fr; }
+    .media-pair {
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
   }
 
   /* ─── Foundations Before / After ──────────────────────────────────
@@ -954,15 +972,23 @@
     <span class="scroll-cue__arrow">↓</span>
   </div>
 
-  <!-- ══════════════════════ INTRO ══════════════════════
-       Uses the same 3-col grid structure as the numbered sections
-       below. UNESCO title sits in column 1; the lead statement and
-       read-more sit in columns 2-3, top-aligned to the UNESCO title. -->
-  <section class="unesco__intro unesco__grid" aria-label="UNESCO overview">
-    <span class="intro__eyebrow g-span-3">Case Study 01</span>
-    <h1 class="intro__title g-span-1">UNESCO</h1>
-    <div class="g-span-2 intro__body">
-      <p class="intro__lead">
+  <!-- ══════════════════════ HERO COVER ══════════════════════
+       Case Study 01 eyebrow + UNESCO title only. No border-top: the
+       site-header already carries a rule in that exact spot, and
+       stacking another would read as a thicker double line. -->
+  <section class="unesco__intro" aria-label="UNESCO cover">
+    <span class="intro__eyebrow">Case Study 01</span>
+    <h1 class="intro__title">UNESCO</h1>
+  </section>
+
+  <!-- ══════════════════════ 01 · OVERVIEW ══════════════════════
+       Standard 3-col grid section: label in col 1, statement +
+       read-more in cols 2-3. Statement inherits the shared .statement
+       size, so the hero context now matches every section below it. -->
+  <section class="unesco__overview unesco__grid" aria-label="Overview">
+    <p class="section-label g-span-1"><span class="section-label__num">01</span>Overview</p>
+    <div class="g-span-2">
+      <p class="statement">
         The creation of an identity system where UNESCO feels just as
         <em>human as what it protects</em>.
       </p>
@@ -985,7 +1011,7 @@
        rhythm stays identical to the chapters below. -->
   <section class="unesco__foundations unesco__grid" aria-label="Foundation">
     <!-- Foundation context leads the section. -->
-    <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundation</p>
+    <p class="section-label g-span-1"><span class="section-label__num">02</span>Foundation</p>
     <div class="g-span-2">
       <p class="statement">
         An identity that excludes no one, and <em>invites everyone</em>.
@@ -1002,13 +1028,22 @@
       </div>
     </div>
 
-    <!-- Logo reveal video — the identity in motion after the context. -->
-    <figure class="media media--wide g-span-3">
-      <video class="media__video"
-             autoplay muted loop playsinline preload="auto"
+    <!-- Logo reveal — ping-pong playback: forward video plays, 2s
+         pause, reversed video plays, 2s pause, repeat. Controls are
+         hidden and pointer-events are off so the viewer can't play,
+         pause or scrub. JS in the <script> block below drives the
+         cycle via each video's `ended` event + setTimeout. -->
+    <figure class="media media--wide g-span-3 logo-reveal">
+      <video class="media__video logo-reveal__fwd"
+             muted playsinline preload="auto"
              disablepictureinpicture disableremoteplayback
              aria-label="UNESCO logo reveal animation">
         <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
+      </video>
+      <video class="media__video logo-reveal__rev" aria-hidden="true"
+             muted playsinline preload="auto"
+             disablepictureinpicture disableremoteplayback>
+        <source src="/ASSETS/IMAGES/UNESCO/logo-reveal-reverse.mp4" type="video/mp4">
       </video>
     </figure>
 
@@ -1031,14 +1066,13 @@
     </div>
   </section>
 
-  <!-- ══════════════════ 02 · INTERACTION ══════════════════
-       Uses the same 3-col grid structure as the numbered sections
-       below (03 Palette, 04 Iconography, etc.). -->
+  <!-- ══════════════════ 03 · INTERACTION ══════════════════
+       Uses the same 3-col grid structure as the numbered sections. -->
   <section class="unesco__atlas unesco__grid" aria-label="Interaction">
-    <p class="section-label g-span-1"><span class="section-label__num">02</span>Interaction</p>
+    <p class="section-label g-span-1"><span class="section-label__num">03</span>Interaction</p>
     <div class="g-span-2">
       <p class="statement">
-        A digital window into <em>your world</em>.
+        A digital window into the world happening <em>all around you</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
         <span>Read more</span>
@@ -1067,12 +1101,11 @@
        picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
 
-    <!-- ─── 03 · Palette ─────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">03</span>Palette</p>
+    <!-- ─── 04 · Palette ─────────────────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">04</span>Palette</p>
     <div class="g-span-2">
-      <p class="statement">
-        A hue palette that is an homage to our shared home.
-        <em>Planet Earth</em>.
+      <p class="statement" style="text-wrap: pretty;">
+        A hue palette that is an homage to our shared home. <em>Planet Earth</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-palette">
         <span>Read more</span>
@@ -1128,10 +1161,10 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 04 · Iconography ─────────────────────────────────────────
+    <!-- ─── 05 · Iconography ─────────────────────────────────────────
          Sits directly below Palette so the identity system
          (color + marks) reads as one continuous chapter. -->
-    <p class="section-label g-span-1"><span class="section-label__num">04</span>Iconography</p>
+    <p class="section-label g-span-1"><span class="section-label__num">05</span>Iconography</p>
     <div class="g-span-2">
       <p class="statement">
         Taken apart and rebuilt, the new logo became
@@ -1148,17 +1181,18 @@
       </div>
     </div>
 
-    <!-- Media 04 — Iconography overview, 16:9 full-width -->
+    <!-- Media 05 — Iconography overview, 16:9 full-width -->
     <figure class="media media--wide g-span-3">
       <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
     </figure>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Typography ────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">05</span>Typography</p>
+    <!-- ─── 06 · Typography ────────────────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">06</span>Typography</p>
     <div class="g-span-2">
       <p class="statement">
-        How far can the logo <em>be pushed</em>?
+        A system must be able to flex. So, how far can the logo
+        <em>be pushed</em>?
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
         <span>Read more</span>
@@ -1184,8 +1218,8 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 06 · Applications (three-image row) ──────────────────── -->
-    <p class="section-label g-span-3"><span class="section-label__num">06</span>Applications</p>
+    <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
+    <p class="section-label g-span-3"><span class="section-label__num">07</span>Applications</p>
 
     <!-- Each cell holds two stacked images that crossfade on a shared
          10s cycle: round 1 holds for ~5s, graceful 1s fade to round 2,
@@ -1207,8 +1241,8 @@
     </figure>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 07 · Celebrating 80 Years ────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">07</span>Celebrating 80 Years</p>
+    <!-- ─── 08 · Celebrating 80 Years ────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">08</span>Celebrating 80 Years</p>
     <div class="g-span-2">
       <p class="statement">
         I chose to make printed tangible matter that spoke to 80
@@ -1329,6 +1363,36 @@
         }
       };
       window.addEventListener('scroll', hideScrollCue, { passive: true });
+    }
+
+    /* Logo reveal ping-pong — play forward video to end, pause 2s,
+       play reverse video to end, pause 2s, repeat. Each video's
+       `ended` event advances the cycle. */
+    var logoReveal = document.querySelector('.logo-reveal');
+    if (logoReveal) {
+      var fwd = logoReveal.querySelector('.logo-reveal__fwd');
+      var rev = logoReveal.querySelector('.logo-reveal__rev');
+      if (fwd && rev) {
+        var PAUSE_MS = 2000;
+        var playForward = function () {
+          logoReveal.classList.remove('is-rev');
+          try { fwd.currentTime = 0; } catch (e) {}
+          var p = fwd.play();
+          if (p && typeof p.catch === 'function') { p.catch(function () {}); }
+        };
+        var playReverse = function () {
+          logoReveal.classList.add('is-rev');
+          try { rev.currentTime = 0; } catch (e) {}
+          var p = rev.play();
+          if (p && typeof p.catch === 'function') { p.catch(function () {}); }
+        };
+        fwd.addEventListener('ended', function () { setTimeout(playReverse, PAUSE_MS); });
+        rev.addEventListener('ended', function () { setTimeout(playForward, PAUSE_MS); });
+        /* Kick off once both videos have enough data to play. */
+        var kick = function () { playForward(); };
+        if (fwd.readyState >= 2) { kick(); }
+        else { fwd.addEventListener('loadeddata', kick, { once: true }); }
+      }
     }
 
     /* Palette grid — reveal the swatches in sequence once the grid
