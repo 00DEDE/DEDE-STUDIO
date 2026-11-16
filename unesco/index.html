@@ -83,6 +83,7 @@
   .unesco__hero,
   .unesco__atlas,
   .unesco__grid,
+  .unesco__foundations,
   .unesco__closing,
   .pager,
   body > .site-footer {
@@ -409,15 +410,17 @@
     aspect-ratio: 4 / 3;
   }
   .media--wide     { aspect-ratio: 16 / 9; }
-  /* Full-width singular media inside the 3-col grid (logo-reveal,
-     palette billboard, iconography overview). Capped at 75vh so the
-     whole piece is visible in a single viewport without expanding. The
-     cell is centered inside its 3-col span when the cap kicks in.
+  /* Full-width singular media inside the Foundations section and the
+     3-col grid (logo-reveal, palette billboard, iconography overview).
+     Capped at 75vh so the whole piece is visible in a single viewport
+     without expanding. Centered inside its span when the cap kicks in.
      Does NOT apply to the 3-up slideshows (.media--square), so the
      bottom slideshow rows stay untouched. */
+  .unesco__foundations > .media--wide,
   .unesco__grid > .media--wide {
     width: min(100%, calc(75vh * 16 / 9));
     justify-self: center;
+    margin-inline: auto;
   }
   .media--cinema   { aspect-ratio: 21 / 9; }
   .media--square   { aspect-ratio: 1 / 1; }
@@ -776,17 +779,42 @@
 
     <dl class="intro__meta">
       <div><dt>Project</dt><dd>UNESCO</dd></div>
-      <div><dt>Year</dt><dd>2026</dd></div>
-      <div><dt>Function</dt><dd>Branding &amp; Interaction</dd></div>
       <div><dt>Category</dt><dd>Cultural Heritage &amp; Awareness</dd></div>
+      <div><dt>Function</dt><dd>Branding &amp; Interaction</dd></div>
+      <div><dt>Year</dt><dd>2026</dd></div>
     </dl>
   </section>
 
-  <!-- ══════════════════════ HERO ══════════════════════ -->
-  <section class="unesco__hero" aria-label="UNESCO cover">
-    <div class="unesco__hero-media">
-      <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
+  <!-- ══════════════════════ 01 · FOUNDATIONS ══════════════════════
+       Moved up to be the first chapter after the intro. Shares the
+       unesco__grid layout so the section-label | statement | media
+       rhythm stays identical to the chapters below. -->
+  <section class="unesco__foundations unesco__grid" aria-label="Foundations">
+    <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundations</p>
+    <div class="g-span-2">
+      <p class="statement">
+        An identity that excludes no one, and <em>invites everyone</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-foundations">
+        <div class="read-more__inner">
+          <p>UNESCO&rsquo;s current logo is a Greco-Roman temple. It speaks from a Western point of view, a blind spot common in design, and leaves much of the world outside its frame. It also reinforces the stereotype UNESCO already struggles with: that it only protects monuments. I set out to create a symbol for all of humanity, one that holds Eastern and Western perspectives alike, excludes no one, and invites everyone.</p>
+          <p>I started by looking outward. What connects us as humans? What patterns do we share? Patterns. Shapes. Repetition. Weaving. Seen across humanity, textiles carry our stories, our pasts, and our futures. The interconnectedness of weaving became the emotional anchor of this rebrand.</p>
+        </div>
+      </div>
     </div>
+
+    <figure class="media media--wide g-span-3">
+      <video class="media__video"
+             autoplay muted loop playsinline preload="auto"
+             disablepictureinpicture disableremoteplayback
+             aria-label="UNESCO logo reveal animation">
+        <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
+      </video>
+    </figure>
   </section>
 
   <!-- ══════════════════ INTERACTIVE ATLAS ══════════════════ -->
@@ -811,42 +839,11 @@
     </figure>
   </section>
 
-  <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════ -->
+  <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════
+       Foundations (01) now lives above in its own section; the grid
+       picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
 
-    <!-- ─── 01 · Foundations ─────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundations</p>
-    <div class="g-span-2">
-      <p class="statement">
-        Across our existence, we have done one thing. Embed our
-        stories, our pasts, and our futures into <em>textiles</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-foundations">
-        <div class="read-more__inner">
-          <p>The rebranded logomark is, at its core, four interlocking U&rsquo;s coming from all four directions of our world. Each U stands for an area UNESCO protects: Traditions. Languages. Ecosystems. Monuments. Without these four pillars of human history, I believe neither you nor I would have the identity we carry today.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Media 01 — UNESCO logo reveal video. Full-width 16:9 to match
-         Media 02's scale. Alpha channel was composited onto #2491d0
-         background during encoding, so the colored field is baked in
-         (no CSS bg needed). Autoplay + muted + loop; native controls
-         let the viewer pause whenever they want. -->
-    <figure class="media media--wide g-span-3">
-      <video class="media__video"
-             autoplay muted loop playsinline preload="auto"
-             disablepictureinpicture disableremoteplayback
-             aria-label="UNESCO logo reveal animation">
-        <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-      </video>
-    </figure>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 02 · Palette ─────────────────────────────────────────── -->
     <p class="section-label g-span-1"><span class="section-label__num">02</span>Palette</p>
     <div class="g-span-2">
@@ -986,6 +983,16 @@
       <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Celebration 15" />
     </figure>
 
+  </section>
+
+  <!-- ══════════════════════ HERO (final image) ══════════════════════
+       Moved from the top to the very end of the case study, so it is
+       the last image the viewer takes with them before the closing
+       statement. -->
+  <section class="unesco__hero" aria-label="UNESCO cover">
+    <div class="unesco__hero-media">
+      <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
+    </div>
   </section>
 
   <!-- ══════════════════════ CLOSING STATEMENT ══════════════════════ -->
