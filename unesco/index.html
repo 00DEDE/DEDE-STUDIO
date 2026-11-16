@@ -584,6 +584,19 @@
     .palette-swatch__name { transition: opacity 180ms linear; }
   }
 
+  /* ─── Media pair — two side-by-side cells inside a grid section
+     (used by 05 Typography for the two custom typeface specimens).
+     Spans all 3 columns of the main grid and splits into two equal
+     cells with a page-x-sized gap between them. Stacks under 900px. */
+  .media-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.85rem, 1.75vh, 1.4rem) calc(var(--page-x) * 2);
+  }
+  @media (max-width: 900px) {
+    .media-pair { grid-template-columns: 1fr; }
+  }
+
   /* ─── Foundations Before / After ──────────────────────────────────
      Two equal half-width cells sitting side by side with a gap
      between them. Each cell is a label stacked above a square image
@@ -1141,23 +1154,33 @@
     </figure>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Voice ───────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">05</span>Voice</p>
+    <!-- ─── 05 · Typography ────────────────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">05</span>Typography</p>
     <div class="g-span-2">
       <p class="statement">
-        A system that is a continuous reminder for the public and a
-        <em>call-to-action</em>.
+        How far can the logo <em>be pushed</em>?
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-voice">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-voice">
+      <div class="read-more__panel" id="rm-typography">
         <div class="read-more__inner">
-          <p>The typography is direct and inclusive, most evident in the slogan and secondary taglines. &ldquo;The World Needs U&rdquo; is a play on words. Yes, it&rsquo;s the first letter of UNESCO, no coincidence there, but more than that, the slogan is meant to tell the world how much better this life is with you in it.</p>
-          <p>The secondary taglines, &ldquo;Safeguard Humanity&rsquo;s Inheritance&rdquo; and &ldquo;Protect What Makes Us Human,&rdquo; are the calls to action. It is our turn to forge the way forward, with our heritage on our backs. A tree&rsquo;s roots must grow deep into the Earth for its branches to reach into the skies.</p>
+          <p>Well, I kept asking &ldquo;what if?&rdquo; of the modular logo, holding to one rule: no new shapes, only what the logo is made of. That rule produced two typefaces for the identity system: Building Blocks and Woven Textiles.</p>
+          <p>When assets are built well, they flourish in unexpected ways.</p>
         </div>
       </div>
+    </div>
+
+    <!-- Two custom typefaces side by side. Portrait 2:3 to match the
+         PDF page ratio each was exported from. -->
+    <div class="media-pair g-span-3">
+      <figure class="media" style="aspect-ratio: 2 / 3;">
+        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-01.jpg" alt="Custom Typeface 1 — Building Blocks" />
+      </figure>
+      <figure class="media" style="aspect-ratio: 2 / 3;">
+        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-02.jpg" alt="Custom Typeface 2 — Woven Textiles" />
+      </figure>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
