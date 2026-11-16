@@ -51,6 +51,29 @@
     animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* ─── No widows or orphans, ever. text-wrap: pretty reflows the
+     last few lines so a single short word never gets stranded on its
+     own line. Headlines and statements use 'balance' so line lengths
+     even out across all lines. Applied at body level so every piece
+     of running text on the UNESCO page inherits the rule. */
+  body.unesco,
+  body.unesco p,
+  body.unesco dd,
+  body.unesco dt,
+  body.unesco li,
+  body.unesco figcaption,
+  body.unesco span {
+    text-wrap: pretty;
+  }
+  body.unesco .intro__title,
+  body.unesco .intro__lead,
+  body.unesco .statement,
+  body.unesco .statement--closing,
+  body.unesco .pager__title,
+  body.unesco .section-label {
+    text-wrap: balance;
+  }
+
   html { background: var(--bg); }
   html, body {
     margin: 0;
@@ -297,15 +320,18 @@
 
   /* ─── Read-more — refined text link with an animated horizontal
      rule (Casa's "Read More" pattern). Keeps type as the star; the
-     button reads as a footnote rather than furniture. */
+     button reads as a footnote rather than furniture. A subtle cyan
+     breathing glow (kin to the nav pill's halo) signals it is live. */
   .read-more {
     display: inline-flex;
     align-items: center;
     gap: 0.85rem;
     margin-top: clamp(1.25rem, 2.5vh, 2rem);
-    padding: 0.4rem 0;
+    margin-left: -0.75rem;
+    padding: 0.45rem 0.75rem;
     background: none;
     border: none;
+    border-radius: 999px;
     color: rgba(var(--fg-rgb), 0.65);
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
@@ -313,7 +339,26 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     cursor: var(--cursor-url) 12 12, pointer;
-    transition: color 320ms cubic-bezier(0.4, 0, 0.2, 1);
+    animation: read-more-glow-breathe 3.6s ease-in-out infinite;
+    transition:
+      color      320ms cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes read-more-glow-breathe {
+    0%, 100% { box-shadow: 0 0 10px 0 rgba(0, 222, 222, 0.07); }
+    50%      { box-shadow: 0 0 18px 2px rgba(0, 222, 222, 0.20); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .read-more {
+      animation: none;
+      box-shadow: 0 0 12px 1px rgba(0, 222, 222, 0.10);
+    }
+  }
+  .read-more:hover,
+  .read-more:focus-visible,
+  .read-more[aria-expanded="true"] {
+    animation: none;
+    box-shadow: 0 0 22px 3px rgba(0, 222, 222, 0.32);
   }
   .read-more__line {
     display: inline-block;
@@ -421,6 +466,28 @@
     width: min(100%, calc(75vh * 16 / 9));
     justify-self: center;
     margin-inline: auto;
+  }
+
+  /* ─── Foundations Before / After ──────────────────────────────────
+     Two equal half-width cells sitting side by side with a gap
+     between them. Each cell is a label stacked above a square image
+     so the comparison reads at a glance. Spans all 3 columns of the
+     Foundations grid (g-span-3) and uses its own 2-col subgrid. */
+  .foundations-ba {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.85rem, 1.75vh, 1.4rem) calc(var(--page-x) * 2);
+  }
+  .foundations-ba__col {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.85rem, 1.5vh, 1.2rem);
+  }
+  .foundations-ba__label {
+    padding-top: 0;
+  }
+  @media (max-width: 900px) {
+    .foundations-ba { grid-template-columns: 1fr; }
   }
   .media--cinema   { aspect-ratio: 21 / 9; }
   .media--square   { aspect-ratio: 1 / 1; }
@@ -777,12 +844,6 @@
       </div>
     </div>
 
-    <dl class="intro__meta">
-      <div><dt>Project</dt><dd>UNESCO</dd></div>
-      <div><dt>Category</dt><dd>Cultural Heritage &amp; Awareness</dd></div>
-      <div><dt>Function</dt><dd>Branding &amp; Interaction</dd></div>
-      <div><dt>Year</dt><dd>2026</dd></div>
-    </dl>
   </section>
 
   <!-- ══════════════════════ 01 · FOUNDATIONS ══════════════════════
@@ -790,6 +851,18 @@
        unesco__grid layout so the section-label | statement | media
        rhythm stays identical to the chapters below. -->
   <section class="unesco__foundations unesco__grid" aria-label="Foundations">
+    <!-- Logo reveal video — leads the section so the viewer sees the
+         identity in motion before reading about it. -->
+    <figure class="media media--wide g-span-3">
+      <video class="media__video"
+             autoplay muted loop playsinline preload="auto"
+             disablepictureinpicture disableremoteplayback
+             aria-label="UNESCO logo reveal animation">
+        <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
+      </video>
+    </figure>
+
+    <!-- Foundations context follows the video. -->
     <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundations</p>
     <div class="g-span-2">
       <p class="statement">
@@ -807,26 +880,35 @@
       </div>
     </div>
 
-    <figure class="media media--wide g-span-3">
-      <video class="media__video"
-             autoplay muted loop playsinline preload="auto"
-             disablepictureinpicture disableremoteplayback
-             aria-label="UNESCO logo reveal animation">
-        <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-      </video>
-    </figure>
+    <!-- BEFORE / AFTER comparison. Two equal half-width cells with a
+         gap between them. Labels above each use the same tracked-out
+         section-label style as "Foundations". -->
+    <div class="foundations-ba g-span-3">
+      <div class="foundations-ba__col">
+        <p class="section-label foundations-ba__label">Before</p>
+        <figure class="media">
+          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/before.jpg" alt="UNESCO existing logo — Greco-Roman temple" />
+        </figure>
+      </div>
+      <div class="foundations-ba__col">
+        <p class="section-label foundations-ba__label">After</p>
+        <figure class="media">
+          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/after.jpg" alt="UNESCO rebranded logomark — four interlocking U's" />
+        </figure>
+      </div>
+    </div>
   </section>
 
   <!-- ══════════════════ INTERACTIVE ATLAS ══════════════════ -->
   <section class="unesco__atlas" aria-label="Interactive Atlas">
-    <h2 class="statement">Interactive Atlas</h2>
+    <h2 class="statement">The <em>Digital Atlas</em>.</h2>
     <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
       <span>Read more</span>
       <span class="read-more__line" aria-hidden="true"></span>
     </button>
     <div class="read-more__panel" id="rm-atlas">
       <div class="read-more__inner">
-        <p>To celebrate UNESCO&rsquo;s 80th anniversary, I proposed an interactive atlas. A piece that invites the audience to activate different parts of the world and witness just how interconnected we are in the fabric of human experience, and how crucial it is to protect what makes us human.</p>
+        <p>To mark UNESCO&rsquo;s 80th anniversary, I designed and built the Digital Atlas, an installation meant to be touched as much as seen. A tabletop map presents the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. When visitors place an icon on the map, the overhead display opens a window into that piece of humanity. The Digital Atlas shows how connected we are, how distinct we are, and why what makes us human is worth preserving.</p>
       </div>
     </div>
     <figure class="unesco__atlas-media">
