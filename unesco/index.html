@@ -223,6 +223,13 @@
     padding: var(--stack-y) var(--page-x);
     box-sizing: border-box;
   }
+  /* Atlas sits outside the main 3-col grid, so its section-label
+     needs explicit breathing room above the statement. */
+  .unesco__atlas > .section-label {
+    display: block;
+    margin: 0 0 clamp(1rem, 2vh, 1.75rem);
+    padding-top: 0;
+  }
   .unesco__atlas-media {
     position: relative;
     /* Capped at 75vh * 16/9 so the atlas video fits in a single
@@ -448,6 +455,109 @@
     width: min(100%, calc(75vh * 16 / 9));
     justify-self: center;
     margin-inline: auto;
+  }
+
+  /* ─── Interactive Palette ─────────────────────────────────────────
+     Six swatches in a 3×2 grid (desktop) / 2×3 (mobile). Each cell
+     reveals in sequence once the grid enters the viewport (.is-in
+     class added by IntersectionObserver). Hover/focus lays a subtle
+     scrim over the color and surfaces its name centered inside. */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: clamp(6px, 0.5vw, 12px);
+    width: min(100%, calc(75vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    justify-self: center;
+    margin-inline: auto;
+  }
+  .palette-swatch {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: var(--swatch);
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
+    cursor: var(--cursor-url) 12 12, pointer;
+    opacity: 0;
+    transform: translateY(14px);
+    will-change: transform, opacity;
+  }
+  .palette-grid.is-in .palette-swatch {
+    animation: palette-reveal 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .palette-grid.is-in .palette-swatch:nth-child(1) { animation-delay:   0ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(2) { animation-delay: 110ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(3) { animation-delay: 220ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(4) { animation-delay: 330ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(5) { animation-delay: 440ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(6) { animation-delay: 550ms; }
+  @keyframes palette-reveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+  .palette-swatch__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.32);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .palette-swatch__name {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.9rem, 1.4vw, 1.25rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition:
+      opacity   360ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .palette-swatch:hover .palette-swatch__scrim,
+  .palette-swatch:focus-visible .palette-swatch__scrim {
+    opacity: 1;
+  }
+  .palette-swatch:hover .palette-swatch__name,
+  .palette-swatch:focus-visible .palette-swatch__name {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .palette-swatch:focus-visible { outline: none; }
+
+  @media (max-width: 720px) {
+    .palette-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      aspect-ratio: 2 / 3;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .palette-swatch {
+      animation: none !important;
+      opacity: 1;
+      transform: none;
+    }
+    .palette-swatch__name {
+      transition: opacity 180ms linear;
+    }
   }
 
   /* ─── Foundations Before / After ──────────────────────────────────
@@ -809,7 +919,7 @@
 
   <!-- ══════════════════════ INTRO ══════════════════════ -->
   <section class="unesco__intro" aria-label="UNESCO overview">
-    <span class="intro__eyebrow">Case Study · 001</span>
+    <span class="intro__eyebrow">Case Study 01</span>
     <h1 class="intro__title">UNESCO</h1>
     <p class="intro__lead">
       Creating a new identity system to help UNESCO feel
@@ -832,9 +942,9 @@
        Moved up to be the first chapter after the intro. Shares the
        unesco__grid layout so the section-label | statement | media
        rhythm stays identical to the chapters below. -->
-  <section class="unesco__foundations unesco__grid" aria-label="Foundations">
-    <!-- Foundations context leads the section. -->
-    <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundations</p>
+  <section class="unesco__foundations unesco__grid" aria-label="Foundation">
+    <!-- Foundation context leads the section. -->
+    <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundation</p>
     <div class="g-span-2">
       <p class="statement">
         An identity that excludes no one, and <em>invites everyone</em>.
@@ -880,8 +990,9 @@
     </div>
   </section>
 
-  <!-- ══════════════════ INTERACTIVE ATLAS ══════════════════ -->
-  <section class="unesco__atlas" aria-label="Interactive Atlas">
+  <!-- ══════════════════ 02 · INTERACTION ══════════════════ -->
+  <section class="unesco__atlas" aria-label="Interaction">
+    <p class="section-label"><span class="section-label__num">02</span>Interaction</p>
     <h2 class="statement">The <em>Digital Atlas</em>.</h2>
     <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
       <span>Read more</span>
@@ -907,8 +1018,8 @@
        picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
 
-    <!-- ─── 02 · Palette ─────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">02</span>Palette</p>
+    <!-- ─── 03 · Palette ─────────────────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">03</span>Palette</p>
     <div class="g-span-2">
       <p class="statement">
         A hue palette that is an homage to our shared home.
@@ -920,21 +1031,72 @@
       </button>
       <div class="read-more__panel" id="rm-palette">
         <div class="read-more__inner">
-          <p>The palette has two sides: what can be seen and what can be felt. Blue, Green, and Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
+          <p>The palette has two sides: what can be seen and what can be felt. World Blue, Sea Green, and Sol Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
         </div>
       </div>
     </div>
 
-    <!-- Media 02 — UNESCO palette billboard, 16:9 aspect matches
-         the image exactly. object-fit: contain + matching aspect =
-         image renders at 100% scale with no crop or zoom. -->
+    <!-- Interactive palette — six color swatches in a 3×2 grid. Each
+         swatch reveals in sequence when the grid enters the viewport
+         (via IntersectionObserver → .is-in). Hover/focus lays a
+         slightly darker scrim over the color and surfaces its name
+         centered inside the cell. -->
+    <div class="palette-grid g-span-3" role="list" aria-label="UNESCO color palette">
+      <button class="palette-swatch" type="button" style="--swatch: #1E5B9E;" aria-label="World Blue" role="listitem">
+        <span class="palette-swatch__scrim" aria-hidden="true"></span>
+        <span class="palette-swatch__name">World Blue</span>
+      </button>
+      <button class="palette-swatch" type="button" style="--swatch: #3A7D5E;" aria-label="Sea Green" role="listitem">
+        <span class="palette-swatch__scrim" aria-hidden="true"></span>
+        <span class="palette-swatch__name">Sea Green</span>
+      </button>
+      <button class="palette-swatch" type="button" style="--swatch: #E8AE2E;" aria-label="Sol Yellow" role="listitem">
+        <span class="palette-swatch__scrim" aria-hidden="true"></span>
+        <span class="palette-swatch__name">Sol Yellow</span>
+      </button>
+      <button class="palette-swatch" type="button" style="--swatch: #9E9A8F;" aria-label="Ash Grey" role="listitem">
+        <span class="palette-swatch__scrim" aria-hidden="true"></span>
+        <span class="palette-swatch__name">Ash Grey</span>
+      </button>
+      <button class="palette-swatch" type="button" style="--swatch: #8C5A3A;" aria-label="Umber Brown" role="listitem">
+        <span class="palette-swatch__scrim" aria-hidden="true"></span>
+        <span class="palette-swatch__name">Umber Brown</span>
+      </button>
+      <button class="palette-swatch" type="button" style="--swatch: #3C2518;" aria-label="Deep Earth" role="listitem">
+        <span class="palette-swatch__scrim" aria-hidden="true"></span>
+        <span class="palette-swatch__name">Deep Earth</span>
+      </button>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 04 · Iconography ─────────────────────────────────────────
+         Sits directly below Palette so the identity system
+         (color + marks) reads as one continuous chapter. -->
+    <p class="section-label g-span-1"><span class="section-label__num">04</span>Iconography</p>
+    <div class="g-span-2">
+      <p class="statement">
+        Taken apart and rebuilt, the new logo became
+        <em>so much more than one single asset</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-iconography">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-iconography">
+        <div class="read-more__inner">
+          <p>True to the craft of textiles, I unraveled the logo and wove it back together, using only its own elements. Taken apart and rebuilt, it became icons for the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. Then I pushed it further into a cast of ten characters who live throughout the system. I call them my new little friends.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Media 04 — Iconography overview, 16:9 full-width -->
     <figure class="media media--wide g-span-3">
-      <img class="media__img" style="object-fit: contain;" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
+      <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
     </figure>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 03 · Voice ───────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">03</span>Voice</p>
+    <!-- ─── 05 · Voice ───────────────────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">05</span>Voice</p>
     <div class="g-span-2">
       <p class="statement">
         A system that is a continuous reminder for the public and a
@@ -953,8 +1115,8 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 04 · Applications (three-image row) ──────────────────── -->
-    <p class="section-label g-span-3"><span class="section-label__num">04</span>Applications</p>
+    <!-- ─── 06 · Applications (three-image row) ──────────────────── -->
+    <p class="section-label g-span-3"><span class="section-label__num">06</span>Applications</p>
 
     <!-- Each cell holds two stacked images that crossfade on a shared
          10s cycle: round 1 holds for ~5s, graceful 1s fade to round 2,
@@ -976,33 +1138,8 @@
     </figure>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Iconography ─────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">05</span>Iconography</p>
-    <div class="g-span-2">
-      <p class="statement">
-        Due to the system being made in a modular manner, it
-        facilitated being able to create custom icons for the
-        <em>4 areas</em> that UNESCO protects.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-iconography">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-iconography">
-        <div class="read-more__inner">
-          <p>Each group (Traditions, Languages, Ecosystems, Monuments) has its own set of icons, each one meant to look and feel like the zone it represents. Then, to add even more human interconnection to the rebrand, the logo gave me a couple of &ldquo;friends.&rdquo;</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Media 05 — Iconography overview, 16:9 full-width -->
-    <figure class="media media--wide g-span-3">
-      <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
-    </figure>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 06 · Celebrating 80 Years ────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">06</span>Celebrating 80 Years</p>
+    <!-- ─── 07 · Celebrating 80 Years ────────────────────────────── -->
+    <p class="section-label g-span-1"><span class="section-label__num">07</span>Celebrating 80 Years</p>
     <div class="g-span-2">
       <p class="statement">
         I chose to make printed tangible matter that spoke to 80
@@ -1123,6 +1260,26 @@
         }
       };
       window.addEventListener('scroll', hideScrollCue, { passive: true });
+    }
+
+    /* Palette grid — reveal the swatches in sequence once the grid
+       enters the viewport. Keeps the animation in sync with when the
+       viewer actually arrives at the Palette section. */
+    var paletteGrid = document.querySelector('.palette-grid');
+    if (paletteGrid) {
+      if ('IntersectionObserver' in window) {
+        var pObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              paletteGrid.classList.add('is-in');
+              pObs.disconnect();
+            }
+          });
+        }, { threshold: 0.25 });
+        pObs.observe(paletteGrid);
+      } else {
+        paletteGrid.classList.add('is-in');
+      }
     }
 
     document.querySelectorAll('.read-more').forEach(function (btn) {
