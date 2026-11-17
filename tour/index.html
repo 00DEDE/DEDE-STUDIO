@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TOUR — IAMDEDE.COM</title>
+<meta name="description" content="A guided auto-tour of the iamdede.com portfolio." />
+<meta name="theme-color" content="#050505" />
+<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/favicon-96.png" />
+
+<script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="/theme.css" />
+
+<style>
+  /* ─── Live-site auto-tour ────────────────────────────────────────
+     Renders the actual site inside a full-viewport iframe and
+     auto-drives it: navigates between pages, scrolls to landmark
+     elements, and shows a caption for each step. Same-origin, so we
+     can reach into iframe.contentWindow to scrollTo + flash a target.
+     User can Pause / Prev / Next / Exit; keyboard: Space, ←, →, Esc. */
+  :root { color-scheme: dark; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #050505;
+    color: #f5f5f5;
+    font-family: 'ABC Oracle', ui-sans-serif, system-ui, sans-serif;
+    overflow: hidden;
+  }
+
+  .tour {
+    position: fixed;
+    inset: 0;
+    display: block;
+  }
+
+  .tour__frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #050505;
+    display: block;
+  }
+
+  /* ─── Loading veil — covers the iframe while a new page is
+     loading so viewers don't see a flash of white or a mid-scroll. */
+  .tour__loader {
+    position: absolute;
+    inset: 0;
+    background: #050505;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 240ms ease-in-out;
+    z-index: 5;
+  }
+  .tour__loader.is-on {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .tour__loader-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent, #00dede);
+    animation: tour-pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes tour-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.35); }
+  }
+
+  /* ─── Caption overlay — gradient fades the top of the iframe into
+     black so the caption reads cleanly over any content. */
+  .tour__caption-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: clamp(1.25rem, 3vh, 2.25rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 5vh, 4rem);
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.55) 55%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    pointer-events: none;
+    z-index: 6;
+    text-align: center;
+  }
+  .tour__eyebrow {
+    display: inline-block;
+    font-size: clamp(0.62rem, 1vw, 0.72rem);
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent, #00dede);
+    margin-bottom: 0.65rem;
+  }
+  .tour__caption {
+    font-size: clamp(1.1rem, 1.9vw, 1.55rem);
+    line-height: 1.35;
+    max-width: 48rem;
+    margin: 0 auto;
+    color: #f5f5f5;
+    text-wrap: pretty;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 360ms ease-out, transform 360ms ease-out;
+  }
+  .tour__caption.is-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── Progress bar — pinned to the very top. The fill smoothly
+     grows from 0 to 100% over each step's dwell time. */
+  .tour__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.12);
+    z-index: 7;
+  }
+  .tour__bar-fill {
+    height: 100%;
+    width: 0;
+    background: var(--accent, #00dede);
+    transition: width linear;
+  }
+  .tour__bar-fill.is-reset {
+    transition: none;
+  }
+
+  /* ─── Control bar — pinned bottom; same gradient-into-black
+     treatment as the caption. */
+  .tour__controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: clamp(2rem, 4vh, 3rem) clamp(1rem, 4vw, 3rem) clamp(1rem, 2.5vh, 1.75rem);
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.78) 0%,
+      rgba(0, 0, 0, 0.5)  55%,
+      rgba(0, 0, 0, 0)   100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.85rem, 1.75vw, 1.5rem);
+    z-index: 6;
+  }
+  .tour__step {
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(0.7rem, 1.1vw, 0.78rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245, 245, 245, 0.7);
+    min-width: 6ch;
+    text-align: center;
+  }
+  .tour__btn {
+    appearance: none;
+    background: transparent;
+    border: 1px solid rgba(245, 245, 245, 0.35);
+    color: #f5f5f5;
+    font: inherit;
+    font-size: clamp(0.72rem, 1.1vw, 0.82rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 180ms, border-color 180ms, background 180ms, transform 180ms;
+  }
+  .tour__btn:hover,
+  .tour__btn:focus-visible {
+    color: #0a0a0a;
+    background: var(--accent, #00dede);
+    border-color: var(--accent, #00dede);
+    outline: none;
+    transform: translateY(-1px);
+  }
+  .tour__btn[data-primary] {
+    border-color: var(--accent, #00dede);
+    color: var(--accent, #00dede);
+  }
+  .tour__btn[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ─── End-of-tour card — shown after the final step; a quiet nudge
+     to visit a page unaided. */
+  .tour__end {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.6rem;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(5, 5, 5, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 400ms ease-in-out;
+    z-index: 8;
+  }
+  .tour__end.is-on {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .tour__end-title {
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+    letter-spacing: 0.02em;
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+  .tour__end-sub {
+    color: rgba(245, 245, 245, 0.7);
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+  .tour__end-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  @media (max-width: 640px) {
+    .tour__btn { padding: 0.5rem 0.85rem; }
+    .tour__controls { gap: 0.6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tour__caption { transition: none; transform: none; }
+    .tour__bar-fill { transition: none !important; }
+    .tour__loader-dot { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <main class="tour" role="main" aria-label="Site tour">
+    <iframe
+      id="tour-frame"
+      class="tour__frame"
+      title="iamdede.com site tour"
+      src="about:blank"
+    ></iframe>
+
+    <div class="tour__loader" id="tour-loader" aria-hidden="true">
+      <span class="tour__loader-dot"></span>
+    </div>
+
+    <div class="tour__bar" aria-hidden="true">
+      <div class="tour__bar-fill" id="tour-bar-fill"></div>
+    </div>
+
+    <div class="tour__caption-wrap">
+      <span class="tour__eyebrow" id="tour-eyebrow">The Tour</span>
+      <p class="tour__caption" id="tour-caption" aria-live="polite">Welcome.</p>
+    </div>
+
+    <div class="tour__controls" role="group" aria-label="Tour controls">
+      <button type="button" class="tour__btn" id="tour-prev" aria-label="Previous step">Prev</button>
+      <button type="button" class="tour__btn" data-primary id="tour-play" aria-label="Pause the tour">Pause</button>
+      <button type="button" class="tour__btn" id="tour-next" aria-label="Next step">Next</button>
+      <span class="tour__step" id="tour-step">01 / 08</span>
+      <button type="button" class="tour__btn" id="tour-exit" aria-label="Exit the tour and go home">Exit</button>
+    </div>
+
+    <div class="tour__end" id="tour-end" aria-hidden="true">
+      <h1 class="tour__end-title">That's the tour.</h1>
+      <p class="tour__end-sub">Thanks for walking through. From here, pick any page and keep exploring.</p>
+      <div class="tour__end-row">
+        <a class="tour__btn" data-primary href="/home/">Home</a>
+        <a class="tour__btn" href="/work/">Work</a>
+        <a class="tour__btn" href="/unesco/">UNESCO case study</a>
+        <button type="button" class="tour__btn" id="tour-restart">Replay tour</button>
+      </div>
+    </div>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Each step runs once; after dwell ms the next step fires.
+     - url:      page to show in the iframe
+     - target:   optional CSS selector to scroll to inside the iframe
+     - scroll:   fallback scrollY in px when no target selector matches
+     - caption:  copy shown over the top gradient
+     - eyebrow:  label above the caption (section name)
+     - dwell:    time to linger on this step, in ms */
+  var STEPS = [
+    {
+      url: '/home/',
+      scroll: 0,
+      eyebrow: 'Home',
+      caption: "Welcome to iamdede.com, the portfolio of David Gomez. This is where the whole studio begins.",
+      dwell: 5500
+    },
+    {
+      url: '/home/',
+      scroll: 0,
+      eyebrow: 'Home · Menu',
+      caption: "A single pill menu opens the four doorways of the site: Home, Work, About, Play.",
+      dwell: 5500
+    },
+    {
+      url: '/work/',
+      scroll: 0,
+      eyebrow: 'Work',
+      caption: "Work holds the case studies: each project treated long-form, with its own page and its own rules.",
+      dwell: 5500
+    },
+    {
+      url: '/unesco/',
+      scroll: 0,
+      eyebrow: 'Case Study 01 · UNESCO',
+      caption: "UNESCO, the first case study. An identity rework asking the organization to feel as human as what it protects.",
+      dwell: 6500
+    },
+    {
+      url: '/unesco/',
+      target: '.palette-grid',
+      eyebrow: 'UNESCO · Palette',
+      caption: "The brand palette, animated to reveal each color in sequence. Hover a swatch to read its name.",
+      dwell: 6500
+    },
+    {
+      url: '/unesco/',
+      target: '.scans',
+      eyebrow: 'UNESCO · Notebook',
+      caption: "Behind every project: sketches, scans, and the false starts. Two rows auto-scroll in opposite directions.",
+      dwell: 6000
+    },
+    {
+      url: '/unesco/',
+      target: '#atlas-book',
+      eyebrow: 'UNESCO · The Printed Atlas',
+      caption: "An interactive flipbook of the printed atlas. Forty-eight pages, clicked through like the real thing.",
+      dwell: 7500
+    },
+    {
+      url: '/about/',
+      scroll: 0,
+      eyebrow: 'About',
+      caption: "About, the person behind the studio, and how to get in touch.",
+      dwell: 5500
+    }
+  ];
+
+  var frame    = document.getElementById('tour-frame');
+  var loader   = document.getElementById('tour-loader');
+  var caption  = document.getElementById('tour-caption');
+  var eyebrow  = document.getElementById('tour-eyebrow');
+  var stepLbl  = document.getElementById('tour-step');
+  var barFill  = document.getElementById('tour-bar-fill');
+  var prevBtn  = document.getElementById('tour-prev');
+  var nextBtn  = document.getElementById('tour-next');
+  var playBtn  = document.getElementById('tour-play');
+  var exitBtn  = document.getElementById('tour-exit');
+  var endCard  = document.getElementById('tour-end');
+  var restart  = document.getElementById('tour-restart');
+
+  var idx       = 0;
+  var paused    = false;
+  var currentUrl = null;     // last URL set on the iframe
+  var frameReadyResolve = null;
+  var dwellTimer = null;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  function updateStepLabel() {
+    stepLbl.textContent = pad(idx + 1) + ' / ' + pad(STEPS.length);
+    prevBtn.disabled = (idx === 0);
+    nextBtn.disabled = false; // the last step still advances — to the end card
+  }
+
+  function setLoader(on) {
+    loader.classList.toggle('is-on', !!on);
+  }
+
+  function setCaption(text, label) {
+    eyebrow.textContent = label || 'The Tour';
+    caption.classList.remove('is-in');
+    // Next frame, swap text + fade back in
+    requestAnimationFrame(function () {
+      caption.textContent = text;
+      requestAnimationFrame(function () {
+        caption.classList.add('is-in');
+      });
+    });
+  }
+
+  function resetBar() {
+    barFill.classList.add('is-reset');
+    barFill.style.width = '0%';
+    // Next frame, remove the override so the subsequent width change animates.
+    requestAnimationFrame(function () {
+      barFill.classList.remove('is-reset');
+    });
+  }
+
+  function animateBar(ms) {
+    barFill.style.transitionDuration = ms + 'ms';
+    // Trigger on next frame so the transition registers.
+    requestAnimationFrame(function () {
+      barFill.style.width = '100%';
+    });
+  }
+
+  function pauseBar() {
+    // Freeze the bar at its current computed width.
+    var w = getComputedStyle(barFill).width;
+    barFill.classList.add('is-reset');
+    barFill.style.width = w;
+  }
+
+  function resumeBar(remainingMs) {
+    requestAnimationFrame(function () {
+      barFill.classList.remove('is-reset');
+      barFill.style.transitionDuration = remainingMs + 'ms';
+      requestAnimationFrame(function () {
+        barFill.style.width = '100%';
+      });
+    });
+  }
+
+  function waitForFrameLoad() {
+    return new Promise(function (resolve) {
+      frameReadyResolve = resolve;
+      var fallback = window.setTimeout(function () {
+        if (frameReadyResolve) {
+          var r = frameReadyResolve;
+          frameReadyResolve = null;
+          r();
+        }
+      }, 4000);
+      frame.addEventListener('load', function onLoad() {
+        frame.removeEventListener('load', onLoad);
+        window.clearTimeout(fallback);
+        if (frameReadyResolve) {
+          var r = frameReadyResolve;
+          frameReadyResolve = null;
+          // Small settle so first paint completes before scroll.
+          window.setTimeout(r, 180);
+        }
+      }, { once: true });
+    });
+  }
+
+  function scrollTargetInFrame(step) {
+    try {
+      var doc = frame.contentDocument;
+      var win = frame.contentWindow;
+      if (!doc || !win) return;
+      var y = 0;
+      if (step.target) {
+        var el = doc.querySelector(step.target);
+        if (el) {
+          var rect = el.getBoundingClientRect();
+          var header = doc.querySelector('.site-header');
+          var headerH = header ? header.getBoundingClientRect().height : 0;
+          y = (win.scrollY || win.pageYOffset || 0) + rect.top - headerH - 24;
+        } else if (typeof step.scroll === 'number') {
+          y = step.scroll;
+        }
+      } else if (typeof step.scroll === 'number') {
+        y = step.scroll;
+      }
+      win.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    } catch (e) { /* cross-origin should never happen here, ignore */ }
+  }
+
+  function run(stepIdx) {
+    window.clearTimeout(dwellTimer);
+    dwellTimer = null;
+    if (stepIdx >= STEPS.length) { finish(); return; }
+    idx = stepIdx;
+    updateStepLabel();
+    var step = STEPS[idx];
+
+    // Only reload the iframe when the URL actually changes; a same-URL
+    // step just scrolls, which feels much more fluid than a reload.
+    var needsNav = (step.url !== currentUrl);
+    resetBar();
+
+    var arm = function () {
+      scrollTargetInFrame(step);
+      setCaption(step.caption, step.eyebrow);
+      if (!paused) animateBar(step.dwell);
+      if (!paused) {
+        dwellTimer = window.setTimeout(function () { run(idx + 1); }, step.dwell);
+      }
+    };
+
+    if (needsNav) {
+      setLoader(true);
+      var p = waitForFrameLoad();
+      currentUrl = step.url;
+      frame.src = step.url;
+      p.then(function () {
+        setLoader(false);
+        arm();
+      });
+    } else {
+      arm();
+    }
+  }
+
+  function finish() {
+    window.clearTimeout(dwellTimer);
+    barFill.style.width = '100%';
+    setLoader(false);
+    endCard.classList.add('is-on');
+    endCard.setAttribute('aria-hidden', 'false');
+  }
+
+  function togglePause() {
+    paused = !paused;
+    playBtn.textContent = paused ? 'Play' : 'Pause';
+    playBtn.setAttribute('aria-label', paused ? 'Resume the tour' : 'Pause the tour');
+    if (paused) {
+      window.clearTimeout(dwellTimer);
+      dwellTimer = null;
+      pauseBar();
+    } else {
+      // Resume: figure out how much of the step remains, roughly.
+      var step = STEPS[idx];
+      var w = parseFloat(getComputedStyle(barFill).width) /
+              parseFloat(getComputedStyle(barFill.parentNode).width);
+      var remaining = Math.max(400, (1 - (w || 0)) * step.dwell);
+      resumeBar(remaining);
+      dwellTimer = window.setTimeout(function () { run(idx + 1); }, remaining);
+    }
+  }
+
+  prevBtn.addEventListener('click', function () {
+    if (idx === 0) return;
+    endCard.classList.remove('is-on');
+    endCard.setAttribute('aria-hidden', 'true');
+    run(idx - 1);
+  });
+  nextBtn.addEventListener('click', function () {
+    endCard.classList.remove('is-on');
+    endCard.setAttribute('aria-hidden', 'true');
+    run(idx + 1);
+  });
+  playBtn.addEventListener('click', togglePause);
+  exitBtn.addEventListener('click', function () {
+    window.location.href = '/home/';
+  });
+  restart.addEventListener('click', function () {
+    endCard.classList.remove('is-on');
+    endCard.setAttribute('aria-hidden', 'true');
+    currentUrl = null; // force the iframe to reload on step 1
+    run(0);
+  });
+
+  // Keyboard shortcuts — only when the tour window itself has focus,
+  // never when the iframe is focused (so viewers can tab into site UI
+  // without hijacking keys).
+  window.addEventListener('keydown', function (e) {
+    if (document.activeElement && document.activeElement.tagName === 'IFRAME') return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); nextBtn.click(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
+    else if (e.key === ' ')          { e.preventDefault(); playBtn.click(); }
+    else if (e.key === 'Escape')     { e.preventDefault(); exitBtn.click(); }
+  });
+
+  // Kick it off.
+  run(0);
+})();
+</script>
+</body>
+</html>

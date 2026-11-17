@@ -1082,14 +1082,13 @@
     .pager__link--next:hover .pager__arrow { transform: translateX(0.25rem); }
   }
 
-  /* ─── 09 · Interactive atlas book (flipbook) ───────────────────────
-     48 PDF pages shown one at a time. Pages 1 and 48 are single-page
-     covers (720×1008); 2–47 are double-page spreads (1440×1008). The
-     stage sits at the spread aspect; the single-page covers letterbox
-     inside it via object-fit: contain against a dark paper-like bg.
-     Flipping between pages is a CSS 3D card-flip: the top .atlas-book__sheet
-     rotates about its vertical center axis, with the current spread on
-     the front face and the next/prev spread on the back. */
+  /* ─── 09 · Printed Atlas — spreads + timeline scrubber ──────────
+     48 PDF pages in the stage (covers single, inner spreads double).
+     Below the stage: a full-width timeline strip. Hovering anywhere
+     along it sets a target page, and the stage crossfades toward
+     that page one step at a time. With no hover, pages auto-advance
+     forward, wrapping at 48 → 1. Two image layers (a/b) alternate
+     front/back so each page swap is a soft crossfade. */
   .atlas-book {
     display: flex;
     flex-direction: column;
@@ -1102,7 +1101,6 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1440 / 1008;
-    perspective: 2800px;
     background: #0a0a0a;
     overflow: hidden;
     box-shadow:
@@ -1135,104 +1133,152 @@
     z-index: 4;
     pointer-events: none;
   }
-  /* The current spread, always visible beneath the flipping sheet. */
-  .atlas-book__base {
+  /* Two stacked image layers; one is always .is-active (opacity 1),
+     the other crossfades in. Both use object-fit: contain so the
+     single-page covers (pages 1 and 48) letterbox inside the spread
+     aspect without stretching. */
+  .atlas-book__spread {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    display: block;
-    user-select: none;
-    -webkit-user-drag: none;
-  }
-  /* The flipping sheet: two back-to-back images that rotate about
-     the center axis to simulate a page turning. Hidden by default,
-     shown only while an animation is in flight. */
-  .atlas-book__sheet {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transform: rotateY(0deg);
-    transition: transform 850ms cubic-bezier(0.6, 0, 0.3, 1);
-    pointer-events: none;
-    opacity: 0;
-    z-index: 2;
-  }
-  .atlas-book__sheet.is-active { opacity: 1; }
-  .atlas-book__sheet.is-flipping-forward {
-    transform-origin: left center;
-    transform: rotateY(-180deg);
-  }
-  .atlas-book__sheet.is-flipping-backward {
-    transform-origin: right center;
-    transform: rotateY(180deg);
-  }
-  .atlas-book__face {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
     display: block;
     user-select: none;
     -webkit-user-drag: none;
     background: #0a0a0a;
+    opacity: 0;
+    transition: opacity 340ms ease-in-out;
+    z-index: 1;
   }
-  .atlas-book__face--back { transform: rotateY(180deg); }
+  .atlas-book__spread.is-active {
+    opacity: 1;
+    z-index: 2;
+  }
 
-  .atlas-book__controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(1rem, 2vw, 1.75rem);
-    font: var(--font-eyebrow);
-    letter-spacing: 0.08em;
-    color: var(--ink);
-  }
-  .atlas-book__btn {
-    appearance: none;
-    background: transparent;
-    border: 1px solid currentColor;
-    color: inherit;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    line-height: 1;
+  /* ─── Timeline scrubber ──────────────────────────────────────────
+     Sits directly below the stage, same width as the spread. Hovering
+     anywhere along it tracks a target page; without hover, the stage
+     auto-advances. The fill grows left→right in proportion to the
+     current page. A floating tooltip follows the cursor. */
+  .atlas-book__timeline {
+    position: relative;
+    width: 100%;
+    height: 40px;
     cursor: pointer;
-    transition: background 180ms, color 180ms, transform 180ms;
+    user-select: none;
+    touch-action: pan-x;
+    padding: 0;
   }
-  .atlas-book__btn:hover:not(:disabled),
-  .atlas-book__btn:focus-visible:not(:disabled) {
+  .atlas-book__timeline-track {
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 2px;
+    margin-top: -1px;
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .atlas-book__timeline-fill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 2px;
+    margin-top: -1px;
+    width: 0%;
     background: var(--accent);
-    color: var(--page);
-    outline: none;
-    transform: translateY(-1px);
+    transition: width 320ms ease-in-out;
+    pointer-events: none;
   }
-  .atlas-book__btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
+  .atlas-book__timeline-fill.is-chasing {
+    transition: width 120ms linear;
+  }
+  /* Hover tooltip — bubble just above the timeline with the target
+     page number. Appears only while the timeline is being hovered. */
+  .atlas-book__timeline-tooltip {
+    position: absolute;
+    bottom: calc(100% - 0.1rem);
+    left: 0;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    background: var(--page);
+    border: 1px solid currentColor;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 160ms ease-out;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .atlas-book__timeline.is-hovered .atlas-book__timeline-tooltip {
+    opacity: 1;
   }
   .atlas-book__counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font: var(--font-eyebrow);
+    letter-spacing: 0.14em;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
-    min-width: 5ch;
-    text-align: center;
+    opacity: 0.75;
   }
-  /* Narrow screens — shrink the stage ceiling and tighten controls. */
+  .atlas-book__counter small {
+    font-size: 0.78em;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  /* ─── Site tour cell (section 09, second media block) ───────────
+     Embeds the standalone /tour/ page inside section 09 so visitors
+     can watch a live walk-through of the site without leaving UNESCO.
+     Styled like a video player: dark bezel, rounded corners, same
+     box-shadow as the atlas stage above. */
+  .site-tour {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.85rem, 1.75vh, 1.4rem);
+    width: min(100%, calc(75vh * 1440 / 1008));
+    justify-self: center;
+    margin-inline: auto;
+  }
+  .site-tour__label {
+    font: var(--font-eyebrow);
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .site-tour__cell {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #050505;
+    overflow: hidden;
+    box-shadow:
+      0 20px 40px -20px rgba(0, 0, 0, 0.55),
+      0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+  .site-tour__frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
   @media (max-width: 640px) {
     .atlas-book { width: 100%; }
-    .atlas-book__btn { width: 2.25rem; height: 2.25rem; }
+    .site-tour { width: 100%; }
+    .atlas-book__timeline { height: 36px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .atlas-book__sheet { transition: none; }
+    .atlas-book__spread { transition: none; }
+    .atlas-book__timeline-fill { transition: none; }
   }
 </style>
 </head>
@@ -1714,25 +1760,52 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 48-page flipbook. Pages 1 and 48 are single-page (720×1008)
-           covers; 2–47 are full spreads (1440×1008). The stage keeps
-           the spread aspect and letterboxes the covers. The sheet is
-           a two-sided CSS 3D element that rotates about the vertical
-           center axis to simulate a page turn. Keyboard: ←/→. -->
+      <!-- 48-page atlas. Two layered image elements crossfade as the
+           page changes; the timeline below is a hover-scrubber that
+           sets a target page. With no hover, pages auto-advance and
+           wrap at 48 → 1. -->
       <div class="atlas-book" id="atlas-book">
         <div class="atlas-book__stage" id="atlas-stage">
-          <img class="atlas-book__base" id="atlas-base" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
-          <div class="atlas-book__sheet" id="atlas-sheet" aria-hidden="true">
-            <img class="atlas-book__face atlas-book__face--front" id="atlas-front" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="" />
-            <img class="atlas-book__face atlas-book__face--back"  id="atlas-back"  src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" />
-          </div>
+          <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
+          <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
           <div class="atlas-book__spine" aria-hidden="true"></div>
           <div class="atlas-book__shadow" aria-hidden="true"></div>
         </div>
-        <div class="atlas-book__controls" role="group" aria-label="Flip through the printed atlas">
-          <button class="atlas-book__btn" id="atlas-prev" type="button" aria-label="Previous page" disabled>&#x2039;</button>
-          <span class="atlas-book__counter" id="atlas-counter" aria-live="polite">01 / 48</span>
-          <button class="atlas-book__btn" id="atlas-next" type="button" aria-label="Next page">&#x203A;</button>
+        <div
+          class="atlas-book__timeline"
+          id="atlas-timeline"
+          role="slider"
+          tabindex="0"
+          aria-label="Scrub through the printed atlas"
+          aria-valuemin="1"
+          aria-valuemax="48"
+          aria-valuenow="1"
+          aria-valuetext="Page 1 of 48"
+        >
+          <div class="atlas-book__timeline-track" aria-hidden="true"></div>
+          <div class="atlas-book__timeline-fill" id="atlas-timeline-fill" aria-hidden="true"></div>
+          <div class="atlas-book__timeline-tooltip" id="atlas-timeline-tooltip" aria-hidden="true">01</div>
+        </div>
+        <div class="atlas-book__counter" aria-hidden="true">
+          <small>Page</small>
+          <span id="atlas-counter">01 / 48</span>
+        </div>
+      </div>
+
+      <!-- Site walkthrough — a second media block inside section 09.
+           The /tour/ page is self-contained; dropping it in an iframe
+           here lets visitors watch an auto-pilot tour of the whole
+           site without ever leaving UNESCO. -->
+      <div class="site-tour">
+        <span class="site-tour__label">The Site Walkthrough</span>
+        <div class="site-tour__cell">
+          <iframe
+            class="site-tour__frame"
+            src="/tour/"
+            title="Auto-tour of iamdede.com"
+            loading="lazy"
+            allow="fullscreen"
+          ></iframe>
         </div>
       </div>
     </div>
@@ -1950,89 +2023,170 @@
     });
   })();
 
-  /* ─── 09 · Printed-atlas flipbook ───────────────────────────────
-     48 PDF pages, prev/next buttons + keyboard arrows + wheel-across.
-     The .atlas-book__sheet carries two img faces that back onto each
-     other; rotating it 180° about the correct edge swaps the visible
-     page. After the animation, we swap the base image to the new page
-     and reset the sheet silently so the next flip starts clean. */
+  /* ─── 09 · Printed atlas — timeline-driven page viewer ──────────
+     Two layered <img> elements crossfade on every page change.
+     The timeline below is a hover scrubber: moving the cursor sets
+     a target page; a ticker walks `cur` one step at a time toward
+     `target` so the stage visibly "moves toward" the hovered page.
+     With no hover, auto-advance ticks forward and wraps at the end. */
   (function () {
     var book = document.getElementById('atlas-book');
     if (!book) return;
-    var base    = document.getElementById('atlas-base');
-    var sheet   = document.getElementById('atlas-sheet');
-    var front   = document.getElementById('atlas-front');
-    var back    = document.getElementById('atlas-back');
-    var counter = document.getElementById('atlas-counter');
-    var prevBtn = document.getElementById('atlas-prev');
-    var nextBtn = document.getElementById('atlas-next');
 
-    var TOTAL = 48;
-    var DUR   = 850;     // match CSS transition
-    var cur   = 1;
-    var busy  = false;
+    var layerA   = document.getElementById('atlas-a');
+    var layerB   = document.getElementById('atlas-b');
+    var timeline = document.getElementById('atlas-timeline');
+    var fill     = document.getElementById('atlas-timeline-fill');
+    var tooltip  = document.getElementById('atlas-timeline-tooltip');
+    var counter  = document.getElementById('atlas-counter');
+
+    var TOTAL      = 48;
+    var AUTO_MS    = 2600;   // dwell when no one is hovering
+    var CHASE_MS   = 160;    // speed of one step toward target during hover
+    var cur        = 1;
+    var target     = 1;
+    var hovered    = false;
+    var paused     = false;  // offscreen or page hidden
+    var tickTimer  = null;
 
     function pad(n) { return (n < 10 ? '0' : '') + n; }
     function src(n) { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-' + pad(n) + '.jpg'; }
+    function clamp(n) { return Math.max(1, Math.min(TOTAL, n)); }
 
-    function update() {
-      base.src = src(cur);
-      base.alt = 'Atlas page ' + cur + ' of ' + TOTAL;
+    // Two crossfade layers: `activeEl` is the one currently shown.
+    // To change the page: load the next page into the OTHER layer,
+    // then flip which has .is-active (CSS handles the fade).
+    var activeEl = layerA;
+    var pendingEl = layerB;
+
+    function setPage(n) {
+      n = clamp(n);
+      if (n === cur) { updateUI(); return; }
+      cur = n;
+      var newImgEl = pendingEl;
+      newImgEl.src = src(n);
+      // Wait for the image to decode so there's no half-painted flash.
+      var swap = function () {
+        newImgEl.classList.add('is-active');
+        activeEl.classList.remove('is-active');
+        var tmp = activeEl;
+        activeEl = newImgEl;
+        pendingEl = tmp;
+        updateUI();
+      };
+      // Already in cache? decode is instant. Otherwise listen for decode.
+      if (newImgEl.complete && newImgEl.naturalWidth) {
+        swap();
+      } else {
+        var done = false;
+        newImgEl.onload = function () { if (!done) { done = true; swap(); } };
+        // Hard cap in case the load event never fires.
+        setTimeout(function () { if (!done) { done = true; swap(); } }, 400);
+      }
+    }
+
+    function updateUI() {
+      var pct = ((cur - 1) / (TOTAL - 1)) * 100;
+      fill.style.width = pct + '%';
       counter.textContent = pad(cur) + ' / ' + pad(TOTAL);
-      prevBtn.disabled = (cur <= 1);
-      nextBtn.disabled = (cur >= TOTAL);
+      timeline.setAttribute('aria-valuenow', String(cur));
+      timeline.setAttribute('aria-valuetext', 'Page ' + cur + ' of ' + TOTAL);
+      activeEl.setAttribute('alt', 'Atlas page ' + cur + ' of ' + TOTAL);
     }
 
-    function go(dir) {
-      if (busy) return;
-      var nxt = cur + dir;
-      if (nxt < 1 || nxt > TOTAL) return;
-      busy = true;
-
-      // Front shows what's currently on screen; back shows where we're going.
-      front.src = src(cur);
-      back.src  = src(nxt);
-      // Also update the base to the TARGET page so, once the sheet
-      // completes its flip and fades out, the correct image sits there.
-      base.src  = src(nxt);
-
-      // Ensure the sheet starts flat before adding the flip class.
-      sheet.classList.remove('is-flipping-forward', 'is-flipping-backward');
-      // Force a reflow so the next class change triggers the transition.
-      void sheet.offsetWidth;
-
-      sheet.classList.add('is-active');
-      sheet.classList.add(dir > 0 ? 'is-flipping-forward' : 'is-flipping-backward');
-
-      window.setTimeout(function () {
-        // Quietly deactivate the sheet and reset its rotation, no transition.
-        sheet.style.transition = 'none';
-        sheet.classList.remove('is-active', 'is-flipping-forward', 'is-flipping-backward');
-        void sheet.offsetWidth;
-        sheet.style.transition = '';
-        cur = nxt;
-        update();
-        busy = false;
-      }, DUR);
+    function nextAuto() {
+      return cur === TOTAL ? 1 : cur + 1;
     }
 
-    prevBtn.addEventListener('click', function () { go(-1); });
-    nextBtn.addEventListener('click', function () { go( 1); });
+    function tick() {
+      tickTimer = null;
+      if (paused) return;
+      if (hovered) {
+        fill.classList.add('is-chasing');
+        if (cur < target)      setPage(cur + 1);
+        else if (cur > target) setPage(cur - 1);
+        tickTimer = setTimeout(tick, CHASE_MS);
+      } else {
+        fill.classList.remove('is-chasing');
+        setPage(nextAuto());
+        tickTimer = setTimeout(tick, AUTO_MS);
+      }
+    }
 
-    // Keyboard — only when the flipbook (or one of its controls) has focus,
-    // so the arrows don't hijack the whole page.
-    book.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight') { e.preventDefault(); go( 1); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+    function restart() {
+      if (tickTimer) { clearTimeout(tickTimer); tickTimer = null; }
+      tickTimer = setTimeout(tick, hovered ? CHASE_MS : AUTO_MS);
+    }
+
+    function indexFromX(clientX) {
+      var rect = timeline.getBoundingClientRect();
+      var ratio = (clientX - rect.left) / rect.width;
+      return clamp(Math.ceil(ratio * TOTAL));
+    }
+
+    function onMove(e) {
+      hovered = true;
+      timeline.classList.add('is-hovered');
+      target = indexFromX(e.clientX);
+      // Position the tooltip over the cursor, pinned inside the timeline.
+      var rect = timeline.getBoundingClientRect();
+      var x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+      tooltip.style.left = x + 'px';
+      tooltip.textContent = pad(target);
+      restart();
+    }
+    function onLeave() {
+      hovered = false;
+      timeline.classList.remove('is-hovered');
+      restart();
+    }
+    function onClick(e) {
+      // Direct jump on click/tap.
+      target = indexFromX(e.clientX);
+      setPage(target);
+      restart();
+    }
+    function onKey(e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); setPage(clamp(cur + 1)); restart(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setPage(clamp(cur - 1)); restart(); }
+      else if (e.key === 'Home') { e.preventDefault(); setPage(1); restart(); }
+      else if (e.key === 'End')  { e.preventDefault(); setPage(TOTAL); restart(); }
+    }
+
+    timeline.addEventListener('pointermove', onMove);
+    timeline.addEventListener('pointerenter', onMove);
+    timeline.addEventListener('pointerleave', onLeave);
+    timeline.addEventListener('click', onClick);
+    timeline.addEventListener('keydown', onKey);
+
+    // Pause when the stage leaves the viewport — saves cycles and
+    // prevents the viewer from returning to a page that drifted
+    // forward 200 steps during a long absence.
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (ent) {
+        paused = !ent.isIntersecting;
+        if (!paused) restart();
+      });
+    }, { threshold: 0.1 });
+    io.observe(book);
+
+    // Also pause when the tab is hidden.
+    document.addEventListener('visibilitychange', function () {
+      paused = document.hidden;
+      if (!paused) restart();
     });
-    book.setAttribute('tabindex', '0');
 
-    // Preload the first few pages so the opening flips feel instant.
-    [2, 3, 4, 5].forEach(function (n) {
-      if (n <= TOTAL) { var im = new Image(); im.src = src(n); }
-    });
+    // Preload a first batch for snappy early transitions; spread the
+    // rest out so the network isn't hit all at once.
+    for (var n = 2; n <= 8; n++) { var im = new Image(); im.src = src(n); }
+    var preloadIdx = 9;
+    var preloadTimer = setInterval(function () {
+      if (preloadIdx > TOTAL) { clearInterval(preloadTimer); return; }
+      var im2 = new Image(); im2.src = src(preloadIdx++);
+    }, 220);
 
-    update();
+    updateUI();
+    restart();
   })();
   </script>
 </body>
