@@ -802,6 +802,31 @@
     .media__slide    { animation: none; }
   }
 
+  /* ─── 3-slide foundation after-cell slideshow (section 02) ──────
+     Three logo lockups crossfade on a shared 12s loop (4s per slide,
+     1s crossfade overlap). Keyframe mirrors the 4-slide applications
+     pattern, scaled to 3 slots. */
+  .media__fslide {
+    opacity: 0;
+    animation: foundations-after-slideshow 12s ease-in-out infinite;
+    will-change: opacity;
+  }
+  .media__fslide--1 { animation-delay: 0s; }
+  .media__fslide--2 { animation-delay: 4s; }
+  .media__fslide--3 { animation-delay: 8s; }
+
+  @keyframes foundations-after-slideshow {
+    0%, 100% { opacity: 0; }
+    8.33%    { opacity: 1; }   /* 1s fade-in */
+    25%      { opacity: 1; }   /* 2s hold */
+    33.33%   { opacity: 0; }   /* 1s fade-out, overlaps next slide */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .media__fslide { animation: none; }
+    .media__fslide--1 { opacity: 1; }
+  }
+
   /* ─── 4-slide applications slideshow (section 07) ────────────────
      Each cell cycles 4 images on a shared 16s loop (4s per slide,
      with a 1s crossfade overlap). Two cells, 8 images total — split
@@ -1476,18 +1501,23 @@
         </video>
       </figure>
 
-      <!-- BEFORE / AFTER comparison pair. -->
+      <!-- BEFORE / AFTER comparison pair. Before: the existing UNESCO
+           flag + temple glyph. After: three lockups of the rebrand
+           (primary stacked mark, horizontal wordmark, and the long-
+           form signature) crossfading on a shared 12s loop. -->
       <div class="foundations-ba">
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">Before</p>
-          <figure class="media">
-            <img class="media__img" src="/ASSETS/IMAGES/UNESCO/before.jpg" alt="UNESCO existing logo — Greco-Roman temple" />
+          <figure class="media media--square foundations-ba__media">
+            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/UNESCO/Flag_of_UNESCO.svg.webp" alt="UNESCO existing flag — Greco-Roman temple on blue" />
           </figure>
         </div>
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">After</p>
-          <figure class="media">
-            <img class="media__img" src="/ASSETS/IMAGES/UNESCO/after.jpg" alt="UNESCO rebranded logomark — four interlocking U's" />
+          <figure class="media media--square foundations-ba__media">
+            <img class="media__img foundations-ba__img media__fslide media__fslide--1" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO1.png" alt="UNESCO rebrand — primary stacked mark" />
+            <img class="media__img foundations-ba__img media__fslide media__fslide--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
+            <img class="media__img foundations-ba__img media__fslide media__fslide--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
           </figure>
         </div>
       </div>
