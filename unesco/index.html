@@ -262,29 +262,54 @@
     animation: none !important;
   }
   /* Nav is hidden on UNESCO by default; clicking the pill toggles
-     `body.is-nav-open`, which reveals the nav as an in-header row 2
-     strip (desktop) instead of the usual floating dropdown. */
+     `body.is-nav-open`, which reveals the page titles as a horizontal
+     row INSIDE the header bar (row 2), not as a floating overlay
+     card. Everything here is !important so it overrides the shared
+     desktop dropdown styling in site-header.css. */
   @media (min-width: 641px) {
     body.unesco .site-header__nav { display: none; }
     body.unesco.is-nav-open .site-header__nav {
       display: flex !important;
-      /* Beat the inline positioning site-header.js writes when the
-         global dropdown layout opens elsewhere. */
+      flex-direction: row !important;
+      /* Beat the inline positioning site-header.js writes. */
       position: static !important;
       left: auto !important;
       top: auto !important;
       transform: none !important;
       visibility: visible !important;
-      /* Sit inside header grid row 2, full width. */
-      grid-column: 1 / -1;
-      grid-row: 2;
-      justify-content: center;
-      gap: clamp(2.25rem, 4.5vw, 4.5rem);
-      padding: clamp(0.6rem, 1.3vw, 1rem) var(--page-x);
-      margin-top: 0.65rem;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      background: var(--bg);
+      /* In-header row 2, full width, flush edges. */
+      grid-column: 1 / -1 !important;
+      grid-row: 2 !important;
+      z-index: auto !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: clamp(2.25rem, 4.5vw, 4.5rem) !important;
+      padding: clamp(0.6rem, 1.3vw, 1rem) var(--page-x) !important;
+      margin: 0.65rem 0 0 !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border-radius: 0 !important;
+      border-top: 1px solid var(--line) !important;
+      border-bottom: 1px solid var(--line) !important;
+      box-shadow: none !important;
+    }
+    /* Links revert to the compact in-bar style — not the mobile-overlay
+       giant type the shared dropdown applies. */
+    body.unesco.is-nav-open .site-header__nav a {
+      display: inline-block !important;
+      padding: 0.35rem 0 0.4rem !important;
+      font-size: 0.92rem !important;
+      line-height: normal !important;
+      letter-spacing: 0.015em !important;
+      color: var(--fg) !important;
+      opacity: 0.78 !important;
+    }
+    body.unesco.is-nav-open .site-header__nav a.is-current,
+    body.unesco.is-nav-open .site-header__nav a:hover,
+    body.unesco.is-nav-open .site-header__nav a:focus-visible {
+      opacity: 1 !important;
+      color: #43dede !important;
     }
   }
   .unesco__hero-image {
@@ -1183,9 +1208,6 @@
     background: var(--bg, #ffffff);
     overflow: hidden;
     transition: background 300ms ease-in-out;
-    box-shadow:
-      0 20px 40px -20px rgba(0, 0, 0, 0.55),
-      0 2px 6px rgba(0, 0, 0, 0.25);
   }
   /* Inner spreads only — darken the bg under them so any 1px gap
      between <img> and stage edge during crossfade is unobtrusive. */
