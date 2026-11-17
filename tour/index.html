@@ -304,61 +304,63 @@
      - caption:  copy shown over the top gradient
      - eyebrow:  label above the caption (section name)
      - dwell:    time to linger on this step, in ms */
+  // All URLs point at the live Vercel deployment so the walkthrough
+  // demos the deployed site regardless of where this tour is hosted.
+  // Same-origin scroll-to-target no longer works from a different
+  // origin, so these steps focus on page-level navigation; the
+  // scrollTargetInFrame helper silently no-ops when the iframe is
+  // cross-origin, which is fine.
+  var BASE = 'https://dede-two.vercel.app';
   var STEPS = [
     {
-      url: '/home/',
-      scroll: 0,
+      url: BASE + '/home.html',
       eyebrow: 'Home',
       caption: "Welcome to iamdede.com, the portfolio of David Gomez. This is where the whole studio begins.",
-      dwell: 5500
+      dwell: 6000
     },
     {
-      url: '/home/',
-      scroll: 0,
+      url: BASE + '/home.html',
       eyebrow: 'Home · Menu',
       caption: "A single pill menu opens the four doorways of the site: Home, Work, About, Play.",
       dwell: 5500
     },
     {
-      url: '/work/',
-      scroll: 0,
+      url: BASE + '/work.html',
       eyebrow: 'Work',
       caption: "Work holds the case studies: each project treated long-form, with its own page and its own rules.",
-      dwell: 5500
+      dwell: 6000
     },
     {
-      url: '/unesco/',
-      scroll: 0,
+      url: BASE + '/unesco.html',
       eyebrow: 'Case Study 01 · UNESCO',
       caption: "UNESCO, the first case study. An identity rework asking the organization to feel as human as what it protects.",
       dwell: 6500
     },
     {
-      url: '/unesco/',
+      url: BASE + '/unesco.html',
       target: '.palette-grid',
       eyebrow: 'UNESCO · Palette',
       caption: "The brand palette, animated to reveal each color in sequence. Hover a swatch to read its name.",
       dwell: 6500
     },
     {
-      url: '/unesco/',
+      url: BASE + '/unesco.html',
       target: '.scans',
       eyebrow: 'UNESCO · Notebook',
       caption: "Behind every project: sketches, scans, and the false starts. Two rows auto-scroll in opposite directions.",
       dwell: 6000
     },
     {
-      url: '/unesco/',
+      url: BASE + '/unesco.html',
       target: '#atlas-book',
       eyebrow: 'UNESCO · The Printed Atlas',
-      caption: "An interactive flipbook of the printed atlas. Forty-eight pages, clicked through like the real thing.",
+      caption: "An interactive view of the printed atlas. Forty-eight pages you can scrub through at your own pace.",
       dwell: 7500
     },
     {
-      url: '/about/',
-      scroll: 0,
+      url: BASE + '/about.html',
       eyebrow: 'About',
-      caption: "About, the person behind the studio, and how to get in touch.",
+      caption: "About: the person behind the studio, and how to get in touch.",
       dwell: 5500
     }
   ];
@@ -562,7 +564,7 @@
   });
   playBtn.addEventListener('click', togglePause);
   exitBtn.addEventListener('click', function () {
-    window.location.href = '/home/';
+    window.location.href = BASE + '/home.html';
   });
   restart.addEventListener('click', function () {
     endCard.classList.remove('is-on');

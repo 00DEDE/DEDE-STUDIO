@@ -1126,7 +1126,11 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1440 / 1008;
-    background: #0a0a0a;
+    /* Matches the cover's UNESCO blue so the single-page cover and
+       back cover letterbox invisibly inside the spread aspect. The
+       inner spreads fill the stage edge-to-edge, so the bg is only
+       seen on page 1, page 48, and brief crossfade moments. */
+    background: #2a7ec0;
     overflow: hidden;
     box-shadow:
       0 20px 40px -20px rgba(0, 0, 0, 0.55),
@@ -1139,29 +1143,15 @@
     background: radial-gradient(
       ellipse at center,
       rgba(0, 0, 0, 0) 55%,
-      rgba(0, 0, 0, 0.35) 100%
+      rgba(0, 0, 0, 0.25) 100%
     );
     z-index: 3;
-  }
-  .atlas-book__spine {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    width: 2px;
-    transform: translateX(-50%);
-    background: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.35) 50%,
-      rgba(0, 0, 0, 0) 100%
-    );
-    z-index: 4;
-    pointer-events: none;
   }
   /* Two stacked image layers; one is always .is-active (opacity 1),
      the other crossfades in. Both use object-fit: contain so the
      single-page covers (pages 1 and 48) letterbox inside the spread
-     aspect without stretching. */
+     aspect without stretching. The letterbox bars inherit the stage
+     background, which is tuned to the cover's blue. */
   .atlas-book__spread {
     position: absolute;
     inset: 0;
@@ -1171,7 +1161,7 @@
     display: block;
     user-select: none;
     -webkit-user-drag: none;
-    background: #0a0a0a;
+    background: transparent;
     opacity: 0;
     transition: opacity 340ms ease-in-out;
     z-index: 1;
@@ -1798,7 +1788,6 @@
         <div class="atlas-book__stage" id="atlas-stage">
           <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
           <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
-          <div class="atlas-book__spine" aria-hidden="true"></div>
           <div class="atlas-book__shadow" aria-hidden="true"></div>
         </div>
         <div
