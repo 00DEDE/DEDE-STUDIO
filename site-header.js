@@ -320,14 +320,15 @@
   pingStyle.textContent =
     '.site-click-ping{' +
       'position:fixed;pointer-events:none;' +
-      'width:28px;height:28px;margin:-14px 0 0 -14px;' +
+      /* 28px → 17px (-40%); margin centres the ring on the cursor. */
+      'width:17px;height:17px;margin:-8.5px 0 0 -8.5px;' +
       'border:2px solid #34dede;border-radius:50%;' +
       'opacity:1;transform:scale(0.35);' +
       'z-index:2147483646;' +
       'animation:site-click-ping 520ms cubic-bezier(0.2,0.8,0.2,1) forwards;' +
       'will-change:transform,opacity,filter;' +
-      /* ~20% of the ring diameter — soft glow, not a sharp outline. */
-      'filter:blur(5.6px);' +
+      /* Blur bumped +50% (5.6px → 8.4px) — softer cyan haze. */
+      'filter:blur(8.4px);' +
     '}' +
     '@keyframes site-click-ping{' +
       '0%{opacity:1;transform:scale(0.35);}' +
