@@ -802,27 +802,25 @@
     .media__slide    { animation: none; }
   }
 
-  /* ─── 6-slide applications slideshow (section 07) ────────────────
-     Each cell cycles 6 images on a shared 24s loop (4s per slide,
-     with a 1s crossfade overlap). Two cells, 12 images total — the
-     uploaded applications split equally between them. */
+  /* ─── 4-slide applications slideshow (section 07) ────────────────
+     Each cell cycles 4 images on a shared 16s loop (4s per slide,
+     with a 1s crossfade overlap). Two cells, 8 images total — split
+     equally between them. */
   .media__aslide {
     opacity: 0;
-    animation: applications-slideshow 24s ease-in-out infinite;
+    animation: applications-slideshow 16s ease-in-out infinite;
     will-change: opacity;
   }
   .media__aslide--1 { animation-delay:  0s; }
   .media__aslide--2 { animation-delay:  4s; }
   .media__aslide--3 { animation-delay:  8s; }
   .media__aslide--4 { animation-delay: 12s; }
-  .media__aslide--5 { animation-delay: 16s; }
-  .media__aslide--6 { animation-delay: 20s; }
 
   @keyframes applications-slideshow {
     0%, 100% { opacity: 0; }
-    4.17%    { opacity: 1; }   /* 1s fade-in */
-    20.83%   { opacity: 1; }   /* ~4s hold */
-    25%      { opacity: 0; }   /* 1s fade-out, overlaps next slide */
+    6.25%    { opacity: 1; }   /* 1s fade-in */
+    25%      { opacity: 1; }   /* 3s hold */
+    31.25%   { opacity: 0; }   /* 1s fade-out, overlaps next slide */
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1082,6 +1080,159 @@
     }
     .pager__link--next { align-items: flex-start; text-align: left; }
     .pager__link--next:hover .pager__arrow { transform: translateX(0.25rem); }
+  }
+
+  /* ─── 09 · Interactive atlas book (flipbook) ───────────────────────
+     48 PDF pages shown one at a time. Pages 1 and 48 are single-page
+     covers (720×1008); 2–47 are double-page spreads (1440×1008). The
+     stage sits at the spread aspect; the single-page covers letterbox
+     inside it via object-fit: contain against a dark paper-like bg.
+     Flipping between pages is a CSS 3D card-flip: the top .atlas-book__sheet
+     rotates about its vertical center axis, with the current spread on
+     the front face and the next/prev spread on the back. */
+  .atlas-book {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.85rem, 1.75vh, 1.4rem);
+    width: min(100%, calc(75vh * 1440 / 1008));
+    justify-self: center;
+    margin-inline: auto;
+  }
+  .atlas-book__stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1440 / 1008;
+    perspective: 2800px;
+    background: #0a0a0a;
+    overflow: hidden;
+    box-shadow:
+      0 20px 40px -20px rgba(0, 0, 0, 0.55),
+      0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+  .atlas-book__shadow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0) 55%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
+    z-index: 3;
+  }
+  .atlas-book__spine {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.35) 50%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    z-index: 4;
+    pointer-events: none;
+  }
+  /* The current spread, always visible beneath the flipping sheet. */
+  .atlas-book__base {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  /* The flipping sheet: two back-to-back images that rotate about
+     the center axis to simulate a page turning. Hidden by default,
+     shown only while an animation is in flight. */
+  .atlas-book__sheet {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    transition: transform 850ms cubic-bezier(0.6, 0, 0.3, 1);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 2;
+  }
+  .atlas-book__sheet.is-active { opacity: 1; }
+  .atlas-book__sheet.is-flipping-forward {
+    transform-origin: left center;
+    transform: rotateY(-180deg);
+  }
+  .atlas-book__sheet.is-flipping-backward {
+    transform-origin: right center;
+    transform: rotateY(180deg);
+  }
+  .atlas-book__face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    background: #0a0a0a;
+  }
+  .atlas-book__face--back { transform: rotateY(180deg); }
+
+  .atlas-book__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 2vw, 1.75rem);
+    font: var(--font-eyebrow);
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .atlas-book__btn {
+    appearance: none;
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 180ms, color 180ms, transform 180ms;
+  }
+  .atlas-book__btn:hover:not(:disabled),
+  .atlas-book__btn:focus-visible:not(:disabled) {
+    background: var(--accent);
+    color: var(--page);
+    outline: none;
+    transform: translateY(-1px);
+  }
+  .atlas-book__btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .atlas-book__counter {
+    font-variant-numeric: tabular-nums;
+    min-width: 5ch;
+    text-align: center;
+  }
+  /* Narrow screens — shrink the stage ceiling and tighten controls. */
+  @media (max-width: 640px) {
+    .atlas-book { width: 100%; }
+    .atlas-book__btn { width: 2.25rem; height: 2.25rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .atlas-book__sheet { transition: none; }
   }
 </style>
 </head>
@@ -1474,25 +1625,22 @@
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
       </div>
 
-      <!-- Each cell cycles 6 images on a shared 24s loop. Two cells
-           split the 12 uploaded applications equally. See
-           .media__aslide keyframes in <style>. -->
+      <!-- Each cell cycles 4 images on a shared 16s loop; the two cells
+           split the 8 applications equally. 05 is pinned near the
+           bottom so the UNESCO podium stays visible when the portrait
+           crops into the square cell. See .media__aslide keyframes. -->
       <div class="section-media__triptych section-media__triptych--pair">
         <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-01.jpg" alt="UNESCO application — fence banner" />
-          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-02.jpg" alt="UNESCO application — rooftop billboard" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-03.jpg" alt="UNESCO application — bus shelter trio" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-04.jpg" alt="UNESCO application — building-side billboard" />
-          <img class="media__img media__aslide media__aslide--5" src="/ASSETS/IMAGES/UNESCO/application-05.jpg" alt="UNESCO application — Director-General podium" />
-          <img class="media__img media__aslide media__aslide--6" src="/ASSETS/IMAGES/UNESCO/application-06.jpg" alt="UNESCO application — deck chairs" />
+          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-02.jpg" alt="UNESCO application — rooftop billboard" />
+          <img class="media__img media__aslide media__aslide--2" style="object-position: center 85%;" src="/ASSETS/IMAGES/UNESCO/application-05.jpg" alt="UNESCO application — Director-General podium" />
+          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-07.jpg" alt="UNESCO application — bridge wheatpaste poster" />
+          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-10.jpg" alt="UNESCO application — cylindrical street kiosk" />
         </figure>
         <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-07.jpg" alt="UNESCO application — bridge wheatpaste poster" />
-          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-08.jpg" alt="UNESCO application — Minister podium" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-09.jpg" alt="UNESCO application — unesco HQ banner" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-10.jpg" alt="UNESCO application — cylindrical street kiosk" />
-          <img class="media__img media__aslide media__aslide--5" src="/ASSETS/IMAGES/UNESCO/application-11.jpg" alt="UNESCO application — parking + bike station sign" />
-          <img class="media__img media__aslide media__aslide--6" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
+          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-04.jpg" alt="UNESCO application — building-side billboard" />
+          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-09.jpg" alt="UNESCO application — unesco HQ banner" />
+          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-11.jpg" alt="UNESCO application — parking + bike station sign" />
+          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
         </figure>
       </div>
     </div>
@@ -1543,6 +1691,49 @@
           <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Celebration 14" />
           <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Celebration 15" />
         </figure>
+      </div>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 09 · The Printed Atlas ────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">09</span>The Printed Atlas</p>
+      <p class="statement">
+        Before the <em>Digital Atlas</em>, there was the printed one.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-atlas">
+        <div class="read-more__inner">
+          <p>It begins as a celebration of our differences: the languages we speak, the lands we tend, the rituals we keep, the monuments we raise. But turn the pages, and something quieter surfaces. Somewhere between the words and the traditions, you start to see yourself in a stranger. Because before anything else, you and I are human.</p>
+          <p>Open the atlas and the world unfolds in your hands. Four icons mark the four worlds UNESCO protects. Each world then appears on its own, with a map where every icon carries a number: the page where that place can be found. Each map becomes a table of contents for the globe.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 48-page flipbook. Pages 1 and 48 are single-page (720×1008)
+           covers; 2–47 are full spreads (1440×1008). The stage keeps
+           the spread aspect and letterboxes the covers. The sheet is
+           a two-sided CSS 3D element that rotates about the vertical
+           center axis to simulate a page turn. Keyboard: ←/→. -->
+      <div class="atlas-book" id="atlas-book">
+        <div class="atlas-book__stage" id="atlas-stage">
+          <img class="atlas-book__base" id="atlas-base" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
+          <div class="atlas-book__sheet" id="atlas-sheet" aria-hidden="true">
+            <img class="atlas-book__face atlas-book__face--front" id="atlas-front" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="" />
+            <img class="atlas-book__face atlas-book__face--back"  id="atlas-back"  src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" />
+          </div>
+          <div class="atlas-book__spine" aria-hidden="true"></div>
+          <div class="atlas-book__shadow" aria-hidden="true"></div>
+        </div>
+        <div class="atlas-book__controls" role="group" aria-label="Flip through the printed atlas">
+          <button class="atlas-book__btn" id="atlas-prev" type="button" aria-label="Previous page" disabled>&#x2039;</button>
+          <span class="atlas-book__counter" id="atlas-counter" aria-live="polite">01 / 48</span>
+          <button class="atlas-book__btn" id="atlas-next" type="button" aria-label="Next page">&#x203A;</button>
+        </div>
       </div>
     </div>
 
@@ -1757,6 +1948,91 @@
         if (labelSpan) labelSpan.textContent = open ? 'Read more' : 'Read less';
       });
     });
+  })();
+
+  /* ─── 09 · Printed-atlas flipbook ───────────────────────────────
+     48 PDF pages, prev/next buttons + keyboard arrows + wheel-across.
+     The .atlas-book__sheet carries two img faces that back onto each
+     other; rotating it 180° about the correct edge swaps the visible
+     page. After the animation, we swap the base image to the new page
+     and reset the sheet silently so the next flip starts clean. */
+  (function () {
+    var book = document.getElementById('atlas-book');
+    if (!book) return;
+    var base    = document.getElementById('atlas-base');
+    var sheet   = document.getElementById('atlas-sheet');
+    var front   = document.getElementById('atlas-front');
+    var back    = document.getElementById('atlas-back');
+    var counter = document.getElementById('atlas-counter');
+    var prevBtn = document.getElementById('atlas-prev');
+    var nextBtn = document.getElementById('atlas-next');
+
+    var TOTAL = 48;
+    var DUR   = 850;     // match CSS transition
+    var cur   = 1;
+    var busy  = false;
+
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function src(n) { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-' + pad(n) + '.jpg'; }
+
+    function update() {
+      base.src = src(cur);
+      base.alt = 'Atlas page ' + cur + ' of ' + TOTAL;
+      counter.textContent = pad(cur) + ' / ' + pad(TOTAL);
+      prevBtn.disabled = (cur <= 1);
+      nextBtn.disabled = (cur >= TOTAL);
+    }
+
+    function go(dir) {
+      if (busy) return;
+      var nxt = cur + dir;
+      if (nxt < 1 || nxt > TOTAL) return;
+      busy = true;
+
+      // Front shows what's currently on screen; back shows where we're going.
+      front.src = src(cur);
+      back.src  = src(nxt);
+      // Also update the base to the TARGET page so, once the sheet
+      // completes its flip and fades out, the correct image sits there.
+      base.src  = src(nxt);
+
+      // Ensure the sheet starts flat before adding the flip class.
+      sheet.classList.remove('is-flipping-forward', 'is-flipping-backward');
+      // Force a reflow so the next class change triggers the transition.
+      void sheet.offsetWidth;
+
+      sheet.classList.add('is-active');
+      sheet.classList.add(dir > 0 ? 'is-flipping-forward' : 'is-flipping-backward');
+
+      window.setTimeout(function () {
+        // Quietly deactivate the sheet and reset its rotation, no transition.
+        sheet.style.transition = 'none';
+        sheet.classList.remove('is-active', 'is-flipping-forward', 'is-flipping-backward');
+        void sheet.offsetWidth;
+        sheet.style.transition = '';
+        cur = nxt;
+        update();
+        busy = false;
+      }, DUR);
+    }
+
+    prevBtn.addEventListener('click', function () { go(-1); });
+    nextBtn.addEventListener('click', function () { go( 1); });
+
+    // Keyboard — only when the flipbook (or one of its controls) has focus,
+    // so the arrows don't hijack the whole page.
+    book.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go( 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+    });
+    book.setAttribute('tabindex', '0');
+
+    // Preload the first few pages so the opening flips feel instant.
+    [2, 3, 4, 5].forEach(function (n) {
+      if (n <= TOTAL) { var im = new Image(); im.src = src(n); }
+    });
+
+    update();
   })();
   </script>
 </body>
