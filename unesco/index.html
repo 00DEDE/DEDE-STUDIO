@@ -1206,7 +1206,11 @@
     padding: 0;
     margin: 0;
     width: 100%;
-    aspect-ratio: 1440 / 1008;    /* match spread; covers crop lightly */
+    /* 2× the previous height — portrait aspect gives each thumb
+       twice the vertical pixels for the same cell width. Covers fit
+       natively at this ratio; spreads crop in slightly from the
+       sides, still legibly showing the page. */
+    aspect-ratio: 720 / 1008;
     background-color: #eceae4;
     background-size: cover;
     background-position: center;
@@ -1224,13 +1228,13 @@
   .atlas-book__thumb:focus-visible {
     opacity: 1;
     outline: none;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
   .atlas-book__thumb.is-current {
     opacity: 1;
     outline: 2px solid var(--accent);
     outline-offset: 1px;
-    transform: translateY(-3px);
+    transform: translateY(-4px);
   }
   /* Hover tooltip — small page-number bubble that follows the cursor
      along the timeline, so visitors can see where they're about to
@@ -1467,13 +1471,13 @@
            no controls, no pointer events. -->
       <figure class="media media--wide logo-reveal">
         <video class="media__video logo-reveal__fwd"
-               muted playsinline preload="auto"
+               autoplay muted playsinline webkit-playsinline preload="auto"
                disablepictureinpicture disableremoteplayback
                aria-label="UNESCO logo reveal animation">
           <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
         </video>
         <video class="media__video logo-reveal__rev" aria-hidden="true"
-               muted playsinline preload="auto"
+               muted playsinline webkit-playsinline preload="auto"
                disablepictureinpicture disableremoteplayback>
           <source src="/ASSETS/IMAGES/UNESCO/logo-reveal-reverse.mp4" type="video/mp4">
         </video>
@@ -1959,10 +1963,31 @@
         };
         fwd.addEventListener('ended', function () { setTimeout(playReverse, PAUSE_MS); });
         rev.addEventListener('ended', function () { setTimeout(playForward, PAUSE_MS); });
-        /* Kick off once both videos have enough data to play. */
-        var kick = function () { playForward(); };
-        if (fwd.readyState >= 2) { kick(); }
-        else { fwd.addEventListener('loadeddata', kick, { once: true }); }
+        /* Mobile Safari silently rejects .play() when the video is
+           offscreen on load, even with muted + playsinline + autoplay.
+           Wait for the figure to intersect the viewport, then kick
+           off the cycle. Falls back to immediate play on older
+           browsers without IntersectionObserver. */
+        var kicked = false;
+        var kick = function () {
+          if (kicked) return;
+          kicked = true;
+          playForward();
+        };
+        var armKick = function () {
+          if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+              entries.forEach(function (ent) {
+                if (ent.isIntersecting) { kick(); io.disconnect(); }
+              });
+            }, { threshold: 0.15 });
+            io.observe(logoReveal);
+          } else {
+            kick();
+          }
+        };
+        if (fwd.readyState >= 2) { armKick(); }
+        else { fwd.addEventListener('loadeddata', armKick, { once: true }); }
       }
     }
 
@@ -2161,6 +2186,46 @@
     timeline.addEventListener('pointerleave', onLeave);
     timeline.addEventListener('click', onClick);
     timeline.addEventListener('keydown', onKey);
+
+    // ─── Mobile swipe (touch only) ───────────────────────────────
+    // On narrow viewports, swiping across the stage advances or
+    // rewinds by a single page. Guard by touch pointer type so
+    // mouse / trackpad interaction on desktop is unaffected, and
+    // require horizontal delta > vertical so vertical page scroll
+    // through the stage still works.
+    var SWIPE_MIN   = 40;      // px — ignore anything smaller
+    var swipeStartX = 0;
+    var swipeStartY = 0;
+    var swipeActive = false;
+    function isMobile() {
+      return window.matchMedia('(max-width: 640px)').matches;
+    }
+    stage.addEventListener('pointerdown', function (e) {
+      if (!isMobile() || e.pointerType !== 'touch') return;
+      swipeActive  = true;
+      swipeStartX  = e.clientX;
+      swipeStartY  = e.clientY;
+    });
+    stage.addEventListener('pointerup', function (e) {
+      if (!swipeActive) return;
+      swipeActive = false;
+      var dx = e.clientX - swipeStartX;
+      var dy = e.clientY - swipeStartY;
+      if (Math.abs(dx) < SWIPE_MIN) return;
+      if (Math.abs(dy) > Math.abs(dx)) return;   // treat as vertical scroll
+      if (dx < 0) {
+        // Swipe left → next page (wraps 48 → 1).
+        setPage(cur === TOTAL ? 1 : cur + 1);
+      } else {
+        // Swipe right → previous page (wraps 1 → 48).
+        setPage(cur === 1 ? TOTAL : cur - 1);
+      }
+      restart();
+    });
+    stage.addEventListener('pointercancel', function () { swipeActive = false; });
+    // Keep vertical page scroll through the stage working; only
+    // horizontal gestures are claimed as swipes.
+    stage.style.touchAction = 'pan-y';
 
     // Pause when the stage leaves the viewport or the tab is hidden.
     var io = new IntersectionObserver(function (entries) {
