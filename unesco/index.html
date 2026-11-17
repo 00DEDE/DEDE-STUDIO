@@ -1038,7 +1038,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(2rem, 4vw, 4rem);
-    padding: var(--stack-y) 0;
+    /* Same horizontal gutter as every other section on the page. */
+    padding: var(--stack-y) var(--page-x);
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
     /* Sits inside the sitewide --content-max column (via the global
@@ -1793,13 +1794,6 @@
       </div>
     </div>
 
-  </section>
-
-  <!-- ══════════════════════ CLOSING STATEMENT ══════════════════════ -->
-  <section class="unesco__closing" aria-label="Closing statement">
-    <p class="statement statement--closing">
-      The World Needs U.
-    </p>
   </section>
 
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->

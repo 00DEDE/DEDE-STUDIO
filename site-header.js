@@ -136,7 +136,10 @@
   // pill is sticky to the header's bottom edge; only X moves, and only
   // between the viewport left/right. Position is saved in localStorage
   // so the pill stays where the user parked it across pages/reloads.
-  var PILL_KEY       = 'dedeMenuBtnX';
+  // Bumped suffix (`-r2`) retires any pill position saved under the
+  // old left-default key — every visitor now starts at the new
+  // right-side default until they drag.
+  var PILL_KEY       = 'dedeMenuBtnX-r2';
   var PILL_MARGIN    = 8;
   var DRAG_THRESHOLD = 4;
   var mqDesktop      = window.matchMedia('(min-width: 641px)');

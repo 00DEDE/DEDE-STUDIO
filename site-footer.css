@@ -4,10 +4,10 @@
 .site-footer {
   max-width: 100%;
   margin-inline: 0;
-  /* Top padding +50% from the previous bump (was 4.5–9rem, now 6.75–13.5rem)
-     so at the end of the page the footer owns the viewport — the home
-     parallax reveals mostly black beneath the last pull-quote. */
-  padding: clamp(6.75rem, 18vh, 13.5rem) 1.5rem clamp(2rem, 4.5vh, 3rem);
+  /* Horizontal padding falls back to --page-x where the active page
+     defines one (e.g. UNESCO), so the footer wordmark sits flush with
+     the same gutter as the rest of the page content. */
+  padding: clamp(6.75rem, 18vh, 13.5rem) var(--page-x, 1.5rem) clamp(2rem, 4.5vh, 3rem);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   color: #fff;
   background: #000;
@@ -18,8 +18,10 @@
   transition: opacity var(--dur-quick) var(--ease-standard);
   line-height: 0;
   text-align: center;
-  /* Cap so the lockup never blows up past a sensible display size. */
-  max-width: 28rem;
+  /* Edge-to-edge wordmark, respecting the footer's horizontal padding
+     (which uses --page-x). No upper cap — the logo now scales to the
+     full width available between the page gutters. */
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -118,7 +120,7 @@
   /* Mobile: top padding tight; bottom padding bumped so the fixed
      hamburger pill (bottom-centre, ~4rem tall-plus-inset) has clear
      breathing room above the last line of footer meta. */
-  .site-footer { padding: clamp(5rem, 14vh, 9rem) 1rem clamp(6rem, 10vh, 7rem); }
+  .site-footer { padding: clamp(5rem, 14vh, 9rem) var(--page-x, 1rem) clamp(6rem, 10vh, 7rem); }
   .site-footer__meta {
     grid-template-columns: 1fr;
     justify-items: center;
