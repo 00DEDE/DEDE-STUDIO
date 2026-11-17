@@ -1030,6 +1030,27 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
+     CLOSING IMAGE — full-bleed hero that closes the case study. The
+     image renders at its natural aspect (width:100%, height:auto) so
+     no part of the composition is cropped; it breaks out of any
+     parent --content-max cap by sitting at 100vw with a centering
+     margin.
+     ═══════════════════════════════════════════════════════════════════ */
+  .unesco__closing-image {
+    width: 100vw;
+    margin: clamp(2rem, 4vh, 3.5rem) calc(50% - 50vw) 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background: #000;
+  }
+  .unesco__closing-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
      PREV / NEXT PAGER — richer than a stub arrow: label, project
      name, and a small sub-line ("Case Study — 002") so the "next"
      reads as an invitation, not just a link.
@@ -1799,6 +1820,14 @@
     </div>
 
   </section>
+
+  <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════
+       Full-viewport-width hero shot that closes the case study before the
+       pager. The image is shown at its natural aspect so nothing in the
+       composition (billboard type, tote copy, etc.) is cropped. -->
+  <figure class="unesco__closing-image" aria-label="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front">
+    <img src="/ASSETS/IMAGES/UNESCO/closing-hero.jpg" alt="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front" />
+  </figure>
 
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
   <nav class="pager" aria-label="Case navigation">
