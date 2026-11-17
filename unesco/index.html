@@ -342,8 +342,19 @@
     grid-template-columns: repeat(3, 1fr);
     gap: clamp(0.75rem, 1.5vw, 1.25rem);
   }
+  .section-media__triptych--pair {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* 3-col, 2-row poster grid (section 07) */
+  .section-media__posters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
   @media (max-width: 900px) {
     .section-media__triptych { grid-template-columns: 1fr; }
+    .section-media__triptych--pair { grid-template-columns: 1fr; }
+    .section-media__posters { grid-template-columns: 1fr; }
   }
 
   /* ─── Section label (numbered eyebrow) ───────────────────────────
@@ -745,6 +756,7 @@
   .media--cinema   { aspect-ratio: 21 / 9; }
   .media--square   { aspect-ratio: 1 / 1; }
   .media--portrait { aspect-ratio: 3 / 4; }
+  .media--poster   { aspect-ratio: 2 / 3; }
   .media__img,
   .media__video {
     position: absolute;
@@ -1422,11 +1434,20 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Each cell holds two stacked images that crossfade on a
-           shared 10s cycle. Three cells animate in sync so each round
-           reads as a single composed trio. See .media__slide keyframes
-           in <style>. -->
-      <div class="section-media__triptych">
+      <!-- 3 × 2 poster grid — the six macro posters from the series. -->
+      <div class="section-media__posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
+      </div>
+
+      <!-- Each cell holds two stacked images that crossfade on a shared
+           10s cycle. Both cells animate in sync so each round reads as
+           a single composed pair. See .media__slide keyframes. -->
+      <div class="section-media__triptych section-media__triptych--pair">
         <figure class="media media--square">
           <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/applications-01.jpg" alt="UNESCO installation application — round 1" />
           <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/02.jpg" alt="UNESCO installation application — round 2" />
@@ -1434,11 +1455,6 @@
         <figure class="media media--square">
           <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/applications-02.jpg" alt="UNESCO installation application — round 1" />
           <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/03.jpg" alt="UNESCO installation application — round 2" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/06.jpg" alt="UNESCO installation application — round 1" />
-          <!-- 04.jpg zoomed +30% so the center poster frames up tighter -->
-          <img class="media__img media__slide media__slide--2" style="transform: scale(1.3);" src="/ASSETS/IMAGES/UNESCO/04.jpg" alt="UNESCO installation application — round 2" />
         </figure>
       </div>
     </div>
