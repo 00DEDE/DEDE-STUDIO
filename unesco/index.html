@@ -230,11 +230,62 @@
      stays small so the hero cover reads as the first real content. */
   body.unesco .site-header,
   body.unesco .site-header.is-scrolled {
-    padding: 1.15rem 0 0.65rem;
+    /* Horizontal pad matches --page-x so the brand's left edge lines
+       up with every section's text column below. Right side leaves
+       room for the pill, so --page-x applies to both sides. */
+    padding: 1.15rem var(--page-x, 1rem) 0.65rem;
+    /* Three-col grid so the brand sits at col 1 (left), the pill at
+       col 3 (right), and col 2 absorbs the slack between them. */
+    grid-template-columns: auto 1fr auto;
   }
   body.unesco .site-header .site-header__brand img,
   body.unesco .site-header.is-scrolled .site-header__brand img {
     height: 1.75rem;
+  }
+  /* Brand pinned left, overriding the global dead-centre placement. */
+  body.unesco .site-header .site-header__brand {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+  /* Pin the menu pill to the top-right of the header on this page.
+     Overrides the shared drag-positioned inline left/top that
+     site-header.js writes, and the default bottom-centre placement
+     on mobile. */
+  body.unesco .site-menu-btn {
+    position: fixed !important;
+    top: 0.55rem !important;
+    right: var(--page-x, 1rem) !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  /* Nav is hidden on UNESCO by default; clicking the pill toggles
+     `body.is-nav-open`, which reveals the nav as an in-header row 2
+     strip (desktop) instead of the usual floating dropdown. */
+  @media (min-width: 641px) {
+    body.unesco .site-header__nav { display: none; }
+    body.unesco.is-nav-open .site-header__nav {
+      display: flex !important;
+      /* Beat the inline positioning site-header.js writes when the
+         global dropdown layout opens elsewhere. */
+      position: static !important;
+      left: auto !important;
+      top: auto !important;
+      transform: none !important;
+      visibility: visible !important;
+      /* Sit inside header grid row 2, full width. */
+      grid-column: 1 / -1;
+      grid-row: 2;
+      justify-content: center;
+      gap: clamp(2.25rem, 4.5vw, 4.5rem);
+      padding: clamp(0.6rem, 1.3vw, 1rem) var(--page-x);
+      margin-top: 0.65rem;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--bg);
+    }
   }
   .unesco__hero-image {
     position: absolute;
@@ -1141,17 +1192,6 @@
   .atlas-book__stage.is-spread {
     background: #0a0a0a;
   }
-  .atlas-book__shadow {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(0, 0, 0, 0) 55%,
-      rgba(0, 0, 0, 0.25) 100%
-    );
-    z-index: 3;
-  }
   /* Two stacked image layers; one is always .is-active (opacity 1),
      the other crossfades in. Both use object-fit: contain so the
      single-page covers (pages 1 and 48) letterbox inside the spread
@@ -1769,7 +1809,6 @@
         <div class="atlas-book__stage" id="atlas-stage">
           <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
           <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
-          <div class="atlas-book__shadow" aria-hidden="true"></div>
         </div>
         <div
           class="atlas-book__timeline"
