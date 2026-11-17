@@ -308,4 +308,45 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
+
+  // ---- Click ping -------------------------------------------------------
+  // Brief cyan ring at the pointer location on any click, so viewers get
+  // a clear visual confirmation that their tap / click was received. The
+  // ring is pointer-events: none and is removed after its animation ends.
+  // Keyboard-synthesised clicks (Enter/Space on a button) typically ship
+  // clientX/Y === 0; those are skipped so nothing ever flashes in the
+  // top-left corner on a keyboard action.
+  var pingStyle = document.createElement('style');
+  pingStyle.textContent =
+    '.site-click-ping{' +
+      'position:fixed;pointer-events:none;' +
+      'width:28px;height:28px;margin:-14px 0 0 -14px;' +
+      'border:2px solid #34dede;border-radius:50%;' +
+      'opacity:1;transform:scale(0.35);' +
+      'z-index:2147483646;' +
+      'animation:site-click-ping 520ms cubic-bezier(0.2,0.8,0.2,1) forwards;' +
+      'will-change:transform,opacity;' +
+    '}' +
+    '@keyframes site-click-ping{' +
+      '0%{opacity:1;transform:scale(0.35);}' +
+      '70%{opacity:0.7;}' +
+      '100%{opacity:0;transform:scale(1.8);}' +
+    '}' +
+    '@media (prefers-reduced-motion:reduce){' +
+      '.site-click-ping{animation-duration:220ms;}' +
+    '}';
+  document.head.appendChild(pingStyle);
+
+  document.addEventListener('click', function (e) {
+    if (!e.clientX && !e.clientY) return;   // keyboard-synthesised
+    var ping = document.createElement('span');
+    ping.className = 'site-click-ping';
+    ping.setAttribute('aria-hidden', 'true');
+    ping.style.left = e.clientX + 'px';
+    ping.style.top  = e.clientY + 'px';
+    document.body.appendChild(ping);
+    ping.addEventListener('animationend', function () {
+      if (ping.parentNode) ping.parentNode.removeChild(ping);
+    });
+  }, true);
 })();
