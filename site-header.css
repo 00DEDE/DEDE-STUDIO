@@ -454,18 +454,22 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
 
   /* Desktop pill: sticky to the HEADER'S BOTTOM EDGE — the pill is
      centred vertically on the header's bottom border (half overlapping
-     into the content). Default X is the LEFT of the viewport; the user
-     can drag it anywhere along the header's bottom line. A slow
+     into the content). Default X is the RIGHT of the viewport; the
+     user can drag it anywhere along the header's bottom line. A slow
      breathing shadow invites interaction. */
   .site-menu-btn {
     top: calc(var(--header-safe-top, 7rem) - 1.25rem);
-    left: clamp(1rem, 2vw, 1.75rem);
+    right: clamp(1rem, 2vw, 1.75rem);
+    left: auto;
     transform: none;
     animation: pill-breathe 4.2s ease-in-out infinite;
     cursor: grab;
     transition: box-shadow var(--dur-medium) var(--ease-standard),
                 top        var(--dur-medium) var(--ease-out-expo);
   }
+  /* Once the drag JS writes an inline `left:`, honour it and release
+     the `right:` so the pill sits exactly where the user parked it. */
+  .site-menu-btn.is-placed { right: auto; }
   .site-menu-btn.is-placed {
     /* JS has set an inline `left:` from storage or drag; the inline
        value wins over the CSS default. Y is already locked above. */
