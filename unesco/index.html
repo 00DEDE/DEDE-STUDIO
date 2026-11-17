@@ -1126,15 +1126,20 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1440 / 1008;
-    /* Matches the cover's UNESCO blue so the single-page cover and
-       back cover letterbox invisibly inside the spread aspect. The
-       inner spreads fill the stage edge-to-edge, so the bg is only
-       seen on page 1, page 48, and brief crossfade moments. */
-    background: #2a7ec0;
+    /* Default is page-bg so the single-page covers (pg 1 and 48)
+       letterbox invisibly against the site. Inner spreads fill the
+       stage edge-to-edge so this bg is only ever seen on covers. */
+    background: var(--bg, #ffffff);
     overflow: hidden;
+    transition: background 300ms ease-in-out;
     box-shadow:
       0 20px 40px -20px rgba(0, 0, 0, 0.55),
       0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+  /* Inner spreads only — darken the bg under them so any 1px gap
+     between <img> and stage edge during crossfade is unobtrusive. */
+  .atlas-book__stage.is-spread {
+    background: #0a0a0a;
   }
   .atlas-book__shadow {
     position: absolute;
@@ -1171,47 +1176,61 @@
     z-index: 2;
   }
 
-  /* ─── Timeline scrubber ──────────────────────────────────────────
-     Sits directly below the stage, same width as the spread. Hovering
-     anywhere along it tracks a target page; without hover, the stage
-     auto-advances. The fill grows left→right in proportion to the
-     current page. A floating tooltip follows the cursor. */
+  /* ─── Timeline thumbnails ─────────────────────────────────────────
+     A strip of 48 small thumbnails directly below the stage. Each
+     cell shows the atlas page it represents, sized to the spread
+     aspect. Hovering a thumb sets the target page; the stage
+     crossfades toward it one step at a time. The current page is
+     highlighted. On narrower viewports the strip stays the same
+     width as the stage so the row still spans the whole book. */
   .atlas-book__timeline {
     position: relative;
     width: 100%;
-    height: 40px;
-    cursor: pointer;
+    display: grid;
+    grid-template-columns: repeat(48, 1fr);
+    gap: 2px;
+    padding: 0;
     user-select: none;
     touch-action: pan-x;
+  }
+  .atlas-book__thumb {
+    appearance: none;
+    border: 0;
     padding: 0;
+    margin: 0;
+    width: 100%;
+    aspect-ratio: 1440 / 1008;    /* match spread; covers crop lightly */
+    background-color: #eceae4;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    opacity: 0.42;
+    outline: 0 solid var(--accent);
+    outline-offset: 0;
+    transition:
+      opacity    180ms ease,
+      transform  180ms ease,
+      outline    140ms ease;
+    will-change: opacity, transform;
   }
-  .atlas-book__timeline-track {
-    position: absolute;
-    left: 0; right: 0;
-    top: 50%;
-    height: 2px;
-    margin-top: -1px;
-    background: rgba(255, 255, 255, 0.14);
+  .atlas-book__thumb:hover,
+  .atlas-book__thumb:focus-visible {
+    opacity: 1;
+    outline: none;
+    transform: translateY(-2px);
   }
-  .atlas-book__timeline-fill {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    height: 2px;
-    margin-top: -1px;
-    width: 0%;
-    background: var(--accent);
-    transition: width 320ms ease-in-out;
-    pointer-events: none;
+  .atlas-book__thumb.is-current {
+    opacity: 1;
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    transform: translateY(-3px);
   }
-  .atlas-book__timeline-fill.is-chasing {
-    transition: width 120ms linear;
-  }
-  /* Hover tooltip — bubble just above the timeline with the target
-     page number. Appears only while the timeline is being hovered. */
+  /* Hover tooltip — small page-number bubble that follows the cursor
+     along the timeline, so visitors can see where they're about to
+     jump without squinting at the thumbnails. */
   .atlas-book__timeline-tooltip {
     position: absolute;
-    bottom: calc(100% - 0.1rem);
+    bottom: calc(100% + 0.35rem);
     left: 0;
     transform: translateX(-50%);
     font-size: 0.68rem;
@@ -1248,52 +1267,14 @@
     opacity: 0.6;
   }
 
-  /* ─── Site tour cell (section 09, second media block) ───────────
-     Embeds the standalone /tour/ page inside section 09 so visitors
-     can watch a live walk-through of the site without leaving UNESCO.
-     Styled like a video player: dark bezel, rounded corners, same
-     box-shadow as the atlas stage above. */
-  .site-tour {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(0.85rem, 1.75vh, 1.4rem);
-    width: min(100%, calc(75vh * 1440 / 1008));
-    justify-self: center;
-    margin-inline: auto;
-  }
-  .site-tour__label {
-    font: var(--font-eyebrow);
-    letter-spacing: 0.14em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-  .site-tour__cell {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    background: #050505;
-    overflow: hidden;
-    box-shadow:
-      0 20px 40px -20px rgba(0, 0, 0, 0.55),
-      0 2px 6px rgba(0, 0, 0, 0.25);
-  }
-  .site-tour__frame {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    display: block;
-  }
-
   @media (max-width: 640px) {
     .atlas-book { width: 100%; }
-    .site-tour { width: 100%; }
-    .atlas-book__timeline { height: 36px; }
+    .atlas-book__timeline { gap: 1px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .atlas-book__spread { transition: none; }
-    .atlas-book__timeline-fill { transition: none; }
+    .atlas-book__thumb { transition: none; }
+    .atlas-book__stage { transition: none; }
   }
 </style>
 </head>
@@ -1767,11 +1748,11 @@
       <p class="statement">
         Before the <em>Digital Atlas</em>, there was the printed one.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-printed-atlas">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-atlas">
+      <div class="read-more__panel" id="rm-printed-atlas">
         <div class="read-more__inner">
           <p>It begins as a celebration of our differences: the languages we speak, the lands we tend, the rituals we keep, the monuments we raise. But turn the pages, and something quieter surfaces. Somewhere between the words and the traditions, you start to see yourself in a stranger. Because before anything else, you and I are human.</p>
           <p>Open the atlas and the world unfolds in your hands. Four icons mark the four worlds UNESCO protects. Each world then appears on its own, with a map where every icon carries a number: the page where that place can be found. Each map becomes a table of contents for the globe.</p>
@@ -1793,38 +1774,15 @@
         <div
           class="atlas-book__timeline"
           id="atlas-timeline"
-          role="slider"
-          tabindex="0"
+          role="toolbar"
           aria-label="Scrub through the printed atlas"
-          aria-valuemin="1"
-          aria-valuemax="48"
-          aria-valuenow="1"
-          aria-valuetext="Page 1 of 48"
         >
-          <div class="atlas-book__timeline-track" aria-hidden="true"></div>
-          <div class="atlas-book__timeline-fill" id="atlas-timeline-fill" aria-hidden="true"></div>
+          <!-- 48 .atlas-book__thumb buttons generated by the atlas JS -->
           <div class="atlas-book__timeline-tooltip" id="atlas-timeline-tooltip" aria-hidden="true">01</div>
         </div>
         <div class="atlas-book__counter" aria-hidden="true">
           <small>Page</small>
           <span id="atlas-counter">01 / 48</span>
-        </div>
-      </div>
-
-      <!-- Site walkthrough — a second media block inside section 09.
-           The /tour/ page is self-contained; dropping it in an iframe
-           here lets visitors watch an auto-pilot tour of the whole
-           site without ever leaving UNESCO. -->
-      <div class="site-tour">
-        <span class="site-tour__label">The Site Walkthrough</span>
-        <div class="site-tour__cell">
-          <iframe
-            class="site-tour__frame"
-            src="/tour/"
-            title="Auto-tour of iamdede.com"
-            loading="lazy"
-            allow="fullscreen"
-          ></iframe>
         </div>
       </div>
     </div>
@@ -2042,40 +2000,56 @@
     });
   })();
 
-  /* ─── 09 · Printed atlas — timeline-driven page viewer ──────────
-     Two layered <img> elements crossfade on every page change.
-     The timeline below is a hover scrubber: moving the cursor sets
-     a target page; a ticker walks `cur` one step at a time toward
-     `target` so the stage visibly "moves toward" the hovered page.
-     With no hover, auto-advance ticks forward and wraps at the end. */
+  /* ─── 09 · Printed atlas — thumbnail-scrubbed viewer ────────────
+     The stage holds two <img> layers that crossfade on each page
+     change. Below it, a strip of 48 thumbnail buttons (one per
+     page). Hovering a thumb sets a target page; a ticker walks
+     cur one step at a time toward target so the stage visibly
+     "moves toward" the hovered page. With no hover, pages auto-
+     advance forward every AUTO_MS and wrap at 48 → 1. */
   (function () {
     var book = document.getElementById('atlas-book');
     if (!book) return;
 
+    var stage    = document.getElementById('atlas-stage');
     var layerA   = document.getElementById('atlas-a');
     var layerB   = document.getElementById('atlas-b');
     var timeline = document.getElementById('atlas-timeline');
-    var fill     = document.getElementById('atlas-timeline-fill');
     var tooltip  = document.getElementById('atlas-timeline-tooltip');
     var counter  = document.getElementById('atlas-counter');
 
-    var TOTAL      = 48;
-    var AUTO_MS    = 2600;   // dwell when no one is hovering
-    var CHASE_MS   = 160;    // speed of one step toward target during hover
-    var cur        = 1;
-    var target     = 1;
-    var hovered    = false;
-    var paused     = false;  // offscreen or page hidden
-    var tickTimer  = null;
+    var TOTAL    = 48;
+    var AUTO_MS  = 2600;   // dwell when no one is hovering
+    var CHASE_MS = 160;    // one step toward target while hovering
+    var cur       = 1;
+    var target    = 1;
+    var hovered   = false;
+    var paused    = false;
+    var tickTimer = null;
 
     function pad(n) { return (n < 10 ? '0' : '') + n; }
     function src(n) { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-' + pad(n) + '.jpg'; }
     function clamp(n) { return Math.max(1, Math.min(TOTAL, n)); }
+    function isCover(n) { return n === 1 || n === TOTAL; }
 
-    // Two crossfade layers: `activeEl` is the one currently shown.
-    // To change the page: load the next page into the OTHER layer,
-    // then flip which has .is-active (CSS handles the fade).
-    var activeEl = layerA;
+    // Build the 48 thumbnail buttons once, in order, inside the
+    // timeline. Each thumb carries its page index; CSS covers the
+    // visuals. The tooltip element stays as the last child so it
+    // paints over the thumbs.
+    var thumbs = [];
+    for (var i = 1; i <= TOTAL; i++) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'atlas-book__thumb';
+      btn.setAttribute('aria-label', 'Jump to page ' + i + ' of ' + TOTAL);
+      btn.setAttribute('data-page', String(i));
+      btn.style.backgroundImage = 'url("' + src(i) + '")';
+      timeline.insertBefore(btn, tooltip);
+      thumbs.push(btn);
+    }
+
+    // Two crossfade layers: activeEl is the one currently shown.
+    var activeEl  = layerA;
     var pendingEl = layerB;
 
     function setPage(n) {
@@ -2084,7 +2058,6 @@
       cur = n;
       var newImgEl = pendingEl;
       newImgEl.src = src(n);
-      // Wait for the image to decode so there's no half-painted flash.
       var swap = function () {
         newImgEl.classList.add('is-active');
         activeEl.classList.remove('is-active');
@@ -2093,40 +2066,38 @@
         pendingEl = tmp;
         updateUI();
       };
-      // Already in cache? decode is instant. Otherwise listen for decode.
       if (newImgEl.complete && newImgEl.naturalWidth) {
         swap();
       } else {
         var done = false;
         newImgEl.onload = function () { if (!done) { done = true; swap(); } };
-        // Hard cap in case the load event never fires.
         setTimeout(function () { if (!done) { done = true; swap(); } }, 400);
       }
     }
 
     function updateUI() {
-      var pct = ((cur - 1) / (TOTAL - 1)) * 100;
-      fill.style.width = pct + '%';
       counter.textContent = pad(cur) + ' / ' + pad(TOTAL);
-      timeline.setAttribute('aria-valuenow', String(cur));
-      timeline.setAttribute('aria-valuetext', 'Page ' + cur + ' of ' + TOTAL);
       activeEl.setAttribute('alt', 'Atlas page ' + cur + ' of ' + TOTAL);
+      // Swap stage bg: inner spreads sit on near-black so any 1px
+      // gap during crossfade is invisible; covers sit on the page bg
+      // (white) so the letterbox blends into the site.
+      stage.classList.toggle('is-spread', !isCover(cur));
+      // Mark the current thumb.
+      for (var k = 0; k < thumbs.length; k++) {
+        thumbs[k].classList.toggle('is-current', (k + 1) === cur);
+      }
     }
 
-    function nextAuto() {
-      return cur === TOTAL ? 1 : cur + 1;
-    }
+    function nextAuto() { return cur === TOTAL ? 1 : cur + 1; }
 
     function tick() {
       tickTimer = null;
       if (paused) return;
       if (hovered) {
-        fill.classList.add('is-chasing');
         if (cur < target)      setPage(cur + 1);
         else if (cur > target) setPage(cur - 1);
         tickTimer = setTimeout(tick, CHASE_MS);
       } else {
-        fill.classList.remove('is-chasing');
         setPage(nextAuto());
         tickTimer = setTimeout(tick, AUTO_MS);
       }
@@ -2137,21 +2108,29 @@
       tickTimer = setTimeout(tick, hovered ? CHASE_MS : AUTO_MS);
     }
 
-    function indexFromX(clientX) {
+    function positionTooltip(idx, clientX) {
       var rect = timeline.getBoundingClientRect();
-      var ratio = (clientX - rect.left) / rect.width;
-      return clamp(Math.ceil(ratio * TOTAL));
+      var x = clientX != null
+        ? Math.max(0, Math.min(rect.width, clientX - rect.left))
+        : ((idx - 0.5) / TOTAL) * rect.width;
+      tooltip.style.left = x + 'px';
+      tooltip.textContent = pad(idx);
     }
 
+    // Any pointermove inside the timeline — figure out which thumb
+    // we're over by hit-testing (not by x/width math) so gap pixels
+    // don't miscount as the neighbouring page.
     function onMove(e) {
       hovered = true;
       timeline.classList.add('is-hovered');
-      target = indexFromX(e.clientX);
-      // Position the tooltip over the cursor, pinned inside the timeline.
-      var rect = timeline.getBoundingClientRect();
-      var x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
-      tooltip.style.left = x + 'px';
-      tooltip.textContent = pad(target);
+      var t = e.target;
+      if (t && t.classList && t.classList.contains('atlas-book__thumb')) {
+        var p = parseInt(t.getAttribute('data-page'), 10);
+        if (p >= 1 && p <= TOTAL) {
+          target = p;
+          positionTooltip(p, e.clientX);
+        }
+      }
       restart();
     }
     function onLeave() {
@@ -2160,16 +2139,21 @@
       restart();
     }
     function onClick(e) {
-      // Direct jump on click/tap.
-      target = indexFromX(e.clientX);
-      setPage(target);
+      var t = e.target;
+      if (!t || !t.classList || !t.classList.contains('atlas-book__thumb')) return;
+      var p = parseInt(t.getAttribute('data-page'), 10);
+      if (!(p >= 1 && p <= TOTAL)) return;
+      // Direct jump on click/tap — no chase.
+      setPage(p);
+      target = p;
+      positionTooltip(p, e.clientX);
       restart();
     }
     function onKey(e) {
       if (e.key === 'ArrowRight') { e.preventDefault(); setPage(clamp(cur + 1)); restart(); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); setPage(clamp(cur - 1)); restart(); }
-      else if (e.key === 'Home') { e.preventDefault(); setPage(1); restart(); }
-      else if (e.key === 'End')  { e.preventDefault(); setPage(TOTAL); restart(); }
+      else if (e.key === 'Home')     { e.preventDefault(); setPage(1); restart(); }
+      else if (e.key === 'End')      { e.preventDefault(); setPage(TOTAL); restart(); }
     }
 
     timeline.addEventListener('pointermove', onMove);
@@ -2178,9 +2162,7 @@
     timeline.addEventListener('click', onClick);
     timeline.addEventListener('keydown', onKey);
 
-    // Pause when the stage leaves the viewport — saves cycles and
-    // prevents the viewer from returning to a page that drifted
-    // forward 200 steps during a long absence.
+    // Pause when the stage leaves the viewport or the tab is hidden.
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (ent) {
         paused = !ent.isIntersecting;
@@ -2188,15 +2170,13 @@
       });
     }, { threshold: 0.1 });
     io.observe(book);
-
-    // Also pause when the tab is hidden.
     document.addEventListener('visibilitychange', function () {
       paused = document.hidden;
       if (!paused) restart();
     });
 
-    // Preload a first batch for snappy early transitions; spread the
-    // rest out so the network isn't hit all at once.
+    // Preload pages for snappy transitions (thumbnails load via CSS
+    // background-image on render; full-size images preload here).
     for (var n = 2; n <= 8; n++) { var im = new Image(); im.src = src(n); }
     var preloadIdx = 9;
     var preloadTimer = setInterval(function () {
