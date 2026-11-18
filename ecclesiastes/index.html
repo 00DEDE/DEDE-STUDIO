@@ -690,7 +690,24 @@
     gap: clamp(0.2rem, 0.4vw, 0.4rem);
     align-items: start;
     justify-items: center;
+    /* Only ~5 rows of pages are visible at any time; the grid scrolls
+       internally. Combined with the sticky .book-preview in the left
+       column, the preview stays visible for the entire time the
+       viewer is browsing the book. */
+    max-height: 55vh;
+    overflow-y: auto;
+    /* Prevent page scroll from "steeling" the wheel once the grid
+       hits its edge — keeps grid scroll contained. */
+    overscroll-behavior: contain;
+    /* Thin scrollbar (modern browsers). */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    /* Subtle inner padding so cells aren't flush with the scrollbar. */
+    padding-right: 0.25rem;
   }
+  .book-grid::-webkit-scrollbar { width: 6px; }
+  .book-grid::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.3); border-radius: 3px; }
+  .book-grid::-webkit-scrollbar-track { background: transparent; }
   .book-page {
     position: relative;
     margin: 0;
@@ -722,13 +739,13 @@
     width: 100%;
     height: auto;
     display: block;
-    border: 1px solid rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
   }
   .book-page--solo { width: 50%; }
   /* Same border treatment on the hover preview image. */
   .book-preview__img {
-    border: 1px solid rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
   }
   /* Soft spine gradient down the middle of each interior spread —
@@ -810,6 +827,16 @@
   }
   @media (max-width: 900px) {
     .book-grid { grid-template-columns: repeat(6, 1fr); }
+  }
+  @media (max-width: 640px) {
+    /* Mobile: hide the back-cover thumbnail (last image in the grid). */
+    .book-grid > .book-page:last-child { display: none; }
+    /* Mobile: push section 4 (first two grid items of the case body)
+       past every other section. The parent grid is 1-col on mobile,
+       so items stack in DOM order by default; raising section 4's
+       `order` moves its text column and media column to the end. */
+    .unesco__grid[aria-label="Case study"] > :nth-child(1),
+    .unesco__grid[aria-label="Case study"] > :nth-child(2) { order: 999; }
   }
 
   /* ─── Foundation hero (section 02) — 16:9 cell (matching section
@@ -1913,8 +1940,9 @@
 
     /* Book grid (section 04) — on hover, paint the hovered page into
        #book-preview below the section label. Single-page cells
-       render at 30% width (70% smaller), spreads render at full
-       column width with a soft spine gradient down the gutter. */
+       render at 50% width (height matches a spread's height),
+       spreads render at full column width with a soft spine gradient
+       down the gutter. */
     (function () {
       var preview = document.getElementById('book-preview');
       if (!preview) return;
@@ -1930,6 +1958,40 @@
           preview.classList.toggle('is-spread', !isSolo);
         });
       });
+    })();
+
+    /* Mobile section renumber — when section 4 is moved to the end of
+       the case body (via CSS order on narrow viewports), relabel each
+       section's number so visual order reads 04, 05, 06, 07, 08, 09. */
+    (function () {
+      var grid = document.querySelector('.unesco__grid[aria-label="Case study"]');
+      if (!grid) return;
+      var labels = grid.querySelectorAll('.section-label__num');
+      if (labels.length < 6) return;
+      // Original DOM order of labels: [s4, s5, s6, s7, s8, s9]
+      // Mobile visual order:          [s5, s6, s7, s8, s9, s4]
+      // So mobile numbers per label:   09, 04, 05, 06, 07, 08
+      var mq = window.matchMedia('(max-width: 640px)');
+      function apply() {
+        if (mq.matches) {
+          labels[0].textContent = '09';
+          labels[1].textContent = '04';
+          labels[2].textContent = '05';
+          labels[3].textContent = '06';
+          labels[4].textContent = '07';
+          labels[5].textContent = '08';
+        } else {
+          labels[0].textContent = '04';
+          labels[1].textContent = '05';
+          labels[2].textContent = '06';
+          labels[3].textContent = '07';
+          labels[4].textContent = '08';
+          labels[5].textContent = '09';
+        }
+      }
+      apply();
+      if (mq.addEventListener) mq.addEventListener('change', apply);
+      else if (mq.addListener) mq.addListener(apply);
     })();
 
     /* Floating book-page carousel (section 03) — cursor-dictated
