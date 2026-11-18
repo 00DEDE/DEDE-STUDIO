@@ -254,17 +254,25 @@
     font-size: 0.72rem;
     letter-spacing: 0.08em;
     color: var(--fg);
-    opacity: 0.85;
+    opacity: 1;
     white-space: nowrap;
   }
   body.unesco .site-header__credit-sep {
-    opacity: 0.4;
+    opacity: 1;
     padding: 0 0.1rem;
   }
   @media (max-width: 640px) {
-    /* On mobile the brand is centered and the header is tight — hide
-       the credit so it doesn't collide with the logo. */
-    body.unesco .site-header__credit { display: none; }
+    /* Mobile: credit moves BELOW the centered brand mark, on its own
+       row. The extra row-gap keeps logo and credit from touching. */
+    body.unesco .site-header { grid-template-rows: auto auto; }
+    body.unesco .site-header__credit {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      justify-self: center;
+      padding-left: 0;
+      margin-top: 0.55rem;
+      font-size: 0.68rem;
+    }
   }
   .unesco__hero-image {
     position: absolute;
