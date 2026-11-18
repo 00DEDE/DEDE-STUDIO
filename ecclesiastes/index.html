@@ -715,23 +715,17 @@
     content-visibility: auto;
     contain-intrinsic-size: 1px 80px;
   }
-  /* Explicit aspect-ratio per orientation class so each cell is
-     locked to the exact aspect of its image — no distortion, no
-     stretch, no cover-crop. Solo cells are half-width + portrait
-     aspect, which works out to the same rendered HEIGHT as a
-     spread at full-width + landscape aspect (0.5 × 1.714 == 1.0 ×
-     0.857), so rows line up vertically. */
-  .book-page--spread { aspect-ratio: 1200 / 1028; }
-  .book-page--solo   {
-    width: 50%;
-    aspect-ratio: 1200 / 2057;
-  }
+  /* Natural sizing — every cell takes its image's native aspect via
+     width:100% + height:auto. Spreads render at 7:6 landscape, solos
+     at 7:12 portrait. Because solo cells are half-width, their
+     rendered HEIGHT equals a spread's height exactly (0.5 × 1.714
+     == 1 × 0.857), so rows line up. Previous "working" setup. */
   .book-page img {
     width: 100%;
-    height: 100%;
-    object-fit: fill;      /* cell aspect matches image aspect exactly — fill = no distortion */
+    height: auto;
     display: block;
   }
+  .book-page--solo { width: 50%; }
   /* Soft spine gradient down the middle of each interior spread —
      skipped on the first and last cells so the book opens and closes
      cleanly. */
@@ -845,25 +839,40 @@
   }
 
   /* ─── Cyanotype scraps (section 06) ───────────────────────────────
-     Transparent-PNG cyanotypes centered inside each cell. Cell bg is
-     transparent (no beige frame around the scrap), object-fit:
-     contain so the full image is visible with no crop, object-
-     position: center so each scrap sits in the middle of its cell. */
+     Each cell is a 2-layer composition: a full-size base scrap (jpg)
+     with a smaller transparent-PNG overlay centered on top at ~40%
+     of the cell width. */
   .cyano-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: clamp(0.75rem, 1.5vw, 1.25rem);
   }
-  .cyano-grid .media {
+  .cyano-cell {
+    position: relative;
+    margin: 0;
     aspect-ratio: 160 / 231;
     background: transparent;
+    overflow: visible;
   }
-  .cyano-grid .media__img {
+  .cyano-base {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
     object-position: center;
-    background: transparent;
+    display: block;
+  }
+  .cyano-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40%;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
   }
   @media (max-width: 900px) {
     .cyano-grid { grid-template-columns: 1fr; }
@@ -1624,13 +1633,22 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 3 transparent-PNG cyanotype scraps, centered inside each
-           cell with the surrounding background shown through. Order
-           matches the user's upload sequence. -->
+      <!-- Each cell stacks two cyanotype scraps: a full-size base
+           (jpg) with a smaller transparent overlay centered on top
+           at ~40% size. Both from Adrian Anguiano. -->
       <div class="cyano-grid">
-        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-01.png" alt="Cyanotype scrap 01" /></figure>
-        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-02.png" alt="Cyanotype scrap 02" /></figure>
-        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.png" alt="Cyanotype scrap 03" /></figure>
+        <figure class="cyano-cell">
+          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-01.jpg" alt="Cyanotype base 01" />
+          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-01.png"       alt="Cyanotype overlay 01" />
+        </figure>
+        <figure class="cyano-cell">
+          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-02.jpg" alt="Cyanotype base 02" />
+          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-02.png"       alt="Cyanotype overlay 02" />
+        </figure>
+        <figure class="cyano-cell">
+          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-03.jpg" alt="Cyanotype base 03" />
+          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.png"       alt="Cyanotype overlay 03" />
+        </figure>
       </div>
     </div>
 
