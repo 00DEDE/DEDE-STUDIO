@@ -344,16 +344,16 @@
   pingStyle.textContent =
     '.site-click-ping{' +
       'position:fixed;pointer-events:none;' +
-      /* +15% from 17px → 20px for a slightly more visible glow;
-         margin centres the ring on the cursor. */
-      'width:20px;height:20px;margin:-10px 0 0 -10px;' +
+      /* Another +15% (20px → 23px) for a brighter cyan footprint on
+         each click. Margin centres the ring on the cursor. */
+      'width:23px;height:23px;margin:-11.5px 0 0 -11.5px;' +
       'border:2px solid #34dede;border-radius:50%;' +
       'opacity:1;transform:scale(0.35);' +
       'z-index:2147483646;' +
       'animation:site-click-ping 520ms cubic-bezier(0.2,0.8,0.2,1) forwards;' +
       'will-change:transform,opacity,filter;' +
-      /* Blur scales with size (+15%): 8.4 → 9.7px — still a soft haze. */
-      'filter:blur(9.7px);' +
+      /* Blur scales with size (+15%): 9.7 → 11.2px — still a soft haze. */
+      'filter:blur(11.2px);' +
     '}' +
     '@keyframes site-click-ping{' +
       '0%{opacity:1;transform:scale(0.35);}' +
