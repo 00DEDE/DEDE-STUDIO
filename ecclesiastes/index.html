@@ -698,10 +698,15 @@
     width: 100%;
     display: block;
     background: #f4f2ec;                 /* soft page edge for JPG seams */
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.18))
-            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
-    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    /* box-shadow is cheaper than filter: drop-shadow on 97 cells. */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16),
+                0 2px 4px  rgba(0, 0, 0, 0.08);
+    /* Only transform transitions — avoid repainting shadow + filter
+       on every frame of the hover. */
+    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 380ms cubic-bezier(0.16, 1, 0.3, 1);
     transform-origin: center center;
+    transform: translate(var(--hover-tx, 0), var(--hover-ty, 0)) scale(1);
     z-index: 1;
     /* Perf: skip rendering offscreen cells entirely. The browser
        reserves the cell's intrinsic size so the grid doesn't jump
@@ -714,13 +719,19 @@
     height: auto;
     display: block;
   }
-  /* Solo cells (cover / mid-insert / back cover) sit at half the
-     cell width, centered, so they read as isolated pages rather than
-     full spreads. */
+  /* Solo cells (cover / back cover) sit at half the cell width,
+     centered, so they read as isolated pages rather than full spreads. */
   .book-page--solo { width: 50%; }
+  /* Last cell spans whatever remains of its row so the back cover
+     never lands alone on an orphan row. Width + centering stay from
+     .book-page--solo if applied. */
+  .book-grid > .book-page:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
   /* Soft spine gradient down the middle of each interior spread —
      skipped on the first and last cells so the book opens and closes
-     cleanly. Darkens from fully transparent to ~14% black at center. */
+     cleanly. */
   .book-grid > .book-page:not(:first-child):not(:last-child)::after {
     content: "";
     position: absolute;
@@ -737,14 +748,15 @@
     pointer-events: none;
     z-index: 2;
   }
-  /* Hover — lift above neighbours, scale up 5× (another 200% on top
-     of the previous 2.5×), deepen the shadow. */
+  /* Hover — the cell flies to the viewport centre (--hover-tx/ty are
+     set per cell by JS on pointerenter) and scales 10× (another 200%
+     on top of the previous 5×). Shadow deepens to sell the lift. */
   @media (hover: hover) {
     .book-page:hover {
-      transform: scale(5);
-      z-index: 5;
-      filter: drop-shadow(0 36px 70px rgba(0, 0, 0, 0.36))
-              drop-shadow(0 8px 20px rgba(0, 0, 0, 0.18));
+      transform: translate(var(--hover-tx, 0), var(--hover-ty, 0)) scale(10);
+      z-index: 50;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.42),
+                  0 10px 24px rgba(0, 0, 0, 0.22);
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1839,6 +1851,35 @@
       decipher(LETTERS, LETTER_POOL, 'letters', function () {
         currentMode = 'letters';
         holdTimer = setTimeout(cycle, HOLD_MS);
+      });
+    })();
+
+    /* Book grid (section 04) — on hover, translate each cell toward
+       the viewport centre and scale it 10× so the enlarged preview
+       always appears middle-of-screen regardless of which cell was
+       hovered. CSS does the scale + shadow; JS only writes the
+       translation offset as two CSS custom properties. */
+    (function () {
+      var cells = document.querySelectorAll('.book-grid .book-page');
+      if (!cells.length) return;
+      function onEnter(e) {
+        var cell = e.currentTarget;
+        var r = cell.getBoundingClientRect();
+        var cx = r.left + r.width  / 2;
+        var cy = r.top  + r.height / 2;
+        var dx = (window.innerWidth  / 2) - cx;
+        var dy = (window.innerHeight / 2) - cy;
+        cell.style.setProperty('--hover-tx', dx + 'px');
+        cell.style.setProperty('--hover-ty', dy + 'px');
+      }
+      function onLeave(e) {
+        var cell = e.currentTarget;
+        cell.style.removeProperty('--hover-tx');
+        cell.style.removeProperty('--hover-ty');
+      }
+      cells.forEach(function (cell) {
+        cell.addEventListener('pointerenter', onEnter);
+        cell.addEventListener('pointerleave', onLeave);
       });
     })();
 
