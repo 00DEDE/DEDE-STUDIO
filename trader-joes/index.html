@@ -401,20 +401,26 @@
 
   /* ─── Foundation Before/After cells (section 02) ──────────────────
      Both cells use contain so the full logo is always visible inside
-     the square; a white backdrop sits behind the artwork so the
-     white-on-red variants read as framed cards instead of floating on
-     page color. The After cell layers four wordmark variants that
-     slide horizontally like a wall of panels: the active panel sits
-     at x=0, the next incoming panel starts off-screen right and
-     slides to 0 while the outgoing panel slides to off-screen left.
-     Ease in-out on both so the motion feels playful. */
+     the square. case-study.css paints .media__img with a black
+     background; we override to transparent so each cell's own color
+     fills the letterbox area. Before = white. After = one of two
+     colors per layer (white for the white-background variants, red
+     #BC3633 for the one-on-red variant) so the sequence never shows
+     black. The After cell layers three wordmark variants that slide
+     horizontally like a wall of panels: the active panel sits at x=0,
+     the next incoming panel starts off-screen right and slides to 0
+     while the outgoing panel slides to off-screen left. Ease in-out
+     on both so the motion feels playful. */
   .foundations-ba__media { background: #ffffff; }
   .foundations-ba__img,
   .foundations-after__layer {
     object-fit: contain;
+    background: transparent;
   }
 
   .foundations-after { position: relative; overflow: hidden; background: #ffffff; }
+  .foundations-after__layer--white { background: #ffffff; }
+  .foundations-after__layer--red   { background: #BC3633; }
   .foundations-after__layer {
     position: absolute;
     inset: 0;
@@ -855,7 +861,7 @@
     <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">02</span>Foundation</p>
       <p class="statement">
-        Iconic treats, <em>reimagined for today&rsquo;s world</em>.
+        A friendlier, <em>cooler Joe</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
         <span>Read more</span>
@@ -863,9 +869,9 @@
       </button>
       <div class="read-more__panel" id="rm-foundations">
         <div class="read-more__inner">
-          <p>Trader Joe&rsquo;s has few items that awaken the senses of children, or of the inner child in each and every one of us.</p>
-          <p>This line extension introduces a family of products that are playful, educational, and a blast from the past, all while keeping our planet in mind. Inspired by the vibrant spirit of the 1970s, it takes kids on a colorful and flavorful adventure through iconic treats, reimagined for today&rsquo;s world.</p>
-          <p>With eco-friendly packaging and responsibly sourced ingredients, it shows how families can enjoy the classics of the past while protecting the planet for their children&rsquo;s future.</p>
+          <p>The current Trader Joe&rsquo;s logo is fun, but it pushes the quirk too far. Its irregular counters and high-contrast terminals feel exaggerated, and being set in all uppercase makes it less personal than it should be.</p>
+          <p>But Trader Joe&rsquo;s is in its own lane. It does its own thing. It is not a traditional grocery market. The rebranded wordmark is careful not to push it into an oversaturated lane, while paying closer attention to how each character&rsquo;s terminals end and to the consistency of its strokes.</p>
+          <p>The new logo does not strip away all Trader Joe&rsquo;s has built. Rather, it uplifts its inviting essence while bringing in a contemporary edge.</p>
         </div>
       </div>
     </div>
@@ -885,23 +891,22 @@
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">After</p>
           <figure class="media media--square foundations-ba__media foundations-after">
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--1 is-active" src="/ASSETS/IMAGES/TRADER%20JOES/after-01.jpg" alt="Trader Joe&rsquo;s rebrand wordmark, red on white" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/TRADER%20JOES/after-02.jpg" alt="Trader Joe&rsquo;s rebrand wordmark, white on red" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/TRADER%20JOES/after-03.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, red on white" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--4" src="/ASSETS/IMAGES/TRADER%20JOES/after-04.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, white on red" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__layer--white is-active" src="/ASSETS/IMAGES/TRADER%20JOES/after-01.jpg" alt="Trader Joe&rsquo;s rebrand wordmark, red on white" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__layer--white" src="/ASSETS/IMAGES/TRADER%20JOES/after-03.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, red on white" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__layer--red"   src="/ASSETS/IMAGES/TRADER%20JOES/after-04.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, white on red" />
           </figure>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════════ 03 · INTERACTION ══════════════════
+  <!-- ══════════════════ 03 · CONCEPT ══════════════════
        Uses the same 3-col grid structure as the numbered sections. -->
-  <section class="unesco__atlas unesco__grid" aria-label="Interaction">
+  <section class="unesco__atlas unesco__grid" aria-label="Concept">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">03</span>Interaction</p>
+      <p class="section-label"><span class="section-label__num">03</span>Concept</p>
       <p class="statement">
-        A digital window into the world happening <em>all around you</em>.
+        Products that spark conversations between <em>grandparent and grandchild</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
         <span>Read more</span>
@@ -909,20 +914,16 @@
       </button>
       <div class="read-more__panel" id="rm-atlas">
         <div class="read-more__inner">
-          <p>To mark UNESCO&rsquo;s 80th anniversary, I designed and built the Digital Atlas, an installation meant to be touched as much as seen. A tabletop map presents the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. When visitors place an icon on the map, the overhead display opens a window into that piece of humanity. The Digital Atlas shows how connected we are, how distinct we are, and why what makes us human is worth preserving.</p>
+          <p>My main goal for this rebrand was to present a unified line extension that creates dialogue and bonding between two generations: baby boomers and Generation Alpha. Grandparent and grandchild. These products are educational, adventurous, and full of childlike wonder.</p>
+          <p>That is perhaps the heart of this project, what was pumping through its veins. Childlike wonder. A moment where adult and child feel not so different from one another, and for a moment, speak the same emotional language.</p>
+          <p>Alongside the products, I designed an outdoor activity kit to be sold at Trader Joe&rsquo;s. It includes iconic American pastimes: two-person paddleball, two-person pickleball, a frisbee, a coloring book with colored pencils, and custom die-cut stickers. The idea is for families to create memories at the park again. Memories that will stay with the children long after, when they are the age their grandparents are now.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
       <figure class="media media--wide">
-        <video class="media__video"
-               autoplay muted loop playsinline preload="metadata"
-               disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/UNESCO/01.jpg"
-               aria-label="Digital Atlas installation">
-          <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
-        </video>
+        <img class="media__img" src="/ASSETS/IMAGES/TRADER%20JOES/concept-hero.jpg" alt="Trader Joe&rsquo;s outdoor activity kit: pickleball paddles, balls, coloring book, stickers, and sliced oranges on an orange backdrop" decoding="async" />
       </figure>
     </div>
   </section>
@@ -1467,7 +1468,7 @@
     })();
 
     /* Foundation After-cell sliding panels — the After cell stacks
-       four wordmark-variant stills. The active panel sits at x=0;
+       three wordmark-variant stills. The active panel sits at x=0;
        on tick, it slides off-screen left (.is-past) while the next
        panel slides in from off-screen right (.is-active). All other
        panels sit at translateX(100%) waiting their turn. 4s hold
