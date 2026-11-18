@@ -671,8 +671,10 @@
   .scans__row {
     position: relative;
     overflow: hidden;
-    /* Capture vertical wheel to scrub, per the JS handler. */
-    overscroll-behavior: contain;
+    /* No overscroll-behavior: contain — vertical wheel must chain
+       through to the page so users can keep scrolling down. The JS
+       handler only preventDefaults on horizontal gestures. */
+    touch-action: pan-y;
   }
   .scans__row + .scans__row {
     margin-top: clamp(0.75rem, 1.5vh, 1.25rem);
@@ -1154,6 +1156,11 @@
     background: var(--bg, #ffffff);
     overflow: hidden;
     transition: background 300ms ease-in-out;
+    /* Promote the stage to its own compositor layer so each page
+       crossfade stays on the GPU — big perf win in Safari where the
+       full-size spreads were causing main-thread repaints. */
+    transform: translateZ(0);
+    contain: layout paint;
   }
   /* Inner spreads only — darken the bg under them so any 1px gap
      between <img> and stage edge during crossfade is unobtrusive. */
@@ -1198,6 +1205,13 @@
     opacity: 0;
     transition: opacity 340ms ease-in-out;
     z-index: 1;
+    /* Keep each layer on its own GPU surface so the crossfade is a
+       composite-only animation. backface-visibility: hidden tames
+       Safari's known compositing glitches on stacked <img>. */
+    will-change: opacity;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
   .atlas-book__spread.is-active {
     opacity: 1;
@@ -2083,7 +2097,8 @@
     var tickTimer = null;
 
     function pad(n) { return (n < 10 ? '0' : '') + n; }
-    function src(n) { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-' + pad(n) + '.jpg'; }
+    function src(n)      { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-' + pad(n) + '.jpg'; }
+    function thumbSrc(n) { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-thumb-' + pad(n) + '.jpg'; }
     function clamp(n) { return Math.max(1, Math.min(TOTAL, n)); }
     function isCover(n) { return n === 1 || n === TOTAL; }
 
@@ -2098,7 +2113,10 @@
       btn.className = 'atlas-book__thumb';
       btn.setAttribute('aria-label', 'Jump to page ' + i + ' of ' + TOTAL);
       btn.setAttribute('data-page', String(i));
-      btn.style.backgroundImage = 'url("' + src(i) + '")';
+      // Dedicated small thumbnail (~240px wide, ~15 KB each) — avoids
+      // asking Safari to downsample 48 copies of the 2400px full-size
+      // JPG for the strip, which was the main source of lag.
+      btn.style.backgroundImage = 'url("' + thumbSrc(i) + '")';
       timeline.insertBefore(btn, tooltip);
       thumbs.push(btn);
     }
@@ -2270,14 +2288,18 @@
       if (!paused) restart();
     });
 
-    // Preload pages for snappy transitions (thumbnails load via CSS
-    // background-image on render; full-size images preload here).
-    for (var n = 2; n <= 8; n++) { var im = new Image(); im.src = src(n); }
-    var preloadIdx = 9;
+    // Preload full-size pages for snappy transitions. Opening batch
+    // is small (just the next 3 spreads) and the rest drip in slowly,
+    // so Safari isn't asked to decode 48 full-resolution JPGs in
+    // rapid succession when the section first opens. Dripping pauses
+    // while the tab is hidden or the section is scrolled offscreen.
+    for (var n = 2; n <= 4; n++) { var im = new Image(); im.src = src(n); }
+    var preloadIdx = 5;
     var preloadTimer = setInterval(function () {
       if (preloadIdx > TOTAL) { clearInterval(preloadTimer); return; }
+      if (paused) return;  // don't thrash when offscreen / tab hidden
       var im2 = new Image(); im2.src = src(preloadIdx++);
-    }, 220);
+    }, 450);
 
     updateUI();
     restart();
