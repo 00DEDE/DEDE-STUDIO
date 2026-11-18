@@ -910,9 +910,21 @@
   }
 
   /* ─── Tangible Forms slideshow (section 08) ──────────────────────
-     Two long portrait cells, each stacking its own set of images;
-     JS toggles .is-active on one slide at a time. Opacity-only
-     crossfade stays on the GPU. */
+     Two full-width landscape cells, stacked vertically. Each cell is
+     the size of both earlier half-width cells combined, so each image
+     renders large. object-fit: contain keeps every image fully in
+     view (no edge crop) and lets the cell background show through as
+     a thin matte on mismatched aspect ratios. */
+  .tangible-forms {
+    grid-template-columns: 1fr !important;
+  }
+  .tangible-forms__cell {
+    background: var(--bg);
+  }
+  .tangible-forms__cell .media__tslide {
+    object-fit: contain;
+    background: var(--bg);
+  }
   .media__tslide {
     opacity: 0;
     transition: opacity 600ms ease-in-out;
@@ -1852,7 +1864,7 @@
            JS at the bottom of the page toggles .is-active on one
            slide at a time; CSS handles the crossfade. -->
       <div class="section-media__triptych section-media__triptych--pair tangible-forms">
-        <figure class="media tangible-forms__cell" data-tangible-interval="3000" style="aspect-ratio: 3 / 2;">
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
           <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
@@ -1862,7 +1874,7 @@
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
         </figure>
-        <figure class="media tangible-forms__cell" data-tangible-interval="3000" style="aspect-ratio: 3 / 2;">
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
           <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
@@ -2116,41 +2128,77 @@
     })();
 
     /* Tangible Forms (section 08) — two long cells, each cycling its
-       own stack of celebration stills. Each cell's cadence is set by
-       data-tangible-interval (ms). Pauses while the cell is offscreen
-       so the page isn't repainting out of view. */
-    document.querySelectorAll('.tangible-forms__cell').forEach(function (cell) {
-      var slides = cell.querySelectorAll('.media__tslide');
-      if (slides.length < 2) return;
-      var interval = parseInt(cell.getAttribute('data-tangible-interval'), 10) || 3000;
-      var idx = 0;
-      var paused = true;
-      var timer = null;
-      function advance() {
-        slides[idx].classList.remove('is-active');
-        idx = (idx + 1) % slides.length;
-        slides[idx].classList.add('is-active');
-      }
-      function start() {
-        if (timer) return;
-        timer = setInterval(function () { if (!paused) advance(); }, interval);
-      }
-      if ('IntersectionObserver' in window) {
-        var io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (ent) {
-            paused = !ent.isIntersecting;
-            if (!paused) start();
-          });
-        }, { threshold: 0.1 });
-        io.observe(cell);
-      } else {
-        paused = false;
-        start();
-      }
-      document.addEventListener('visibilitychange', function () {
-        if (document.hidden) paused = true;
+       own stack of celebration stills. All cells share ONE timer so
+       they transition in lockstep (cell A and cell B swap at the
+       same moment, every time). Interval comes from the first cell's
+       data-tangible-interval. The cycle pauses while every cell is
+       offscreen; clicking a cell holds it on its current slide until
+       the viewer clicks outside, at which point it resumes. The
+       other cells keep ticking even while one is held. */
+    (function () {
+      var cells = document.querySelectorAll('.tangible-forms__cell');
+      if (!cells.length) return;
+      var interval = parseInt(cells[0].getAttribute('data-tangible-interval'), 10) || 5000;
+      var registry = [];
+      cells.forEach(function (cell) {
+        var slides = cell.querySelectorAll('.media__tslide');
+        if (slides.length < 2) return;
+        registry.push({
+          cell: cell,
+          slides: slides,
+          idx: 0,
+          offscreen: true,
+          userHold: false
+        });
       });
-    });
+      if (!registry.length) return;
+
+      function advance(state) {
+        state.slides[state.idx].classList.remove('is-active');
+        state.idx = (state.idx + 1) % state.slides.length;
+        state.slides[state.idx].classList.add('is-active');
+      }
+      // Single shared ticker — every cell that isn't offscreen or
+      // user-held advances on the same beat.
+      setInterval(function () {
+        registry.forEach(function (state) {
+          if (!state.offscreen && !state.userHold) advance(state);
+        });
+      }, interval);
+
+      if ('IntersectionObserver' in window) {
+        registry.forEach(function (state) {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (ent) { state.offscreen = !ent.isIntersecting; });
+          }, { threshold: 0.1 });
+          io.observe(state.cell);
+        });
+      } else {
+        registry.forEach(function (state) { state.offscreen = false; });
+      }
+
+      registry.forEach(function (state) {
+        state.cell.addEventListener('click', function (e) {
+          e.stopPropagation();
+          state.userHold = true;
+          state.cell.classList.add('is-user-held');
+        });
+      });
+      document.addEventListener('click', function (e) {
+        registry.forEach(function (state) {
+          if (!state.userHold) return;
+          if (!state.cell.contains(e.target)) {
+            state.userHold = false;
+            state.cell.classList.remove('is-user-held');
+          }
+        });
+      });
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          registry.forEach(function (state) { state.offscreen = true; });
+        }
+      });
+    })();
 
     /* Foundation After-cell orchestrated slideshow — the After cell
        in section 02 stacks three layers: the logo-reveal video and
