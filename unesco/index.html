@@ -254,68 +254,6 @@
       left: auto !important;
     }
   }
-  /* Author credit — hidden by default on every other page, shown
-     only on UNESCO at the header's far-left column (grid col 1). */
-  .site-header__credit { display: none; }
-  body.unesco .site-header__credit {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: start;
-    align-self: center;
-    margin: 0 0 0 clamp(1rem, 2vw, 1.75rem);
-    /* Pill shape — matches .site-menu-btn exactly: frosted glass,
-       12px radius, layered shadow, 2.5rem tall. */
-    height: 2.5rem;
-    padding: 0 1.1rem;
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
-    -webkit-backdrop-filter: blur(16px) saturate(1.3);
-            backdrop-filter: blur(16px) saturate(1.3);
-    border: none;
-    border-radius: 12px;
-    box-shadow:
-      0 0 0 1px rgba(0, 0, 0, 0.06),
-      0 12px 32px rgba(0, 0, 0, 0.12),
-      0 3px 10px  rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    color: var(--fg);
-    opacity: 1;
-    white-space: nowrap;
-    transition: opacity 280ms var(--ease-standard),
-                transform 280ms var(--ease-standard);
-  }
-  body.unesco .site-header__credit-sep {
-    opacity: 1;
-    padding: 0 0.1rem;
-  }
-  /* Hide the credit when the viewer is scrolling DOWN; show it again
-     when they scroll UP. JS writes body.is-scrolling-down. */
-  body.unesco.is-scrolling-down .site-header__credit {
-    opacity: 0;
-    transform: translateY(-6px);
-    pointer-events: none;
-  }
-  @media (max-width: 640px) {
-    /* Mobile: credit moves BELOW the centered brand mark, on its own
-       row. The extra row-gap keeps logo and credit from touching. */
-    body.unesco .site-header { grid-template-rows: auto auto; }
-    body.unesco .site-header__credit {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      justify-self: center;
-      margin: 0.55rem 0 0;
-      padding: 0 1rem;
-      height: 2.25rem;
-      font-size: 0.68rem;
-    }
-  }
-
   .unesco__hero-image {
     position: absolute;
     inset: 0;
@@ -884,29 +822,37 @@
     .media__slide    { animation: none; }
   }
 
-  /* ─── 3-slide foundation after-cell slideshow (section 02) ──────
-     Three logo lockups crossfade on a shared 12s loop (4s per slide,
-     1s crossfade overlap). Keyframe mirrors the 4-slide applications
-     pattern, scaled to 3 slots. */
-  .media__fslide {
-    opacity: 0;
-    animation: foundations-after-slideshow 12s ease-in-out infinite;
-    will-change: opacity;
+  /* ─── Applications walkthrough (section 07) ──────────────────────
+     Native-controls <video> below the poster grid + application
+     slideshow. object-fit: contain so none of the screen-recording
+     frame is cropped; black bar fills any letterbox. */
+  .applications-walkthrough { background: #000; }
+  .applications-walkthrough__video {
+    object-fit: contain;
+    background: #000;
   }
-  .media__fslide--1 { animation-delay: 0s; }
-  .media__fslide--2 { animation-delay: 4s; }
-  .media__fslide--3 { animation-delay: 8s; }
 
-  @keyframes foundations-after-slideshow {
-    0%, 100% { opacity: 0; }
-    8.33%    { opacity: 1; }   /* 1s fade-in */
-    25%      { opacity: 1; }   /* 2s hold */
-    33.33%   { opacity: 0; }   /* 1s fade-out, overlaps next slide */
+  /* ─── Foundation After-cell orchestrated slideshow (section 02) ──
+     The After cell now carries three layers stacked: the logo reveal
+     video (ping-pong forward + reverse once through), followed by two
+     rebrand lockup stills. JS in the page body toggles .is-active on
+     one layer at a time; CSS handles the crossfade. */
+  .foundations-after { position: relative; }
+  .foundations-after__layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 520ms ease-in-out;
+    will-change: opacity;
+    pointer-events: none;
   }
+  .foundations-after__layer.is-active { opacity: 1; }
 
   @media (prefers-reduced-motion: reduce) {
-    .media__fslide { animation: none; }
-    .media__fslide--1 { opacity: 1; }
+    .foundations-after__layer { transition: none; }
   }
 
   /* ─── 4-slide applications slideshow (section 07) ────────────────
@@ -1413,12 +1359,6 @@
   </div>
 
   <header class="site-header">
-    <!-- UNESCO-only credit: author name + title pinned to the far-left
-         column of the header grid. Hidden (via CSS) on any page that
-         doesn't have body.unesco set. -->
-    <p class="site-header__credit" aria-label="David Gomez, Graphic Designer">
-      David Gomez <span class="site-header__credit-sep" aria-hidden="true">|</span> Graphic Designer
-    </p>
     <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
       <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
     </a>
@@ -1588,26 +1528,10 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Logo reveal — ping-pong forward + reverse with 2s pauses,
-           no controls, no pointer events. -->
-      <figure class="media media--wide logo-reveal">
-        <video class="media__video logo-reveal__fwd"
-               autoplay muted playsinline webkit-playsinline preload="auto"
-               disablepictureinpicture disableremoteplayback
-               aria-label="UNESCO logo reveal animation">
-          <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-        </video>
-        <video class="media__video logo-reveal__rev" aria-hidden="true"
-               muted playsinline webkit-playsinline preload="auto"
-               disablepictureinpicture disableremoteplayback>
-          <source src="/ASSETS/IMAGES/UNESCO/logo-reveal-reverse.mp4" type="video/mp4">
-        </video>
-      </figure>
-
       <!-- BEFORE / AFTER comparison pair. Before: the existing UNESCO
-           flag + temple glyph. After: three lockups of the rebrand
-           (primary stacked mark, horizontal wordmark, and the long-
-           form signature) crossfading on a shared 12s loop. -->
+           flag + temple glyph. After: the logo reveal video (ping-pong
+           forward + reverse) followed by two rebrand lockups,
+           orchestrated by foundations-after JS. -->
       <div class="foundations-ba">
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">Before</p>
@@ -1617,10 +1541,20 @@
         </div>
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">After</p>
-          <figure class="media media--square foundations-ba__media">
-            <img class="media__img foundations-ba__img media__fslide media__fslide--1" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO1.png" alt="UNESCO rebrand — primary stacked mark" />
-            <img class="media__img foundations-ba__img media__fslide media__fslide--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
-            <img class="media__img foundations-ba__img media__fslide media__fslide--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
+          <figure class="media media--square foundations-ba__media foundations-after">
+            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--fwd is-active"
+                   muted playsinline webkit-playsinline preload="auto"
+                   disablepictureinpicture disableremoteplayback
+                   aria-label="UNESCO logo reveal animation">
+              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
+            </video>
+            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--rev" aria-hidden="true"
+                   muted playsinline webkit-playsinline preload="auto"
+                   disablepictureinpicture disableremoteplayback>
+              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal-reverse.mp4" type="video/mp4">
+            </video>
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
           </figure>
         </div>
       </div>
@@ -1791,17 +1725,36 @@
     <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
     <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">07</span>Applications</p>
+      <p class="statement">
+        The system then is carried into both spatial and
+        <em>ephemeral</em> media.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-applications">
+        <div class="read-more__inner">
+          <p><strong>The World Needs U.</strong></p>
+          <p>The slogan plays on the four U&rsquo;s in the logo, but it reaches past UNESCO to the world it serves: us. Organizations like UNESCO exist for the generations that come after us. It&rsquo;s on all of us to carry our stories, cultures, and traditions into the future, not leave them behind. The world needs U.</p>
+          <p><strong>Safeguard Humanity&rsquo;s Inheritance.</strong><br>Our inheritance is all around us, in the identities we hold today. Without intention, it can be lost.</p>
+          <p><strong>Protect, Preserve, Prepare What Makes Us Human.</strong><br>Protect who we are today. Preserve what the past has given us. Prepare what we pass on. This is why the rebrand matters: we cannot forget who we are, or what shaped us.</p>
+          <p>I think, create, and design this way because of my Peruvian and Salvadoran heritage. This is my perspective, and that is the beauty of who we are, as individuals and as a collective. Every perspective is needed to see the whole picture. Without our cultures, our stories, and our identities, humanity would be a shell of itself.</p>
+          <p>As part of the identity system, I also designed a new digital home for UNESCO, one that puts the people, lands, and cultures it protects at the center. I left the corporate look behind for something inviting, youthful, and vibrant. My goal was for every page to offer something new, so visitors would keep wanting to discover more.</p>
+        </div>
+      </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 3 × 2 poster grid — the six macro posters from the series. -->
+      <!-- 3 × 2 poster grid — the six macro posters from the series.
+           Visual order: 01, 06, 03, 05, 04, 02 (per user layout). -->
       <div class="section-media__posters">
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
       </div>
 
       <!-- Each cell cycles 4 images on a shared 16s loop; the two cells
@@ -1822,16 +1775,27 @@
           <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
         </figure>
       </div>
+
+      <!-- Walkthrough screen recording — full native video controls so
+           visitors can play / pause / scrub. Uses object-fit: contain
+           + black bg so the full recording frame is always visible. -->
+      <figure class="media media--wide applications-walkthrough">
+        <video class="media__video applications-walkthrough__video"
+               controls preload="metadata" playsinline webkit-playsinline
+               disablepictureinpicture disableremoteplayback
+               aria-label="UNESCO applications walkthrough">
+          <source src="/ASSETS/IMAGES/UNESCO/applications-walkthrough.mp4" type="video/mp4">
+        </video>
+      </figure>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 08 · Celebrating human connection ────────────────────── -->
+    <!-- ─── 08 · Tangible Forms ──────────────────────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">08</span>Celebrating human connection</p>
+      <p class="section-label"><span class="section-label__num">08</span>Tangible Forms</p>
       <p class="statement">
-        I chose to make printed tangible matter that spoke to 80
-        years of UNESCO accomplishments: that is
-        <em>human connection</em>.
+        80 years of human connection.
+        <em>What an accomplishment</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-celebration">
         <span>Read more</span>
@@ -1846,38 +1810,68 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 5-image slideshow × 3 cells = 15 unique images. Shared 20s
-           cycle: each cell cycles through its own 5 images, 4s per
-           image + ~1s crossfade. Keyframes/delay in CSS. -->
-      <div class="section-media__triptych">
+      <!-- 2 columns × 3 rows = 6 cells. Each cell cycles 2 of the 15
+           celebration images (01–12 used, paired front-to-back). The
+           existing .media__slide pair animation drives all cells on a
+           shared 10s crossfade. -->
+      <div class="section-media__triptych section-media__triptych--pair">
         <figure class="media media--square">
-          <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Celebration 01" />
-          <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Celebration 02" />
-          <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Celebration 03" />
-          <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Celebration 04" />
-          <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Celebration 05" />
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
         </figure>
         <figure class="media media--square">
-          <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Celebration 06" />
-          <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Celebration 07" />
-          <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Celebration 08" />
-          <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Celebration 09" />
-          <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Celebration 10" />
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
         </figure>
         <figure class="media media--square">
-          <img class="media__img media__cslide media__cslide--1" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Celebration 11" />
-          <img class="media__img media__cslide media__cslide--2" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Celebration 12" />
-          <img class="media__img media__cslide media__cslide--3" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Celebration 13" />
-          <img class="media__img media__cslide media__cslide--4" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Celebration 14" />
-          <img class="media__img media__cslide media__cslide--5" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Celebration 15" />
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
+          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
         </figure>
       </div>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 09 · The Printed Atlas ────────────────────────────────── -->
+    <!-- ─── 09 · Campaign Direction ───────────────────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">09</span>The Printed Atlas</p>
+      <p class="section-label"><span class="section-label__num">09</span>Campaign Direction</p>
+      <p class="statement">
+        The creation of a campaign hosted by UNESCO,
+        <em>&ldquo;Living Traces&rdquo;</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-campaign">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-campaign">
+        <div class="read-more__inner">
+          <p>In direct contrast to the identity system, I created a campaign about the languages, traditions, and cultures at risk of disappearing. The subject is urgent, so I stripped away all color and made the campaign impossible to ignore.</p>
+          <p>The name Living Traces holds two truths: these cultures are still alive, but only as traces. Once they fade, they may never return. The campaign brings light to what is nearly lost and asks the world to do its part: to protect our cultures, and our neighbors&rsquo;, as we move into the future.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <figure class="media media--wide">
+        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/campaign-living-traces.jpg" alt="Living Traces campaign — UNESCO" />
+      </figure>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 10 · The Printed Atlas ────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">10</span>The Printed Atlas</p>
       <p class="statement">
         Before the <em>Digital Atlas</em>, there was the printed one.
       </p>
@@ -2070,54 +2064,63 @@
       });
     })();
 
-    /* Logo reveal ping-pong — play forward video to end, pause 2s,
-       play reverse video to end, pause 2s, repeat. Each video's
-       `ended` event advances the cycle. */
-    var logoReveal = document.querySelector('.logo-reveal');
-    if (logoReveal) {
-      var fwd = logoReveal.querySelector('.logo-reveal__fwd');
-      var rev = logoReveal.querySelector('.logo-reveal__rev');
-      if (fwd && rev) {
-        var PAUSE_MS = 2000;
-        var playForward = function () {
-          logoReveal.classList.remove('is-rev');
-          try { fwd.currentTime = 0; } catch (e) {}
-          var p = fwd.play();
-          if (p && typeof p.catch === 'function') { p.catch(function () {}); }
+    /* Foundation After-cell orchestrated slideshow — the After cell
+       in section 02 stacks four layers: logo-reveal forward video,
+       logo-reveal reverse video, and two rebrand-lockup stills. One
+       layer at a time carries .is-active (CSS crossfades between).
+       Cycle: fwd video plays → pause → rev video plays → pause →
+       lockup 2 holds → lockup 3 holds → back to fwd. */
+    var fAfter = document.querySelector('.foundations-after');
+    if (fAfter) {
+      var faFwd  = fAfter.querySelector('.foundations-after__video--fwd');
+      var faRev  = fAfter.querySelector('.foundations-after__video--rev');
+      var faImg2 = fAfter.querySelector('.foundations-after__img--2');
+      var faImg3 = fAfter.querySelector('.foundations-after__img--3');
+      if (faFwd && faRev && faImg2 && faImg3) {
+        var faLayers = [faFwd, faRev, faImg2, faImg3];
+        var FA_PAUSE_MS   = 900;    // after each video finishes
+        var FA_IMG_HOLD   = 2800;   // how long each still is shown
+        function faShow(el) {
+          faLayers.forEach(function (l) {
+            if (l === el) l.classList.add('is-active');
+            else l.classList.remove('is-active');
+          });
+        }
+        function faPlayFwd() {
+          faShow(faFwd);
+          try { faFwd.currentTime = 0; } catch (e) {}
+          var p = faFwd.play();
+          if (p && typeof p.catch === 'function') p.catch(function () {});
+        }
+        function faPlayRev() {
+          faShow(faRev);
+          try { faRev.currentTime = 0; } catch (e) {}
+          var p = faRev.play();
+          if (p && typeof p.catch === 'function') p.catch(function () {});
+        }
+        function faShowImg2() { faShow(faImg2); setTimeout(faShowImg3, FA_IMG_HOLD); }
+        function faShowImg3() { faShow(faImg3); setTimeout(faPlayFwd,  FA_IMG_HOLD); }
+        faFwd.addEventListener('ended', function () { setTimeout(faPlayRev,   FA_PAUSE_MS); });
+        faRev.addEventListener('ended', function () { setTimeout(faShowImg2, FA_PAUSE_MS); });
+        /* Mobile Safari refuses .play() for offscreen videos even with
+           muted + playsinline + autoplay, so wait for the cell to
+           intersect the viewport, then start the cycle. */
+        var faKicked = false;
+        var faKick = function () {
+          if (faKicked) return;
+          faKicked = true;
+          faPlayFwd();
         };
-        var playReverse = function () {
-          logoReveal.classList.add('is-rev');
-          try { rev.currentTime = 0; } catch (e) {}
-          var p = rev.play();
-          if (p && typeof p.catch === 'function') { p.catch(function () {}); }
-        };
-        fwd.addEventListener('ended', function () { setTimeout(playReverse, PAUSE_MS); });
-        rev.addEventListener('ended', function () { setTimeout(playForward, PAUSE_MS); });
-        /* Mobile Safari silently rejects .play() when the video is
-           offscreen on load, even with muted + playsinline + autoplay.
-           Wait for the figure to intersect the viewport, then kick
-           off the cycle. Falls back to immediate play on older
-           browsers without IntersectionObserver. */
-        var kicked = false;
-        var kick = function () {
-          if (kicked) return;
-          kicked = true;
-          playForward();
-        };
-        var armKick = function () {
-          if ('IntersectionObserver' in window) {
-            var io = new IntersectionObserver(function (entries) {
-              entries.forEach(function (ent) {
-                if (ent.isIntersecting) { kick(); io.disconnect(); }
-              });
-            }, { threshold: 0.15 });
-            io.observe(logoReveal);
-          } else {
-            kick();
-          }
-        };
-        if (fwd.readyState >= 2) { armKick(); }
-        else { fwd.addEventListener('loadeddata', armKick, { once: true }); }
+        if ('IntersectionObserver' in window) {
+          var faIO = new IntersectionObserver(function (entries) {
+            entries.forEach(function (ent) {
+              if (ent.isIntersecting) { faKick(); faIO.disconnect(); }
+            });
+          }, { threshold: 0.15 });
+          faIO.observe(fAfter);
+        } else {
+          faKick();
+        }
       }
     }
 
