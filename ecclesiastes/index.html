@@ -845,14 +845,26 @@
   }
 
   /* ─── Cyanotype scraps (section 06) ───────────────────────────────
-     3 scans in a single row on desktop, stacked on mobile. Native
-     aspect-ratio preserved so nothing is cropped. */
+     Transparent-PNG cyanotypes centered inside each cell. Cell bg is
+     transparent (no beige frame around the scrap), object-fit:
+     contain so the full image is visible with no crop, object-
+     position: center so each scrap sits in the middle of its cell. */
   .cyano-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: clamp(0.75rem, 1.5vw, 1.25rem);
   }
-  .cyano-grid .media { aspect-ratio: 160 / 231; }  /* native scan aspect */
+  .cyano-grid .media {
+    aspect-ratio: 160 / 231;
+    background: transparent;
+  }
+  .cyano-grid .media__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    background: transparent;
+  }
   @media (max-width: 900px) {
     .cyano-grid { grid-template-columns: 1fr; }
   }
@@ -1612,12 +1624,13 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 3 cyanotype scraps in a single row. Native aspect preserved
-           so nothing is cropped. -->
+      <!-- 3 transparent-PNG cyanotype scraps, centered inside each
+           cell with the surrounding background shown through. Order
+           matches the user's upload sequence. -->
       <div class="cyano-grid">
-        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-01.jpg" alt="Cyanotype scrap 01" /></figure>
-        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-02.jpg" alt="Cyanotype scrap 02" /></figure>
-        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.jpg" alt="Cyanotype scrap 03" /></figure>
+        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-01.png" alt="Cyanotype scrap 01" /></figure>
+        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-02.png" alt="Cyanotype scrap 02" /></figure>
+        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.png" alt="Cyanotype scrap 03" /></figure>
       </div>
     </div>
 
