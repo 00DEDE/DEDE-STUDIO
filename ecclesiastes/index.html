@@ -134,7 +134,7 @@
   .unesco__hero-image {
     position: absolute;
     inset: 0;
-    background-image: url("/ASSETS/IMAGES/ECCLESIASTES/hero.jpg");
+    background-image: url("/ASSETS/IMAGES/ECCLESIASTES/foundation-hero.jpg");
     background-size: cover;
     background-position: center;
   }
@@ -715,13 +715,22 @@
   }
   /* Grid cells: spreads fill the cell at natural landscape aspect;
      solos use half the cell width so their portrait height matches
-     a spread's height (0.5 × 1.714 == 1 × 0.857). */
+     a spread's height (0.5 × 1.714 == 1 × 0.857). Thin 1px / 40%
+     grey border sits on the page image itself (not the cell) so
+     mostly-white pages still read against the white page bg. */
   .book-page img {
     width: 100%;
     height: auto;
     display: block;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-sizing: border-box;
   }
   .book-page--solo { width: 50%; }
+  /* Same border treatment on the hover preview image. */
+  .book-preview__img {
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-sizing: border-box;
+  }
   /* Soft spine gradient down the middle of each interior spread —
      skipped on the first and last cells so the book opens and closes
      cleanly. */
@@ -754,7 +763,10 @@
     width: 100%;
   }
   .book-preview.is-active { display: block; }
-  .book-preview.is-single { width: 30%; }     /* 70% smaller than default */
+  /* Single preview at 50% width: 0.5 × 1.714 (portrait ratio) == 1.0
+     × 0.857 (spread ratio), so a single-page preview renders at the
+     exact same height as a spread preview. */
+  .book-preview.is-single { width: 50%; }
   .book-preview__img {
     display: block;
     width: 100%;
@@ -808,7 +820,7 @@
   .foundation-hero { background: #1a1a1a; }
   .foundation-hero .media__img {
     object-fit: cover;
-    object-position: center 45%;
+    object-position: center 30%;      /* raised 15% from previous 45% */
     background: #1a1a1a;
   }
 
@@ -1166,7 +1178,7 @@
            cell (16:9). Image is cropped with object-fit: cover; the
            focal point is tuned to keep the book itself in view. -->
       <figure class="media media--wide foundation-hero">
-        <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/foundation-hero.jpg" alt="The Book of Ecclesiastes — embossed leather cover on textile" />
+        <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/hero.jpg" alt="The Book of Ecclesiastes — Vanities, all is vanity spread" />
       </figure>
     </div>
   </section>
