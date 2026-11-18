@@ -677,14 +677,20 @@
   }
 
   /* ─── Hero decipher animation ─────────────────────────────────────
-     The second line of the hero title cycles every 7s between the
-     word "Ecclesiastes" and the alphabet-index of each letter
-     (E=5, C=3, L=12, S=19, I=9, A=1, T=20). Each transition takes
-     ~2s with a left-to-right stagger so individual slots "decode" in
-     sequence. Tabular numerals keep digit widths steady. */
+     The hero title's "Ecclesiastes" cycles every 7s between the word
+     (title case) and the alphabet-index of each letter (E=5, C=3,
+     L=12, S=19, I=9, A=1, T=20). The word is forced to break at
+     "Ecclesia-" / "stes"; the hyphen is shown in letters mode and
+     hidden in numbers mode. Numbers mode is rendered smaller so the
+     two groups fit the same width as the letters. Each transition
+     takes ~2s with a left-to-right stagger. */
   .decipher {
-    display: inline-block;
+    display: inline;
     font-variant-numeric: tabular-nums;
+    transition: font-size 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .decipher__group {
+    display: inline-block;
     white-space: nowrap;
   }
   .decipher__slot {
@@ -694,6 +700,15 @@
   .decipher__sep {
     display: inline-block;
     white-space: pre;
+  }
+  .decipher__hyphen {
+    display: inline-block;
+  }
+  /* Numbers mode — scale the font down so the digit sequence fits
+     the same two lines that the letters do. */
+  .decipher.is-numbers {
+    font-size: 0.6em;
+    letter-spacing: 0.02em;
   }
   /* Reduced-motion users see the final word only, no scrambling. */
   @media (prefers-reduced-motion: reduce) {
@@ -746,7 +761,7 @@
   <section class="unesco__hero unesco__grid" aria-label="Ecclesiastes cover">
     <div class="g-span-1 unesco__hero-title">
       <span class="intro__eyebrow">Case Study 02</span>
-      <h1 class="intro__title">The Book of<br><span class="decipher" id="hero-decipher" aria-label="Ecclesiastes"></span></h1>
+      <h1 class="intro__title">The<br>Book of <span class="decipher" id="hero-decipher" aria-label="Ecclesiastes"></span></h1>
     </div>
     <div class="unesco__hero-media g-span-2">
       <div class="unesco__hero-image" role="img" aria-label="Ecclesiastes project cover"></div>
@@ -761,8 +776,8 @@
     <p class="section-label g-span-1"><span class="section-label__num">01</span>Overview</p>
     <div class="g-span-2">
       <p class="statement">
-        The creation of an identity system where UNESCO feels just as
-        <em>human as what it protects</em>.
+        A book of clarity, wisdom and confusion. An exploration
+        into the <em>human condition</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
         <span>Read more</span>
@@ -770,8 +785,11 @@
       </button>
       <div class="read-more__panel" id="rm-overview">
         <div class="read-more__inner">
-          <p>For 80 years, UNESCO has safeguarded what makes us human. Somewhere along the way, it lost touch with the people it serves. Most don&rsquo;t know what UNESCO does, and those who do think it only protects monuments.</p>
-          <p>That gap became my window of opportunity: an identity that speaks to people of every background, culture, and belief, and that feels open and alive instead of rigid and cold. The following is my speculative proposal for a UNESCO rebrand.</p>
+          <p>The book of Ecclesiastes. The 21st book in the Bible. One day, I will design all the biblical books, and for my first, I chose Ecclesiastes, perhaps the most secular book within the Bible. It deals with the question so many of us have grappled with: does any of this matter?</p>
+          <p>Surprisingly, the author answers again and again that all is hevel. All is like a breath, a vapor. Meaningless. Passing by.</p>
+          <p>There will be moments where we feel like we have it all figured out, and many other moments where we realize we know nothing. That is the beauty of the volatility of our lives.</p>
+          <p>This project was created to give myself a moment to make the author&rsquo;s words my own. To contemplate all I have lost, all I have gained, all that has been given to me, and all that has been taken from me.</p>
+          <p>For none of it was mine to begin with.</p>
         </div>
       </div>
     </div>
@@ -1327,58 +1345,82 @@
   (function () {
     'use strict';
 
-    /* Hero decipher — the hero title's second line cycles every 7s
-       between "ECCLESIASTES" and the alphabet index of each letter
-       ("5 3 3 12 5 19 9 1 19 20 5 19"). On first paint the word
-       reveals itself by resolving a scramble into the letters. Each
-       transition takes ~2s with a left-to-right stagger so the word
-       (or number) decodes in sequence. Honors prefers-reduced-motion
-       by just printing the final word and holding. */
+    /* Hero decipher — "Ecclesiastes" splits into two groups that break
+       across two lines ("Ecclesia-" / "stes"). Every 7s the cycle
+       flips between title-case letters and each letter's alphabet
+       index (E=5 C=3 L=12 S=19 I=9 A=1 T=20). Numbers mode gets a
+       smaller font-size so both digit groups fit the same two lines.
+       First paint resolves a scramble into the word. Honors
+       prefers-reduced-motion by printing the word statically. */
     (function () {
       var target = document.getElementById('hero-decipher');
       if (!target) return;
-      var LETTERS = ['E','C','C','L','E','S','I','A','S','T','E','S'];
+      // Title-case display: capital E, rest lowercase.
+      var LETTERS = ['E','c','c','l','e','s','i','a','s','t','e','s'];
       var NUMBERS = ['5','3','3','12','5','19','9','1','19','20','5','19'];
-      var LETTER_POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      var NUMBER_POOL = '0123456789';
+      var SPLIT   = 8;          // hard break after this many slots
       var DECIPHER_MS = 2000;   // transition duration
-      var HOLD_MS     = 5000;   // hold between transitions (7s cycle total)
-      var FRAME_MS    = 60;     // scramble tick rate
+      var HOLD_MS     = 5000;   // hold between transitions (7s total)
+      var FRAME_MS    = 60;
       var N = LETTERS.length;
 
-      // Build N slot spans (each slot = one letter / one number). Insert
-      // separator spans between slots so numbers mode has visible spaces
-      // between the digit groups; hidden in letters mode.
+      // Build two groups joined by a <br>; group 1 = slots 0..SPLIT-1
+      // + hyphen, group 2 = slots SPLIT..N-1. Each slot is flanked by
+      // a separator span that's hidden in letters mode, shown in
+      // numbers mode (so "5 3 3 12" breathes but "Eccl" stays tight).
       target.innerHTML = '';
       var slotEls = [];
       var sepEls  = [];
-      for (var i = 0; i < N; i++) {
-        var s = document.createElement('span');
-        s.className = 'decipher__slot';
-        target.appendChild(s);
-        slotEls.push(s);
-        if (i < N - 1) {
-          var sep = document.createElement('span');
-          sep.className = 'decipher__sep';
-          sep.textContent = ' ';
-          sep.style.display = 'none';
-          target.appendChild(sep);
-          sepEls.push(sep);
+
+      function buildGroup(from, to) {
+        var group = document.createElement('span');
+        group.className = 'decipher__group';
+        for (var i = from; i < to; i++) {
+          var s = document.createElement('span');
+          s.className = 'decipher__slot';
+          group.appendChild(s);
+          slotEls.push(s);
+          if (i < to - 1) {
+            var sep = document.createElement('span');
+            sep.className = 'decipher__sep';
+            sep.textContent = ' ';
+            sep.style.display = 'none';
+            group.appendChild(sep);
+            sepEls.push(sep);
+          }
         }
+        return group;
       }
+
+      var g1 = buildGroup(0, SPLIT);
+      // Hyphen trails group 1 in letters mode; hidden in numbers mode.
+      var hyphen = document.createElement('span');
+      hyphen.className = 'decipher__hyphen';
+      hyphen.textContent = '-';
+      g1.appendChild(hyphen);
+      target.appendChild(g1);
+      target.appendChild(document.createElement('br'));
+      target.appendChild(buildGroup(SPLIT, N));
 
       function setSepsVisible(visible) {
         for (var j = 0; j < sepEls.length; j++) {
           sepEls[j].style.display = visible ? 'inline-block' : 'none';
         }
       }
+      function setHyphenVisible(visible) {
+        hyphen.style.display = visible ? 'inline-block' : 'none';
+      }
+      function applyMode(mode) {
+        setSepsVisible(mode === 'numbers');
+        setHyphenVisible(mode === 'letters');
+        target.classList.toggle('is-numbers', mode === 'numbers');
+      }
 
-      // prefers-reduced-motion — skip the scramble entirely and just
-      // print the final word statically.
       var prefersReduced = window.matchMedia &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReduced) {
         for (var k = 0; k < N; k++) slotEls[k].textContent = LETTERS[k];
+        applyMode('letters');
         return;
       }
 
@@ -1386,11 +1428,18 @@
       var tickTimer = null;
       var holdTimer = null;
 
-      function decipher(targets, pool, mode, onDone) {
-        setSepsVisible(mode === 'numbers');
+      // Scramble pool per slot — letters mode uses lowercase a-z
+       // except the first slot (A-Z, to keep the leading cap right).
+      function poolFor(mode, slotIndex) {
+        if (mode === 'numbers') return '0123456789';
+        return (slotIndex === 0)
+          ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+          : 'abcdefghijklmnopqrstuvwxyz';
+      }
+
+      function decipher(targets, mode, onDone) {
+        applyMode(mode);
         var startTime = Date.now();
-        // Settle times — slots settle in sequence left-to-right. First
-        // slot settles at 40% of total duration, last at 100%.
         var settleAt = [];
         for (var i = 0; i < targets.length; i++) {
           settleAt.push(DECIPHER_MS * (0.4 + 0.6 * (i + 1) / targets.length));
@@ -1402,7 +1451,8 @@
             if (elapsed >= settleAt[i]) {
               slotEls[i].textContent = targets[i];
             } else {
-              slotEls[i].textContent = pool.charAt(Math.floor(Math.random() * pool.length));
+              var p = poolFor(mode, i);
+              slotEls[i].textContent = p.charAt(Math.floor(Math.random() * p.length));
               allDone = false;
             }
           }
@@ -1418,15 +1468,14 @@
       function cycle() {
         var nextMode = (currentMode === 'letters') ? 'numbers' : 'letters';
         var targets  = (nextMode === 'letters') ? LETTERS : NUMBERS;
-        var pool     = (nextMode === 'letters') ? LETTER_POOL : NUMBER_POOL;
-        decipher(targets, pool, nextMode, function () {
+        decipher(targets, nextMode, function () {
           currentMode = nextMode;
           holdTimer = setTimeout(cycle, HOLD_MS);
         });
       }
 
       // Initial reveal — scramble resolves into the letters.
-      decipher(LETTERS, LETTER_POOL, 'letters', function () {
+      decipher(LETTERS, 'letters', function () {
         currentMode = 'letters';
         holdTimer = setTimeout(cycle, HOLD_MS);
       });
