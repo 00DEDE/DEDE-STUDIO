@@ -714,14 +714,23 @@
     content-visibility: auto;
     contain-intrinsic-size: 1px 160px;
   }
+  /* All cells use the spread aspect-ratio (1200×1028 ≈ 7:6) so solo
+     cover / back-cover pages share the exact same footprint as a
+     spread. Portrait solos letterbox inside the cell against the
+     page-edge background — nothing cropped, no vertical extra. */
+  .book-page {
+    aspect-ratio: 1200 / 1028;
+    overflow: hidden;
+  }
   .book-page img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
     display: block;
   }
-  /* Solo cells (cover / back cover) sit at half the cell width,
-     centered, so they read as isolated pages rather than full spreads. */
-  .book-page--solo { width: 50%; }
+  /* Solo cells now share the same cell width as spreads — their
+     portrait image just centers with a thin letterbox either side. */
+  .book-page--solo { width: 100%; }
   /* Soft spine gradient down the middle of each interior spread —
      skipped on the first and last cells so the book opens and closes
      cleanly. */
