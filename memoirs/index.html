@@ -675,6 +675,24 @@
     .atlas-book__thumb { transition: none; }
     .atlas-book__stage { transition: none; }
   }
+
+  /* ─── Memoirs multi-image grids ──────────────────────────────────
+     Shared layout for the Working / Round 1-3 sections. Each cell is
+     a 16:9 figure with the image cover-fit so widely-varying source
+     sizes all read uniformly. */
+  .memoirs-grid {
+    display: grid;
+    gap: 0.6rem;
+    width: 100%;
+  }
+  .memoirs-grid--2 { grid-template-columns: repeat(2, 1fr); }
+  .memoirs-grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .memoirs-cell    { aspect-ratio: 16 / 9; margin: 0; }
+  @media (max-width: 640px) {
+    .memoirs-grid { gap: 0.35rem; }
+    .memoirs-grid--2,
+    .memoirs-grid--3 { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body class="unesco">
@@ -729,536 +747,98 @@
     </div>
   </section>
 
-  <!-- ══════════════════════ 01 · OVERVIEW ══════════════════════
-       Standard 3-col grid section: label in col 1, statement +
-       read-more in cols 2-3. Statement inherits the shared .statement
-       size, so the hero context now matches every section below it. -->
-  <section class="unesco__overview unesco__grid" aria-label="Overview">
-    <p class="section-label g-span-1"><span class="section-label__num">01</span>Overview</p>
-    <div class="g-span-2">
-      <p class="statement">
-        The creation of an identity system where UNESCO feels just as
-        <em>human as what it protects</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-overview">
-        <div class="read-more__inner">
-          <p>For 80 years, UNESCO has safeguarded what makes us human. Somewhere along the way, it lost touch with the people it serves. Most don&rsquo;t know what UNESCO does, and those who do think it only protects monuments.</p>
-          <p>That gap became my window of opportunity: an identity that speaks to people of every background, culture, and belief, and that feels open and alive instead of rigid and cold. The following is my speculative proposal for a UNESCO rebrand.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════════════ SCANS MARQUEE ══════════════════════
-       Two independent ticker rows of notebook scans sit between the
-       Overview and Foundation sections. Each row loops continuously
-       to the left; hover pauses that row, and a vertical mouse wheel
-       over the carousel scrubs it horizontally. Row 1 carries scans
-       1-15, row 2 carries scans 16-30 (at a different speed so the
-       rows drift out of sync). Each image is duplicated inline so
-       the transform wrap is seamless. White paper is removed via
-       mix-blend-mode: multiply against the white page bg. -->
-  <section class="scans" aria-label="Project scans and process notes">
-    <div class="scans__row scans__row--top" data-speed="0.55">
-      <div class="scans__track">
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-01.jpg" alt="UNESCO project scan 01" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-02.jpg" alt="UNESCO project scan 02" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-03.jpg" alt="UNESCO project scan 03" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-04.jpg" alt="UNESCO project scan 04" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-05.jpg" alt="UNESCO project scan 05" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-06.jpg" alt="UNESCO project scan 06" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-07.jpg" alt="UNESCO project scan 07" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-08.jpg" alt="UNESCO project scan 08" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-09.jpg" alt="UNESCO project scan 09" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-10.jpg" alt="UNESCO project scan 10" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-11.jpg" alt="UNESCO project scan 11" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-12.jpg" alt="UNESCO project scan 12" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-13.jpg" alt="UNESCO project scan 13" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-14.jpg" alt="UNESCO project scan 14" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-15.jpg" alt="UNESCO project scan 15" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-01.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-02.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-03.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-04.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-05.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-06.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-07.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-08.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-09.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-10.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-11.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-12.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-13.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-14.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-15.jpg" alt="" aria-hidden="true" loading="lazy" />
-      </div>
-    </div>
-    <div class="scans__row scans__row--bot" data-speed="0.78">
-      <div class="scans__track">
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-16.jpg" alt="UNESCO project scan 16" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-17.jpg" alt="UNESCO project scan 17" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-18.jpg" alt="UNESCO project scan 18" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-19.jpg" alt="UNESCO project scan 19" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-20.jpg" alt="UNESCO project scan 20" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-21.jpg" alt="UNESCO project scan 21" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-22.jpg" alt="UNESCO project scan 22" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-23.jpg" alt="UNESCO project scan 23" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-24.jpg" alt="UNESCO project scan 24" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-25.jpg" alt="UNESCO project scan 25" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-26.jpg" alt="UNESCO project scan 26" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-27.jpg" alt="UNESCO project scan 27" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-28.jpg" alt="UNESCO project scan 28" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-29.jpg" alt="UNESCO project scan 29" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-30.jpg" alt="UNESCO project scan 30" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-16.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-17.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-18.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-19.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-20.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-21.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-22.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-23.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-24.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-25.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-26.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-27.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-28.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-29.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-30.jpg" alt="" aria-hidden="true" loading="lazy" />
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════════════ 02 · FOUNDATION ══════════════════════
-       Moved up to be the first chapter after the intro. Shares the
-       unesco__grid layout so the section-label | statement | media
-       rhythm stays identical to the chapters below. -->
-  <section class="unesco__foundations unesco__grid" aria-label="Foundation">
+  <!-- ══════════════════════ 01 · FINAL ══════════════════════
+       Final memoirs motion piece. Full native controls so viewers
+       can play / pause / scrub. -->
+  <section class="unesco__atlas unesco__grid" aria-label="Final">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">02</span>Foundation</p>
-      <p class="statement">
-        An identity that excludes no one, and <em>invites everyone</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-foundations">
-        <div class="read-more__inner">
-          <p>UNESCO&rsquo;s current logo is a Greco-Roman temple. It speaks from a Western point of view, a blind spot common in design, and leaves much of the world outside its frame. It also reinforces the stereotype UNESCO already struggles with: that it only protects monuments. I set out to create a symbol for all of humanity, one that holds Eastern and Western perspectives alike, excludes no one, and invites everyone.</p>
-          <p>I started by looking outward. What connects us as humans? What patterns do we share? Patterns. Shapes. Repetition. Weaving. Seen across humanity, textiles carry our stories, our pasts, and our futures. The interconnectedness of weaving became the emotional anchor of this rebrand.</p>
-        </div>
-      </div>
+      <p class="section-label"><span class="section-label__num">01</span>Final</p>
     </div>
-
-    <div class="g-span-2 section-media">
-      <!-- BEFORE / AFTER comparison pair. Before: the existing UNESCO
-           flag + temple glyph. After: the logo reveal video (ping-pong
-           forward + reverse) followed by two rebrand lockups,
-           orchestrated by foundations-after JS. -->
-      <div class="foundations-ba">
-        <div class="foundations-ba__col">
-          <p class="section-label foundations-ba__label">Before</p>
-          <figure class="media media--square foundations-ba__media">
-            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/UNESCO/Flag_of_UNESCO.svg.webp" alt="UNESCO existing flag — Greco-Roman temple on blue" />
-          </figure>
-        </div>
-        <div class="foundations-ba__col">
-          <p class="section-label foundations-ba__label">After</p>
-          <figure class="media media--square foundations-ba__media foundations-after">
-            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--fwd is-active"
-                   muted playsinline webkit-playsinline preload="auto"
-                   disablepictureinpicture disableremoteplayback
-                   aria-label="UNESCO logo reveal animation">
-              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-            </video>
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
-          </figure>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════════ 03 · INTERACTION ══════════════════
-       Uses the same 3-col grid structure as the numbered sections. -->
-  <section class="unesco__atlas unesco__grid" aria-label="Interaction">
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">03</span>Interaction</p>
-      <p class="statement">
-        A digital window into the world happening <em>all around you</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-atlas">
-        <div class="read-more__inner">
-          <p>To mark UNESCO&rsquo;s 80th anniversary, I designed and built the Digital Atlas, an installation meant to be touched as much as seen. A tabletop map presents the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. When visitors place an icon on the map, the overhead display opens a window into that piece of humanity. The Digital Atlas shows how connected we are, how distinct we are, and why what makes us human is worth preserving.</p>
-        </div>
-      </div>
-    </div>
-
     <div class="g-span-2 section-media">
       <figure class="media media--wide">
         <video class="media__video"
-               autoplay muted loop playsinline preload="metadata"
+               controls preload="metadata" playsinline webkit-playsinline
                disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/UNESCO/01.jpg"
-               aria-label="Digital Atlas installation">
-          <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
+               poster="/ASSETS/IMAGES/MEMOIRS/hero.jpg"
+               aria-label="Memoirs final video">
+          <source src="/ASSETS/IMAGES/MEMOIRS/final.mp4" type="video/mp4">
         </video>
       </figure>
     </div>
   </section>
 
-  <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════
-       Foundations (01) now lives above in its own section; the grid
-       picks up at 02 Palette. -->
-  <section class="unesco__grid" aria-label="Case study">
-
-    <!-- ─── 04 · Palette ─────────────────────────────────────────── -->
+  <!-- ══════════════════════ 02 · WORKING ══════════════════════
+       Two process images side by side. -->
+  <section class="unesco__grid" aria-label="Working">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">04</span>Palette</p>
-      <p class="statement" style="text-wrap: pretty;">
-        A hue palette that is an homage to our shared home. <em>Planet Earth</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-palette">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-palette">
-        <div class="read-more__inner">
-          <p>The palette has two sides: what can be seen and what can be felt. World Blue, Vivre Green, and Sol Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
-        </div>
-      </div>
+      <p class="section-label"><span class="section-label__num">02</span>Working</p>
     </div>
-
     <div class="g-span-2 section-media">
-    <!-- Interactive palette — original billboard image as the base,
-         six hover regions overlaid as a single 6-column row. A veil
-         covers each region at the start and fades out in sequence
-         once the grid enters the viewport (via IntersectionObserver
-         → .is-in), so each color "appears" one by one. On hover/focus
-         a soft dark scrim overlays that region and surfaces its name
-         centered. -->
-    <div class="palette-grid" aria-label="UNESCO color palette">
-      <img class="palette-grid__img" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
-      <div class="palette-grid__cells" role="list">
-        <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>World</span><span>Blue</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Vivre Green" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Vivre</span><span>Green</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Sol</span><span>Yellow</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Ash Grey" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Ash</span><span>Grey</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Umber Brown" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Umber</span><span>Brown</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Deep Earth" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Deep</span><span>Earth</span></span>
-        </button>
+      <div class="memoirs-grid memoirs-grid--2">
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/working-01.jpg" alt="Working process frame 1" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/working-02.jpg" alt="Working process frame 2" loading="lazy" decoding="async" /></figure>
       </div>
     </div>
-    </div><!-- /04 section-media -->
+  </section>
 
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Iconography ─────────────────────────────────────────
-         Sits directly below Palette so the identity system
-         (color + marks) reads as one continuous chapter. -->
+  <!-- ══════════════════════ 03 · ROUND 1 ══════════════════════
+       First-round styleframes, 2 × 2. -->
+  <section class="unesco__grid" aria-label="Round 1">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">05</span>Iconography</p>
-      <p class="statement">
-        Taken apart and rebuilt, the new logo became
-        <em>so much more than one single asset</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-iconography">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-iconography">
-        <div class="read-more__inner">
-          <p>True to the craft of textiles, I unraveled the logo and wove it back together, using only its own elements. Taken apart and rebuilt, it became icons for the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. Then I pushed it further into a cast of ten characters who live throughout the system. I call them my new little friends.</p>
-        </div>
+      <p class="section-label"><span class="section-label__num">03</span>Round 1</p>
+    </div>
+    <div class="g-span-2 section-media">
+      <div class="memoirs-grid memoirs-grid--2">
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round1-01.jpg" alt="Round 1 styleframe 1" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round1-02.jpg" alt="Round 1 styleframe 2" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round1-03.jpg" alt="Round 1 styleframe 3" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round1-04.jpg" alt="Round 1 styleframe 4" loading="lazy" decoding="async" /></figure>
       </div>
     </div>
+  </section>
 
-    <div class="g-span-2 section-media">
-      <!-- Iconography overview, 16:9 -->
-      <figure class="media media--wide">
-        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
-      </figure>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 06 · Typography ────────────────────────────────────────── -->
+  <!-- ══════════════════════ 04 · ROUND 2 ══════════════════════
+       Second-round styleframes, 2 × 2. -->
+  <section class="unesco__grid" aria-label="Round 2">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">06</span>Typography</p>
-      <p class="statement">
-        A system must be able to flex. So, how far can the logo
-        <em>be pushed</em>?
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-typography">
-        <div class="read-more__inner">
-          <p>Well, I kept asking &ldquo;what if?&rdquo; of the modular logo, holding to one rule: no new shapes, only what the logo is made of. That rule produced two typefaces for the identity system: Building Blocks and Woven Textiles.</p>
-        </div>
-      </div>
+      <p class="section-label"><span class="section-label__num">04</span>Round 2</p>
     </div>
-
     <div class="g-span-2 section-media">
-      <!-- Two custom typefaces side by side. Portrait 2:3 to match
-           the PDF page ratio each was exported from. -->
-      <div class="media-pair">
-        <figure class="media" style="aspect-ratio: 2 / 3;">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-01.jpg" alt="Custom Typeface 1 — Building Blocks" />
-        </figure>
-        <figure class="media" style="aspect-ratio: 2 / 3;">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-02.jpg" alt="Custom Typeface 2 — Woven Textiles" />
-        </figure>
+      <div class="memoirs-grid memoirs-grid--2">
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round2-01.jpg" alt="Round 2 styleframe 1" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round2-02.jpg" alt="Round 2 styleframe 2" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round2-03.jpg" alt="Round 2 styleframe 3" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round2-04.jpg" alt="Round 2 styleframe 4" loading="lazy" decoding="async" /></figure>
       </div>
     </div>
+  </section>
 
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
+  <!-- ══════════════════════ 05 · ROUND 3 ══════════════════════
+       Third-round styleframes, 3 × 3 (8 frames in folder). -->
+  <section class="unesco__grid" aria-label="Round 3">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">07</span>Applications</p>
-      <p class="statement">
-        The system then is carried into both spatial, ephemeral and
-        <em>digital</em> media.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-applications">
-        <div class="read-more__inner">
-          <p><strong>The World Needs U.</strong></p>
-          <p>The slogan plays on the four U&rsquo;s in the logo, but it reaches past UNESCO to the world it serves: us. Organizations like UNESCO exist for the generations that come after us. It&rsquo;s on all of us to carry our stories, cultures, and traditions into the future, not leave them behind. The world needs U.</p>
-          <p><strong>Safeguard Humanity&rsquo;s Inheritance.</strong><br>Our inheritance is all around us, in the identities we hold today. Without intention, it can be lost.</p>
-          <p><strong>Protect/Preserve/Prepare What Makes Us Human.</strong><br>Protect who we are today. Preserve what the past has given us. Prepare what we pass on. This is why the rebrand matters: we cannot forget who we are, or what shaped us.</p>
-          <p>I think, create, and design this way because of my Peruvian and Salvadoran heritage. This is my perspective, and that is the beauty of who we are, as individuals and as a collective. Every perspective is needed to see the whole picture. Without our cultures, our stories, and our identities, humanity would be a shell of itself.</p>
-          <p>As part of the identity system, I also designed a new digital home for UNESCO, one that puts the people, lands, and cultures it protects at the center. I left the corporate look behind for something inviting, youthful, and vibrant. My goal was for every page to offer something new, so visitors would keep wanting to discover more.</p>
-        </div>
-      </div>
+      <p class="section-label"><span class="section-label__num">05</span>Round 3</p>
     </div>
-
     <div class="g-span-2 section-media">
-      <!-- 3 × 2 poster grid — the six macro posters from the series.
-           Visual order: 01, 06, 03, 05, 04, 02 (per user layout). -->
-      <div class="section-media__posters">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
-      </div>
-
-      <!-- Each cell cycles 4 images on a shared 16s loop; the two cells
-           split the 8 applications equally. 05 is pinned near the
-           bottom so the UNESCO podium stays visible when the portrait
-           crops into the square cell. See .media__aslide keyframes. -->
-      <div class="section-media__triptych section-media__triptych--pair">
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-02.jpg" alt="UNESCO application — rooftop billboard" />
-          <img class="media__img media__aslide media__aslide--2" style="object-position: center 85%;" src="/ASSETS/IMAGES/UNESCO/application-05.jpg" alt="UNESCO application — Director-General podium" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-07.jpg" alt="UNESCO application — bridge wheatpaste poster" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-10.jpg" alt="UNESCO application — cylindrical street kiosk" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-04.jpg" alt="UNESCO application — building-side billboard" />
-          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-09.jpg" alt="UNESCO application — unesco HQ banner" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-11.jpg" alt="UNESCO application — parking + bike station sign" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
-        </figure>
-      </div>
-
-      <!-- Walkthrough screen recording — full native video controls so
-           visitors can play / pause / scrub. Uses object-fit: contain
-           + black bg so the full recording frame is always visible. -->
-      <figure class="media media--wide applications-walkthrough">
-        <video class="media__video applications-walkthrough__video"
-               controls preload="metadata" playsinline webkit-playsinline
-               disablepictureinpicture disableremoteplayback
-               aria-label="UNESCO applications walkthrough">
-          <source src="/ASSETS/IMAGES/UNESCO/applications-walkthrough.mp4" type="video/mp4">
-        </video>
-      </figure>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 08 · Tangible Forms ──────────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">08</span>Tangible Forms</p>
-      <p class="statement">
-        80 years of human connection.
-        <em>What an accomplishment</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-celebration">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-celebration">
-        <div class="read-more__inner">
-          <p>To honor 80 years of UNESCO, I wanted objects you could hold and contemplate, built around what I see as UNESCO&rsquo;s greatest accomplishment: human connection. I commissioned a woven blanket and, wanting in on the fun, I personally hand-sewed a vegetable-tanned leather bag, its icons coming together to form an image of our world. The same image lives in the printed atlas.</p>
-          <p>You never know where one small idea will take you. That&rsquo;s the beauty of design. It is vital to my process to never throw an idea away. I keep it close, in my sketches. Perhaps it returns in a way I hadn&rsquo;t imagined.</p>
-        </div>
+      <div class="memoirs-grid memoirs-grid--3">
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-01.jpg" alt="Round 3 styleframe 1" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-02.jpg" alt="Round 3 styleframe 2" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-03.jpg" alt="Round 3 styleframe 3" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-04.jpg" alt="Round 3 styleframe 4" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-05.jpg" alt="Round 3 styleframe 5" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-06.jpg" alt="Round 3 styleframe 6" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-07.jpg" alt="Round 3 styleframe 7" loading="lazy" decoding="async" /></figure>
+        <figure class="media memoirs-cell"><img class="media__img" src="/ASSETS/IMAGES/MEMOIRS/web/round3-08.jpg" alt="Round 3 styleframe 8" loading="lazy" decoding="async" /></figure>
       </div>
     </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 2 long portrait cells, side by side on desktop, stacked on
-           mobile. All 15 celebration images are split evenly: cell A
-           cycles 01–08 (8 images), cell B cycles 09–15 (7 images).
-           JS at the bottom of the page toggles .is-active on one
-           slide at a time; CSS handles the crossfade. -->
-      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
-        </figure>
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
-        </figure>
-      </div>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 09 · Campaign Direction ───────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">09</span>Campaign Direction</p>
-      <p class="statement">
-        The creation of a campaign hosted by UNESCO,
-        <em>&ldquo;Living Traces&rdquo;</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-campaign">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-campaign">
-        <div class="read-more__inner">
-          <p>In direct contrast to the identity system, I created a campaign about the languages, traditions, and cultures at risk of disappearing. The subject is urgent, so I stripped away all color and made the campaign impossible to ignore.</p>
-          <p>The name Living Traces holds two truths: these cultures are still alive, but only as traces. Once they fade, they may never return. The campaign brings light to what is nearly lost and asks the world to do its part: to protect our cultures, and our neighbors&rsquo;, as we move into the future.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 3 micro posters sit at the top of the Campaign Direction
-           media column: a portrait triptych that previews the
-           Living Traces print campaign. On mobile, the two black
-           posters (01, 03) sit side by side on the top row and the
-           grey poster (02) sits centered beneath. -->
-      <div class="section-media__posters section-media__posters--campaign">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-01.jpg" alt="Living Traces micro poster 01" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-02.jpg" alt="Living Traces micro poster 02" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-03.jpg" alt="Living Traces micro poster 03" /></figure>
-      </div>
-
-      <!-- Campaign walkthrough screen recording — native play / pause
-           / scrub controls. Cover-crops to fill the 16:9 cell so no
-           letterbox bars appear. -->
-      <figure class="media media--wide campaign-walkthrough">
-        <video class="media__video campaign-walkthrough__video"
-               controls preload="metadata" playsinline webkit-playsinline
-               disablepictureinpicture disableremoteplayback
-               aria-label="Living Traces campaign walkthrough">
-          <source src="/ASSETS/IMAGES/UNESCO/campaign-walkthrough.mp4" type="video/mp4">
-        </video>
-      </figure>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 10 · The Printed Atlas ────────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">10</span>The Printed Atlas</p>
-      <p class="statement">
-        Before the <em>Digital Atlas</em>, there was the printed one.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-printed-atlas">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-printed-atlas">
-        <div class="read-more__inner">
-          <p>It begins as a celebration of our differences: the languages we speak, the lands we tend, the rituals we keep, the monuments we raise. But turn the pages, and something quieter surfaces. Somewhere between the words and the traditions, you start to see yourself in a stranger. Because before anything else, you and I are human.</p>
-          <p>Open the atlas and the world unfolds in your hands. Four icons mark the four worlds UNESCO protects. Each world then appears on its own, with a map where every icon carries a number: the page where that place can be found. Each map becomes a table of contents for the globe.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 48-page atlas. Two layered image elements crossfade as the
-           page changes; the timeline below is a hover-scrubber that
-           sets a target page. With no hover, pages auto-advance and
-           wrap at 48 → 1. -->
-      <div class="atlas-book" id="atlas-book">
-        <div class="atlas-book__stage" id="atlas-stage">
-          <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
-          <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
-          <div class="atlas-book__spine" aria-hidden="true"></div>
-        </div>
-        <div
-          class="atlas-book__timeline"
-          id="atlas-timeline"
-          role="toolbar"
-          aria-label="Scrub through the printed atlas"
-        >
-          <!-- 48 .atlas-book__thumb buttons generated by the atlas JS -->
-          <div class="atlas-book__timeline-tooltip" id="atlas-timeline-tooltip" aria-hidden="true">01</div>
-        </div>
-        <div class="atlas-book__counter" aria-hidden="true">
-          <small>Page</small>
-          <span id="atlas-counter">01 / 48</span>
-        </div>
-      </div>
-    </div>
-
   </section>
 
   <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════
        Full-viewport-width hero shot that closes the case study before the
        pager. The image is shown at its natural aspect so nothing in the
        composition (billboard type, tote copy, etc.) is cropped. -->
-  <figure class="unesco__closing-image" aria-label="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front">
-    <img src="/ASSETS/IMAGES/UNESCO/closing-hero.jpg" alt="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front" />
+  <figure class="unesco__closing-image" aria-label="Memoirs — 3D render of large hands and books in a pastel landscape">
+    <img src="/ASSETS/IMAGES/MEMOIRS/hero.jpg" alt="Memoirs — 3D render of large hands and books in a pastel landscape" />
   </figure>
 
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
