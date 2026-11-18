@@ -703,6 +703,11 @@
     transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
     transform-origin: center center;
     z-index: 1;
+    /* Perf: skip rendering offscreen cells entirely. The browser
+       reserves the cell's intrinsic size so the grid doesn't jump
+       as cells enter the viewport. */
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 160px;
   }
   .book-page img {
     width: 100%;
@@ -1104,424 +1109,295 @@
     <div class="g-span-3">
       <div class="book-grid" aria-label="Full book pages">
         <figure class="book-page book-page--solo">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-001.jpg" alt="Ecclesiastes page 1 — single" />
+          <img loading="lazy" decoding="async" width="1200" height="2057" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-001.jpg" alt="Ecclesiastes page 1 — single" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-002.jpg" alt="Ecclesiastes page 2" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-002.jpg" alt="Ecclesiastes spread 2" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-003.jpg" alt="Ecclesiastes page 3" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-003.jpg" alt="Ecclesiastes spread 3" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-004.jpg" alt="Ecclesiastes page 4" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-004.jpg" alt="Ecclesiastes spread 4" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-005.jpg" alt="Ecclesiastes page 5" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-005.jpg" alt="Ecclesiastes spread 5" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-006.jpg" alt="Ecclesiastes page 6" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-006.jpg" alt="Ecclesiastes spread 6" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-007.jpg" alt="Ecclesiastes page 7" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-007.jpg" alt="Ecclesiastes spread 7" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-008.jpg" alt="Ecclesiastes page 8" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-008.jpg" alt="Ecclesiastes spread 8" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-009.jpg" alt="Ecclesiastes page 9" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-009.jpg" alt="Ecclesiastes spread 9" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-010.jpg" alt="Ecclesiastes page 10" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-010.jpg" alt="Ecclesiastes spread 10" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-011.jpg" alt="Ecclesiastes page 11" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-011.jpg" alt="Ecclesiastes spread 11" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-012.jpg" alt="Ecclesiastes page 12" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-012.jpg" alt="Ecclesiastes spread 12" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-013.jpg" alt="Ecclesiastes page 13" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-013.jpg" alt="Ecclesiastes spread 13" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-014.jpg" alt="Ecclesiastes page 14" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-014.jpg" alt="Ecclesiastes spread 14" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-015.jpg" alt="Ecclesiastes page 15" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-015.jpg" alt="Ecclesiastes spread 15" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-016.jpg" alt="Ecclesiastes page 16" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-016.jpg" alt="Ecclesiastes spread 16" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-017.jpg" alt="Ecclesiastes page 17" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-017.jpg" alt="Ecclesiastes spread 17" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-018.jpg" alt="Ecclesiastes page 18" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-018.jpg" alt="Ecclesiastes spread 18" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-019.jpg" alt="Ecclesiastes page 19" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-019.jpg" alt="Ecclesiastes spread 19" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-020.jpg" alt="Ecclesiastes page 20" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-020.jpg" alt="Ecclesiastes spread 20" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-021.jpg" alt="Ecclesiastes page 21" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-021.jpg" alt="Ecclesiastes spread 21" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-022.jpg" alt="Ecclesiastes page 22" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-022.jpg" alt="Ecclesiastes spread 22" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-023.jpg" alt="Ecclesiastes page 23" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-023.jpg" alt="Ecclesiastes spread 23" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-024.jpg" alt="Ecclesiastes page 24" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-024.jpg" alt="Ecclesiastes spread 24" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-025.jpg" alt="Ecclesiastes page 25" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-025.jpg" alt="Ecclesiastes spread 25" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-026.jpg" alt="Ecclesiastes page 26" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-026.jpg" alt="Ecclesiastes spread 26" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-027.jpg" alt="Ecclesiastes page 27" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-027.jpg" alt="Ecclesiastes spread 27" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-028.jpg" alt="Ecclesiastes page 28" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-028.jpg" alt="Ecclesiastes spread 28" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-029.jpg" alt="Ecclesiastes page 29" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-029.jpg" alt="Ecclesiastes spread 29" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-030.jpg" alt="Ecclesiastes page 30" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-030.jpg" alt="Ecclesiastes spread 30" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-031.jpg" alt="Ecclesiastes page 31" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-031.jpg" alt="Ecclesiastes spread 31" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-032.jpg" alt="Ecclesiastes page 32" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-032.jpg" alt="Ecclesiastes spread 32" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-033.jpg" alt="Ecclesiastes page 33" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-033.jpg" alt="Ecclesiastes spread 33" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-034.jpg" alt="Ecclesiastes page 34" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-034.jpg" alt="Ecclesiastes spread 34" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-035.jpg" alt="Ecclesiastes page 35" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-035.jpg" alt="Ecclesiastes spread 35" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-036.jpg" alt="Ecclesiastes page 36" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-036.jpg" alt="Ecclesiastes spread 36" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-037.jpg" alt="Ecclesiastes page 37" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-037.jpg" alt="Ecclesiastes spread 37" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-038.jpg" alt="Ecclesiastes page 38" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-038.jpg" alt="Ecclesiastes spread 38" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-039.jpg" alt="Ecclesiastes page 39" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-039.jpg" alt="Ecclesiastes spread 39" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-040.jpg" alt="Ecclesiastes page 40" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-040.jpg" alt="Ecclesiastes spread 40" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-041.jpg" alt="Ecclesiastes page 41" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-041.jpg" alt="Ecclesiastes spread 41" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-042.jpg" alt="Ecclesiastes page 42" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-042.jpg" alt="Ecclesiastes spread 42" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-043.jpg" alt="Ecclesiastes page 43" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-043.jpg" alt="Ecclesiastes spread 43" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-044.jpg" alt="Ecclesiastes page 44" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-044.jpg" alt="Ecclesiastes spread 44" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-045.jpg" alt="Ecclesiastes page 45" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-045.jpg" alt="Ecclesiastes spread 45" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-046.jpg" alt="Ecclesiastes page 46" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-046.jpg" alt="Ecclesiastes spread 46" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-047.jpg" alt="Ecclesiastes page 47" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-047.jpg" alt="Ecclesiastes spread 47" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-048.jpg" alt="Ecclesiastes page 48" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-048.jpg" alt="Ecclesiastes spread 48" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-049.jpg" alt="Ecclesiastes page 49" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-049.jpg" alt="Ecclesiastes spread 49" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-050.jpg" alt="Ecclesiastes page 50" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-050.jpg" alt="Ecclesiastes spread 50" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-051.jpg" alt="Ecclesiastes page 51" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-051.jpg" alt="Ecclesiastes spread 51" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-052.jpg" alt="Ecclesiastes page 52" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-052.jpg" alt="Ecclesiastes spread 52" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-053.jpg" alt="Ecclesiastes page 53" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-053.jpg" alt="Ecclesiastes spread 53" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-054.jpg" alt="Ecclesiastes page 54" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-054.jpg" alt="Ecclesiastes spread 54" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-055.jpg" alt="Ecclesiastes page 55" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-055.jpg" alt="Ecclesiastes spread 55" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-056.jpg" alt="Ecclesiastes page 56" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-056.jpg" alt="Ecclesiastes spread 56" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-057.jpg" alt="Ecclesiastes page 57" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-057.jpg" alt="Ecclesiastes spread 57" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-058.jpg" alt="Ecclesiastes page 58" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-058.jpg" alt="Ecclesiastes spread 58" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-059.jpg" alt="Ecclesiastes page 59" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-059.jpg" alt="Ecclesiastes spread 59" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-060.jpg" alt="Ecclesiastes page 60" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-060.jpg" alt="Ecclesiastes spread 60" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-061.jpg" alt="Ecclesiastes page 61" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-061.jpg" alt="Ecclesiastes spread 61" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-062.jpg" alt="Ecclesiastes page 62" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-062.jpg" alt="Ecclesiastes spread 62" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-063.jpg" alt="Ecclesiastes page 63" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-063.jpg" alt="Ecclesiastes spread 63" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-064.jpg" alt="Ecclesiastes page 64" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-064.jpg" alt="Ecclesiastes spread 64" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-065.jpg" alt="Ecclesiastes page 65" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-065.jpg" alt="Ecclesiastes spread 65" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-066.jpg" alt="Ecclesiastes page 66" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-066.jpg" alt="Ecclesiastes spread 66" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-067.jpg" alt="Ecclesiastes page 67" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-067.jpg" alt="Ecclesiastes spread 67" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-068.jpg" alt="Ecclesiastes page 68" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-068.jpg" alt="Ecclesiastes spread 68" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-069.jpg" alt="Ecclesiastes page 69" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-069.jpg" alt="Ecclesiastes spread 69" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-070.jpg" alt="Ecclesiastes page 70" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-070.jpg" alt="Ecclesiastes spread 70" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-071.jpg" alt="Ecclesiastes page 71" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-071.jpg" alt="Ecclesiastes spread 71" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-072.jpg" alt="Ecclesiastes page 72" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-072.jpg" alt="Ecclesiastes spread 72" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-073.jpg" alt="Ecclesiastes page 73" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-073.jpg" alt="Ecclesiastes spread 73" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-074.jpg" alt="Ecclesiastes page 74" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-074.jpg" alt="Ecclesiastes spread 74" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-075.jpg" alt="Ecclesiastes page 75" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-075.jpg" alt="Ecclesiastes spread 75" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-076.jpg" alt="Ecclesiastes page 76" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-076.jpg" alt="Ecclesiastes spread 76" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-077.jpg" alt="Ecclesiastes page 77" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-077.jpg" alt="Ecclesiastes spread 77" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-078.jpg" alt="Ecclesiastes page 78" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-078.jpg" alt="Ecclesiastes spread 78" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-079.jpg" alt="Ecclesiastes page 79" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-079.jpg" alt="Ecclesiastes spread 79" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-080.jpg" alt="Ecclesiastes page 80" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-080.jpg" alt="Ecclesiastes spread 80" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-081.jpg" alt="Ecclesiastes page 81" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-081.jpg" alt="Ecclesiastes spread 81" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-082.jpg" alt="Ecclesiastes page 82" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-082.jpg" alt="Ecclesiastes spread 82" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-083.jpg" alt="Ecclesiastes page 83" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-083.jpg" alt="Ecclesiastes spread 83" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-084.jpg" alt="Ecclesiastes page 84" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-084.jpg" alt="Ecclesiastes spread 84" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-085.jpg" alt="Ecclesiastes page 85" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-085.jpg" alt="Ecclesiastes spread 85" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-086.jpg" alt="Ecclesiastes page 86" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-086.jpg" alt="Ecclesiastes spread 86" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-087.jpg" alt="Ecclesiastes page 87" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-087.jpg" alt="Ecclesiastes spread 87" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-088.jpg" alt="Ecclesiastes page 88" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-088.jpg" alt="Ecclesiastes spread 88" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-089.jpg" alt="Ecclesiastes page 89" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-089.jpg" alt="Ecclesiastes spread 89" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-090.jpg" alt="Ecclesiastes page 90" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-090.jpg" alt="Ecclesiastes spread 90" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-091.jpg" alt="Ecclesiastes page 91" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-091.jpg" alt="Ecclesiastes spread 91" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-092.jpg" alt="Ecclesiastes page 92" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-092.jpg" alt="Ecclesiastes spread 92" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-093.jpg" alt="Ecclesiastes page 93" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-093.jpg" alt="Ecclesiastes spread 93" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-094.jpg" alt="Ecclesiastes page 94" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-094.jpg" alt="Ecclesiastes spread 94" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-095.jpg" alt="Ecclesiastes page 95" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-095.jpg" alt="Ecclesiastes spread 95" />
         </figure>
         <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-096.jpg" alt="Ecclesiastes page 96" />
+          <img loading="lazy" decoding="async" width="1200" height="1028" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-096.jpg" alt="Ecclesiastes spread 96" />
         </figure>
         <figure class="book-page book-page--solo">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-097.jpg" alt="Ecclesiastes page 97 — single" />
-        </figure>
-        <figure class="book-page book-page--solo">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-098.jpg" alt="Ecclesiastes page 98 — single" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-099.jpg" alt="Ecclesiastes page 99" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-100.jpg" alt="Ecclesiastes page 100" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-101.jpg" alt="Ecclesiastes page 101" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-102.jpg" alt="Ecclesiastes page 102" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-103.jpg" alt="Ecclesiastes page 103" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-104.jpg" alt="Ecclesiastes page 104" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-105.jpg" alt="Ecclesiastes page 105" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-106.jpg" alt="Ecclesiastes page 106" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-107.jpg" alt="Ecclesiastes page 107" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-108.jpg" alt="Ecclesiastes page 108" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-109.jpg" alt="Ecclesiastes page 109" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-110.jpg" alt="Ecclesiastes page 110" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-111.jpg" alt="Ecclesiastes page 111" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-112.jpg" alt="Ecclesiastes page 112" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-113.jpg" alt="Ecclesiastes page 113" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-114.jpg" alt="Ecclesiastes page 114" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-115.jpg" alt="Ecclesiastes page 115" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-116.jpg" alt="Ecclesiastes page 116" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-117.jpg" alt="Ecclesiastes page 117" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-118.jpg" alt="Ecclesiastes page 118" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-119.jpg" alt="Ecclesiastes page 119" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-120.jpg" alt="Ecclesiastes page 120" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-121.jpg" alt="Ecclesiastes page 121" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-122.jpg" alt="Ecclesiastes page 122" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-123.jpg" alt="Ecclesiastes page 123" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-124.jpg" alt="Ecclesiastes page 124" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-125.jpg" alt="Ecclesiastes page 125" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-126.jpg" alt="Ecclesiastes page 126" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-127.jpg" alt="Ecclesiastes page 127" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-128.jpg" alt="Ecclesiastes page 128" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-129.jpg" alt="Ecclesiastes page 129" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-130.jpg" alt="Ecclesiastes page 130" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-131.jpg" alt="Ecclesiastes page 131" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-132.jpg" alt="Ecclesiastes page 132" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-133.jpg" alt="Ecclesiastes page 133" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-134.jpg" alt="Ecclesiastes page 134" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-135.jpg" alt="Ecclesiastes page 135" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-136.jpg" alt="Ecclesiastes page 136" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-137.jpg" alt="Ecclesiastes page 137" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-138.jpg" alt="Ecclesiastes page 138" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-139.jpg" alt="Ecclesiastes page 139" />
-        </figure>
-        <figure class="book-page book-page--spread">
-          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-140.jpg" alt="Ecclesiastes page 140" />
+          <img loading="lazy" decoding="async" width="1200" height="2057" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-097.jpg" alt="Ecclesiastes page 97 — single" />
         </figure>
       </div>
     </div><!-- /04 book-grid -->
