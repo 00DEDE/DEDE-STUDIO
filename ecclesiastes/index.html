@@ -686,10 +686,10 @@
      on mobile. */
   .book-grid {
     display: grid;
-    /* 20 cols × 5 rows: 97 pages fill 4 full rows (80) + 17 cells in
-       row 5. Whole book fits in 5 rows per user request. */
-    grid-template-columns: repeat(20, 1fr);
-    gap: clamp(0.15rem, 0.3vw, 0.35rem);
+    /* 13 cols × ~8 rows — the previous layout before the 20-col
+       attempt. Reverted at user's request. */
+    grid-template-columns: repeat(13, 1fr);
+    gap: clamp(0.2rem, 0.4vw, 0.4rem);
     align-items: start;
     justify-items: center;
   }
@@ -713,7 +713,7 @@
        reserves the cell's intrinsic size so the grid doesn't jump
        as cells enter the viewport. */
     content-visibility: auto;
-    contain-intrinsic-size: 1px 50px;
+    contain-intrinsic-size: 1px 80px;
   }
   /* All cells use the spread aspect-ratio (1200×1028 ≈ 7:6) so solo
      cover / back-cover pages share the exact same footprint as a
@@ -845,10 +845,9 @@
   }
 
   /* ─── Distressed-image grid (section 07) ──────────────────────────
-     7 portrait images laid out 3 + 3 + 1 on desktop, 2 + 2 + 2 + 1 on
-     mobile. Each cell uses the images' native 7:12 aspect so the full
-     image renders with no top/bottom crop. The solo 7th image sits
-     centered on its own last row at both breakpoints. */
+     6 portrait images laid out as two rows of three on desktop, two
+     cols on mobile. Each cell uses the images' native 7:12 aspect so
+     the full image renders with no top/bottom crop. */
   .distress-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -857,18 +856,8 @@
   .distress-grid .media {
     aspect-ratio: 7 / 12;      /* match image aspect — no cropping */
   }
-  .distress-grid__lone {
-    grid-column: 2 / 3;        /* centered single cell in the last row */
-  }
   @media (max-width: 900px) {
     .distress-grid { grid-template-columns: repeat(2, 1fr); }
-    /* Mobile: the 7th image spans both columns and centers at half
-       width so it still reads as a lone centered page. */
-    .distress-grid__lone {
-      grid-column: 1 / -1;
-      width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
-      justify-self: center;
-    }
   }
 
   /* ─── Applications posters + mockup (section 05) ────────────────
@@ -1640,16 +1629,16 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 7 distressed images laid out as 3 + 3 + 1: three per row
-           in rows 1-2, the last image centered on its own third row. -->
+      <!-- 6 distressed images laid out as two rows of three. Order:
+           01, 02, 03 / 04, 07, 06. (distress-05 removed per user;
+           distress-07 fills its slot.) -->
       <div class="distress-grid">
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-01.jpg" alt="Ecclesiastes distressed image 01" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-02.jpg" alt="Ecclesiastes distressed image 02" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-03.jpg" alt="Ecclesiastes distressed image 03" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-04.jpg" alt="Ecclesiastes distressed image 04" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-05.jpg" alt="Ecclesiastes distressed image 05" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-07.jpg" alt="Ecclesiastes distressed image 07" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-06.jpg" alt="Ecclesiastes distressed image 06" /></figure>
-        <figure class="media media--poster distress-grid__lone"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-07.jpg" alt="Ecclesiastes distressed image 07" /></figure>
       </div>
     </div>
 
