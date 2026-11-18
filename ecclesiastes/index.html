@@ -715,23 +715,20 @@
     content-visibility: auto;
     contain-intrinsic-size: 1px 80px;
   }
-  /* All cells use the spread aspect-ratio (1200×1028 ≈ 7:6) so solo
-     cover / back-cover pages share the exact same footprint as a
-     spread. Portrait solos letterbox inside the cell against the
-     page-edge background — nothing cropped, no vertical extra. */
-  .book-page {
-    aspect-ratio: 1200 / 1028;
-    overflow: hidden;
-  }
+  /* No forced aspect on the cell — spreads render at their native
+     landscape aspect (1200×1028), solos render at native portrait
+     (1200×2057). No object-fit means no cropping and no distortion.
+     Because a solo at 50% cell width has the same rendered HEIGHT as
+     a spread at 100% cell width (0.5 × 1.714 == 1.0 × 0.857), rows
+     line up vertically between portraits and landscapes. */
   .book-page img {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
     display: block;
   }
-  /* Solo cells now share the same cell width as spreads — their
-     portrait image just centers with a thin letterbox either side. */
-  .book-page--solo { width: 100%; }
+  /* Solo cells sit at half the cell width so their portrait height
+     matches a spread's height exactly. */
+  .book-page--solo { width: 50%; }
   /* Soft spine gradient down the middle of each interior spread —
      skipped on the first and last cells so the book opens and closes
      cleanly. */
@@ -842,6 +839,19 @@
     /* On mobile the grid stacks below the text, so the inspector
        doesn't need to stick — it reads inline. */
     .book-inspector { position: static; }
+  }
+
+  /* ─── Cyanotype scraps (section 06) ───────────────────────────────
+     3 scans in a single row on desktop, stacked on mobile. Native
+     aspect-ratio preserved so nothing is cropped. */
+  .cyano-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+  .cyano-grid .media { aspect-ratio: 160 / 231; }  /* native scan aspect */
+  @media (max-width: 900px) {
+    .cyano-grid { grid-template-columns: 1fr; }
   }
 
   /* ─── Distressed-image grid (section 07) ──────────────────────────
@@ -1579,34 +1589,32 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 06 · Typography ────────────────────────────────────────── -->
+    <!-- ─── 06 · Cyano Scraps ──────────────────────────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">06</span>Typography</p>
+      <p class="section-label"><span class="section-label__num">06</span>Cyano Scraps</p>
       <p class="statement">
-        A system must be able to flex. So, how far can the logo
-        <em>be pushed</em>?
+        A first time <em>collaboration</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-cyano">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-typography">
+      <div class="read-more__panel" id="rm-cyano">
         <div class="read-more__inner">
-          <p>Well, I kept asking &ldquo;what if?&rdquo; of the modular logo, holding to one rule: no new shapes, only what the logo is made of. That rule produced two typefaces for the identity system: Building Blocks and Woven Textiles.</p>
+          <p>From discarded pieces of cyanotype photography, I color graded, expanded, and wove together a larger series of images. Placed throughout the book, they act as interludes: a pause for the reader to think, to breathe, to contemplate.</p>
+          <p>Thank you again to you my childhood friend, Adrian for your generosity and openness to my ideas.</p>
+          <p>Adrian Anguiano is a recent grad from CalArts.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Two custom typefaces side by side. Portrait 2:3 to match
-           the PDF page ratio each was exported from. -->
-      <div class="media-pair">
-        <figure class="media" style="aspect-ratio: 2 / 3;">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-01.jpg" alt="Custom Typeface 1 — Building Blocks" />
-        </figure>
-        <figure class="media" style="aspect-ratio: 2 / 3;">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-02.jpg" alt="Custom Typeface 2 — Woven Textiles" />
-        </figure>
+      <!-- 3 cyanotype scraps in a single row. Native aspect preserved
+           so nothing is cropped. -->
+      <div class="cyano-grid">
+        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-01.jpg" alt="Cyanotype scrap 01" /></figure>
+        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-02.jpg" alt="Cyanotype scrap 02" /></figure>
+        <figure class="media"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.jpg" alt="Cyanotype scrap 03" /></figure>
       </div>
     </div>
 
