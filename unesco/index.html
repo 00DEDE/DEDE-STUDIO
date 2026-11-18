@@ -824,11 +824,17 @@
 
   /* ─── Applications walkthrough (section 07) ──────────────────────
      Native-controls <video> below the poster grid + application
-     slideshow. object-fit: contain so none of the screen-recording
-     frame is cropped; black bar fills any letterbox. */
+     slideshow. Cover-crops to fill the 16:9 cell so no letterbox
+     is visible (the source recording is close to 16:9). */
   .applications-walkthrough { background: #000; }
   .applications-walkthrough__video {
-    object-fit: contain;
+    object-fit: cover;
+    background: #000;
+  }
+  /* ─── Campaign walkthrough (section 09) — same treatment. ───── */
+  .campaign-walkthrough { background: #000; }
+  .campaign-walkthrough__video {
+    object-fit: cover;
     background: #000;
   }
 
@@ -1703,7 +1709,6 @@
       <div class="read-more__panel" id="rm-typography">
         <div class="read-more__inner">
           <p>Well, I kept asking &ldquo;what if?&rdquo; of the modular logo, holding to one rule: no new shapes, only what the logo is made of. That rule produced two typefaces for the identity system: Building Blocks and Woven Textiles.</p>
-          <p>When assets are built well, they flourish in unexpected ways.</p>
         </div>
       </div>
     </div>
@@ -1726,8 +1731,8 @@
     <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">07</span>Applications</p>
       <p class="statement">
-        The system then is carried into both spatial and
-        <em>ephemeral</em> media.
+        The system then is carried into both spatial, ephemeral and
+        <em>digital</em> media.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
         <span>Read more</span>
@@ -1863,8 +1868,25 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <figure class="media media--wide">
-        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/campaign-living-traces.jpg" alt="Living Traces campaign — UNESCO" />
+      <!-- 3 micro posters sit at the top of the Campaign Direction
+           media column: a portrait triptych that previews the
+           Living Traces print campaign. -->
+      <div class="section-media__posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-01.jpg" alt="Living Traces micro poster 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-02.jpg" alt="Living Traces micro poster 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-03.jpg" alt="Living Traces micro poster 03" /></figure>
+      </div>
+
+      <!-- Campaign walkthrough screen recording — native play / pause
+           / scrub controls. Cover-crops to fill the 16:9 cell so no
+           letterbox bars appear. -->
+      <figure class="media media--wide campaign-walkthrough">
+        <video class="media__video campaign-walkthrough__video"
+               controls preload="metadata" playsinline webkit-playsinline
+               disablepictureinpicture disableremoteplayback
+               aria-label="Living Traces campaign walkthrough">
+          <source src="/ASSETS/IMAGES/UNESCO/campaign-walkthrough.mp4" type="video/mp4">
+        </video>
       </figure>
     </div>
 
