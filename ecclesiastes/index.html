@@ -686,8 +686,6 @@
      on mobile. */
   .book-grid {
     display: grid;
-    /* 13 cols × ~8 rows — the previous layout before the 20-col
-       attempt. Reverted at user's request. */
     grid-template-columns: repeat(13, 1fr);
     gap: clamp(0.2rem, 0.4vw, 0.4rem);
     align-items: start;
@@ -715,11 +713,9 @@
     content-visibility: auto;
     contain-intrinsic-size: 1px 80px;
   }
-  /* Natural sizing — every cell takes its image's native aspect via
-     width:100% + height:auto. Spreads render at 7:6 landscape, solos
-     at 7:12 portrait. Because solo cells are half-width, their
-     rendered HEIGHT equals a spread's height exactly (0.5 × 1.714
-     == 1 × 0.857), so rows line up. Previous "working" setup. */
+  /* Grid cells: spreads fill the cell at natural landscape aspect;
+     solos use half the cell width so their portrait height matches
+     a spread's height (0.5 × 1.714 == 1 × 0.857). */
   .book-page img {
     width: 100%;
     height: auto;
@@ -776,15 +772,22 @@
     margin: clamp(1rem, 2.5vh, 2rem) 0 0;
     padding: 0;
     width: 100%;
-    /* Reserve a spread-height footprint (spread aspect 7:6). Portrait
-       singles use LESS width here but their HEIGHT lines up with a
-       spread's height. Container is transparent and overflow-hidden
-       so no gradient, shadow, or image can spill into the section
-       label above. */
-    aspect-ratio: 1200 / 1028;
     background: transparent;
     overflow: hidden;
+    /* Collapsed until a cell is hovered. JS adds .is-active on the
+       first pointerenter; .is-spread/.is-solo then set the aspect to
+       match the hovered image — spreads render as full landscape
+       spreads, singles as portrait pages. */
+    height: 0;
+    opacity: 0;
+    transition: opacity 180ms ease;
   }
+  .book-inspector.is-active {
+    height: auto;
+    opacity: 1;
+  }
+  .book-inspector.is-spread { aspect-ratio: 1200 / 1028; }  /* landscape spread */
+  .book-inspector.is-solo   { aspect-ratio: 1200 / 2057; width: 50%; }  /* portrait single */
   /* The frame is absolutely positioned inside the inspector so its
      bounds stay inside the reserved footprint. Height matches the
      inspector; width is determined by the image's natural aspect at
@@ -1599,10 +1602,10 @@
         </video>
       </figure>
 
-      <!-- Three Living Traces posters in a row. -->
+      <!-- Three Living Traces posters in a row. Order: 02, 01, 03. -->
       <div class="section-media__posters applications-posters">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-01.jpg" alt="Ecclesiastes poster — The Book of Ecclesiastes, 07.27.27" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-02.jpg" alt="Ecclesiastes poster — There is nothing new under the sun" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-01.jpg" alt="Ecclesiastes poster — The Book of Ecclesiastes, 07.27.27" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-03.jpg" alt="Ecclesiastes poster — Ecclesiastes 07.27.27" /></figure>
       </div>
 
@@ -1613,9 +1616,41 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 06 · Cyano Scraps ──────────────────────────────────────── -->
+    <!-- ─── 06 · The Pull Quotes ──────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">06</span>Cyano Scraps</p>
+      <p class="section-label"><span class="section-label__num">06</span>The Pull Quotes</p>
+      <p class="statement">
+        Emotion behind the words <em>made visible</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-applications">
+        <div class="read-more__inner">
+          <p>Each image here contains a pull quote from the text. When we speak nothing is stagnant or fixed, through the motion of speaking whether it be you or I, the words fluctuate and change. Language is dynamic. Humans, even more so. I created these textural images to represent that notion.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 6 distressed images laid out as two rows of three. Order:
+           01, 02, 03 / 04, 07, 06. (distress-05 removed per user;
+           distress-07 fills its slot.) -->
+      <div class="distress-grid">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-01.jpg" alt="Ecclesiastes distressed image 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-02.jpg" alt="Ecclesiastes distressed image 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-03.jpg" alt="Ecclesiastes distressed image 03" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-04.jpg" alt="Ecclesiastes distressed image 04" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-07.jpg" alt="Ecclesiastes distressed image 07" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-06.jpg" alt="Ecclesiastes distressed image 06" /></figure>
+      </div>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 07 · Cyano Scraps ──────────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">07</span>Cyano Scraps</p>
       <p class="statement">
         A first time <em>collaboration</em>.
       </p>
@@ -1649,38 +1684,6 @@
           <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-03.jpg" alt="Cyanotype base 03" />
           <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.png"       alt="Cyanotype overlay 03" />
         </figure>
-      </div>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">07</span>The Pull Quotes</p>
-      <p class="statement">
-        Emotion behind the words <em>made visible</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-applications">
-        <div class="read-more__inner">
-          <p>Each image here contains a pull quote from the text. When we speak nothing is stagnant or fixed, through the motion of speaking whether it be you or I, the words fluctuate and change. Language is dynamic. Humans, even more so. I created these textural images to represent that notion.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 6 distressed images laid out as two rows of three. Order:
-           01, 02, 03 / 04, 07, 06. (distress-05 removed per user;
-           distress-07 fills its slot.) -->
-      <div class="distress-grid">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-01.jpg" alt="Ecclesiastes distressed image 01" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-02.jpg" alt="Ecclesiastes distressed image 02" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-03.jpg" alt="Ecclesiastes distressed image 03" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-04.jpg" alt="Ecclesiastes distressed image 04" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-07.jpg" alt="Ecclesiastes distressed image 07" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-06.jpg" alt="Ecclesiastes distressed image 06" /></figure>
       </div>
     </div>
 
@@ -2018,10 +2021,12 @@
           img.alt = sourceImg.alt || '';
         }
         inspector.classList.add('is-active');
-        // Spine gradient only for interior spreads (not the cover or
-        // back cover solo pages).
-        inspector.classList.toggle('is-spread',
-          !cell.classList.contains('book-page--solo'));
+        // Toggle aspect: spread = landscape, solo = portrait. Only
+        // one of is-spread / is-solo is set at a time so the inspector
+        // sizes to the hovered image's native orientation.
+        var isSolo = cell.classList.contains('book-page--solo');
+        inspector.classList.toggle('is-spread', !isSolo);
+        inspector.classList.toggle('is-solo',    isSolo);
       }
       cells.forEach(function (cell) {
         cell.addEventListener('pointerenter', onEnter);
