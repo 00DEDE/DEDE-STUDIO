@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
 <title>The Book of Ecclesiastes — IAMDEDE.COM</title>
 <link rel="canonical" href="https://iamdede.com/ecclesiastes/" />
 <link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/favicon-96.png" />
@@ -685,10 +686,10 @@
      on mobile. */
   .book-grid {
     display: grid;
-    /* 13 cols × 8 rows = page 97 lands as the 6th of 6 cells in the
-       last row rather than alone. No orphan. */
-    grid-template-columns: repeat(13, 1fr);
-    gap: clamp(0.2rem, 0.4vw, 0.4rem);
+    /* 20 cols × 5 rows: 97 pages fill 4 full rows (80) + 17 cells in
+       row 5. Whole book fits in 5 rows per user request. */
+    grid-template-columns: repeat(20, 1fr);
+    gap: clamp(0.15rem, 0.3vw, 0.35rem);
     align-items: start;
     justify-items: center;
   }
@@ -712,7 +713,7 @@
        reserves the cell's intrinsic size so the grid doesn't jump
        as cells enter the viewport. */
     content-visibility: auto;
-    contain-intrinsic-size: 1px 160px;
+    contain-intrinsic-size: 1px 50px;
   }
   /* All cells use the spread aspect-ratio (1200×1028 ≈ 7:6) so solo
      cover / back-cover pages share the exact same footprint as a
@@ -782,26 +783,27 @@
     padding: 0;
     width: 100%;
     /* Reserve a spread-height footprint (spread aspect 7:6). Portrait
-       single pages will use LESS width than this but their HEIGHT
-       lines up with a spread's height, so every preview has the same
-       vertical length. Container is transparent so nothing frames
-       the portrait as a "spread". */
+       singles use LESS width here but their HEIGHT lines up with a
+       spread's height. Container is transparent and overflow-hidden
+       so no gradient, shadow, or image can spill into the section
+       label above. */
     aspect-ratio: 1200 / 1028;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
     background: transparent;
+    overflow: hidden;
   }
-  /* Removed the old .is-back rule — container is now always
-     transparent, so no beige or white background ever frames the
-     back cover (or any image). */
-  /* Inline-block wrapper shrinks to the IMAGE's actual rendered
-     dimensions — shadow and spine gradient trace the real outline
-     (portrait or landscape) rather than the invisible container. */
+  /* The frame is absolutely positioned inside the inspector so its
+     bounds stay inside the reserved footprint. Height matches the
+     inspector; width is determined by the image's natural aspect at
+     that height (portraits narrow, spreads full width). */
   .book-inspector__frame {
-    position: relative;
-    display: inline-block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
     height: 100%;
+    display: block;
     transition: box-shadow 220ms ease;
   }
   .book-inspector__img {
@@ -843,25 +845,46 @@
   }
 
   /* ─── Distressed-image grid (section 07) ──────────────────────────
-     7 portrait images laid out 3 + 3 + 1: three per row in rows 1-2,
-     the final image centered on its own third row at the same width
-     as the other cells. */
+     7 portrait images laid out 3 + 3 + 1 on desktop, 2 + 2 + 2 + 1 on
+     mobile. Each cell uses the images' native 7:12 aspect so the full
+     image renders with no top/bottom crop. The solo 7th image sits
+     centered on its own last row at both breakpoints. */
   .distress-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: clamp(0.75rem, 1.5vw, 1.25rem);
   }
+  .distress-grid .media {
+    aspect-ratio: 7 / 12;      /* match image aspect — no cropping */
+  }
   .distress-grid__lone {
-    grid-column: 2 / 3;    /* centered single cell in the last row */
+    grid-column: 2 / 3;        /* centered single cell in the last row */
   }
   @media (max-width: 900px) {
-    /* Mobile: 2 cells per row. The lone 7th image wraps naturally
-       into row 4 column 1 (no explicit placement needed). */
     .distress-grid { grid-template-columns: repeat(2, 1fr); }
-    .distress-grid__lone { grid-column: auto; }
+    /* Mobile: the 7th image spans both columns and centers at half
+       width so it still reads as a lone centered page. */
+    .distress-grid__lone {
+      grid-column: 1 / -1;
+      width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
+      justify-self: center;
+    }
   }
 
-  /* ─── Applications posters + mockup (section 05) ──────────────── */
+  /* ─── Applications posters + mockup (section 05) ────────────────
+     Three posters in a row share the .section-media__posters grid.
+     On mobile that collapses to 2 cols, which leaves the 3rd poster
+     alone in row 2 — this rule centers it so it doesn't read as
+     left-aligned. Scoped to the applications-posters wrapper so other
+     pages' poster grids keep their default behaviour. */
+  .applications-posters > :nth-child(3):last-child { }
+  @media (max-width: 900px) {
+    .applications-posters > :nth-child(3):last-child {
+      grid-column: 1 / -1;
+      width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
+      justify-self: center;
+    }
+  }
   .trailer-walkthrough { background: #000; }
   .trailer-walkthrough__video { object-fit: cover; background: #000; }
   .app-poster-mockup .media__img { object-fit: cover; }
@@ -1554,7 +1577,7 @@
       </figure>
 
       <!-- Three Living Traces posters in a row. -->
-      <div class="section-media__posters">
+      <div class="section-media__posters applications-posters">
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-01.jpg" alt="Ecclesiastes poster — The Book of Ecclesiastes, 07.27.27" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-02.jpg" alt="Ecclesiastes poster — There is nothing new under the sun" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-03.jpg" alt="Ecclesiastes poster — Ecclesiastes 07.27.27" /></figure>
@@ -1875,6 +1898,12 @@
         return;
       }
 
+      // Mobile: skip the letters↔numbers cycle. Start showing the
+      // numbers, then run the decipher ONCE to reveal "ECCLESIASTES"
+      // and stop — avoids the width shift that happens when the two
+      // modes swap widths.
+      var isMobile = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+
       var currentMode = null;
       var tickTimer = null;
       var holdTimer = null;
@@ -1916,11 +1945,24 @@
         });
       }
 
-      // Initial reveal — scramble resolves into the letters.
-      decipher(LETTERS, LETTER_POOL, 'letters', function () {
-        currentMode = 'letters';
-        holdTimer = setTimeout(cycle, HOLD_MS);
-      });
+      if (isMobile) {
+        // Mobile: paint the final LETTERS mode's width first (separators
+        // hidden) so nothing shifts when we swap. Run the decipher ONCE
+        // scrambling with number glyphs and resolving to "ECCLESIASTES".
+        // Then stop — no letters↔numbers cycle on mobile.
+        setSepsVisible(false);
+        decipher(LETTERS, NUMBER_POOL, 'letters', function () {
+          currentMode = 'letters';
+          // no cycle on mobile
+        });
+      } else {
+        // Desktop: original behaviour — reveal letters, then alternate
+        // every 7s with the numbers mode.
+        decipher(LETTERS, LETTER_POOL, 'letters', function () {
+          currentMode = 'letters';
+          holdTimer = setTimeout(cycle, HOLD_MS);
+        });
+      }
     })();
 
     /* Book grid (section 04) — on hover, paint the hovered page into
