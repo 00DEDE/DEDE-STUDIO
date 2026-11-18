@@ -1,0 +1,627 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CASE-STUDY LAYOUT SYSTEM
+   ─────────────────────────────────────────────────────────────────
+   Shared visual framework for every case-study page on the site.
+   The UNESCO page (/unesco/) is the reference implementation — any
+   new case study (e.g. /ecclesiastes/, /san-diego-fc/) just needs:
+
+     <link rel="stylesheet" href="/case-study.css">
+     <script src="/case-study.js" defer></script>
+     <body class="case">
+
+   …and the same HTML structure as UNESCO. All the layout, typography,
+   section rhythm, read-more pattern, media cells and pager are
+   inherited automatically. Page-specific content (unique sections,
+   images, orchestrated slideshows) still lives in that page's own
+   inline <style>/<script>.
+
+   Selector aliasing: historic `.unesco__*` class names and their
+   generic `.case__*` equivalents BOTH match the same rules so the
+   UNESCO page keeps rendering byte-for-byte while new pages can use
+   the clean `.case__*` names.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Page layout tokens ───────────────────────────────────────────
+   Every horizontal edge derives from --page-x; every vertical
+   section beat from --stack-y. --stack-top is the extra clearance
+   the first block needs below the fixed header. --prose-max caps
+   body copy at a ~65-char editorial measure. */
+.case,
+body.unesco {
+  --page-x:        clamp(10px, 1.25vw, 20px);
+  --stack-top:     clamp(1.75rem, 4vh, 3rem);
+  --stack-y:       clamp(2.25rem, 4.5vh, 3.5rem);
+  --stack-y-tight: clamp(1.5rem, 3vh, 2.25rem);
+  --prose-max:     48rem;
+}
+
+/* ─── Widow / orphan control (page-wide) ──────────────────────────
+   text-wrap: pretty reflows the last few lines so a single short
+   word never gets stranded. Headlines + statements use 'balance' so
+   line lengths even out across every line. */
+.case,
+.case p, .case dd, .case dt, .case li, .case figcaption, .case span,
+body.unesco,
+body.unesco p, body.unesco dd, body.unesco dt, body.unesco li,
+body.unesco figcaption, body.unesco span {
+  text-wrap: pretty;
+}
+.case .intro__title,
+.case .intro__lead,
+.case .statement,
+.case .statement--closing,
+.case .pager__title,
+.case .section-label,
+body.unesco .intro__title,
+body.unesco .intro__lead,
+body.unesco .statement,
+body.unesco .statement--closing,
+body.unesco .pager__title,
+body.unesco .section-label {
+  text-wrap: balance;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   INTRO — case-study anchor. Eyebrow + massive title + lead.
+   ═══════════════════════════════════════════════════════════════════ */
+.case__intro,
+.unesco__intro {
+  padding: var(--stack-top) var(--page-x) var(--stack-y);
+  box-sizing: border-box;
+}
+.case__intro .intro__title,
+.unesco__intro .intro__title { margin-bottom: 0; }
+
+.intro__eyebrow {
+  display: block;
+  margin: 0 0 clamp(1.25rem, 2.5vh, 2rem);
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(var(--fg-rgb), 0.55);
+}
+.intro__title {
+  margin: 0 0 clamp(1.5rem, 3vh, 2.5rem);
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.75rem, 6.5vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--fg);
+  text-transform: none;
+}
+.intro__lead {
+  margin: 0;
+  max-width: 30em;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  text-wrap: pretty;
+}
+.intro__lead em { font-weight: 400; color: var(--accent); }
+
+/* Metadata capsule — Client / Year / Role / Sector. */
+.intro__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+  margin: clamp(3rem, 5vh, 4.5rem) 0 0;
+  padding: clamp(1.25rem, 2vh, 1.75rem) 0 0;
+  border-top: 1px solid var(--line);
+}
+.intro__meta > div { margin: 0; }
+.intro__meta dt {
+  margin: 0 0 0.5rem;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.68rem, 0.8vw, 0.74rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(var(--fg-rgb), 0.55);
+}
+.intro__meta dd {
+  margin: 0;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3-COLUMN GRID SKELETON — every section lives on this rhythm.
+   g-span-1/2/3 utilities span 1/2/3 columns; g-col-2/3 shift the
+   starting column so rows can break deliberately.
+   ═══════════════════════════════════════════════════════════════════ */
+.case__grid,
+.unesco__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--stack-y-tight) calc(var(--page-x) * 2);
+  padding: var(--stack-y) var(--page-x);
+  box-sizing: border-box;
+  align-items: start;
+}
+.g-span-1 { grid-column: span 1; }
+.g-span-2 { grid-column: span 2; }
+.g-span-3 { grid-column: span 3; }
+.g-col-2  { grid-column-start: 2; }
+.g-col-3  { grid-column-start: 3; }
+
+@media (max-width: 900px) {
+  .case__grid,
+  .unesco__grid {
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 2rem);
+  }
+  .g-span-1, .g-span-2, .g-span-3 { grid-column: 1 / -1; }
+  .g-col-2, .g-col-3 { grid-column-start: 1; }
+}
+
+/* ─── Section split: text left (col 1), media right (cols 2-3) ─── */
+.section-text {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.9rem, 2vh, 1.5rem);
+}
+.section-text > .read-more { margin-top: 0; }
+.section-media {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vh, 2.5rem);
+  min-width: 0;
+}
+.section-media > * { width: 100%; }
+
+/* 3-cell row (used for triptychs inside a section-media column). */
+.section-media__triptych {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+.section-media__triptych--pair {
+  grid-template-columns: repeat(2, 1fr);
+}
+/* 3-col, 2-row poster grid. */
+.section-media__posters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+@media (max-width: 900px) {
+  .section-media__triptych { grid-template-columns: 1fr; }
+  .section-media__triptych--pair { grid-template-columns: 1fr; }
+  .section-media__posters { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ─── Section label (numbered eyebrow) ──────────────────────────── */
+.section-label {
+  margin: 0;
+  padding-top: 0.55em;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(var(--fg-rgb), 0.55);
+}
+.section-label__num { color: var(--accent); margin-right: 1.4em; }
+
+/* Hairline separator between numbered sections inside the main grid.
+   Spans the full 3-col width. */
+.case__section-rule,
+.unesco__section-rule {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 0;
+  padding: 0;
+  margin: clamp(1rem, 2vh, 1.75rem) 0 clamp(0.5rem, 1vh, 0.9rem);
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* ─── Statement (editorial display) ─────────────────────────────── */
+.statement {
+  margin: 0;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.4rem, 2.4vw, 2.3rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--fg);
+  text-wrap: pretty;
+}
+.statement em { font-weight: 400; color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   READ-MORE — expandable panel driven by case-study.js. Toggles
+   aria-expanded on the button + .is-open on the panel.
+   ═══════════════════════════════════════════════════════════════════ */
+.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: clamp(1.25rem, 2.5vh, 2rem);
+  padding: 0.4rem 0;
+  background: none;
+  border: none;
+  color: rgba(var(--fg-rgb), 0.65);
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: var(--cursor-url) 12 12, pointer;
+  transition: color 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.read-more__line {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 380ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Subtle pulse incentive — pauses on hover/focus/open. */
+  animation: read-more-line-pulse 2.6s ease-in-out infinite;
+}
+.read-more:hover,
+.read-more:focus-visible,
+.read-more[aria-expanded="true"] {
+  color: var(--accent);
+  outline: none;
+}
+.read-more:hover .read-more__line,
+.read-more:focus-visible .read-more__line,
+.read-more[aria-expanded="true"] .read-more__line {
+  width: 2.75rem;
+  animation: none;
+}
+@keyframes read-more-line-pulse {
+  0%, 100% { opacity: 1;   }
+  50%      { opacity: 0.4; }
+}
+
+/* Expandable panel — grid-rows 0fr → 1fr trick. visibility flips
+   immediately on open, and after the full collapse duration on
+   close, so iOS Safari never leaves a ghost line of copy. */
+.read-more__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity            400ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin-top         400ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility         0s    700ms;
+}
+.read-more__panel > .read-more__inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.read-more__panel.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: clamp(1.5rem, 2.5vh, 2rem);
+  visibility: visible;
+  transition:
+    grid-template-rows 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity            400ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin-top         400ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility         0s    0s;
+}
+.read-more__inner p {
+  margin: 0 0 1.1em;
+  max-width: var(--prose-max);
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.86rem, 0.98vw, 0.95rem);
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+  color: rgba(var(--fg-rgb), 0.78);
+}
+.read-more__inner p:last-child { margin-bottom: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .read-more__line { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MEDIA CELLS — base + aspect-ratio variants. Children positioned
+   absolute so .media__img / .media__video fill the cell and crop.
+   ═══════════════════════════════════════════════════════════════════ */
+.media {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+.media--wide     { aspect-ratio: 16 / 9; }
+.media--cinema   { aspect-ratio: 21 / 9; }
+.media--square   { aspect-ratio: 1 / 1; }
+.media--portrait { aspect-ratio: 3 / 4; }
+.media--poster   { aspect-ratio: 2 / 3; }
+
+.media__img,
+.media__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+/* Full-width singular media capped at 75vh * 16/9 so the piece stays
+   in one viewport and centers in its span when the cap kicks in. */
+.case__grid > .media--wide,
+.unesco__grid > .media--wide,
+.unesco__foundations > .media--wide {
+  width: min(100%, calc(75vh * 16 / 9));
+  justify-self: center;
+  margin-inline: auto;
+}
+
+/* ─── Media pair — two side-by-side cells in a g-span-3 row. */
+.media-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.85rem, 1.75vh, 1.4rem) calc(var(--page-x) * 2);
+  width: 80%;
+  justify-self: center;
+  margin-inline: auto;
+}
+@media (max-width: 900px) {
+  .media-pair {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}
+
+/* ─── Before / After pair — two equal half-width cells side by side.
+   Each cell stacks a label above a media square. */
+.foundations-ba {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.85rem, 1.75vh, 1.4rem) calc(var(--page-x) * 2);
+}
+.foundations-ba__col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 1.5vh, 1.2rem);
+}
+.foundations-ba__label { padding-top: 0; }
+@media (max-width: 900px) {
+  .foundations-ba { grid-template-columns: 1fr; }
+}
+
+/* ─── Media tab (Waabi pattern) — corner pill shows an index number
+   that expands to a contextual note on click. */
+.media-tab {
+  position: absolute;
+  top: clamp(0.75rem, 1vw, 1rem);
+  right: clamp(0.75rem, 1vw, 1rem);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  height: clamp(2rem, 2.4vw, 2.4rem);
+  max-width: clamp(2rem, 2.4vw, 2.4rem);
+  padding: 0;
+  background: rgba(15, 14, 12, 0.6);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.4;
+  text-align: left;
+  overflow: hidden;
+  cursor: var(--cursor-url) 12 12, pointer;
+  transition:
+    max-width    460ms cubic-bezier(0.16, 1, 0.3, 1),
+    background   240ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.media-tab__num {
+  flex-shrink: 0;
+  width: clamp(2rem, 2.4vw, 2.4rem);
+  height: clamp(2rem, 2.4vw, 2.4rem);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.media-tab__panel {
+  padding: 0 1.1rem 0 0.4rem;
+  max-width: 20rem;
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  opacity: 0;
+  white-space: normal;
+  transition: opacity 340ms 90ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.media-tab[aria-expanded="true"] {
+  max-width: 24rem;
+  background: rgba(15, 14, 12, 0.82);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+.media-tab[aria-expanded="true"] .media-tab__panel { opacity: 1; }
+.media-tab:hover,
+.media-tab:focus-visible {
+  background: rgba(15, 14, 12, 0.78);
+  outline: none;
+}
+
+/* ─── Caption below or beside media ───────────────────────────────── */
+.caption {
+  margin: 0;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.85rem, 1.05vw, 1rem);
+  line-height: 1.5;
+  color: rgba(var(--fg-rgb), 0.72);
+}
+.caption__label {
+  display: block;
+  margin: 0 0 0.5rem;
+  font-weight: 400;
+  font-size: clamp(0.66rem, 0.78vw, 0.72rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(var(--fg-rgb), 0.55);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CLOSING — deliberate grid break, single big line on its own row
+   with generous space above and below. Followed by an optional full-
+   bleed hero image that closes the case before the pager.
+   ═══════════════════════════════════════════════════════════════════ */
+.case__closing,
+.unesco__closing {
+  padding: var(--stack-y) var(--page-x) calc(var(--stack-y) * 1.25);
+}
+.statement--closing {
+  font-size: clamp(2.25rem, 5vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  max-width: 22em;
+}
+
+.case__closing-image,
+.unesco__closing-image {
+  width: 100vw;
+  margin: clamp(2rem, 4vh, 3.5rem) calc(50% - 50vw) 0;
+  padding: 0;
+  display: block;
+  overflow: hidden;
+  background: #000;
+}
+.case__closing-image img,
+.unesco__closing-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PREV / NEXT PAGER
+   ═══════════════════════════════════════════════════════════════════ */
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  padding: var(--stack-y) var(--page-x);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.pager__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: var(--fg);
+  transition: color 360ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pager__link--next {
+  align-items: flex-end;
+  text-align: right;
+}
+.pager__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  transition: opacity 360ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pager__arrow {
+  display: inline-block;
+  width: 1.1rem;
+  text-align: center;
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pager__link--prev:hover .pager__arrow { transform: translateX(-0.4rem); }
+.pager__link--next:hover .pager__arrow { transform: translateX(0.4rem); }
+.pager__title {
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4vw, 3.75rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.pager__sub {
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: rgba(var(--fg-rgb), 0.55);
+  margin-top: 0.35rem;
+}
+.pager__link:hover,
+.pager__link:focus-visible { color: var(--accent); outline: none; }
+.pager__link:hover .pager__label,
+.pager__link:focus-visible .pager__label { opacity: 1; color: var(--accent); }
+
+@media (max-width: 640px) {
+  .pager {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .pager__link--next { align-items: flex-start; text-align: left; }
+  .pager__link--next:hover .pager__arrow { transform: translateX(0.25rem); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SCROLL CUE — small bouncing arrow + "SCROLL" fixed near the
+   bottom of the first viewport. case-study.js fades it out once the
+   page has scrolled past the hero.
+   ═══════════════════════════════════════════════════════════════════ */
+.scroll-cue {
+  position: fixed;
+  bottom: clamp(1rem, 3vh, 2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(var(--fg-rgb), 0.6);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: scroll-cue-bounce 2.4s ease-in-out infinite;
+}
+.scroll-cue.is-hidden { opacity: 0; }
+.scroll-cue__arrow { font-size: 1rem; letter-spacing: 0; }
+@keyframes scroll-cue-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0);      }
+  50%      { transform: translateX(-50%) translateY(0.4rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue { animation: none; }
+}

@@ -185,3 +185,18 @@ html { background: var(--bg); }
 [data-theme="light"] img[src*="_cyan" i]:not(.theme-img) {
   filter: hue-rotate(180deg);
 }
+
+/* ─── Shared base + cross-document View Transitions ────────────────
+   Site-wide defaults that every page needs. Extracted from the
+   inline <style> blocks of /home/ and /unesco/ so both pages pick
+   them up from one place (loaded via <link rel="stylesheet"
+   href="/theme.css">). Page-specific overrides stay inline. The
+   baseline `html { background: var(--bg); }` rule is above. */
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 380ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { background: transparent; }
+a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }

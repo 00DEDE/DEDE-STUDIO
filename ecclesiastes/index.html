@@ -15,36 +15,27 @@
 <link rel="stylesheet" href="/site-footer.css" />
 <link rel="stylesheet" href="/site-bg.css" />
 <link rel="stylesheet" href="/site-mobile.css" />
+<link rel="stylesheet" href="/case-study.css" />
 <style>
-  /* Per-page cursor — matches mind (Ecclesiastes lives inside mind). */
+  /* Page-specific overrides + page-unique components only. All shared
+     layout, type, section rhythm, read-more pattern, media cells,
+     pager, closing block and scroll-cue live in /case-study.css. All
+     shared behaviors (media-tab + scroll-cue + read-more toggle)
+     live in /case-study.js. */
 
-  /* ─── Page layout tokens ─────────────────────────────────────────
-     Every horizontal edge derives from --page-x; every vertical
-     section beat from --stack-y. --stack-top is the extra clearance
-     the first block needs below the fixed header. */
-  :root {
-    --page-x:    clamp(10px, 1.25vw, 20px);
-    --stack-top: clamp(2.6rem, 6.4vh, 4.4rem);
-    --stack-y:   clamp(4rem, 8vh, 6rem);
-    --stack-y-tight: clamp(2.5rem, 5vh, 3.5rem);
-  }
-
-  /* ─── Cross-document View Transitions ──────────────────────────────
-     Browser holds the outgoing page until this one is ready, then
-     morphs the named element from source → destination. */
-  @view-transition { navigation: auto; }
-  .ecclesiastes__hero-media { view-transition-name: ecclesiastes-hero; }
+  /* ─── Cross-document View Transitions (page-specific) ─────────────
+     Named morph target for the /work/ → /ecclesiastes/ hero crossfade.
+     The home page's work grid declares the source element with the
+     same view-transition-name. */
+  .case__hero-media { view-transition-name: ecclesiastes-hero; }
   ::view-transition-group(ecclesiastes-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 380ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
 
-  html { background: var(--bg); }
+  /* html/body base — margin/padding reset, bg, and global cursor live
+     in theme.css; only the Ecclesiastes-specific font stack is set
+     here. */
   html, body {
     margin: 0;
     padding: 0;
@@ -55,395 +46,38 @@
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     cursor: var(--cursor-url) 12 12, auto;
   }
-  body { background: transparent; }
-  a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
 
-  /* ═══════════════════════════════════════════════════════════════════
-     INTRO — the case-study anchor. Eyebrow + massive title + tagline
-     lead + read-more + metadata capsule (Casa pattern). Sets scale
-     for the whole page.
-     ═══════════════════════════════════════════════════════════════════ */
-  .ecclesiastes__intro {
-    padding: var(--stack-top) var(--page-x) var(--stack-y);
-    box-sizing: border-box;
-  }
-  .intro__eyebrow {
-    display: block;
-    margin: 0 0 clamp(1.25rem, 2.5vh, 2rem);
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.68rem, 0.82vw, 0.78rem);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: rgba(var(--fg-rgb), 0.55);
-  }
-  .intro__title {
-    margin: 0 0 clamp(1.75rem, 3.5vh, 2.75rem);
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(4.5rem, 14vw, 14rem);
-    line-height: 0.86;
-    letter-spacing: -0.05em;
-    color: var(--fg);
-    text-transform: uppercase;
-  }
-  .intro__lead {
-    margin: 0;
-    max-width: 32em;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(1.25rem, 2.1vw, 1.85rem);
-    line-height: 1.22;
-    letter-spacing: -0.015em;
-    color: var(--fg);
-    text-wrap: pretty;
-  }
-  .intro__lead em {
-    font-weight: 400;
-    color: var(--accent);
-  }
-
-  /* Metadata capsule — Project / Year / Function / Category. */
-  .intro__meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: clamp(1.25rem, 2vw, 1.75rem);
-    margin: clamp(3rem, 5vh, 4.5rem) 0 0;
-    padding: clamp(1.25rem, 2vh, 1.75rem) 0 0;
+  /* Hairline rules between the major sections of this page. The hero
+     sits at the very top; the site-header draws its own hairline in
+     that spot, so a border-top there would double-rule. */
+  .case__grid,
+  .case__closing,
+  .pager,
+  body > .site-footer {
     border-top: 1px solid var(--line);
   }
-  .intro__meta > div { margin: 0; }
-  .intro__meta dt {
-    margin: 0 0 0.4rem;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.66rem, 0.78vw, 0.72rem);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(var(--fg-rgb), 0.55);
-  }
-  .intro__meta dd {
-    margin: 0;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.98rem, 1.2vw, 1.15rem);
-    letter-spacing: -0.01em;
-    color: var(--fg);
-  }
+  .case__hero.case__grid { border-top: 0; }
 
-  /* ═══════════════════════════════════════════════════════════════════
-     HERO — clean full-bleed image. Rounded container matches the
-     source cell so the view-transition morph lands clean.
-     ═══════════════════════════════════════════════════════════════════ */
-  .ecclesiastes__hero {
-    padding: 0 var(--page-x);
-    box-sizing: border-box;
-  }
-  .ecclesiastes__hero-media {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    border-radius: 0;
-    overflow: hidden;
-    background: #000;
-  }
-  /* Hero uses the project's motion trailer — autoplays muted + looped,
-     poster is cover.jpg so the still lands under the view-transition
-     morph before the first frame of video paints. Users can pause,
-     unmute, and enter fullscreen via the custom controls below. */
-  .ecclesiastes__hero-video {
+  .case__hero-image {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    background: #000;
-  }
-
-  /* ─── Video controls — three frosted pills in the media-tab vocabulary.
-     Sit in the bottom-right so they mirror the top-right info-tabs on
-     the body images. Icons swap via [data-state]. */
-  .video-controls {
-    position: absolute;
-    bottom: clamp(0.75rem, 1vw, 1rem);
-    right:  clamp(0.75rem, 1vw, 1rem);
-    z-index: 2;
-    display: inline-flex;
-    gap: 0.4rem;
-  }
-  .video-btn {
-    width:  clamp(2rem, 2.4vw, 2.4rem);
-    height: clamp(2rem, 2.4vw, 2.4rem);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    background: rgba(15, 14, 12, 0.6);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 999px;
-    cursor: var(--cursor-url) 12 12, pointer;
-    transition:
-      background   240ms cubic-bezier(0.4, 0, 0.2, 1),
-      border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
-      transform    240ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .video-btn:hover,
-  .video-btn:focus-visible {
-    background: rgba(15, 14, 12, 0.82);
-    border-color: rgba(255, 255, 255, 0.28);
-    outline: none;
-  }
-  .video-btn:active { transform: scale(0.94); }
-  .video-btn__icon {
-    width:  0.72rem;
-    height: 0.72rem;
-    display: block;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.75;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  /* Icon toggle — each button hides all its icons, then reveals the one
-     that matches its current [data-state]. Fullscreen has a single icon. */
-  .video-btn .video-btn__icon { display: none; }
-  .video-btn[data-action="play"][data-state="playing"] .icon-pause,
-  .video-btn[data-action="play"][data-state="paused"]  .icon-play,
-  .video-btn[data-action="mute"][data-state="muted"]   .icon-sound-off,
-  .video-btn[data-action="mute"][data-state="unmuted"] .icon-sound-on,
-  .video-btn[data-action="fullscreen"] .icon-fullscreen {
-    display: block;
+    background-image: url("/ASSETS/IMAGES/ECCLESIASTES/cover.jpg");
+    background-size: cover;
+    background-position: center;
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     3-COLUMN GRID SKELETON — same skeleton as every other case page.
+     FLOATING CAROUSEL — transparent PNG mockups scroll right→left on
+     their own; hover modulates speed and direction. Container clips
+     the moving track so slides can sit off-screen until they scroll
+     in. Full-bleed: negative margin pulls past the grid gutter.
      ═══════════════════════════════════════════════════════════════════ */
-  .ecclesiastes__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--stack-y-tight) calc(var(--page-x) * 2);
-    padding: var(--stack-y) var(--page-x);
-    box-sizing: border-box;
-    align-items: start;
-  }
-  .g-span-1 { grid-column: span 1; }
-  .g-span-2 { grid-column: span 2; }
-  .g-span-3 { grid-column: span 3; }
-  .g-col-2  { grid-column-start: 2; }
-  .g-col-3  { grid-column-start: 3; }
-
-  @media (max-width: 900px) {
-    .ecclesiastes__grid {
-      grid-template-columns: 1fr;
-      gap: clamp(1.5rem, 4vw, 2rem);
-    }
-    .g-span-1, .g-span-2, .g-span-3 { grid-column: 1 / -1; }
-    .g-col-2, .g-col-3 { grid-column-start: 1; }
-  }
-
-  /* ─── Section label (numbered eyebrow) ─────────────────────────── */
-  .section-label {
-    margin: 0;
-    padding-top: 0.55em;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.7rem, 0.85vw, 0.8rem);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(var(--fg-rgb), 0.55);
-  }
-  .section-label__num { color: var(--accent); margin-right: 0.9em; }
-
-  /* ─── Statement (display type) ─────────────────────────────────── */
-  .statement {
-    margin: 0;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(1.75rem, 3.6vw, 3.75rem);
-    line-height: 1.02;
-    letter-spacing: -0.025em;
-    color: var(--fg);
-    text-wrap: pretty;
-  }
-  .statement em {
-    font-weight: 400;
-    color: var(--accent);
-  }
-
-  /* ─── Read-more — text link with an animated horizontal rule. */
-  .read-more {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.85rem;
-    margin-top: clamp(1.25rem, 2.5vh, 2rem);
-    padding: 0.4rem 0;
-    background: none;
-    border: none;
-    color: rgba(var(--fg-rgb), 0.65);
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: var(--cursor-url) 12 12, pointer;
-    transition: color 320ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .read-more__line {
-    display: inline-block;
-    width: 1.5rem;
-    height: 1px;
-    background: currentColor;
-    transition: width 380ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .read-more:hover,
-  .read-more:focus-visible,
-  .read-more[aria-expanded="true"] {
-    color: var(--accent);
-    outline: none;
-  }
-  .read-more:hover .read-more__line,
-  .read-more:focus-visible .read-more__line,
-  .read-more[aria-expanded="true"] .read-more__line {
-    width: 2.75rem;
-  }
-
-  /* Expandable panel — grid-rows 0fr → 1fr trick, no max-height clip. */
-  .read-more__panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    opacity: 0;
-    margin-top: 0;
-    transition:
-      grid-template-rows 700ms cubic-bezier(0.16, 1, 0.3, 1),
-      opacity            400ms cubic-bezier(0.4, 0, 0.2, 1),
-      margin-top         400ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .read-more__panel > .read-more__inner {
-    min-height: 0;
-    overflow: hidden;
-  }
-  .read-more__panel.is-open {
-    grid-template-rows: 1fr;
-    opacity: 1;
-    margin-top: clamp(1.5rem, 2.5vh, 2rem);
-  }
-  .read-more__inner p {
-    margin: 0 0 1em;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
-    line-height: 1.55;
-    letter-spacing: -0.005em;
-    color: rgba(var(--fg-rgb), 0.78);
-    /* No max-width — let the essay fill the full container
-       (intro section = full viewport minus --page-x) so fewer
-       lines wrap. */
-  }
-  .read-more__inner p:last-child { margin-bottom: 0; }
-
-  /* ═══════════════════════════════════════════════════════════════════
-     MEDIA + NUMBERED INFO TAB (Waabi pattern).
-     ═══════════════════════════════════════════════════════════════════ */
-  .media {
-    position: relative;
-    display: block;
-    width: 100%;
-    margin: 0;
-    border-radius: 0;
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-  }
-  .media--wide     { aspect-ratio: 16 / 9; }
-  .media--cinema   { aspect-ratio: 21 / 9; }
-  .media--square   { aspect-ratio: 1 / 1; }
-  .media--portrait { aspect-ratio: 3 / 4; }
-  .media__img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .media-tab {
-    position: absolute;
-    top: clamp(0.75rem, 1vw, 1rem);
-    right: clamp(0.75rem, 1vw, 1rem);
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    height: clamp(2rem, 2.4vw, 2.4rem);
-    max-width: clamp(2rem, 2.4vw, 2.4rem);
-    padding: 0;
-    background: rgba(15, 14, 12, 0.6);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 999px;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    line-height: 1.4;
-    text-align: left;
-    overflow: hidden;
-    cursor: var(--cursor-url) 12 12, pointer;
-    transition:
-      max-width    460ms cubic-bezier(0.16, 1, 0.3, 1),
-      background   240ms cubic-bezier(0.4, 0, 0.2, 1),
-      border-color 240ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .media-tab__num {
-    flex-shrink: 0;
-    width: clamp(2rem, 2.4vw, 2.4rem);
-    height: clamp(2rem, 2.4vw, 2.4rem);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 400;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    font-variant-numeric: tabular-nums;
-  }
-  .media-tab__panel {
-    padding: 0 1.1rem 0 0.4rem;
-    max-width: 20rem;
-    font-weight: 400;
-    font-size: 0.72rem;
-    letter-spacing: 0.01em;
-    line-height: 1.4;
-    opacity: 0;
-    white-space: normal;
-    transition: opacity 340ms 90ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .media-tab[aria-expanded="true"] {
-    max-width: 24rem;
-    background: rgba(15, 14, 12, 0.82);
-    border-color: rgba(255, 255, 255, 0.28);
-  }
-  .media-tab[aria-expanded="true"] .media-tab__panel { opacity: 1; }
-  .media-tab:hover,
-  .media-tab:focus-visible {
-    background: rgba(15, 14, 12, 0.78);
-    outline: none;
-  }
-
-  /* ─── FLOATING CAROUSEL — transparent PNGs, marquee-style ─────────
-     Sits inside the grid but breaks it: full-width row (g-span-3),
-     no cell chrome. Slides marquee right→left on their own; hover
-     modulates speed + direction (JS handles the transform). The
-     container clips the moving track so slides can sit off-screen
-     until they scroll in. Height at 75vh — 50% larger than the
-     original 50vh scale as requested. */
   .floating-carousel {
     position: relative;
     height: 75vh;
     height: 75svh;
     margin: 0;
     overflow: hidden;
-    /* Bleed edge-to-edge on the viewport since g-span-3 respects the
-       grid's --page-x gutter. Negative margin pulls the container
-       past that gutter so the marquee reads as a full-viewport strip
-       with no seams at the edges. */
     margin-inline: calc(var(--page-x) * -1);
   }
   .floating-carousel__track {
@@ -452,64 +86,41 @@
     height: 100%;
     gap: clamp(2rem, 4vw, 4rem);
     padding: 0 clamp(2rem, 4vw, 4rem);
-    width: max-content;              /* let track expand to fit all slides */
-    transform: translate3d(0, 0, 0); /* seed for GPU compositing */
+    width: max-content;
+    transform: translate3d(0, 0, 0);
     will-change: transform;
   }
   .floating-carousel__slide {
     display: block;
     height: 100%;
     width: auto;
-    max-width: none;                 /* prevent flex from squeezing width */
+    max-width: none;
     object-fit: contain;
     flex-shrink: 0;
     user-select: none;
     -webkit-user-drag: none;
   }
-  /* Image 01 (the poster) is narrower than the book mockups; extra
-     inline margin equal to one full gap on each side effectively
-     doubles the breathing room around it, so it reads as an
-     intentional pause between mockups rather than a squeeze. Targets
-     both DOM instances (original + wrap-duplicate) via attribute. */
+  /* The poster slide is narrower than the mockups; extra inline
+     margin equal to one full gap on each side keeps it reading as an
+     intentional pause rather than a squeeze. */
   .floating-carousel__slide[src$="carousel-01.png"] {
     margin-inline: clamp(2rem, 4vw, 4rem);
   }
   @media (prefers-reduced-motion: reduce) {
-    /* No auto-scroll for users who prefer less motion; the JS bails
-       out too. Track stays put so the first few slides are visible. */
     .floating-carousel__track { transform: none; }
   }
-
-  /* ─── Mobile: title hyphen-break "Ecclesia-" / "stes" ────────────
-     The full-word span shows on desktop; the broken span shows on
-     mobile. Uses display:none swap so screen readers see whichever
-     is currently visible (they respect display:none). */
-  .intro__title-broken { display: none; }
-  @media (max-width: 640px) {
-    .intro__title-full   { display: none; }
-    .intro__title-broken { display: inline; }
-  }
-
-  /* ─── Mobile: carousel scaled 30% smaller + play/pause toggle ────
-     Marquee stays on but sits at 52.5vh (0.7 × 75vh); a pill button
-     below the carousel lets touch users pause/resume the sequence
-     (they have no cursor to hover-modulate the speed). */
   @media (max-width: 900px) {
     .floating-carousel {
       height: 52.5vh;
       height: 52.5svh;
     }
   }
-  /* Controls row wrapping the three pills. Handles show/hide (only
-     on touch devices) + positions the arrows at the screen edges
-     with the pause centered. Spacing: top margin reduced 15% from
-     the previous carousel→toggle gap; bottom margin equals one full
-     grid gap so the space to the image below is doubled (grid gap
-     + margin = 2 × gap). */
+
+  /* ─── Mobile carousel play / pause + prev / next (touch only) ──── */
   .carousel-controls {
-    display: none;                         /* desktop hides the whole row */
+    display: none;
     align-items: center;
-    justify-content: space-between;        /* arrows at edges, pause centered */
+    justify-content: space-between;
     padding: 0 var(--page-x);
     box-sizing: border-box;
     margin-top:    clamp(0.85rem, 2.125vh, 1.275rem);
@@ -518,10 +129,6 @@
   @media (hover: none) {
     .carousel-controls { display: flex; }
   }
-
-  /* Shared pill styling — pause toggle + prev/next arrows all share
-     the same visual vocabulary (glass pill, frosted, brand-accent
-     when active). */
   .carousel-toggle,
   .carousel-nav {
     display: flex;
@@ -537,7 +144,7 @@
     cursor: var(--cursor-url) 12 12, pointer;
     user-select: none;
     -webkit-user-select: none;
-    -webkit-touch-callout: none;           /* stop iOS long-press menu */
+    -webkit-touch-callout: none;
     transition:
       background   240ms cubic-bezier(0.4, 0, 0.2, 1),
       border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -545,9 +152,6 @@
   }
   .carousel-toggle:active,
   .carousel-nav:active { transform: scale(0.94); }
-
-  /* Nav arrow active state — brand accent while held (JS sets
-     data-active on touchstart/mousedown, clears on release). */
   .carousel-nav[data-active="true"] {
     background: var(--accent);
     color: var(--bg);
@@ -558,8 +162,6 @@
     height: 0.8rem;
     display: block;
   }
-
-  /* Pause/play icon swap — driven by [data-state] on the toggle. */
   .carousel-toggle__icon {
     width:  0.8rem;
     height: 0.8rem;
@@ -575,116 +177,38 @@
     display: block;
   }
 
-  /* ─── Caption below or beside media ──────────────────────────────── */
-  .caption {
-    margin: 0;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.85rem, 1.05vw, 1rem);
-    line-height: 1.5;
-    color: rgba(var(--fg-rgb), 0.72);
-  }
-  .caption__label {
-    display: block;
-    margin: 0 0 0.5rem;
-    font-weight: 400;
-    font-size: clamp(0.66rem, 0.78vw, 0.72rem);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(var(--fg-rgb), 0.55);
+  /* ─── Trailer walkthrough video (section 05) ───────────────────── */
+  .trailer-walkthrough { background: #000; }
+  .trailer-walkthrough__video {
+    object-fit: cover;
+    background: #000;
   }
 
-  /* ═══════════════════════════════════════════════════════════════════
-     CLOSING statement.
-     ═══════════════════════════════════════════════════════════════════ */
-  .ecclesiastes__closing {
-    padding: var(--stack-y) var(--page-x) calc(var(--stack-y) * 1.25);
+  /* ─── Tangible Forms slideshow (section 06) — same orchestration as
+     UNESCO's: two full-width landscape cells, stacked, each cycling
+     its own stack of mockup stills on a shared beat. */
+  .tangible-forms {
+    grid-template-columns: 1fr !important;
   }
-  .statement--closing {
-    font-size: clamp(2.25rem, 5vw, 5.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.03em;
-    max-width: 22em;
+  .tangible-forms__cell {
+    background: var(--bg);
   }
-
-  /* ═══════════════════════════════════════════════════════════════════
-     PREV / NEXT PAGER.
-     ═══════════════════════════════════════════════════════════════════ */
-  .pager {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 4vw, 4rem);
-    padding: var(--stack-y) 0;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    /* Sits inside the sitewide --content-max column (via the global
-       rule in theme.css) — same margin as header + content + footer. */
-    max-width: var(--content-max);
-    margin-inline: auto;
+  .tangible-forms__cell .media__tslide {
+    object-fit: contain;
+    background: var(--bg);
   }
-  .pager__link {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    text-decoration: none;
-    color: var(--fg);
-    transition: color 360ms cubic-bezier(0.4, 0, 0.2, 1);
+  .media__tslide {
+    opacity: 0;
+    transition: opacity 600ms ease-in-out;
+    will-change: opacity;
   }
-  .pager__link--next {
-    align-items: flex-end;
-    text-align: right;
-  }
-  .pager__label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0.55;
-    transition: opacity 360ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .pager__arrow {
-    display: inline-block;
-    width: 1.1rem;
-    text-align: center;
-    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .pager__link--prev:hover .pager__arrow { transform: translateX(-0.4rem); }
-  .pager__link--next:hover .pager__arrow { transform: translateX(0.4rem); }
-  .pager__title {
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(1.75rem, 4vw, 3.75rem);
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-  }
-  .pager__sub {
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.78rem;
-    letter-spacing: 0.02em;
-    color: rgba(var(--fg-rgb), 0.55);
-    margin-top: 0.35rem;
-  }
-  .pager__link:hover,
-  .pager__link:focus-visible { color: var(--accent); outline: none; }
-  .pager__link:hover .pager__label,
-  .pager__link:focus-visible .pager__label { opacity: 1; color: var(--accent); }
-
-  @media (max-width: 640px) {
-    .pager {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    .pager__link--next { align-items: flex-start; text-align: left; }
-    .pager__link--next:hover .pager__arrow { transform: translateX(0.25rem); }
+  .media__tslide.is-active { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .media__tslide { transition: none; }
   }
 </style>
 </head>
-<body class="ecclesiastes">
+<body class="case">
   <div class="site-bg" aria-hidden="true">
     <div class="site-bg__blob site-bg__blob--cyan-1"></div>
     <div class="site-bg__blob site-bg__blob--cyan-2"></div>
@@ -710,292 +234,244 @@
   </header>
   <script src="/site-header.js" defer></script>
   <script src="/site-bg.js" defer></script>
+  <script src="/case-study.js" defer></script>
 
-  <!-- ══════════════════════ INTRO ══════════════════════ -->
-  <section class="ecclesiastes__intro" aria-label="The Book of Ecclesiastes overview">
-    <span class="intro__eyebrow">Case Study · 002</span>
-    <h1 class="intro__title">
-      <!-- Desktop: two lines — "The Book of" / "Ecclesiastes".
-           Mobile: four lines — "The" / "Book of" / "Ecclesia-" / "stes".
-           CSS toggles which span shows per breakpoint. -->
-      <span class="intro__title-full">The Book of<br>Ecclesiastes</span><span class="intro__title-broken">The<br>Book of<br>Ecclesia-<br>stes</span>
-    </h1>
-    <p class="intro__lead">
-      A compositional design study — exploring how meaning
-      emerges from arrangement, and how <em>line, form, and space</em>
-      become the language of an idea.
-    </p>
-    <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
-      <span>Read more</span>
-      <span class="read-more__line" aria-hidden="true"></span>
-    </button>
-    <div class="read-more__panel" id="rm-overview">
-      <div class="read-more__inner">
-        <p>Ecclesiastes started as an editorial study — a personal investigation into how a single body of text can be re-composed sixteen ways without changing a single word. The point was never the words themselves; it was the shape of attention they invite.</p>
-        <p>Each composition was set on the same underlying grid, then broken deliberately at different points — margin, leading, alignment, weight. What emerges is a catalog of how form directs the reader before the reader even begins to read.</p>
+  <div class="scroll-cue" aria-hidden="true">
+    <span class="scroll-cue__text">Scroll</span>
+    <span class="scroll-cue__arrow">↓</span>
+  </div>
+
+  <!-- ══════════════════════ HERO ══════════════════════ -->
+  <section class="case__hero case__grid" aria-label="Ecclesiastes cover">
+    <div class="g-span-1 case__hero-title">
+      <span class="intro__eyebrow">Case Study 02</span>
+      <h1 class="intro__title">Ecclesiastes</h1>
+    </div>
+    <div class="case__hero-media g-span-2">
+      <div class="case__hero-image" role="img" aria-label="Ecclesiastes project cover"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ 01 · OVERVIEW ══════════════════════ -->
+  <section class="case__overview case__grid" aria-label="Overview">
+    <p class="section-label g-span-1"><span class="section-label__num">01</span>Overview</p>
+    <div class="g-span-2">
+      <p class="statement">
+        TODO: write the lead statement for the Ecclesiastes project.
+        <em>Short editorial line</em>, one or two sentences.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-overview">
+        <div class="read-more__inner">
+          <p>TODO: expanded overview copy. Two or three paragraphs explaining the project brief, why it matters, and what the viewer is about to see across the rest of the page.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ 02 · MOTION (interaction video) ══════════════════════ -->
+  <section class="case__grid" aria-label="Motion">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">02</span>Motion</p>
+      <p class="statement">
+        TODO: statement about the motion piece.
+        <em>One accented phrase</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-motion">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-motion">
+        <div class="read-more__inner">
+          <p>TODO: describe the motion treatment. What it does, how it reads, why it exists.</p>
+        </div>
       </div>
     </div>
 
-    <dl class="intro__meta">
-      <div><dt>Project</dt><dd>The Book of Ecclesiastes</dd></div>
-      <div><dt>Year</dt><dd>2026</dd></div>
-      <div><dt>Function</dt><dd>Compositional Design</dd></div>
-      <div><dt>Category</dt><dd>Editorial Heirloom</dd></div>
-    </dl>
+    <div class="g-span-2 section-media">
+      <figure class="media media--wide">
+        <video class="media__video"
+               autoplay muted loop playsinline preload="metadata"
+               disablepictureinpicture disableremoteplayback
+               poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
+               aria-label="Ecclesiastes motion piece">
+          <source src="/ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </div>
   </section>
 
-  <!-- ══════════════════════ HERO ══════════════════════ -->
-  <section class="ecclesiastes__hero" aria-label="The Book of Ecclesiastes cover">
-    <div class="ecclesiastes__hero-media">
-      <video class="ecclesiastes__hero-video"
-             id="hero-video"
-             autoplay muted loop playsinline preload="auto"
-             poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
-             aria-label="The Book of Ecclesiastes — motion trailer">
-        <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
-      </video>
-
-      <!-- Custom controls — three frosted pills in the media-tab style.
-           Icons toggle via [data-state] on the button (see CSS). -->
-      <div class="video-controls" role="group" aria-label="Video controls">
-        <button class="video-btn" type="button" data-action="play" data-state="playing" aria-label="Pause video">
-          <svg class="video-btn__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
-          </svg>
-          <svg class="video-btn__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
-            <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
-            <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
-          </svg>
-        </button>
-        <button class="video-btn" type="button" data-action="mute" data-state="muted" aria-label="Unmute video">
-          <svg class="video-btn__icon icon-sound-off" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M2.5 6 L2.5 10 L5 10 L8 12.5 L8 3.5 L5 6 Z" fill="currentColor" stroke="none"/>
-            <line x1="10.5" y1="6" x2="13.5" y2="10"/>
-            <line x1="13.5" y1="6" x2="10.5" y2="10"/>
-          </svg>
-          <svg class="video-btn__icon icon-sound-on" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M2.5 6 L2.5 10 L5 10 L8 12.5 L8 3.5 L5 6 Z" fill="currentColor" stroke="none"/>
-            <path d="M10.5 5.5 Q12.5 8 10.5 10.5"/>
-            <path d="M12 3.5 Q15 8 12 12.5"/>
-          </svg>
-        </button>
-        <button class="video-btn" type="button" data-action="fullscreen" aria-label="Enter fullscreen">
-          <svg class="video-btn__icon icon-fullscreen" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M3 6 L3 3 L6 3"/>
-            <path d="M13 6 L13 3 L10 3"/>
-            <path d="M3 10 L3 13 L6 13"/>
-            <path d="M13 10 L13 13 L10 13"/>
-          </svg>
-        </button>
+  <!-- ══════════════════════ FLOATING CAROUSEL ══════════════════════
+       Signature ecclesiastes component — transparent mockup PNGs
+       marquee across the full viewport. JS below drives the track;
+       mobile gets play/pause + prev/next pill controls. -->
+  <section class="ecclesiastes__carousel" aria-label="Project artefacts">
+    <div class="floating-carousel" id="floating-carousel">
+      <div class="floating-carousel__track" id="floating-carousel-track">
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-07.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-14.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-15.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-16.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-19.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-20.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-21.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-24.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-25.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-29.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-31.png" alt="" />
       </div>
+    </div>
+    <div class="carousel-controls" aria-hidden="true">
+      <button class="carousel-nav" type="button" id="carousel-prev" aria-label="Previous slide">
+        <svg class="carousel-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button class="carousel-toggle" type="button" id="carousel-toggle" data-state="playing" aria-label="Pause carousel">
+        <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+        <svg class="carousel-toggle__icon icon-play"  viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg>
+      </button>
+      <button class="carousel-nav" type="button" id="carousel-next" aria-label="Next slide">
+        <svg class="carousel-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
   </section>
 
   <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════ -->
-  <section class="ecclesiastes__grid" aria-label="Case study">
+  <section class="case__grid" aria-label="Case study">
 
-    <!-- ─── 01 · Foundations ─────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">01</span>Foundations</p>
-    <div class="g-span-2">
+    <!-- ─── 03 · Typography (mockup pair) ─────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">03</span>Typography</p>
       <p class="statement">
-        The page speaks first through what it chooses
-        <em>not to say</em>.
+        TODO: statement about the typographic system.
+        <em>Short accented phrase</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-foundations">
+      <div class="read-more__panel" id="rm-typography">
         <div class="read-more__inner">
-          <p>The underlying grid was set at a five-column module with a single wide alley. Every composition inherits it. The variation comes from what each spread refuses to fill — negative space as an active material.</p>
+          <p>TODO: describe the type choices, the hierarchy, the voice.</p>
         </div>
       </div>
     </div>
 
-    <!-- Floating carousel — sits ABOVE Media 01, breaks the grid on
-         purpose. Transparent PNGs marquee right→left on their own,
-         no cell chrome. Hover left half → reverses + speeds up;
-         hover right half → accelerates the natural direction. Slides
-         are duplicated so the wrap is seamless (when the first set
-         scrolls fully off, the duplicate is already in position). -->
-    <div class="floating-carousel g-span-3" aria-label="Ecclesiastes floating composition carousel">
-      <div class="floating-carousel__track">
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="Ecclesiastes floating composition 01" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="Ecclesiastes floating composition 02" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="Ecclesiastes floating composition 04" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="Ecclesiastes floating composition 05" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="Ecclesiastes floating composition 06" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-07.png" alt="Ecclesiastes floating composition 07" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="Ecclesiastes floating composition 08" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="Ecclesiastes floating composition 09" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="Ecclesiastes floating composition 10" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="Ecclesiastes floating composition 11" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="Ecclesiastes floating composition 12" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="Ecclesiastes floating composition 13" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-14.png" alt="Ecclesiastes floating composition 14" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-15.png" alt="Ecclesiastes floating composition 15" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-16.png" alt="Ecclesiastes floating composition 16" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-19.png" alt="Ecclesiastes floating composition 19" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-20.png" alt="Ecclesiastes floating composition 20" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-21.png" alt="Ecclesiastes floating composition 21" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-24.png" alt="Ecclesiastes floating composition 24" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-25.png" alt="Ecclesiastes floating composition 25" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-29.png" alt="Ecclesiastes floating composition 29" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-31.png" alt="Ecclesiastes floating composition 31" />
-        <!-- Duplicate set for seamless wrap — decorative only. -->
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-07.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-14.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-15.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-16.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-19.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-20.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-21.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-24.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-25.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-29.png" alt="" aria-hidden="true" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-31.png" alt="" aria-hidden="true" />
+    <div class="g-span-2 section-media">
+      <div class="media-pair">
+        <figure class="media" style="aspect-ratio: 3 / 4;">
+          <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-01.jpg" alt="Ecclesiastes typography specimen 01" />
+        </figure>
+        <figure class="media" style="aspect-ratio: 3 / 4;">
+          <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-02.jpg" alt="Ecclesiastes typography specimen 02" />
+        </figure>
       </div>
     </div>
 
-    <!-- Mobile-only carousel controls — three pills in a row.
-         • Left arrow (hold): reverses direction and speeds up, same
-           effect the desktop cursor gets when hovered on the far
-           left side of the carousel.
-         • Center pause/play: toggles the auto-marquee entirely.
-         • Right arrow (hold): accelerates the natural leftward
-           direction, same effect as far-right desktop hover.
-         Placed as a grid sibling of .floating-carousel (not inside,
-         which has overflow:hidden and would clip). Only visible on
-         touch devices via @media (hover: none). -->
-    <div class="carousel-controls g-span-3">
-      <button class="carousel-nav carousel-nav--prev" type="button" aria-label="Hold to rewind carousel">
-        <svg class="carousel-nav__icon" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M10 3 L4 8 L10 13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <button class="carousel-toggle" type="button" data-state="playing" aria-label="Pause carousel">
-        <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 16 16" aria-hidden="true">
-          <line x1="5.5" y1="3.5" x2="5.5" y2="12.5"/>
-          <line x1="10.5" y1="3.5" x2="10.5" y2="12.5"/>
-        </svg>
-        <svg class="carousel-toggle__icon icon-play" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M4 3 L13 8 L4 13 Z" fill="currentColor" stroke="none"/>
-        </svg>
-      </button>
-      <button class="carousel-nav carousel-nav--next" type="button" aria-label="Hold to advance carousel">
-        <svg class="carousel-nav__icon" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M6 3 L12 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Media 01 (wide, spans 2 cols) + caption in col 3 -->
-    <figure class="media media--wide g-span-2">
-      <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Ecclesiastes compositional study" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 01 detail">
-        <span class="media-tab__num" aria-hidden="true">01</span>
-        <span class="media-tab__panel">Composition study — text set to the base grid, alignment shifted one alley to the right.</span>
-      </button>
-    </figure>
-    <p class="caption g-span-1">
-      <span class="caption__label">Image 01</span>
-      One shift in alignment, sixteen possible readings.
-    </p>
-
-    <!-- ─── 02 · Rhythm ──────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">02</span>Rhythm</p>
-    <div class="g-span-2">
+    <hr class="case__section-rule" aria-hidden="true" />
+    <!-- ─── 04 · Applications (3-poster row + trailer walkthrough) ── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">04</span>Applications</p>
       <p class="statement">
-        Pauses matter as much as marks —
-        <em>silence carries the meter</em>.
+        TODO: statement about how the system applies to printed matter.
+        <em>Accented phrase</em>.
       </p>
-    </div>
-
-    <!-- Media 02 spans full width for impact -->
-    <figure class="media media--cinema g-span-3">
-      <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg" alt="Ecclesiastes rhythm study" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 02 detail">
-        <span class="media-tab__num" aria-hidden="true">02</span>
-        <span class="media-tab__panel">Wide spread — the eye moves from left column to right through a single line of white space.</span>
-      </button>
-    </figure>
-
-    <!-- ─── 03 · Voice ───────────────────────────────────────────── -->
-    <p class="section-label g-span-1"><span class="section-label__num">03</span>Voice</p>
-    <div class="g-span-2">
-      <p class="statement">
-        Every mark placed with intent — nothing
-        <em>decorative, everything felt</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-voice">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-voice">
+      <div class="read-more__panel" id="rm-applications">
         <div class="read-more__inner">
-          <p>Type weight moves in a three-step ladder: light for context, medium for statement, bold only for the phrase the composition wants to underline. No weight is used ornamentally. The reader learns the system in two spreads and reads freely from the third onward.</p>
-          <p>The motion study extends the same discipline into time — the phrase enters, holds, and lifts, on a beat set by the composition itself.</p>
+          <p>TODO: describe the printed applications — the posters, their series, their intent.</p>
         </div>
       </div>
     </div>
 
-    <!-- ─── 04 · Applications (three-image row) ──────────────────── -->
-    <p class="section-label g-span-3"><span class="section-label__num">04</span>Applications</p>
+    <div class="g-span-2 section-media">
+      <!-- 3-across poster row. Stacks to 2-up on mobile. -->
+      <div class="section-media__posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-01.jpg" alt="Ecclesiastes poster 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-02.jpg" alt="Ecclesiastes poster 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-03.jpg" alt="Ecclesiastes poster 03" /></figure>
+      </div>
 
-    <figure class="media media--square g-span-1">
-      <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-02.jpg" alt="Ecclesiastes detail 03" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 03 detail">
-        <span class="media-tab__num" aria-hidden="true">03</span>
-        <span class="media-tab__panel">Poster application — the composition sized to a single reading distance.</span>
+      <!-- Trailer walkthrough — native play / pause / scrub controls. -->
+      <figure class="media media--wide trailer-walkthrough">
+        <video class="media__video trailer-walkthrough__video"
+               controls preload="metadata" playsinline webkit-playsinline
+               disablepictureinpicture disableremoteplayback
+               poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
+               aria-label="Ecclesiastes trailer">
+          <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </div>
+
+    <hr class="case__section-rule" aria-hidden="true" />
+    <!-- ─── 05 · Tangible Forms (2 stacked mockup slideshows) ─────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">05</span>Tangible Forms</p>
+      <p class="statement">
+        TODO: statement about the physical object.
+        <em>Accented phrase</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-tangible">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
       </button>
-    </figure>
-    <figure class="media media--square g-span-1">
-      <img class="media__img" style="transform: scale(1.3);" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-03.jpg" alt="Ecclesiastes detail 04" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 04 detail">
-        <span class="media-tab__num" aria-hidden="true">04</span>
-        <span class="media-tab__panel">Cover treatment — the base grid pulled to the tightest register the type will hold.</span>
-      </button>
-    </figure>
-    <figure class="media media--square g-span-1">
-      <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-01.jpg" alt="Ecclesiastes detail 05" />
-      <button class="media-tab" type="button" aria-expanded="false" aria-label="Show image 05 detail">
-        <span class="media-tab__num" aria-hidden="true">05</span>
-        <span class="media-tab__panel">Motion still — same phrase, held for a beat, timed to the page's own meter.</span>
-      </button>
-    </figure>
+      <div class="read-more__panel" id="rm-tangible">
+        <div class="read-more__inner">
+          <p>TODO: talk about holding the book, the paper, the binding — whatever matters about the physical object.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- Two full-width landscape cells, stacked; each cycles mockups
+           on a shared 5s beat. object-fit: contain so no edge cropping. -->
+      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-01.jpg" alt="Tangible form 01" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-02.jpg" alt="Tangible form 02" />
+        </figure>
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-03.jpg" alt="Tangible form 03" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Tangible form 04" />
+        </figure>
+      </div>
+    </div>
 
   </section>
 
-  <!-- ══════════════════════ CLOSING STATEMENT ══════════════════════ -->
-  <section class="ecclesiastes__closing" aria-label="Closing statement">
-    <p class="statement statement--closing">
-      A page that <em>knows how to be still</em>
-      says the most.
-    </p>
-  </section>
+  <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════ -->
+  <figure class="case__closing-image" aria-label="Ecclesiastes closing hero">
+    <img src="/ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Ecclesiastes closing poster" />
+  </figure>
 
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
   <nav class="pager" aria-label="Case navigation">
     <a class="pager__link pager__link--prev" href="/unesco/">
       <span class="pager__label"><span class="pager__arrow" aria-hidden="true">←</span> Previous</span>
       <span class="pager__title">UNESCO</span>
-      <span class="pager__sub">Case Study · 001</span>
+      <span class="pager__sub">Case Study · 01</span>
     </a>
     <a class="pager__link pager__link--next" href="/work/">
       <span class="pager__label">Next <span class="pager__arrow" aria-hidden="true">→</span></span>
-      <span class="pager__title">BLLCRW. Melange</span>
-      <span class="pager__sub">Case Study · 003</span>
+      <span class="pager__title">All Work</span>
+      <span class="pager__sub">Index</span>
     </a>
   </nav>
 
@@ -1020,232 +496,175 @@
 
   <script>
   /* ════════════════════════════════════════════════════════════════
-     Interaction — media tabs + read-more expansions. aria-expanded
-     is the source of truth so screen readers see the correct state.
+     Ecclesiastes-specific interactions. Shared case-study behaviors
+     (read-more toggle, media-tab, scroll-cue fade) live in
+     /case-study.js and run automatically on page load.
      ════════════════════════════════════════════════════════════════ */
   (function () {
     'use strict';
 
-    document.querySelectorAll('.media-tab').forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        var open = tab.getAttribute('aria-expanded') === 'true';
-        tab.setAttribute('aria-expanded', open ? 'false' : 'true');
-      });
-    });
-
-    document.querySelectorAll('.read-more').forEach(function (btn) {
-      var targetId = btn.getAttribute('aria-controls');
-      var panel = targetId ? document.getElementById(targetId) : null;
-      if (!panel) return;
-      var labelSpan = btn.querySelector('span:not(.read-more__line)');
-      btn.addEventListener('click', function () {
-        var open = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-        panel.classList.toggle('is-open', !open);
-        if (labelSpan) labelSpan.textContent = open ? 'Read more' : 'Read less';
-      });
-    });
-
-    /* ── Floating carousel marquee ─────────────────────────────────
-       Slides marquee right→left on their own. Cursor position inside
-       the carousel modulates speed + direction:
-         • cursor at center       → base speed (natural leftward drift)
-         • cursor toward the right → accelerates the natural direction
-         • cursor toward the left  → reverses direction and speeds up
-       Distance from center scales the magnitude linearly (-1 to +1).
-       Wrap is seamless: slides are duplicated in the DOM; when the
-       track has scrolled past one full set-width, x resets by that
-       width and the duplicate visually replaces the original mid-frame.
-       Respects prefers-reduced-motion + pauses when off-screen or the
-       tab is hidden (battery + CPU). */
-    (function () {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var carousel = document.querySelector('.floating-carousel');
-      var track    = carousel && carousel.querySelector('.floating-carousel__track');
-      if (!carousel || !track) return;
-
-      /* Mobile baseline is 20% faster than desktop — touch users see
-         the carousel briefly, so the sequence needs to advance a
-         little quicker to feel active. Both speeds bumped 10% from
-         their previous rates for a slightly more energetic drift. */
-      var IS_TOUCH     = window.matchMedia('(hover: none)').matches;
-      var BASE_SPEED   = IS_TOUCH ? -0.792 : -0.66; // px per frame at rest (leftward)
-      var HOVER_BOOST  = 4.2;    // multiplier at the far edges (+20% from 3.5)
-      var hoverInf     = 0;      // -1 (left edge) → 0 (center) → +1 (right edge)
-      var x            = 0;
-      var paused       = false;  // IO / visibility (auto)
-      var userPaused   = false;  // toggle button (mobile)
-      var halfWidth    = 0;
-
-      if (window.matchMedia('(hover: hover)').matches) {
-        carousel.addEventListener('mousemove', function (e) {
-          var rect = carousel.getBoundingClientRect();
-          var t = (e.clientX - rect.left) / rect.width;      // 0..1
-          hoverInf = Math.max(-1, Math.min(1, t * 2 - 1));
-        });
-        carousel.addEventListener('mouseleave', function () { hoverInf = 0; });
-      }
-
-      if ('IntersectionObserver' in window) {
-        new IntersectionObserver(function (entries) {
-          paused = !entries[0].isIntersecting;
-        }, { threshold: 0 }).observe(carousel);
-      }
-      document.addEventListener('visibilitychange', function () {
-        if (document.hidden) paused = true;
-        else if ('IntersectionObserver' in window) {
-          /* IO won't re-fire on tab return; poll bounds once here. */
-          var r = carousel.getBoundingClientRect();
-          paused = r.bottom < 0 || r.top > window.innerHeight;
-        } else paused = false;
+    /* ─── Floating carousel marquee ─────────────────────────────────
+       Transparent PNG slides scroll right→left on a continuous loop.
+       Hover modulates speed; vertical mouse wheel over the strip is
+       captured and scrubbed horizontally; mobile prev/next pills
+       nudge the track by a fixed step. The track duplicates its
+       content once in JS so the wrap is seamless. */
+    var carousel = document.getElementById('floating-carousel');
+    var track    = document.getElementById('floating-carousel-track');
+    if (carousel && track) {
+      // Clone every slide once so the duplicate takes over as the
+      // original scrolls past; wrap offset stays within half-width.
+      var slides = Array.prototype.slice.call(track.children);
+      slides.forEach(function (s) {
+        var c = s.cloneNode(true);
+        c.setAttribute('aria-hidden', 'true');
+        track.appendChild(c);
       });
 
-      function measure() {
-        /* Half the track width = one full set of slides (before the
-           duplicate). Recompute on load + resize because the track
-           expands to fit however many <img> children the page has. */
-        halfWidth = track.scrollWidth / 2;
-      }
+      var offset   = 0;
+      var speed    = 0.65;   // px per frame — gentle drift
+      var halfW    = 0;
+      var paused   = false;
+      var offscreen = false;
+      var wheelTO  = null;
+
+      function measure() { halfW = track.scrollWidth / 2; }
+      window.addEventListener('load', measure);
       window.addEventListener('resize', measure);
-
-      /* Mobile play/pause toggle — sets userPaused, updates its own
-         state attributes so the icon swap + aria-label match. */
-      var toggle = document.querySelector('.carousel-toggle');
-      if (toggle) {
-        toggle.addEventListener('click', function () {
-          userPaused = !userPaused;
-          toggle.setAttribute('data-state', userPaused ? 'paused' : 'playing');
-          toggle.setAttribute('aria-label',
-            userPaused ? 'Play carousel' : 'Pause carousel');
-        });
-      }
-
-      /* Hold-to-boost nav arrows — mirror the desktop hover-modulation.
-         Left button held = hoverInf -1 (reverses + speeds up). Right
-         button held = hoverInf +1 (accelerates the natural direction).
-         Release = back to base speed. Applied on both pointer and
-         touch events so it works everywhere. touchstart preventsDefault
-         to stop iOS turning the hold into a text-select / drag. */
-      function bindBoost(btn, direction) {
-        if (!btn) return;
-        function activate(e) {
-          e.preventDefault();
-          hoverInf = direction;
-          btn.setAttribute('data-active', 'true');
-        }
-        function release() {
-          hoverInf = 0;
-          btn.removeAttribute('data-active');
-        }
-        btn.addEventListener('mousedown',  activate);
-        btn.addEventListener('touchstart', activate, { passive: false });
-        ['mouseup', 'mouseleave', 'touchend', 'touchcancel', 'blur'].forEach(function (evt) {
-          btn.addEventListener(evt, release);
-        });
-      }
-      bindBoost(document.querySelector('.carousel-nav--prev'), -1);
-      bindBoost(document.querySelector('.carousel-nav--next'), +1);
+      // Re-measure when lazy-loaded PNGs finish decoding.
+      track.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) img.addEventListener('load', measure, { once: true });
+      });
+      measure();
 
       function tick() {
-        if (!paused && !userPaused && halfWidth > 0) {
-          /* Right hover → hoverInf > 0 → speed becomes more negative
-             (faster left). Left hover → hoverInf < 0 → speed flips
-             sign or slows toward positive (reverses direction). */
-          var speed = BASE_SPEED - hoverInf * HOVER_BOOST;
-          x += speed;
-          if (x <= -halfWidth) x += halfWidth;
-          else if (x > 0)      x -= halfWidth;
-          track.style.transform = 'translate3d(' + x + 'px, 0, 0)';
+        if (!paused && !offscreen && halfW) {
+          offset -= speed;
+          while (offset <= -halfW) offset += halfW;
+          while (offset > 0) offset -= halfW;
+          track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
         }
         requestAnimationFrame(tick);
       }
+      requestAnimationFrame(tick);
 
-      /* Wait for images so scrollWidth is accurate. */
-      var imgs = track.querySelectorAll('img');
-      var pending = imgs.length;
-      function ready() {
-        if (--pending > 0) return;
-        measure();
-        requestAnimationFrame(tick);
+      carousel.addEventListener('mouseenter', function () { paused = true; });
+      carousel.addEventListener('mouseleave', function () {
+        if (!wheelTO) paused = false;
+      });
+      carousel.addEventListener('wheel', function (e) {
+        var dy = e.deltaY || 0;
+        var dx = e.deltaX || 0;
+        // Only capture horizontal gestures; vertical wheel passes
+        // through so the page keeps scrolling.
+        if (Math.abs(dx) <= Math.abs(dy)) return;
+        e.preventDefault();
+        paused = true;
+        offset -= dx;
+        if (wheelTO) clearTimeout(wheelTO);
+        wheelTO = setTimeout(function () {
+          wheelTO = null;
+          if (!carousel.matches(':hover')) paused = false;
+        }, 1500);
+      }, { passive: false });
+
+      // Pause when offscreen so we're not animating out of view.
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (ent) { offscreen = !ent.isIntersecting; });
+        }, { threshold: 0.05 });
+        io.observe(carousel);
       }
-      if (pending === 0) { measure(); requestAnimationFrame(tick); return; }
-      imgs.forEach(function (img) {
-        if (img.complete && img.naturalWidth > 0) ready();
-        else {
-          img.addEventListener('load',  ready);
-          img.addEventListener('error', ready);
+
+      // Mobile pill controls — pause/resume + prev/next nudge.
+      var toggleBtn = document.getElementById('carousel-toggle');
+      var prevBtn   = document.getElementById('carousel-prev');
+      var nextBtn   = document.getElementById('carousel-next');
+      var userPaused = false;
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          userPaused = !userPaused;
+          paused = userPaused;
+          toggleBtn.setAttribute('data-state', userPaused ? 'paused' : 'playing');
+          toggleBtn.setAttribute('aria-label', userPaused ? 'Play carousel' : 'Pause carousel');
+        });
+      }
+      var NUDGE = 240;
+      function nudge(dir) {
+        offset += dir * NUDGE;
+        while (offset <= -halfW) offset += halfW;
+        while (offset > 0) offset -= halfW;
+        track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+      }
+      if (prevBtn) prevBtn.addEventListener('click', function () { nudge(+1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { nudge(-1); });
+    }
+
+    /* ─── Tangible Forms (section 05) — two long landscape cells,
+       cycling in lockstep on one shared ticker. Click a cell to hold
+       it on the current image; click outside to resume. */
+    (function () {
+      var cells = document.querySelectorAll('.tangible-forms__cell');
+      if (!cells.length) return;
+      var interval = parseInt(cells[0].getAttribute('data-tangible-interval'), 10) || 5000;
+      var registry = [];
+      cells.forEach(function (cell) {
+        var slides = cell.querySelectorAll('.media__tslide');
+        if (slides.length < 2) return;
+        registry.push({
+          cell: cell,
+          slides: slides,
+          idx: 0,
+          offscreen: true,
+          userHold: false
+        });
+      });
+      if (!registry.length) return;
+
+      function advance(state) {
+        state.slides[state.idx].classList.remove('is-active');
+        state.idx = (state.idx + 1) % state.slides.length;
+        state.slides[state.idx].classList.add('is-active');
+      }
+      setInterval(function () {
+        registry.forEach(function (state) {
+          if (!state.offscreen && !state.userHold) advance(state);
+        });
+      }, interval);
+
+      if ('IntersectionObserver' in window) {
+        registry.forEach(function (state) {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (ent) { state.offscreen = !ent.isIntersecting; });
+          }, { threshold: 0.1 });
+          io.observe(state.cell);
+        });
+      } else {
+        registry.forEach(function (state) { state.offscreen = false; });
+      }
+
+      registry.forEach(function (state) {
+        state.cell.addEventListener('click', function (e) {
+          e.stopPropagation();
+          state.userHold = true;
+          state.cell.classList.add('is-user-held');
+        });
+      });
+      document.addEventListener('click', function (e) {
+        registry.forEach(function (state) {
+          if (!state.userHold) return;
+          if (!state.cell.contains(e.target)) {
+            state.userHold = false;
+            state.cell.classList.remove('is-user-held');
+          }
+        });
+      });
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          registry.forEach(function (state) { state.offscreen = true; });
         }
       });
     })();
-
-    /* ── Hero video controls ─────────────────────────────────────────
-       Each control button uses data-state as its source of truth so
-       screen readers see the right label AND the CSS reveals the
-       matching icon. Video events (play/pause/volumechange) sync the
-       state back — covers cases where the video ends, autoplay is
-       blocked, or another script mutates the element. */
-    var video   = document.getElementById('hero-video');
-    var playBtn = document.querySelector('.video-btn[data-action="play"]');
-    var muteBtn = document.querySelector('.video-btn[data-action="mute"]');
-    var fsBtn   = document.querySelector('.video-btn[data-action="fullscreen"]');
-
-    if (video && playBtn && muteBtn && fsBtn) {
-
-      function syncPlayState() {
-        var playing = !video.paused && !video.ended;
-        playBtn.setAttribute('data-state', playing ? 'playing' : 'paused');
-        playBtn.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
-      }
-      function syncMuteState() {
-        var muted = video.muted || video.volume === 0;
-        muteBtn.setAttribute('data-state', muted ? 'muted' : 'unmuted');
-        muteBtn.setAttribute('aria-label', muted ? 'Unmute video' : 'Mute video');
-      }
-
-      playBtn.addEventListener('click', function () {
-        if (video.paused || video.ended) {
-          var p = video.play();
-          if (p && typeof p.catch === 'function') p.catch(function () {});
-        } else {
-          video.pause();
-        }
-      });
-
-      muteBtn.addEventListener('click', function () {
-        video.muted = !video.muted;
-        /* If we're unmuting and volume is 0 for any reason, restore
-           it so the user actually hears something. */
-        if (!video.muted && video.volume === 0) video.volume = 1;
-      });
-
-      fsBtn.addEventListener('click', function () {
-        /* Prefer standard Fullscreen API on the video's container so
-           the custom controls remain visible while fullscreen; fall
-           back to the video element itself, then iOS Safari's
-           webkitEnterFullscreen (which uses the native player and
-           hides our custom controls — acceptable on iOS). */
-        var target = video.closest('.ecclesiastes__hero-media') || video;
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-          return;
-        }
-        if (target.requestFullscreen) {
-          target.requestFullscreen();
-        } else if (target.webkitRequestFullscreen) {
-          target.webkitRequestFullscreen();
-        } else if (video.webkitEnterFullscreen) {
-          video.webkitEnterFullscreen();
-        }
-      });
-
-      video.addEventListener('play',         syncPlayState);
-      video.addEventListener('pause',        syncPlayState);
-      video.addEventListener('ended',        syncPlayState);
-      video.addEventListener('volumechange', syncMuteState);
-
-      syncPlayState();
-      syncMuteState();
-    }
   })();
   </script>
 </body>

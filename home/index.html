@@ -25,7 +25,9 @@
      shares the name `unesco-hero` with unesco.html's hero, so clicking
      that cell animates the media cleanly across pages. Every other
      navigation crossfades. */
-  @view-transition { navigation: auto; }
+  /* Named morph targets for case-study jumps from the /home/ grid.
+     The generic @view-transition opt-in and root fade timings are
+     shared across every page and live in theme.css. */
   .work--unesco       .work__media { view-transition-name: unesco-hero; }
   .work--ecclesiastes .work__media { view-transition-name: ecclesiastes-hero; }
   ::view-transition-group(unesco-hero),
@@ -33,13 +35,9 @@
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 380ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
 
-html { background: var(--bg); }
+  /* html/body base — reset, bg, and global cursor live in theme.css;
+     only the home page's system font stack is set here. */
   html, body {
     margin: 0;
     padding: 0;
@@ -50,8 +48,6 @@ html { background: var(--bg); }
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     cursor: var(--cursor-url) 12 12, auto;
   }
-  body { background: transparent; }
-  a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
 
   /* Home reduces the sitewide header-safe padding by 50% so the hero
      pull-quote sits tighter under the header rule (and the blurred
