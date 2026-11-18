@@ -685,8 +685,10 @@
      span the single column centered. */
   .book-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;      /* 2 spreads per row on desktop */
-    gap: clamp(1rem, 2.5vw, 2rem);
+    /* 5 spreads per row on desktop — each spread sits at ~20% of the
+       container, 60% smaller than the previous 2-per-row layout. */
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(0.5rem, 1vw, 0.9rem);
     align-items: start;
     justify-items: center;
   }
@@ -725,10 +727,9 @@
     pointer-events: none;
     z-index: 2;
   }
-  .book-spread .book-page {
-    aspect-ratio: 7 / 12;                /* match the book trim (7 × 12 in) */
-    overflow: hidden;
-  }
+  /* No forced aspect-ratio and no object-fit — pages render at their
+     native dimensions so nothing is cropped. */
+  .book-spread .book-page { overflow: visible; }
   .book-page {
     margin: 0;
     width: 100%;
@@ -737,16 +738,14 @@
   }
   .book-page img {
     width: 100%;
-    height: 100%;
+    height: auto;
     display: block;
-    object-fit: cover;
   }
   /* Solo cells (page 1 and page 140) — half-spread width so they read
      as one open page against a spread's two. Shadow + hover scale
      mirror the spread treatment. */
   .book-page--solo {
     width: 50%;
-    aspect-ratio: 7 / 12;
     filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.18))
             drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
     transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -771,7 +770,9 @@
     .book-page--solo:hover { transform: none; }
   }
   @media (max-width: 900px) {
-    .book-grid { grid-template-columns: 1fr; }
+    /* Mobile keeps the 2-column layout so spreads stay paired and
+       the overall colour relationship across the book is still
+       readable at a glance. */
     .book-page--solo { width: 50%; }
   }
 
@@ -1124,11 +1125,8 @@
        picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
 
-    <!-- ─── 04 · Book ─────────────────────────────────────────── -->
-    <div class="g-span-3">
-      <p class="section-label"><span class="section-label__num">04</span>Book</p>
-    </div>
-
+    <!-- ─── 04 · Book pages grid ─────────────────────────────────
+         Free-flowing section — no section label, just the grid. -->
     <div class="g-span-3">
       <div class="book-grid" aria-label="Full book spreads">
         <figure class="book-page book-page--solo">
@@ -1438,11 +1436,11 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Trailer motion piece — autoplay muted looped so it reads as
-           a moving still that invites the viewer to stay with it. -->
+      <!-- Trailer motion piece — native controls so the viewer can
+           play / pause and scrub. Sound on; no loop. -->
       <figure class="media media--wide trailer-walkthrough">
         <video class="media__video trailer-walkthrough__video"
-               autoplay muted loop playsinline webkit-playsinline preload="metadata"
+               controls playsinline webkit-playsinline preload="metadata"
                disablepictureinpicture disableremoteplayback
                poster="/ASSETS/IMAGES/ECCLESIASTES/hero.jpg"
                aria-label="Ecclesiastes trailer motion piece">
