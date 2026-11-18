@@ -758,6 +758,16 @@
     .book-grid { grid-template-columns: repeat(6, 1fr); }
   }
 
+  /* ─── Foundation hero (section 02) — portrait photo inside a
+     16:9 cell (matching section 05's trailer). object-fit: contain
+     shows the full image centered, dark bg matches the photo's
+     backdrop so the letterbox blends in. */
+  .foundation-hero { background: #1a1a1a; }
+  .foundation-hero .media__img {
+    object-fit: contain;
+    background: #1a1a1a;
+  }
+
   /* ─── Xerox grid (section 08) — 9 chapter + color images in a
      3×3 grid on desktop, stacking to 2 cols on mobile. Images use
      2:3 poster aspect since sources are 1600×2400. */
@@ -1097,10 +1107,11 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Single Foundation image spanning the full media column.
-           Aspect locked to the source (1800×2700 = 2:3 portrait) so
-           the full photo renders with no cropping. -->
-      <figure class="media foundation-hero" style="aspect-ratio: 2 / 3;">
+      <!-- Single Foundation image sized to match section 05's trailer
+           cell (media--wide = 16:9). The portrait photo letterboxes
+           inside with a dark bg matching its background so nothing
+           is cropped. -->
+      <figure class="media media--wide foundation-hero">
         <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/foundation-hero.jpg" alt="The Book of Ecclesiastes — embossed leather cover on textile" />
       </figure>
     </div>
