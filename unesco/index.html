@@ -375,6 +375,17 @@
     /* Posters stay as 2-up (3 rows × 2 cols) on mobile so the series
        reads as a set, not a single tall column. */
     .section-media__posters { grid-template-columns: repeat(2, 1fr); }
+    /* Campaign section's 3 micro posters: two black ones side by
+       side on the top row, the grey one centered on a second row at
+       half width so it still reads as a key piece. */
+    .section-media__posters--campaign > :nth-child(1) { grid-column: 1; grid-row: 1; }
+    .section-media__posters--campaign > :nth-child(3) { grid-column: 2; grid-row: 1; }
+    .section-media__posters--campaign > :nth-child(2) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
+      justify-self: center;
+    }
   }
 
   /* ─── Section label (numbered eyebrow) ───────────────────────────
@@ -625,7 +636,10 @@
 
   .palette-swatch__scrim {
     position: absolute;
-    inset: 0;
+    /* Extend 1px past the cell on every edge so sub-pixel gaps and
+       the hairline seams inside the source billboard never leave
+       slivers of the underlying image untouched by the scrim. */
+    inset: -1px;
     background: rgba(0, 0, 0, 0.32);
     opacity: 0;
     pointer-events: none;
@@ -635,12 +649,16 @@
     position: absolute;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 0.15em;
     padding: 0.5rem;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(0.9rem, 1.4vw, 1.25rem);
+    /* 25% smaller than before (0.9/1.4vw/1.25 → 0.675/1.05vw/0.94). */
+    font-size: clamp(0.675rem, 1.05vw, 0.94rem);
+    line-height: 1.15;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #fff;
@@ -652,6 +670,8 @@
       opacity   360ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
   }
+  /* Each word of the color name sits on its own line, stacked vertically. */
+  .palette-swatch__name > span { display: block; }
   .palette-swatch:hover .palette-swatch__scrim,
   .palette-swatch:focus-visible .palette-swatch__scrim {
     opacity: 1;
@@ -822,19 +842,21 @@
     .media__slide    { animation: none; }
   }
 
-  /* ─── Applications walkthrough (section 07) ──────────────────────
-     Native-controls <video> below the poster grid + application
-     slideshow. Cover-crops to fill the 16:9 cell so no letterbox
-     is visible (the source recording is close to 16:9). */
-  .applications-walkthrough { background: #000; }
-  .applications-walkthrough__video {
-    object-fit: cover;
+  /* ─── Applications + Campaign walkthrough videos ─────────────────
+     The source screen recordings are 1920×1068, not a true 16:9
+     (they'd sit inside the default .media--wide cell with black bars
+     top and bottom). Override the cell's aspect-ratio to match the
+     recording exactly so the video frame fills edge to edge with no
+     letterbox. object-fit: fill keeps the ratio locked since the
+     cell is already the video's native ratio. */
+  .applications-walkthrough,
+  .campaign-walkthrough {
+    aspect-ratio: 1920 / 1068 !important;
     background: #000;
   }
-  /* ─── Campaign walkthrough (section 09) — same treatment. ───── */
-  .campaign-walkthrough { background: #000; }
+  .applications-walkthrough__video,
   .campaign-walkthrough__video {
-    object-fit: cover;
+    object-fit: fill;
     background: #000;
   }
 
@@ -1554,11 +1576,6 @@
                    aria-label="UNESCO logo reveal animation">
               <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
             </video>
-            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--rev" aria-hidden="true"
-                   muted playsinline webkit-playsinline preload="auto"
-                   disablepictureinpicture disableremoteplayback>
-              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal-reverse.mp4" type="video/mp4">
-            </video>
             <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
             <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
           </figure>
@@ -1635,32 +1652,32 @@
         <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name">World Blue</span>
+          <span class="palette-swatch__name"><span>World</span><span>Blue</span></span>
         </button>
         <button class="palette-swatch" type="button" aria-label="Vivre Green" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name">Vivre Green</span>
+          <span class="palette-swatch__name"><span>Vivre</span><span>Green</span></span>
         </button>
         <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name">Sol Yellow</span>
+          <span class="palette-swatch__name"><span>Sol</span><span>Yellow</span></span>
         </button>
         <button class="palette-swatch" type="button" aria-label="Ash Grey" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name">Ash Grey</span>
+          <span class="palette-swatch__name"><span>Ash</span><span>Grey</span></span>
         </button>
         <button class="palette-swatch" type="button" aria-label="Umber Brown" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name">Umber Brown</span>
+          <span class="palette-swatch__name"><span>Umber</span><span>Brown</span></span>
         </button>
         <button class="palette-swatch" type="button" aria-label="Deep Earth" role="listitem">
           <span class="palette-swatch__veil" aria-hidden="true"></span>
           <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name">Deep Earth</span>
+          <span class="palette-swatch__name"><span>Deep</span><span>Earth</span></span>
         </button>
       </div>
     </div>
@@ -1743,7 +1760,7 @@
           <p><strong>The World Needs U.</strong></p>
           <p>The slogan plays on the four U&rsquo;s in the logo, but it reaches past UNESCO to the world it serves: us. Organizations like UNESCO exist for the generations that come after us. It&rsquo;s on all of us to carry our stories, cultures, and traditions into the future, not leave them behind. The world needs U.</p>
           <p><strong>Safeguard Humanity&rsquo;s Inheritance.</strong><br>Our inheritance is all around us, in the identities we hold today. Without intention, it can be lost.</p>
-          <p><strong>Protect, Preserve, Prepare What Makes Us Human.</strong><br>Protect who we are today. Preserve what the past has given us. Prepare what we pass on. This is why the rebrand matters: we cannot forget who we are, or what shaped us.</p>
+          <p><strong>Protect/Preserve/Prepare What Makes Us Human.</strong><br>Protect who we are today. Preserve what the past has given us. Prepare what we pass on. This is why the rebrand matters: we cannot forget who we are, or what shaped us.</p>
           <p>I think, create, and design this way because of my Peruvian and Salvadoran heritage. This is my perspective, and that is the beauty of who we are, as individuals and as a collective. Every perspective is needed to see the whole picture. Without our cultures, our stories, and our identities, humanity would be a shell of itself.</p>
           <p>As part of the identity system, I also designed a new digital home for UNESCO, one that puts the people, lands, and cultures it protects at the center. I left the corporate look behind for something inviting, youthful, and vibrant. My goal was for every page to offer something new, so visitors would keep wanting to discover more.</p>
         </div>
@@ -1870,8 +1887,10 @@
     <div class="g-span-2 section-media">
       <!-- 3 micro posters sit at the top of the Campaign Direction
            media column: a portrait triptych that previews the
-           Living Traces print campaign. -->
-      <div class="section-media__posters">
+           Living Traces print campaign. On mobile, the two black
+           posters (01, 03) sit side by side on the top row and the
+           grey poster (02) sits centered beneath. -->
+      <div class="section-media__posters section-media__posters--campaign">
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-01.jpg" alt="Living Traces micro poster 01" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-02.jpg" alt="Living Traces micro poster 02" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-03.jpg" alt="Living Traces micro poster 03" /></figure>
@@ -2087,20 +2106,21 @@
     })();
 
     /* Foundation After-cell orchestrated slideshow — the After cell
-       in section 02 stacks four layers: logo-reveal forward video,
-       logo-reveal reverse video, and two rebrand-lockup stills. One
-       layer at a time carries .is-active (CSS crossfades between).
-       Cycle: fwd video plays → pause → rev video plays → pause →
-       lockup 2 holds → lockup 3 holds → back to fwd. */
+       in section 02 stacks three layers: the logo-reveal video and
+       two rebrand-lockup stills. One layer carries .is-active at a
+       time; CSS crossfades between them. The forward video is
+       already an internal ping-pong (blue → logo → blue), so one
+       play per cycle is enough; a separate reverse play would just
+       repeat the same animation visually. Cycle: fwd video plays
+       once → lockup 2 holds → lockup 3 holds → back to fwd. */
     var fAfter = document.querySelector('.foundations-after');
     if (fAfter) {
       var faFwd  = fAfter.querySelector('.foundations-after__video--fwd');
-      var faRev  = fAfter.querySelector('.foundations-after__video--rev');
       var faImg2 = fAfter.querySelector('.foundations-after__img--2');
       var faImg3 = fAfter.querySelector('.foundations-after__img--3');
-      if (faFwd && faRev && faImg2 && faImg3) {
-        var faLayers = [faFwd, faRev, faImg2, faImg3];
-        var FA_PAUSE_MS   = 900;    // after each video finishes
+      if (faFwd && faImg2 && faImg3) {
+        var faLayers = [faFwd, faImg2, faImg3];
+        var FA_PAUSE_MS   = 600;    // after video finishes before next layer
         var FA_IMG_HOLD   = 2800;   // how long each still is shown
         function faShow(el) {
           faLayers.forEach(function (l) {
@@ -2114,16 +2134,9 @@
           var p = faFwd.play();
           if (p && typeof p.catch === 'function') p.catch(function () {});
         }
-        function faPlayRev() {
-          faShow(faRev);
-          try { faRev.currentTime = 0; } catch (e) {}
-          var p = faRev.play();
-          if (p && typeof p.catch === 'function') p.catch(function () {});
-        }
         function faShowImg2() { faShow(faImg2); setTimeout(faShowImg3, FA_IMG_HOLD); }
         function faShowImg3() { faShow(faImg3); setTimeout(faPlayFwd,  FA_IMG_HOLD); }
-        faFwd.addEventListener('ended', function () { setTimeout(faPlayRev,   FA_PAUSE_MS); });
-        faRev.addEventListener('ended', function () { setTimeout(faShowImg2, FA_PAUSE_MS); });
+        faFwd.addEventListener('ended', function () { setTimeout(faShowImg2, FA_PAUSE_MS); });
         /* Mobile Safari refuses .play() for offscreen videos even with
            muted + playsinline + autoplay, so wait for the cell to
            intersect the viewport, then start the cycle. */
