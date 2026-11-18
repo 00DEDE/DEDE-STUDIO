@@ -399,51 +399,51 @@
     background: #000;
   }
 
-  /* ─── Foundation After-cell dynamic slideshow (section 02) ────────
-     The After cell stacks four wordmark-variant stills. JS toggles
-     .is-active on one layer at a time; CSS crossfades each incoming
-     layer with a subtle Ken-Burns drift so the sequence reads as
-     motion rather than a static dissolve. Outgoing layers fade and
-     settle back; the active layer slowly drifts scale + offset. */
-  .foundations-after { position: relative; overflow: hidden; }
+  /* ─── Foundation Before/After cells (section 02) ──────────────────
+     Both cells use contain so the full logo is always visible inside
+     the square; a white backdrop sits behind the artwork so the
+     white-on-red variants read as framed cards instead of floating on
+     page color. The After cell layers four wordmark variants that
+     slide horizontally like a wall of panels: the active panel sits
+     at x=0, the next incoming panel starts off-screen right and
+     slides to 0 while the outgoing panel slides to off-screen left.
+     Ease in-out on both so the motion feels playful. */
+  .foundations-ba__media { background: #ffffff; }
+  .foundations-ba__img,
+  .foundations-after__layer {
+    object-fit: contain;
+  }
+
+  .foundations-after { position: relative; overflow: hidden; background: #ffffff; }
   .foundations-after__layer {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transform: scale(1.06) translate3d(0, 0, 0);
-    transition:
-      opacity 700ms cubic-bezier(.4, 0, .2, 1),
-      transform 700ms cubic-bezier(.4, 0, .2, 1);
-    will-change: opacity, transform;
+    transform: translate3d(100%, 0, 0);   /* resting: off-screen right */
+    will-change: transform;
     pointer-events: none;
   }
   .foundations-after__layer.is-active {
-    opacity: 1;
-    transform: scale(1) translate3d(0, 0, 0);
-    animation: foundationsDriftA 3400ms ease-in-out both;
+    animation: foundationsSlideIn 900ms cubic-bezier(.65, 0, .35, 1) both;
   }
-  .foundations-after__layer:nth-child(even).is-active {
-    animation-name: foundationsDriftB;
+  .foundations-after__layer.is-past {
+    animation: foundationsSlideOut 900ms cubic-bezier(.65, 0, .35, 1) both;
   }
-  @keyframes foundationsDriftA {
-    0%   { transform: scale(1.05) translate3d(-1.4%,  0.8%, 0); }
-    100% { transform: scale(1.00) translate3d( 1.4%, -0.8%, 0); }
+  @keyframes foundationsSlideIn {
+    from { transform: translate3d(100%, 0, 0); }
+    to   { transform: translate3d(0,    0, 0); }
   }
-  @keyframes foundationsDriftB {
-    0%   { transform: scale(1.00) translate3d( 1.2%,  0.6%, 0); }
-    100% { transform: scale(1.05) translate3d(-1.2%, -0.6%, 0); }
+  @keyframes foundationsSlideOut {
+    from { transform: translate3d(0,     0, 0); }
+    to   { transform: translate3d(-100%, 0, 0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .foundations-after__layer {
-      transition: opacity 320ms linear;
-      transform: none;
-      animation: none;
-    }
-    .foundations-after__layer.is-active { transform: none; animation: none; }
+    .foundations-after__layer,
+    .foundations-after__layer.is-active,
+    .foundations-after__layer.is-past { animation: none; }
+    .foundations-after__layer.is-active { transform: translate3d(0, 0, 0); }
   }
 
   /* ─── 4-slide applications slideshow (section 07) ────────────────
@@ -1466,34 +1466,37 @@
       });
     })();
 
-    /* Foundation After-cell orchestrated slideshow — the After cell
-       in section 02 stacks three wordmark-variant stills. One layer
-       carries .is-active at a time; CSS crossfades between them on a
-       fixed cadence once the cell enters the viewport. */
+    /* Foundation After-cell sliding panels — the After cell stacks
+       four wordmark-variant stills. The active panel sits at x=0;
+       on tick, it slides off-screen left (.is-past) while the next
+       panel slides in from off-screen right (.is-active). All other
+       panels sit at translateX(100%) waiting their turn. 4s hold
+       per panel, ease in-out via the CSS cubic-bezier. */
     var fAfter = document.querySelector('.foundations-after');
     if (fAfter) {
       var faLayers = Array.prototype.slice.call(
         fAfter.querySelectorAll('.foundations-after__layer')
       );
       if (faLayers.length) {
-        var FA_HOLD_MS = 1900;
+        var FA_HOLD_MS = 4000;
         var faIdx = 0;
-        function faShow(i) {
+        function faShow(nextIdx) {
+          var prevIdx = faIdx;
           faLayers.forEach(function (l, k) {
-            if (k === i) l.classList.add('is-active');
-            else l.classList.remove('is-active');
+            l.classList.remove('is-active', 'is-past');
+            if (k === nextIdx) l.classList.add('is-active');
+            else if (k === prevIdx) l.classList.add('is-past');
           });
+          faIdx = nextIdx;
         }
         function faTick() {
-          faIdx = (faIdx + 1) % faLayers.length;
-          faShow(faIdx);
+          faShow((faIdx + 1) % faLayers.length);
           setTimeout(faTick, FA_HOLD_MS);
         }
         var faKicked = false;
         var faKick = function () {
           if (faKicked) return;
           faKicked = true;
-          faShow(0);
           setTimeout(faTick, FA_HOLD_MS);
         };
         if ('IntersectionObserver' in window) {
