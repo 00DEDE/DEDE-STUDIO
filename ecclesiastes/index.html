@@ -685,9 +685,10 @@
      on mobile. */
   .book-grid {
     display: grid;
-    /* 16 cells per row — each cell is 50% smaller than the previous
-       8-col sizing (6.25% of container width, vs. 12.5%). */
-    grid-template-columns: repeat(16, 1fr);
+    /* Grid now lives in the narrower g-span-2 column (same width as
+       section 05's trailer cell), so 12 cells per row packs the full
+       97-page overview into roughly 8 compact rows. */
+    grid-template-columns: repeat(12, 1fr);
     gap: clamp(0.2rem, 0.4vw, 0.4rem);
     align-items: start;
     justify-items: center;
@@ -748,15 +749,15 @@
     pointer-events: none;
     z-index: 2;
   }
-  /* Hover — the cell flies to the viewport centre (--hover-tx/ty are
-     set per cell by JS on pointerenter) and scales 10× (another 200%
-     on top of the previous 5×). Shadow deepens to sell the lift. */
+  /* On hover: subtle in-place cue only (shadow deepens, tiny lift).
+     The actual enlarged preview is painted into .book-inspector in
+     the left column by the JS below — big, sticky, out of the grid. */
   @media (hover: hover) {
     .book-page:hover {
-      transform: translate(var(--hover-tx, 0), var(--hover-ty, 0)) scale(10);
-      z-index: 50;
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.42),
-                  0 10px 24px rgba(0, 0, 0, 0.22);
+      transform: translateY(-2px);
+      z-index: 5;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28),
+                  0 3px 6px  rgba(0, 0, 0, 0.14);
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -764,7 +765,44 @@
     .book-page:hover { transform: none; }
   }
   @media (max-width: 900px) {
-    .book-grid { grid-template-columns: repeat(2, 1fr); }
+    .book-grid { grid-template-columns: repeat(6, 1fr); }
+  }
+
+  /* ─── Book inspector (section 04 left column) ─────────────────────
+     Sticky preview that shows whichever page the viewer is hovering
+     in the grid. Follows the viewer as they scroll the long grid
+     column on the right. Renders the image at natural aspect so
+     portrait covers and landscape spreads both display correctly. */
+  .book-section__text { position: relative; }
+  .book-inspector {
+    position: sticky;
+    top: clamp(5rem, 10vh, 7rem);
+    margin: clamp(1rem, 2.5vh, 2rem) 0 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    overflow: hidden;
+    transition: box-shadow 220ms ease;
+  }
+  .book-inspector__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    transition: opacity 180ms ease;
+  }
+  .book-inspector.is-active {
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22),
+                0 4px 10px  rgba(0, 0, 0, 0.12);
+  }
+  @media (max-width: 900px) {
+    /* On mobile the grid stacks below the text, so the inspector
+       doesn't need to stick — it reads inline. */
+    .book-inspector { position: static; }
   }
 
   /* ─── Applications posters + mockup (section 05) ──────────────── */
@@ -1116,9 +1154,18 @@
        picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
 
-    <!-- ─── 04 · Book pages grid ─────────────────────────────────
-         Free-flowing section — no section label, just the grid. -->
-    <div class="g-span-3">
+    <!-- ─── 04 · Book ──────────────────────────────────────────────
+         Section label + inspector in col 1 (sticky, shows whichever
+         page the viewer is hovering), 97-page grid in cols 2-3 at
+         the same column width as section 05's trailer cell below. -->
+    <div class="g-span-1 section-text book-section__text">
+      <p class="section-label"><span class="section-label__num">04</span>Book</p>
+      <figure class="book-inspector" id="book-inspector" aria-hidden="true">
+        <img class="book-inspector__img" alt="" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-001.jpg" width="1200" height="2057" />
+      </figure>
+    </div>
+
+    <div class="g-span-2 section-media">
       <div class="book-grid" aria-label="Full book pages">
         <figure class="book-page book-page--solo">
           <img loading="lazy" decoding="async" width="1200" height="2057" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-001.jpg" alt="Ecclesiastes page 1 — single" />
@@ -1412,7 +1459,7 @@
           <img loading="lazy" decoding="async" width="1200" height="2057" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-097.jpg" alt="Ecclesiastes page 97 — single" />
         </figure>
       </div>
-    </div><!-- /04 book-grid -->
+    </div><!-- /04 book section-media -->
 
     <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 05 · Applications ─────────────────────────────────────
@@ -1854,32 +1901,30 @@
       });
     })();
 
-    /* Book grid (section 04) — on hover, translate each cell toward
-       the viewport centre and scale it 10× so the enlarged preview
-       always appears middle-of-screen regardless of which cell was
-       hovered. CSS does the scale + shadow; JS only writes the
-       translation offset as two CSS custom properties. */
+    /* Book grid (section 04) — on hover, paint the hovered page into
+       the sticky .book-inspector in the left column so visitors get a
+       large preview while they browse the thumbnail grid. The
+       inspector image swaps src + width/height so natural aspect is
+       preserved for both portrait covers and landscape spreads. */
     (function () {
       var cells = document.querySelectorAll('.book-grid .book-page');
-      if (!cells.length) return;
+      var inspector = document.getElementById('book-inspector');
+      if (!cells.length || !inspector) return;
+      var img = inspector.querySelector('img');
+      if (!img) return;
       function onEnter(e) {
         var cell = e.currentTarget;
-        var r = cell.getBoundingClientRect();
-        var cx = r.left + r.width  / 2;
-        var cy = r.top  + r.height / 2;
-        var dx = (window.innerWidth  / 2) - cx;
-        var dy = (window.innerHeight / 2) - cy;
-        cell.style.setProperty('--hover-tx', dx + 'px');
-        cell.style.setProperty('--hover-ty', dy + 'px');
-      }
-      function onLeave(e) {
-        var cell = e.currentTarget;
-        cell.style.removeProperty('--hover-tx');
-        cell.style.removeProperty('--hover-ty');
+        var sourceImg = cell.querySelector('img');
+        if (!sourceImg) return;
+        if (img.getAttribute('src') === sourceImg.getAttribute('src')) return;
+        img.src = sourceImg.src;
+        if (sourceImg.width)  img.setAttribute('width',  sourceImg.width);
+        if (sourceImg.height) img.setAttribute('height', sourceImg.height);
+        img.alt = sourceImg.alt || '';
+        inspector.classList.add('is-active');
       }
       cells.forEach(function (cell) {
         cell.addEventListener('pointerenter', onEnter);
-        cell.addEventListener('pointerleave', onLeave);
       });
     })();
 
