@@ -515,11 +515,83 @@
     object-fit: cover;
     display: block;
   }
+  /* Preview modes — cover on dark for product photos (lineup grid),
+     contain on white for transparent deliverable assets. In contain
+     mode the container drops its fixed 3/2 aspect so it shrinks to
+     hug the asset's native aspect instead of showing wide white
+     margins for portrait or square artwork. */
+  .lineup-preview.is-mode-cover   { background: #0a0a0a; }
+  .lineup-preview.is-mode-cover   .lineup-preview__img { object-fit: cover; }
+  .lineup-preview.is-mode-contain {
+    background: #ffffff;
+    padding: 1.5rem;
+    aspect-ratio: auto;
+    width: auto;
+    max-width: min(78vw, 1200px);
+    height: auto;
+    max-height: 80vh;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+  }
+  .lineup-preview.is-mode-contain .lineup-preview__img {
+    width: auto;
+    height: auto;
+    max-width: min(74vw, 1100px);
+    max-height: calc(80vh - 3rem);
+    object-fit: contain;
+  }
 
   @media (max-width: 760px) {
     .lineup-grid { gap: 0.35rem; }
     .lineup-cell { cursor: default; }
     .lineup-preview { display: none; }
+  }
+
+  /* ─── 05 · Deliverables grid ──────────────────────────────────────
+     17 transparent-PNG assets laid out on a 3-col responsive grid.
+     Every cell is a white square with the artwork contain-fit and
+     centered — each deliverable gets its own breathing room, like a
+     sheet of specimens. Hovering a cell promotes it to the shared
+     lineup-preview overlay so you can read the detail. */
+  .deliverables-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+  }
+  .deliverables-cell {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 1 / 1;
+    background: #ffffff;
+    overflow: hidden;
+    cursor: zoom-in;
+    display: grid;
+    place-items: center;
+    padding: 10%;
+    box-sizing: border-box;
+  }
+  .deliverables-cell__img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .deliverables-cell:hover .deliverables-cell__img,
+  .deliverables-cell:focus-within .deliverables-cell__img {
+    transform: scale(1.04);
+  }
+
+  @media (max-width: 760px) {
+    .deliverables-grid { gap: 0.35rem; }
+    .deliverables-cell { cursor: default; padding: 8%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .deliverables-cell__img { transition: none; }
+    .deliverables-cell:hover .deliverables-cell__img,
+    .deliverables-cell:focus-within .deliverables-cell__img { transform: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .lineup-cell__img,
@@ -1073,14 +1145,16 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Iconography ─────────────────────────────────────────
-         Sits directly below Palette so the identity system
-         (color + marks) reads as one continuous chapter. -->
+    <!-- ─── 05 · Deliverables ───────────────────────────────────────
+         Catalog of every hand-drawn, redrawn, color-corrected asset
+         produced for the rebrand. Each deliverable sits in its own
+         white cell so the transparent artwork reads as a sheet of
+         "specimens." Hover any cell to see it full size, centered
+         (shares the lineup-preview mechanism from section 04). -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">05</span>Iconography</p>
+      <p class="section-label"><span class="section-label__num">05</span>Deliverables</p>
       <p class="statement">
-        Taken apart and rebuilt, the new logo became
-        <em>so much more than one single asset</em>.
+        A more complete look at <em>the whole picture</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-iconography">
         <span>Read more</span>
@@ -1088,16 +1162,35 @@
       </button>
       <div class="read-more__panel" id="rm-iconography">
         <div class="read-more__inner">
-          <p>True to the craft of textiles, I unraveled the logo and wove it back together, using only its own elements. Taken apart and rebuilt, it became icons for the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. Then I pushed it further into a cast of ten characters who live throughout the system. I call them my new little friends.</p>
+          <p>Each character and asset was hand-drawn, then scanned, redrawn in Illustrator, and color corrected. Whenever there is a chance to go analog, it excites me. Pencil and paper. There is nothing more intimate than that in the process of design.</p>
+          <p>Not every asset made it into the final deliverables, but that does not mean the time was wasted. Exploration is important to me. When telling a story, every possibility must be considered and contemplated. The story told to the public is the concise narrative of an endless amount of research and consideration.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Iconography overview, 16:9 -->
-      <figure class="media media--wide">
-        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
-      </figure>
+      <div class="deliverables-grid" aria-label="Full catalog of rebrand deliverables">
+        <!-- Packaging -->
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/pack-cereal.png" alt="Tiny Fruity Cuties cereal carton" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/pack-apple.png" alt="Julie apple juice carton" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/pack-banana.png" alt="Louie banana chips bag" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/pack-strawberry.png" alt="Chloe strawberry gummies and Louie banana chips packaging" loading="lazy" decoding="async" /></figure>
+        <!-- Printed goods -->
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-coloringbook-cover.png" alt="Groovy coloring book cover" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-coloringbook-inside.png" alt="Coloring book interior pages" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-poster.png" alt="Groovy character poster" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-paddleball.png" alt="Paddleball print designs" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-stickers.png" alt="Die-cut character stickers" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-pencils-case.png" alt="Colored pencils case" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-bowl.png" alt="Cereal bowl illustration" loading="lazy" decoding="async" /></figure>
+        <!-- Characters -->
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/char-jumping.png" alt="Four characters jumping" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/char-hugging.png" alt="Four characters hugging" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/char-joey-louie.png" alt="Joey and Louie duo illustration" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/char-julie-chloe.png" alt="Julie and Chloe duo illustration" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/char-frisbee.png" alt="Characters arranged in a circle for a frisbee face" loading="lazy" decoding="async" /></figure>
+        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/char-pins.png" alt="Characters arranged in a circle for enamel pins" loading="lazy" decoding="async" /></figure>
+      </div>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
@@ -1590,38 +1683,47 @@
       }
     }
 
-    /* Lineup grid hover preview — on pointerenter (non-touch), copy
-       the hovered thumbnail into the fixed centered preview element
-       and fade it in. pointerleave hides it. Touch devices are
-       ignored so the grid alone drives the experience on mobile. */
-    (function initLineupPreview() {
-      var grid = document.querySelector('.lineup-grid');
+    /* Shared hover preview — on pointerenter (non-touch), copy the
+       hovered thumbnail into the fixed centered preview element and
+       fade it in. pointerleave hides it. Used by both the lineup
+       grid (section 04, cover-fit on dark) and the deliverables
+       grid (section 05, contain-fit on white). A mode class on the
+       preview switches background and object-fit for each. */
+    (function initHoverPreview() {
       var preview = document.querySelector('.lineup-preview');
-      if (!grid || !preview) return;
+      if (!preview) return;
       var previewImg = preview.querySelector('.lineup-preview__img');
       if (!previewImg) return;
-      var imgs = grid.querySelectorAll('.lineup-cell__img');
-      var hideTimer;
-      imgs.forEach(function (img) {
-        img.addEventListener('pointerenter', function (e) {
-          if (e.pointerType === 'touch') return;
-          clearTimeout(hideTimer);
-          if (previewImg.src !== img.src) previewImg.src = img.src;
-          previewImg.alt = img.alt || '';
-          preview.classList.add('is-visible');
+
+      function bind(grid, cellImgSel, mode) {
+        if (!grid) return;
+        var imgs = grid.querySelectorAll(cellImgSel);
+        var hideTimer;
+        imgs.forEach(function (img) {
+          img.addEventListener('pointerenter', function (e) {
+            if (e.pointerType === 'touch') return;
+            clearTimeout(hideTimer);
+            preview.classList.remove('is-mode-cover', 'is-mode-contain');
+            preview.classList.add(mode === 'contain' ? 'is-mode-contain' : 'is-mode-cover');
+            if (previewImg.src !== img.src) previewImg.src = img.src;
+            previewImg.alt = img.alt || '';
+            preview.classList.add('is-visible');
+          });
+          img.addEventListener('pointerleave', function (e) {
+            if (e.pointerType === 'touch') return;
+            hideTimer = setTimeout(function () {
+              preview.classList.remove('is-visible');
+            }, 60);
+          });
         });
-        img.addEventListener('pointerleave', function (e) {
+        grid.addEventListener('pointerleave', function (e) {
           if (e.pointerType === 'touch') return;
-          hideTimer = setTimeout(function () {
-            preview.classList.remove('is-visible');
-          }, 60);
+          preview.classList.remove('is-visible');
         });
-      });
-      // Also hide when the pointer leaves the grid entirely.
-      grid.addEventListener('pointerleave', function (e) {
-        if (e.pointerType === 'touch') return;
-        preview.classList.remove('is-visible');
-      });
+      }
+
+      bind(document.querySelector('.lineup-grid'),      '.lineup-cell__img',       'cover');
+      bind(document.querySelector('.deliverables-grid'), '.deliverables-cell__img', 'contain');
     })();
 
     /* Palette grid — reveal the swatches in sequence once the grid
