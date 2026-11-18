@@ -925,6 +925,13 @@
     object-fit: contain;
     background: var(--bg);
   }
+  /* Only the first slide of the first cell (celebration-01) is
+     zoomed 30% so the envelope reads at a stronger scale; every
+     other image in the slideshow sits at its natural contain size. */
+  .tangible-forms__cell .media__tslide.is-zoomed {
+    transform: scale(1.3);
+    transform-origin: center;
+  }
   .media__tslide {
     opacity: 0;
     transition: opacity 600ms ease-in-out;
@@ -1865,7 +1872,7 @@
            slide at a time; CSS handles the crossfade. -->
       <div class="section-media__triptych section-media__triptych--pair tangible-forms">
         <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
+          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
           <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
