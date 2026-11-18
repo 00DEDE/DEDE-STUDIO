@@ -909,6 +909,20 @@
     .media__aslide--1 { opacity: 1; }
   }
 
+  /* ─── Tangible Forms slideshow (section 08) ──────────────────────
+     Two long portrait cells, each stacking its own set of images;
+     JS toggles .is-active on one slide at a time. Opacity-only
+     crossfade stays on the GPU. */
+  .media__tslide {
+    opacity: 0;
+    transition: opacity 600ms ease-in-out;
+    will-change: opacity;
+  }
+  .media__tslide.is-active { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .media__tslide { transition: none; }
+  }
+
   /* ─── 5-slide celebration slideshow (section 06) ──────────────────
      Each cell cycles through 5 images on a shared 20s loop. Each
      slide is "primary" for 4s with a 1s crossfade overlap into the
@@ -1832,34 +1846,30 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 2 columns × 3 rows = 6 cells. Each cell cycles 2 of the 15
-           celebration images (01–12 used, paired front-to-back). The
-           existing .media__slide pair animation drives all cells on a
-           shared 10s crossfade. -->
-      <div class="section-media__triptych section-media__triptych--pair">
-        <figure class="media media--square">
-          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
-          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
+      <!-- 2 long portrait cells, side by side on desktop, stacked on
+           mobile. All 15 celebration images are split evenly: cell A
+           cycles 01–08 (8 images), cell B cycles 09–15 (7 images).
+           JS at the bottom of the page toggles .is-active on one
+           slide at a time; CSS handles the crossfade. -->
+      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
+        <figure class="media tangible-forms__cell" data-tangible-interval="3000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
         </figure>
-        <figure class="media media--square">
-          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
-          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
-          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
-          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
-          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__slide media__slide--1" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
-          <img class="media__img media__slide media__slide--2" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
+        <figure class="media tangible-forms__cell" data-tangible-interval="3000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
         </figure>
       </div>
     </div>
@@ -2104,6 +2114,43 @@
         }, { passive: false });
       });
     })();
+
+    /* Tangible Forms (section 08) — two long cells, each cycling its
+       own stack of celebration stills. Each cell's cadence is set by
+       data-tangible-interval (ms). Pauses while the cell is offscreen
+       so the page isn't repainting out of view. */
+    document.querySelectorAll('.tangible-forms__cell').forEach(function (cell) {
+      var slides = cell.querySelectorAll('.media__tslide');
+      if (slides.length < 2) return;
+      var interval = parseInt(cell.getAttribute('data-tangible-interval'), 10) || 3000;
+      var idx = 0;
+      var paused = true;
+      var timer = null;
+      function advance() {
+        slides[idx].classList.remove('is-active');
+        idx = (idx + 1) % slides.length;
+        slides[idx].classList.add('is-active');
+      }
+      function start() {
+        if (timer) return;
+        timer = setInterval(function () { if (!paused) advance(); }, interval);
+      }
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (ent) {
+            paused = !ent.isIntersecting;
+            if (!paused) start();
+          });
+        }, { threshold: 0.1 });
+        io.observe(cell);
+      } else {
+        paused = false;
+        start();
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) paused = true;
+      });
+    });
 
     /* Foundation After-cell orchestrated slideshow — the After cell
        in section 02 stacks three layers: the logo-reveal video and
