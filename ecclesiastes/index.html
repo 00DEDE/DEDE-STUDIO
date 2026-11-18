@@ -676,6 +676,51 @@
     .atlas-book__stage { transition: none; }
   }
 
+  /* ─── Floating book-page carousel (section 03) ────────────────────
+     Transparent PNG mockups scroll on their own; cursor position
+     over the strip modulates speed AND direction (centre = slow /
+     still, hard-left = reverse at max, hard-right = forward at max).
+     Vertical page scroll always passes through (no wheel capture).
+     The track is duplicated inline by JS so the loop is seamless.
+     Height sized to roughly match the .media--wide default so it
+     drops into the g-span-2 media column cleanly. */
+  .floating-carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--bg);
+    cursor: ew-resize;
+  }
+  .floating-carousel__track {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: clamp(1rem, 2vw, 2rem);
+    padding: 0 clamp(1rem, 2vw, 2rem);
+    width: max-content;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+  .floating-carousel__slide {
+    display: block;
+    height: 88%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  /* carousel-01.png is the narrower cover slide; extra inline margin
+     gives it breathing room so it reads as an intentional pause. */
+  .floating-carousel__slide[src$="carousel-01.png"] {
+    margin-inline: clamp(1rem, 2vw, 2rem);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .floating-carousel__track { transform: none; }
+  }
+
   /* ─── Hero decipher animation ─────────────────────────────────────
      The hero title's second line cycles every 7s between the word
      "ECCLESIASTES" and the alphabet-index of each letter (E=5, C=3,
@@ -912,35 +957,59 @@
     </div>
   </section>
 
-  <!-- ══════════════════ 03 · INTERACTION ══════════════════
-       Uses the same 3-col grid structure as the numbered sections. -->
-  <section class="unesco__atlas unesco__grid" aria-label="Interaction">
+  <!-- ══════════════════ 03 · SKELETAL LAYOUT ══════════════════
+       3-col grid like every other section: label + statement +
+       read-more on the left, the book-page carousel on the right. -->
+  <section class="unesco__atlas unesco__grid" aria-label="Skeletal layout">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">03</span>Interaction</p>
+      <p class="section-label"><span class="section-label__num">03</span>Skeletal layout</p>
       <p class="statement">
-        A digital window into the world happening <em>all around you</em>.
+        5 3 3 12 5 19 9 1 19 20 5 19. The numerical value of
+        <em>ECCLESIASTES</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-skeletal">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-atlas">
+      <div class="read-more__panel" id="rm-skeletal">
         <div class="read-more__inner">
-          <p>To mark UNESCO&rsquo;s 80th anniversary, I designed and built the Digital Atlas, an installation meant to be touched as much as seen. A tabletop map presents the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. When visitors place an icon on the map, the overhead display opens a window into that piece of humanity. The Digital Atlas shows how connected we are, how distinct we are, and why what makes us human is worth preserving.</p>
+          <p>Numbers are all around us. Some we see, billions we don&rsquo;t. Through the bond between me and this special project, I realized there was a pattern happening. Ecclesiastes is the 21st book in the Bible. Its name contains 12 letters, and when you add up each letter&rsquo;s place in the alphabet, they total 120. Within it are 12 chapters and 222 verses. Throughout the Bible, the numbers 3, 4, 7, and 12 appear again and again. I believe it is no coincidence that 3 + 4 = 7 and 3 &times; 4 = 12.</p>
+          <p>In this book, after every fourth chapter, I insert textural imagery. After the third chapter, I insert 20 images of moments close to my heart: the flowers that bloom in front of my home every summer, and the day my family and I buried our dogs, Nala and Bella. They were like my big sisters. There are a total of 40 images in this composition, intentionally. The book measures 7 inches wide by 12 inches tall.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <figure class="media media--wide">
-        <video class="media__video"
-               autoplay muted loop playsinline preload="metadata"
-               disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/UNESCO/01.jpg"
-               aria-label="Digital Atlas installation">
-          <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
-        </video>
-      </figure>
+      <!-- Floating book-page carousel. Auto-scrolls slowly; cursor
+           position inside the strip modulates speed and direction
+           (centre = slow/still, edges = fastest). JS below drives
+           the track. -->
+      <div class="floating-carousel" id="floating-carousel" aria-label="Book page carousel">
+        <div class="floating-carousel__track" id="floating-carousel-track">
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-07.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-14.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-15.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-16.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-19.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-20.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-21.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-24.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-25.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-29.png" alt="" />
+          <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-31.png" alt="" />
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1430,6 +1499,99 @@
         currentMode = 'letters';
         holdTimer = setTimeout(cycle, HOLD_MS);
       });
+    })();
+
+    /* Floating book-page carousel (section 03) — cursor-dictated
+       speed. Auto-scrolls at a slow base rate; when the pointer is
+       over the strip, cursor X position becomes the speed control:
+       centre = still, far right = max forward, far left = max
+       reverse. Non-linear mapping (cubed) keeps the near-centre zone
+       soft and the edges snappy. Vertical page scroll always passes
+       through — the handler never captures the wheel. */
+    (function () {
+      var carousel = document.getElementById('floating-carousel');
+      var track    = document.getElementById('floating-carousel-track');
+      if (!carousel || !track) return;
+
+      // Clone every slide once so the duplicate takes over as the
+      // original scrolls past; wrap offset stays within half-width.
+      Array.prototype.slice.call(track.children).forEach(function (s) {
+        var c = s.cloneNode(true);
+        c.setAttribute('aria-hidden', 'true');
+        track.appendChild(c);
+      });
+
+      var AUTO_SPEED = 0.6;   // px/frame auto-scroll (slow drift leftward)
+      var MAX_SPEED  = 6.0;   // px/frame at full cursor deflection
+      var offset     = 0;
+      var halfW      = 0;
+      var cursorNorm = null;  // -1..+1 while pointer is over, null otherwise
+      var offscreen  = true;  // IO toggles
+
+      function measure() { halfW = track.scrollWidth / 2; }
+      window.addEventListener('load', measure);
+      window.addEventListener('resize', measure);
+      track.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) img.addEventListener('load', measure, { once: true });
+      });
+      measure();
+
+      function tick() {
+        if (!offscreen && halfW) {
+          var speed;
+          if (cursorNorm === null) {
+            // Not hovering — gentle auto-drift leftward.
+            speed = AUTO_SPEED;
+          } else {
+            // Hovering — cursor X controls speed and direction.
+            // Cube the normalised position so near-centre is almost
+            // still and the edges accelerate sharply. Negative = pan
+            // right (scroll forward), positive = pan left (reverse).
+            var t = cursorNorm;             // -1..+1
+            var shaped = t * t * t;          // cubic easing
+            speed = shaped * MAX_SPEED;
+          }
+          offset -= speed;
+          while (offset <= -halfW) offset += halfW;
+          while (offset > 0)        offset -= halfW;
+          track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      carousel.addEventListener('pointermove', function (e) {
+        var rect = carousel.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;  // 0..1
+        cursorNorm = x * 2 - 1;                        // -1..+1
+      });
+      carousel.addEventListener('pointerleave', function () {
+        cursorNorm = null;
+      });
+      // On touch devices: tap + drag horizontally to scrub manually,
+      // release to resume auto-drift.
+      var touchStartX = 0;
+      var touchStartOffset = 0;
+      carousel.addEventListener('pointerdown', function (e) {
+        if (e.pointerType !== 'touch') return;
+        touchStartX = e.clientX;
+        touchStartOffset = offset;
+        cursorNorm = 0;  // freeze auto-drift while dragging
+      });
+      carousel.addEventListener('pointerup', function (e) {
+        if (e.pointerType !== 'touch') return;
+        cursorNorm = null;
+      });
+      carousel.addEventListener('pointercancel', function () { cursorNorm = null; });
+
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (ent) { offscreen = !ent.isIntersecting; });
+        }, { threshold: 0.05 });
+        io.observe(carousel);
+      } else {
+        offscreen = false;
+      }
     })();
 
     /* Scans marquee — two independent rows of notebook scans. Each
