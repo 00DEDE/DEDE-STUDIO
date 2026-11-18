@@ -741,9 +741,7 @@
     pointer-events: none;
     z-index: 2;
   }
-  /* On hover: subtle in-place cue only (shadow deepens, tiny lift).
-     The actual enlarged preview is painted into .book-inspector in
-     the left column by the JS below — big, sticky, out of the grid. */
+  /* Subtle in-place hover cue on grid cells — small lift + deeper shadow. */
   @media (hover: hover) {
     .book-page:hover {
       transform: translateY(-2px);
@@ -760,85 +758,16 @@
     .book-grid { grid-template-columns: repeat(6, 1fr); }
   }
 
-  /* ─── Book inspector (section 04 left column) ─────────────────────
-     Sticky preview that shows whichever page the viewer is hovering
-     in the grid. Follows the viewer as they scroll the long grid
-     column on the right. Renders the image at natural aspect so
-     portrait covers and landscape spreads both display correctly. */
-  .book-section__text { position: relative; }
-  .book-inspector {
-    position: sticky;
-    top: clamp(5rem, 10vh, 7rem);
-    margin: clamp(1rem, 2.5vh, 2rem) 0 0;
-    padding: 0;
-    width: 100%;
-    background: transparent;
-    overflow: hidden;
-    /* Collapsed until a cell is hovered. JS adds .is-active on the
-       first pointerenter; .is-spread/.is-solo then set the aspect to
-       match the hovered image — spreads render as full landscape
-       spreads, singles as portrait pages. */
-    height: 0;
-    opacity: 0;
-    transition: opacity 180ms ease;
+  /* ─── Xerox grid (section 08) — 9 chapter + color images in a
+     3×3 grid on desktop, stacking to 2 cols on mobile. Images use
+     2:3 poster aspect since sources are 1600×2400. */
+  .xerox-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
   }
-  .book-inspector.is-active {
-    height: auto;
-    opacity: 1;
-  }
-  .book-inspector.is-spread { aspect-ratio: 1200 / 1028; }  /* landscape spread */
-  .book-inspector.is-solo   { aspect-ratio: 1200 / 2057; width: 50%; }  /* portrait single */
-  /* The frame is absolutely positioned inside the inspector so its
-     bounds stay inside the reserved footprint. Height matches the
-     inspector; width is determined by the image's natural aspect at
-     that height (portraits narrow, spreads full width). */
-  .book-inspector__frame {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    height: 100%;
-    display: block;
-    transition: box-shadow 220ms ease;
-  }
-  .book-inspector__img {
-    display: block;
-    height: 100%;
-    width: auto;
-    max-width: 100%;
-    transition: opacity 180ms ease;
-  }
-  .book-inspector.is-active .book-inspector__frame {
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22),
-                0 4px 10px  rgba(0, 0, 0, 0.12);
-  }
-  /* Spine gradient — only on interior spreads, painted over the
-     actual image frame (not the reserved container). */
-  .book-inspector__frame::after {
-    content: "";
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    width: 6%;
-    transform: translateX(-50%);
-    background: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0)     0%,
-      rgba(0, 0, 0, 0.16) 50%,
-      rgba(0, 0, 0, 0)   100%
-    );
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 180ms ease;
-    z-index: 2;
-  }
-  .book-inspector.is-spread .book-inspector__frame::after { opacity: 1; }
   @media (max-width: 900px) {
-    /* On mobile the grid stacks below the text, so the inspector
-       doesn't need to stick — it reads inline. */
-    .book-inspector { position: static; }
+    .xerox-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   /* ─── Cyanotype scraps (section 06) ───────────────────────────────
@@ -1260,16 +1189,10 @@
   <section class="unesco__grid" aria-label="Case study">
 
     <!-- ─── 04 · Book ──────────────────────────────────────────────
-         Section label + inspector in col 1 (sticky, shows whichever
-         page the viewer is hovering), 97-page grid in cols 2-3 at
-         the same column width as section 05's trailer cell below. -->
-    <div class="g-span-1 section-text book-section__text">
+         Section label in col 1, 97-page grid in cols 2-3 at the same
+         column width as section 05's trailer cell below. -->
+    <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">04</span>The Complete Layout</p>
-      <figure class="book-inspector" id="book-inspector" aria-hidden="true">
-        <span class="book-inspector__frame">
-          <img class="book-inspector__img" alt="" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-001.jpg" width="1200" height="2057" />
-        </span>
-      </figure>
     </div>
 
     <div class="g-span-2 section-media">
@@ -1708,31 +1631,18 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 2 long portrait cells, side by side on desktop, stacked on
-           mobile. All 15 celebration images are split evenly: cell A
-           cycles 01–08 (8 images), cell B cycles 09–15 (7 images).
-           JS at the bottom of the page toggles .is-active on one
-           slide at a time; CSS handles the crossfade. -->
-      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
-        </figure>
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
-        </figure>
+      <!-- 9 xerox images in a 3×3 grid. Order: chapter images 4, 7,
+           8, 9, 10, 11, 12 followed by color images 1.2 and 14.2. -->
+      <div class="xerox-grid">
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-01.jpg" alt="Chapter 4 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-02.jpg" alt="Chapter 7 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-03.jpg" alt="Chapter 8 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-04.jpg" alt="Chapter 9 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-05.jpg" alt="Chapter 10 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-06.jpg" alt="Chapter 11 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-07.jpg" alt="Chapter 12 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-08.jpg" alt="Color image 1.2" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-09.jpg" alt="Color image 14.2" /></figure>
       </div>
     </div>
 
@@ -1997,40 +1907,6 @@
           holdTimer = setTimeout(cycle, HOLD_MS);
         });
       }
-    })();
-
-    /* Book grid (section 04) — on hover, paint the hovered page into
-       the sticky .book-inspector in the left column so visitors get a
-       large preview while they browse the thumbnail grid. The
-       inspector image swaps src + width/height so natural aspect is
-       preserved for both portrait covers and landscape spreads. */
-    (function () {
-      var cells = document.querySelectorAll('.book-grid .book-page');
-      var inspector = document.getElementById('book-inspector');
-      if (!cells.length || !inspector) return;
-      var img = inspector.querySelector('img');
-      if (!img) return;
-      function onEnter(e) {
-        var cell = e.currentTarget;
-        var sourceImg = cell.querySelector('img');
-        if (!sourceImg) return;
-        if (img.getAttribute('src') !== sourceImg.getAttribute('src')) {
-          img.src = sourceImg.src;
-          if (sourceImg.width)  img.setAttribute('width',  sourceImg.width);
-          if (sourceImg.height) img.setAttribute('height', sourceImg.height);
-          img.alt = sourceImg.alt || '';
-        }
-        inspector.classList.add('is-active');
-        // Toggle aspect: spread = landscape, solo = portrait. Only
-        // one of is-spread / is-solo is set at a time so the inspector
-        // sizes to the hovered image's native orientation.
-        var isSolo = cell.classList.contains('book-page--solo');
-        inspector.classList.toggle('is-spread', !isSolo);
-        inspector.classList.toggle('is-solo',    isSolo);
-      }
-      cells.forEach(function (cell) {
-        cell.addEventListener('pointerenter', onEnter);
-      });
     })();
 
     /* Floating book-page carousel (section 03) — cursor-dictated
