@@ -742,17 +742,46 @@
     z-index: 2;
   }
   /* Hover preview — sits below the "The Complete Layout" label.
-     Hidden until JS sets a src. Renders at the image's natural
-     aspect so singles are portrait and spreads are landscape. */
+     Hidden until JS adds .is-active. Spreads render at full column
+     width; single pages (cover + back cover) shrink to 30% so the
+     preview still reads as "a single page vs. a full spread". */
   .book-preview {
     display: none;
-    width: 100%;
-    height: auto;
-    margin-top: clamp(1rem, 2.5vh, 2rem);
     position: sticky;
     top: clamp(5rem, 10vh, 7rem);
+    margin: clamp(1rem, 2.5vh, 2rem) 0 0;
+    padding: 0;
+    width: 100%;
   }
-  .book-preview[src] { display: block; }
+  .book-preview.is-active { display: block; }
+  .book-preview.is-single { width: 30%; }     /* 70% smaller than default */
+  .book-preview__img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* Soft spine gradient down the gutter — shown only on spreads. */
+  .book-preview {
+    position: sticky;  /* duplicate ok */
+  }
+  .book-preview::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 6%;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0)     0%,
+      rgba(0, 0, 0, 0.14) 50%,
+      rgba(0, 0, 0, 0)   100%
+    );
+    pointer-events: none;
+    opacity: 0;
+    z-index: 2;
+  }
+  .book-preview.is-spread::after { opacity: 1; }
 
   /* Subtle in-place hover cue on grid cells — small lift + deeper shadow. */
   @media (hover: hover) {
@@ -771,14 +800,15 @@
     .book-grid { grid-template-columns: repeat(6, 1fr); }
   }
 
-  /* ─── Foundation hero (section 02) — portrait photo inside a
-     16:9 cell (matching section 05's trailer). object-fit: cover
-     zooms the image so it fills the cell edge-to-edge with no empty
-     space (crops the top/bottom of the portrait). */
+  /* ─── Foundation hero (section 02) — 16:9 cell (matching section
+     05's trailer). object-fit: cover fills edge-to-edge; the portrait
+     source is cropped top & bottom, but object-position keeps the
+     book centered in the visible window so the book itself stays
+     uncropped. */
   .foundation-hero { background: #1a1a1a; }
   .foundation-hero .media__img {
     object-fit: cover;
-    object-position: center;
+    object-position: center 45%;
     background: #1a1a1a;
   }
 
@@ -1133,9 +1163,8 @@
 
     <div class="g-span-2 section-media">
       <!-- Single Foundation image sized to match section 05's trailer
-           cell (media--wide = 16:9). The portrait photo letterboxes
-           inside with a dark bg matching its background so nothing
-           is cropped. -->
+           cell (16:9). Image is cropped with object-fit: cover; the
+           focal point is tuned to keep the book itself in view. -->
       <figure class="media media--wide foundation-hero">
         <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/foundation-hero.jpg" alt="The Book of Ecclesiastes — embossed leather cover on textile" />
       </figure>
@@ -1211,7 +1240,9 @@
          page the viewer is hovering in the grid. -->
     <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">04</span>The Complete Layout</p>
-      <img id="book-preview" class="book-preview" alt="" />
+      <figure id="book-preview" class="book-preview" aria-hidden="true">
+        <img class="book-preview__img" alt="" />
+      </figure>
     </div>
 
     <div class="g-span-2 section-media">
@@ -1868,15 +1899,23 @@
       }
     })();
 
-    /* Book grid (section 04) — on hover, copy the hovered page's
-       src into #book-preview so an enlarged version appears below
-       the section label in the left column. */
+    /* Book grid (section 04) — on hover, paint the hovered page into
+       #book-preview below the section label. Single-page cells
+       render at 30% width (70% smaller), spreads render at full
+       column width with a soft spine gradient down the gutter. */
     (function () {
       var preview = document.getElementById('book-preview');
       if (!preview) return;
-      document.querySelectorAll('.book-grid .book-page img').forEach(function (img) {
-        img.parentElement.addEventListener('pointerenter', function () {
-          preview.src = img.src;
+      var img = preview.querySelector('img');
+      document.querySelectorAll('.book-grid .book-page').forEach(function (cell) {
+        var src = cell.querySelector('img');
+        if (!src) return;
+        cell.addEventListener('pointerenter', function () {
+          img.src = src.src;
+          var isSolo = cell.classList.contains('book-page--solo');
+          preview.classList.add('is-active');
+          preview.classList.toggle('is-single', isSolo);
+          preview.classList.toggle('is-spread', !isSolo);
         });
       });
     })();
