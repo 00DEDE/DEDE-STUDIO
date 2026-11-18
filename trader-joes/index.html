@@ -595,11 +595,32 @@
   }
 
   /* ─── 06 · Identity poster cell ───────────────────────────────────
-     case-study.css paints .media__img with a black background. Here
-     we want white behind the poster instead so any edge trim reads
-     as a clean white border, matching the poster's own page color. */
-  .identity-poster       { background: #ffffff; }
-  .identity-poster__img  { background: #ffffff; object-fit: contain; }
+     The poster artwork itself is a black sheet (that's the design).
+     The containing cell sits on white with 1.5rem of padding so the
+     black poster reads as a framed print on a white backdrop rather
+     than bleeding into the page. We drop the case-study default
+     absolute positioning on the img so padding actually inseats the
+     artwork instead of being ignored. */
+  .identity-poster {
+    background: #ffffff;
+    padding: 1.5rem;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+  }
+  .identity-poster__img {
+    position: relative;
+    inset: auto;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background: transparent;
+  }
+  @media (max-width: 760px) {
+    .identity-poster { padding: 1rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .lineup-cell__img,
     .lineup-preview { transition: opacity 120ms linear; transform: none; }
@@ -1049,7 +1070,6 @@
           <figure class="media media--square foundations-ba__media foundations-after">
             <img class="media__img foundations-ba__img foundations-after__layer foundations-after__layer--white is-active" src="/ASSETS/IMAGES/TRADER%20JOES/after-01.jpg" alt="Trader Joe&rsquo;s rebrand wordmark, red on white" />
             <img class="media__img foundations-ba__img foundations-after__layer foundations-after__layer--white" src="/ASSETS/IMAGES/TRADER%20JOES/after-03.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, red on white" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__layer--red"   src="/ASSETS/IMAGES/TRADER%20JOES/after-04.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, white on red" />
           </figure>
         </div>
       </div>

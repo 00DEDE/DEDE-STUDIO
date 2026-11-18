@@ -166,6 +166,14 @@
     transform: scale(1.15);
     transform-origin: center 75%;
   }
+  /* Mobile raises the focal point ~15% so the title overlay stops
+     covering the hero product. */
+  @media (max-width: 640px) {
+    .cell--trader-joes .cell__cover-img {
+      object-position: center 60%;
+      transform-origin: center 60%;
+    }
+  }
 
   /* ─── cover cells (single-image variant) — legacy CSS-bg path ─── */
   .cell--cover::before {
