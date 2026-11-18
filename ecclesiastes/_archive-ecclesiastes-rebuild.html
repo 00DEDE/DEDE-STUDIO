@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Book of Ecclesiastes — IAMDEDE.COM</title>
+<link rel="canonical" href="https://iamdede.com/ecclesiastes/" />
+<link rel="icon" type="image/png" sizes="96x96" href="/ASSETS/LOGO/favicon-96.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/ASSETS/LOGO/favicon-180.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#0f0e0c" />
+<script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="/theme.css" />
+<link rel="stylesheet" href="/site-header.css" />
+<link rel="stylesheet" href="/site-footer.css" />
+<link rel="stylesheet" href="/site-bg.css" />
+<link rel="stylesheet" href="/site-mobile.css" />
+<link rel="stylesheet" href="/case-study.css" />
+<style>
+  /* Page-specific overrides + page-unique components only. All shared
+     layout, type, section rhythm, read-more pattern, media cells,
+     pager, closing block and scroll-cue live in /case-study.css. All
+     shared behaviors (media-tab + scroll-cue + read-more toggle)
+     live in /case-study.js. */
+
+  /* ─── Cross-document View Transitions (page-specific) ─────────────
+     Named morph target for the /work/ → /ecclesiastes/ hero crossfade.
+     The home page's work grid declares the source element with the
+     same view-transition-name. */
+  .case__hero-media { view-transition-name: ecclesiastes-hero; }
+  ::view-transition-group(ecclesiastes-hero) {
+    animation-duration: 620ms;
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  /* html/body base — margin/padding reset, bg, and global cursor live
+     in theme.css; only the Ecclesiastes-specific font stack is set
+     here. */
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    width: 100%;
+    color: var(--fg);
+    overflow-x: clip;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    cursor: var(--cursor-url) 12 12, auto;
+  }
+
+  /* Hairline rules between the major sections of this page. The hero
+     sits at the very top; the site-header draws its own hairline in
+     that spot, so a border-top there would double-rule. */
+  .case__grid,
+  .case__closing,
+  .pager,
+  body > .site-footer {
+    border-top: 1px solid var(--line);
+  }
+  .case__hero.case__grid { border-top: 0; }
+
+  .case__hero-image {
+    position: absolute;
+    inset: 0;
+    background-image: url("/ASSETS/IMAGES/ECCLESIASTES/cover.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     FLOATING CAROUSEL — transparent PNG mockups scroll right→left on
+     their own; hover modulates speed and direction. Container clips
+     the moving track so slides can sit off-screen until they scroll
+     in. Full-bleed: negative margin pulls past the grid gutter.
+     ═══════════════════════════════════════════════════════════════════ */
+  .floating-carousel {
+    position: relative;
+    height: 75vh;
+    height: 75svh;
+    margin: 0;
+    overflow: hidden;
+    margin-inline: calc(var(--page-x) * -1);
+  }
+  .floating-carousel__track {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding: 0 clamp(2rem, 4vw, 4rem);
+    width: max-content;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+  .floating-carousel__slide {
+    display: block;
+    height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  /* The poster slide is narrower than the mockups; extra inline
+     margin equal to one full gap on each side keeps it reading as an
+     intentional pause rather than a squeeze. */
+  .floating-carousel__slide[src$="carousel-01.png"] {
+    margin-inline: clamp(2rem, 4vw, 4rem);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .floating-carousel__track { transform: none; }
+  }
+  @media (max-width: 900px) {
+    .floating-carousel {
+      height: 52.5vh;
+      height: 52.5svh;
+    }
+  }
+
+  /* ─── Mobile carousel play / pause + prev / next (touch only) ──── */
+  .carousel-controls {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--page-x);
+    box-sizing: border-box;
+    margin-top:    clamp(0.85rem, 2.125vh, 1.275rem);
+    margin-bottom: var(--stack-y-tight);
+  }
+  @media (hover: none) {
+    .carousel-controls { display: flex; }
+  }
+  .carousel-toggle,
+  .carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width:  clamp(2.4rem, 8vw, 2.8rem);
+    height: clamp(2.4rem, 8vw, 2.8rem);
+    padding: 0;
+    background: rgba(var(--fg-rgb), 0.08);
+    color: var(--fg);
+    border: 1px solid rgba(var(--fg-rgb), 0.18);
+    border-radius: 999px;
+    cursor: var(--cursor-url) 12 12, pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    transition:
+      background   240ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform    240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .carousel-toggle:active,
+  .carousel-nav:active { transform: scale(0.94); }
+  .carousel-nav[data-active="true"] {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+  .carousel-nav__icon {
+    width:  0.8rem;
+    height: 0.8rem;
+    display: block;
+  }
+  .carousel-toggle__icon {
+    width:  0.8rem;
+    height: 0.8rem;
+    display: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .carousel-toggle[data-state="playing"] .icon-pause,
+  .carousel-toggle[data-state="paused"]  .icon-play {
+    display: block;
+  }
+
+  /* ─── Trailer walkthrough video (section 05) ───────────────────── */
+  .trailer-walkthrough { background: #000; }
+  .trailer-walkthrough__video {
+    object-fit: cover;
+    background: #000;
+  }
+
+  /* ─── Tangible Forms slideshow (section 06) — same orchestration as
+     UNESCO's: two full-width landscape cells, stacked, each cycling
+     its own stack of mockup stills on a shared beat. */
+  .tangible-forms {
+    grid-template-columns: 1fr !important;
+  }
+  .tangible-forms__cell {
+    background: var(--bg);
+  }
+  .tangible-forms__cell .media__tslide {
+    object-fit: contain;
+    background: var(--bg);
+  }
+  .media__tslide {
+    opacity: 0;
+    transition: opacity 600ms ease-in-out;
+    will-change: opacity;
+  }
+  .media__tslide.is-active { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .media__tslide { transition: none; }
+  }
+</style>
+</head>
+<body class="case">
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__blob site-bg__blob--cyan-1"></div>
+    <div class="site-bg__blob site-bg__blob--cyan-2"></div>
+    <div class="site-bg__blob site-bg__blob--dark-1"></div>
+    <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
+
+  <header class="site-header">
+    <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-header__end">
+      <nav class="site-header__nav" aria-label="Primary">
+        <a href="/home/">Home</a>
+        <a href="/work/">Work</a>
+        <a href="/play/">Play</a>
+        <a href="/about/">About</a>
+      </nav>
+      <button class="site-header__theme-toggle" type="button" aria-label="Toggle color theme">
+        <span class="site-header__theme-toggle-thumb" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <script src="/site-header.js" defer></script>
+  <script src="/site-bg.js" defer></script>
+  <script src="/case-study.js" defer></script>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <span class="scroll-cue__text">Scroll</span>
+    <span class="scroll-cue__arrow">↓</span>
+  </div>
+
+  <!-- ══════════════════════ HERO ══════════════════════ -->
+  <section class="case__hero case__grid" aria-label="Ecclesiastes cover">
+    <div class="g-span-1 case__hero-title">
+      <span class="intro__eyebrow">Case Study 02</span>
+      <h1 class="intro__title">Ecclesiastes</h1>
+    </div>
+    <div class="case__hero-media g-span-2">
+      <div class="case__hero-image" role="img" aria-label="Ecclesiastes project cover"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ 01 · OVERVIEW ══════════════════════ -->
+  <section class="case__overview case__grid" aria-label="Overview">
+    <p class="section-label g-span-1"><span class="section-label__num">01</span>Overview</p>
+    <div class="g-span-2">
+      <p class="statement">
+        TODO: write the lead statement for the Ecclesiastes project.
+        <em>Short editorial line</em>, one or two sentences.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-overview">
+        <div class="read-more__inner">
+          <p>TODO: expanded overview copy. Two or three paragraphs explaining the project brief, why it matters, and what the viewer is about to see across the rest of the page.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ 02 · MOTION (interaction video) ══════════════════════ -->
+  <section class="case__grid" aria-label="Motion">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">02</span>Motion</p>
+      <p class="statement">
+        TODO: statement about the motion piece.
+        <em>One accented phrase</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-motion">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-motion">
+        <div class="read-more__inner">
+          <p>TODO: describe the motion treatment. What it does, how it reads, why it exists.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <figure class="media media--wide">
+        <video class="media__video"
+               autoplay muted loop playsinline preload="metadata"
+               disablepictureinpicture disableremoteplayback
+               poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
+               aria-label="Ecclesiastes motion piece">
+          <source src="/ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ FLOATING CAROUSEL ══════════════════════
+       Signature ecclesiastes component — transparent mockup PNGs
+       marquee across the full viewport. JS below drives the track;
+       mobile gets play/pause + prev/next pill controls. -->
+  <section class="ecclesiastes__carousel" aria-label="Project artefacts">
+    <div class="floating-carousel" id="floating-carousel">
+      <div class="floating-carousel__track" id="floating-carousel-track">
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-07.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-14.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-15.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-16.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-19.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-20.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-21.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-24.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-25.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-29.png" alt="" />
+        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-31.png" alt="" />
+      </div>
+    </div>
+    <div class="carousel-controls" aria-hidden="true">
+      <button class="carousel-nav" type="button" id="carousel-prev" aria-label="Previous slide">
+        <svg class="carousel-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button class="carousel-toggle" type="button" id="carousel-toggle" data-state="playing" aria-label="Pause carousel">
+        <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+        <svg class="carousel-toggle__icon icon-play"  viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg>
+      </button>
+      <button class="carousel-nav" type="button" id="carousel-next" aria-label="Next slide">
+        <svg class="carousel-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════ -->
+  <section class="case__grid" aria-label="Case study">
+
+    <!-- ─── 03 · Typography (mockup pair) ─────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">03</span>Typography</p>
+      <p class="statement">
+        TODO: statement about the typographic system.
+        <em>Short accented phrase</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-typography">
+        <div class="read-more__inner">
+          <p>TODO: describe the type choices, the hierarchy, the voice.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <div class="media-pair">
+        <figure class="media" style="aspect-ratio: 3 / 4;">
+          <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-01.jpg" alt="Ecclesiastes typography specimen 01" />
+        </figure>
+        <figure class="media" style="aspect-ratio: 3 / 4;">
+          <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-02.jpg" alt="Ecclesiastes typography specimen 02" />
+        </figure>
+      </div>
+    </div>
+
+    <hr class="case__section-rule" aria-hidden="true" />
+    <!-- ─── 04 · Applications (3-poster row + trailer walkthrough) ── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">04</span>Applications</p>
+      <p class="statement">
+        TODO: statement about how the system applies to printed matter.
+        <em>Accented phrase</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-applications">
+        <div class="read-more__inner">
+          <p>TODO: describe the printed applications — the posters, their series, their intent.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 3-across poster row. Stacks to 2-up on mobile. -->
+      <div class="section-media__posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-01.jpg" alt="Ecclesiastes poster 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-02.jpg" alt="Ecclesiastes poster 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-03.jpg" alt="Ecclesiastes poster 03" /></figure>
+      </div>
+
+      <!-- Trailer walkthrough — native play / pause / scrub controls. -->
+      <figure class="media media--wide trailer-walkthrough">
+        <video class="media__video trailer-walkthrough__video"
+               controls preload="metadata" playsinline webkit-playsinline
+               disablepictureinpicture disableremoteplayback
+               poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
+               aria-label="Ecclesiastes trailer">
+          <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </div>
+
+    <hr class="case__section-rule" aria-hidden="true" />
+    <!-- ─── 05 · Tangible Forms (2 stacked mockup slideshows) ─────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">05</span>Tangible Forms</p>
+      <p class="statement">
+        TODO: statement about the physical object.
+        <em>Accented phrase</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-tangible">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-tangible">
+        <div class="read-more__inner">
+          <p>TODO: talk about holding the book, the paper, the binding — whatever matters about the physical object.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- Two full-width landscape cells, stacked; each cycles mockups
+           on a shared 5s beat. object-fit: contain so no edge cropping. -->
+      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-01.jpg" alt="Tangible form 01" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-02.jpg" alt="Tangible form 02" />
+        </figure>
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-03.jpg" alt="Tangible form 03" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Tangible form 04" />
+        </figure>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════ -->
+  <figure class="case__closing-image" aria-label="Ecclesiastes closing hero">
+    <img src="/ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Ecclesiastes closing poster" />
+  </figure>
+
+  <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
+  <nav class="pager" aria-label="Case navigation">
+    <a class="pager__link pager__link--prev" href="/unesco/">
+      <span class="pager__label"><span class="pager__arrow" aria-hidden="true">←</span> Previous</span>
+      <span class="pager__title">UNESCO</span>
+      <span class="pager__sub">Case Study · 01</span>
+    </a>
+    <a class="pager__link pager__link--next" href="/work/">
+      <span class="pager__label">Next <span class="pager__arrow" aria-hidden="true">→</span></span>
+      <span class="pager__title">All Work</span>
+      <span class="pager__sub">Index</span>
+    </a>
+  </nav>
+
+  <footer class="site-footer">
+    <a class="site-footer__logo" href="/home/" aria-label="DEDE STUDIO — home">
+      <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-white.png" alt="DEDE STUDIO" />
+    </a>
+    <div class="site-footer__meta">
+      <div class="site-footer__meta-left">
+        <span>DAVID GOMEZ © 2026 ALL RIGHTS RESERVED.</span>
+      </div>
+      <div class="site-footer__meta-center">
+        <span>Let&rsquo;s create something meaningful. <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></span>
+      </div>
+      <div class="site-footer__meta-right">
+        <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">BACK TO TOP</a>
+        <a href="https://www.linkedin.com/in/dedestudio" target="_blank" rel="noopener">LINKEDIN</a>
+      </div>
+    </div>
+  </footer>
+  <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
+
+  <script>
+  /* ════════════════════════════════════════════════════════════════
+     Ecclesiastes-specific interactions. Shared case-study behaviors
+     (read-more toggle, media-tab, scroll-cue fade) live in
+     /case-study.js and run automatically on page load.
+     ════════════════════════════════════════════════════════════════ */
+  (function () {
+    'use strict';
+
+    /* ─── Floating carousel marquee ─────────────────────────────────
+       Transparent PNG slides scroll right→left on a continuous loop.
+       Hover modulates speed; vertical mouse wheel over the strip is
+       captured and scrubbed horizontally; mobile prev/next pills
+       nudge the track by a fixed step. The track duplicates its
+       content once in JS so the wrap is seamless. */
+    var carousel = document.getElementById('floating-carousel');
+    var track    = document.getElementById('floating-carousel-track');
+    if (carousel && track) {
+      // Clone every slide once so the duplicate takes over as the
+      // original scrolls past; wrap offset stays within half-width.
+      var slides = Array.prototype.slice.call(track.children);
+      slides.forEach(function (s) {
+        var c = s.cloneNode(true);
+        c.setAttribute('aria-hidden', 'true');
+        track.appendChild(c);
+      });
+
+      var offset   = 0;
+      var speed    = 0.65;   // px per frame — gentle drift
+      var halfW    = 0;
+      var paused   = false;
+      var offscreen = false;
+      var wheelTO  = null;
+
+      function measure() { halfW = track.scrollWidth / 2; }
+      window.addEventListener('load', measure);
+      window.addEventListener('resize', measure);
+      // Re-measure when lazy-loaded PNGs finish decoding.
+      track.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) img.addEventListener('load', measure, { once: true });
+      });
+      measure();
+
+      function tick() {
+        if (!paused && !offscreen && halfW) {
+          offset -= speed;
+          while (offset <= -halfW) offset += halfW;
+          while (offset > 0) offset -= halfW;
+          track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      carousel.addEventListener('mouseenter', function () { paused = true; });
+      carousel.addEventListener('mouseleave', function () {
+        if (!wheelTO) paused = false;
+      });
+      carousel.addEventListener('wheel', function (e) {
+        var dy = e.deltaY || 0;
+        var dx = e.deltaX || 0;
+        // Only capture horizontal gestures; vertical wheel passes
+        // through so the page keeps scrolling.
+        if (Math.abs(dx) <= Math.abs(dy)) return;
+        e.preventDefault();
+        paused = true;
+        offset -= dx;
+        if (wheelTO) clearTimeout(wheelTO);
+        wheelTO = setTimeout(function () {
+          wheelTO = null;
+          if (!carousel.matches(':hover')) paused = false;
+        }, 1500);
+      }, { passive: false });
+
+      // Pause when offscreen so we're not animating out of view.
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (ent) { offscreen = !ent.isIntersecting; });
+        }, { threshold: 0.05 });
+        io.observe(carousel);
+      }
+
+      // Mobile pill controls — pause/resume + prev/next nudge.
+      var toggleBtn = document.getElementById('carousel-toggle');
+      var prevBtn   = document.getElementById('carousel-prev');
+      var nextBtn   = document.getElementById('carousel-next');
+      var userPaused = false;
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          userPaused = !userPaused;
+          paused = userPaused;
+          toggleBtn.setAttribute('data-state', userPaused ? 'paused' : 'playing');
+          toggleBtn.setAttribute('aria-label', userPaused ? 'Play carousel' : 'Pause carousel');
+        });
+      }
+      var NUDGE = 240;
+      function nudge(dir) {
+        offset += dir * NUDGE;
+        while (offset <= -halfW) offset += halfW;
+        while (offset > 0) offset -= halfW;
+        track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+      }
+      if (prevBtn) prevBtn.addEventListener('click', function () { nudge(+1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { nudge(-1); });
+    }
+
+    /* ─── Tangible Forms (section 05) — two long landscape cells,
+       cycling in lockstep on one shared ticker. Click a cell to hold
+       it on the current image; click outside to resume. */
+    (function () {
+      var cells = document.querySelectorAll('.tangible-forms__cell');
+      if (!cells.length) return;
+      var interval = parseInt(cells[0].getAttribute('data-tangible-interval'), 10) || 5000;
+      var registry = [];
+      cells.forEach(function (cell) {
+        var slides = cell.querySelectorAll('.media__tslide');
+        if (slides.length < 2) return;
+        registry.push({
+          cell: cell,
+          slides: slides,
+          idx: 0,
+          offscreen: true,
+          userHold: false
+        });
+      });
+      if (!registry.length) return;
+
+      function advance(state) {
+        state.slides[state.idx].classList.remove('is-active');
+        state.idx = (state.idx + 1) % state.slides.length;
+        state.slides[state.idx].classList.add('is-active');
+      }
+      setInterval(function () {
+        registry.forEach(function (state) {
+          if (!state.offscreen && !state.userHold) advance(state);
+        });
+      }, interval);
+
+      if ('IntersectionObserver' in window) {
+        registry.forEach(function (state) {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (ent) { state.offscreen = !ent.isIntersecting; });
+          }, { threshold: 0.1 });
+          io.observe(state.cell);
+        });
+      } else {
+        registry.forEach(function (state) { state.offscreen = false; });
+      }
+
+      registry.forEach(function (state) {
+        state.cell.addEventListener('click', function (e) {
+          e.stopPropagation();
+          state.userHold = true;
+          state.cell.classList.add('is-user-held');
+        });
+      });
+      document.addEventListener('click', function (e) {
+        registry.forEach(function (state) {
+          if (!state.userHold) return;
+          if (!state.cell.contains(e.target)) {
+            state.userHold = false;
+            state.cell.classList.remove('is-user-held');
+          }
+        });
+      });
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          registry.forEach(function (state) { state.offscreen = true; });
+        }
+      });
+    })();
+  })();
+  </script>
+</body>
+</html>

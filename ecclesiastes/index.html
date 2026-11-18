@@ -17,25 +17,30 @@
 <link rel="stylesheet" href="/site-mobile.css" />
 <link rel="stylesheet" href="/case-study.css" />
 <style>
-  /* Page-specific overrides + page-unique components only. All shared
-     layout, type, section rhythm, read-more pattern, media cells,
-     pager, closing block and scroll-cue live in /case-study.css. All
-     shared behaviors (media-tab + scroll-cue + read-more toggle)
-     live in /case-study.js. */
+  /* Per-page cursor — matches mind (UNESCO lives inside mind). */
+
+  /* Page layout tokens, widow/orphan rules, hero/intro, grid skeleton,
+     section-label, statement, read-more, media cells, pager, closing
+     block and scroll-cue all live in /case-study.css. This inline
+     block only carries UNESCO-specific overrides and page-unique
+     components (scans marquee, palette grid, atlas viewer, tangible
+     forms slideshow, foundations-after orchestrator, walkthrough
+     videos). */
 
   /* ─── Cross-document View Transitions (page-specific) ─────────────
      Named morph target for the /work/ → /ecclesiastes/ hero crossfade.
      The home page's work grid declares the source element with the
      same view-transition-name. */
-  .case__hero-media { view-transition-name: ecclesiastes-hero; }
+  .unesco__hero-media { view-transition-name: ecclesiastes-hero; }
   ::view-transition-group(ecclesiastes-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
 
-  /* html/body base — margin/padding reset, bg, and global cursor live
-     in theme.css; only the Ecclesiastes-specific font stack is set
-     here. */
+  /* html/body base — margin/padding reset, bg, and global cursor all
+     live in theme.css; only the UNESCO-specific font stack ("ABC
+     Oracle" first) is set here. Widow/orphan rules live in
+     case-study.css. */
   html, body {
     margin: 0;
     padding: 0;
@@ -43,150 +48,414 @@
     width: 100%;
     color: var(--fg);
     overflow-x: clip;
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     cursor: var(--cursor-url) 12 12, auto;
   }
 
-  /* Hairline rules between the major sections of this page. The hero
-     sits at the very top; the site-header draws its own hairline in
-     that spot, so a border-top there would double-rule. */
-  .case__grid,
-  .case__closing,
+  /* Hairline rule separating the UNESCO page's major sections — a
+     1px --line across the content inset by --page-x on both sides so
+     it matches the page gutter. Added to every section after the
+     intro and to the pager/footer so the whole page reads as discrete
+     chapters. The hero sits at the very top of the page; the
+     site-header already draws a hairline in that spot, so a border-
+     top there would double-rule. (Intro/meta typography and base
+     .unesco__intro padding live in case-study.css.) */
+  .unesco__atlas,
+  .unesco__grid,
+  .unesco__foundations,
+  .unesco__closing,
   .pager,
   body > .site-footer {
     border-top: 1px solid var(--line);
   }
-  .case__hero.case__grid { border-top: 0; }
-
-  .case__hero-image {
-    position: absolute;
-    inset: 0;
-    background-image: url("/ASSETS/IMAGES/ECCLESIASTES/cover.jpg");
-    background-size: cover;
-    background-position: center;
-  }
+  .unesco__hero.unesco__grid { border-top: 0; }
 
   /* ═══════════════════════════════════════════════════════════════════
-     FLOATING CAROUSEL — transparent PNG mockups scroll right→left on
-     their own; hover modulates speed and direction. Container clips
-     the moving track so slides can sit off-screen until they scroll
-     in. Full-bleed: negative margin pulls past the grid gutter.
+     HERO — clean full-bleed image (Manual pattern). Rounded container
+     matches the source cell so the view-transition morph lands clean.
      ═══════════════════════════════════════════════════════════════════ */
-  .floating-carousel {
+  /* Hero uses the shared .unesco__grid layout (title in col 1, image
+     in cols 2-3) with extra top breathing room for the first row
+     of content below the header. */
+  .unesco__hero.unesco__grid {
+    padding-top: var(--stack-top);
+  }
+  .unesco__hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.9rem, 2vh, 1.5rem);
+  }
+  .unesco__hero-title .intro__eyebrow { margin-bottom: 0; }
+  .unesco__hero-title .intro__title { margin-bottom: 0; }
+  .unesco__hero-media {
     position: relative;
-    height: 75vh;
-    height: 75svh;
+    width: 100%;
+    /* 16:10 to match the source artwork; capped at 60vh so the whole
+       image, plus the top of the Overview section below, stays in
+       the first viewport. */
+    aspect-ratio: 16 / 10;
+    max-height: 60vh;
     margin: 0;
     overflow: hidden;
-    margin-inline: calc(var(--page-x) * -1);
-  }
-  .floating-carousel__track {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    gap: clamp(2rem, 4vw, 4rem);
-    padding: 0 clamp(2rem, 4vw, 4rem);
-    width: max-content;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
-  }
-  .floating-carousel__slide {
-    display: block;
-    height: 100%;
-    width: auto;
-    max-width: none;
-    object-fit: contain;
-    flex-shrink: 0;
-    user-select: none;
-    -webkit-user-drag: none;
-  }
-  /* The poster slide is narrower than the mockups; extra inline
-     margin equal to one full gap on each side keeps it reading as an
-     intentional pause rather than a squeeze. */
-  .floating-carousel__slide[src$="carousel-01.png"] {
-    margin-inline: clamp(2rem, 4vw, 4rem);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .floating-carousel__track { transform: none; }
-  }
-  @media (max-width: 900px) {
-    .floating-carousel {
-      height: 52.5vh;
-      height: 52.5svh;
-    }
-  }
-
-  /* ─── Mobile carousel play / pause + prev / next (touch only) ──── */
-  .carousel-controls {
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 var(--page-x);
-    box-sizing: border-box;
-    margin-top:    clamp(0.85rem, 2.125vh, 1.275rem);
-    margin-bottom: var(--stack-y-tight);
-  }
-  @media (hover: none) {
-    .carousel-controls { display: flex; }
-  }
-  .carousel-toggle,
-  .carousel-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width:  clamp(2.4rem, 8vw, 2.8rem);
-    height: clamp(2.4rem, 8vw, 2.8rem);
-    padding: 0;
-    background: rgba(var(--fg-rgb), 0.08);
-    color: var(--fg);
-    border: 1px solid rgba(var(--fg-rgb), 0.18);
-    border-radius: 999px;
-    cursor: var(--cursor-url) 12 12, pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    transition:
-      background   240ms cubic-bezier(0.4, 0, 0.2, 1),
-      border-color 240ms cubic-bezier(0.4, 0, 0.2, 1),
-      transform    240ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .carousel-toggle:active,
-  .carousel-nav:active { transform: scale(0.94); }
-  .carousel-nav[data-active="true"] {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-  }
-  .carousel-nav__icon {
-    width:  0.8rem;
-    height: 0.8rem;
-    display: block;
-  }
-  .carousel-toggle__icon {
-    width:  0.8rem;
-    height: 0.8rem;
-    display: none;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.75;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .carousel-toggle[data-state="playing"] .icon-pause,
-  .carousel-toggle[data-state="paused"]  .icon-play {
-    display: block;
-  }
-
-  /* ─── Trailer walkthrough video (section 05) ───────────────────── */
-  .trailer-walkthrough { background: #000; }
-  .trailer-walkthrough__video {
-    object-fit: cover;
     background: #000;
   }
 
-  /* ─── Tangible Forms slideshow (section 06) — same orchestration as
-     UNESCO's: two full-width landscape cells, stacked, each cycling
-     its own stack of mockup stills on a shared beat. */
+  /* ─── Keep the site-header locked to its compact (is-scrolled)
+     state on this page. Only the home page should show the expanded
+     big-logo look at the top; every other page, UNESCO included,
+     stays small so the hero cover reads as the first real content. */
+  body.unesco .site-header,
+  body.unesco .site-header.is-scrolled {
+    padding: 1.15rem 0 0.65rem;
+  }
+  body.unesco .site-header .site-header__brand img,
+  body.unesco .site-header.is-scrolled .site-header__brand img {
+    height: 1.75rem;
+  }
+  /* Pill sits INSIDE the UNESCO header on the far right, vertically
+     aligned with the brand mark (not straddling the header's bottom
+     edge like the shared desktop placement). Overrides the shared
+     `top: calc(var(--header-safe-top) - 1.25rem)` default. */
+  @media (min-width: 641px) {
+    body.unesco .site-menu-btn {
+      top: 0.55rem !important;
+      right: clamp(1rem, 2vw, 1.75rem) !important;
+    }
+    body.unesco .site-menu-btn.is-placed {
+      /* Keep the pill locked to the UNESCO header on this page — the
+         sitewide drag/persist moves are suppressed here so the pill
+         always reads as part of the header, not a floating chip. */
+      top: 0.55rem !important;
+      right: clamp(1rem, 2vw, 1.75rem) !important;
+      left: auto !important;
+    }
+  }
+  .unesco__hero-image {
+    position: absolute;
+    inset: 0;
+    background-image: url("/ASSETS/IMAGES/UNESCO/01.jpg");
+    background-size: cover;
+    /* Image shifted up 20% within the hero cell — focal point moves
+       from the centre (50%) toward the lower third (70%) so more of
+       the bottom of the artwork is in view. */
+    background-position: center 70%;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     INTERACTIVE ATLAS — sub-section between hero and the 3-col grid.
+     Big "Interactive Atlas" statement + read-more expand + rounded
+     video below. Shares the same --page-x gutter and --stack-y
+     rhythm as every other section on the page.
+     ═══════════════════════════════════════════════════════════════════ */
+  .unesco__atlas {
+    padding: var(--stack-y) var(--page-x);
+    box-sizing: border-box;
+  }
+  /* Atlas sits outside the main 3-col grid, so its section-label
+     needs explicit breathing room above the statement. */
+  .unesco__atlas > .section-label {
+    display: block;
+    margin: 0 0 clamp(1rem, 2vh, 1.75rem);
+    padding-top: 0;
+  }
+  .unesco__atlas-media {
+    position: relative;
+    /* Capped at 75vh * 16/9 so the atlas video fits in a single
+       viewport while the viewer scrolls through this section. */
+    width: min(100%, calc(75vh * 16 / 9));
+    margin: clamp(1.5rem, 3vh, 2.5rem) auto 0;
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+    overflow: hidden;
+    background: #000;
+  }
+  .unesco__atlas-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #000;
+  }
+
+  /* Campaign-section posters — mobile reshuffle to put the two black
+     posters side by side on the top row and the grey one centered on
+     the second row. Hooked off the default .section-media__posters
+     mobile layout in case-study.css (which stacks posters into a
+     2-col grid at <=900px). */
+  @media (max-width: 900px) {
+    .section-media__posters--campaign > :nth-child(1) { grid-column: 1; grid-row: 1; }
+    .section-media__posters--campaign > :nth-child(3) { grid-column: 2; grid-row: 1; }
+    .section-media__posters--campaign > :nth-child(2) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
+      justify-self: center;
+    }
+  }
+
+  /* Intro overview essay — single-column stack, since the intro body
+     lives in g-span-2 (2/3 of the grid width). Keeps paragraphs
+     within the shared --prose-max measure. */
+  .unesco__intro .read-more__inner {
+    max-width: var(--prose-max);
+  }
+  .unesco__intro .read-more__inner p {
+    max-width: 100%;
+    margin: 0 0 1em;
+  }
+  .unesco__intro .read-more__inner p:last-child { margin-bottom: 0; }
+
+  /* Base .media cells, aspect-ratio variants, .media__img/__video
+     fill behavior, and the .media-tab Waabi pattern live in
+     case-study.css. UNESCO-specific component patterns below. */
+
+  /* ─── Interactive Palette ─────────────────────────────────────────
+     The original palette billboard image is the base. A 3×2 grid of
+     hover regions sits on top (assuming the image lays out six colors
+     in three columns, two rows). A veil (page-bg colored overlay)
+     covers each region at the start and fades away in sequence when
+     the grid enters the viewport, so each color on the image "appears"
+     one by one. Hover/focus lays a soft dark scrim over the region
+     and surfaces its name centered inside. */
+  .palette-grid {
+    position: relative;
+    display: block;
+    width: min(100%, calc(75vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    justify-self: center;
+    margin-inline: auto;
+    overflow: hidden;
+  }
+  .palette-grid__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: var(--bg);
+  }
+  .palette-grid__cells {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    /* Image is a strict 6-column billboard (no rows), so the hover
+       regions sit in one row of six to match each color panel. */
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: 1fr;
+  }
+  .palette-swatch {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
+    cursor: var(--cursor-url) 12 12, pointer;
+  }
+
+  /* Reveal veil — covers the cell at start, fades to 0 when .is-in
+     is applied to the parent grid. Colored to match the page bg so
+     the image appears to "develop" one color at a time. */
+  .palette-swatch__veil {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 720ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .palette-grid.is-in .palette-swatch__veil { opacity: 0; }
+  .palette-grid.is-in .palette-swatch:nth-child(1) .palette-swatch__veil { transition-delay:   0ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(2) .palette-swatch__veil { transition-delay: 150ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(3) .palette-swatch__veil { transition-delay: 300ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(4) .palette-swatch__veil { transition-delay: 450ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(5) .palette-swatch__veil { transition-delay: 600ms; }
+  .palette-grid.is-in .palette-swatch:nth-child(6) .palette-swatch__veil { transition-delay: 750ms; }
+
+  .palette-swatch__scrim {
+    position: absolute;
+    /* Extend 1px past the cell on every edge so sub-pixel gaps and
+       the hairline seams inside the source billboard never leave
+       slivers of the underlying image untouched by the scrim. */
+    inset: -1px;
+    background: rgba(0, 0, 0, 0.32);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .palette-swatch__name {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15em;
+    padding: 0.5rem;
+    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    /* 25% smaller than before (0.9/1.4vw/1.25 → 0.675/1.05vw/0.94). */
+    font-size: clamp(0.675rem, 1.05vw, 0.94rem);
+    line-height: 1.15;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition:
+      opacity   360ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* Each word of the color name sits on its own line, stacked vertically. */
+  .palette-swatch__name > span { display: block; }
+  .palette-swatch:hover .palette-swatch__scrim,
+  .palette-swatch:focus-visible .palette-swatch__scrim {
+    opacity: 1;
+  }
+  .palette-swatch:hover .palette-swatch__name,
+  .palette-swatch:focus-visible .palette-swatch__name {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .palette-swatch:focus-visible { outline: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .palette-swatch__veil { transition: none; opacity: 0; }
+    .palette-swatch__name { transition: opacity 180ms linear; }
+  }
+
+  /* ─── Scans marquee ────────────────────────────────────────────
+     Two independent horizontal ticker rows between Overview and
+     Foundation. Each row's .scans__track is driven by JS via
+     translateX, with each image duplicated inline so the wrap is
+     seamless. Hover pauses that row; vertical mouse wheel over the
+     carousel is captured and scrubs the row horizontally.
+
+     White paper is removed via mix-blend-mode: multiply against the
+     white page background (--bg is #ffffff). Spiral binding shadows
+     and binder holes will still ghost through faintly since this is
+     a blend-mode trick, not a true alpha mask. */
+  .scans {
+    padding: var(--stack-y) 0;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  .scans__row {
+    position: relative;
+    overflow: hidden;
+    /* No overscroll-behavior: contain — vertical wheel must chain
+       through to the page so users can keep scrolling down. The JS
+       handler only preventDefaults on horizontal gestures. */
+    touch-action: pan-y;
+  }
+  .scans__row + .scans__row {
+    margin-top: clamp(0.75rem, 1.5vh, 1.25rem);
+  }
+  .scans__track {
+    display: flex;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    width: max-content;
+    will-change: transform;
+  }
+  .scans__track > img {
+    /* "Half size" reference: each page thumbnail sits at about a
+       third of viewport height so a row of them reads as a stream
+       of notes, not a gallery of posters. */
+    height: clamp(220px, 30vh, 320px);
+    width: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    mix-blend-mode: multiply;
+    background: transparent;
+  }
+
+  /* .media-pair and .foundations-ba layouts live in case-study.css. */
+
+  /* ─── Applications + Campaign walkthrough videos ─────────────────
+     The source screen recordings are 1920×1068, not a true 16:9
+     (they'd sit inside the default .media--wide cell with black bars
+     top and bottom). Override the cell's aspect-ratio to match the
+     recording exactly so the video frame fills edge to edge with no
+     letterbox. object-fit: fill keeps the ratio locked since the
+     cell is already the video's native ratio. */
+  .applications-walkthrough,
+  .campaign-walkthrough {
+    aspect-ratio: 1920 / 1068 !important;
+    background: #000;
+  }
+  .applications-walkthrough__video,
+  .campaign-walkthrough__video {
+    object-fit: fill;
+    background: #000;
+  }
+
+  /* ─── Foundation After-cell orchestrated slideshow (section 02) ──
+     The After cell now carries three layers stacked: the logo reveal
+     video (ping-pong forward + reverse once through), followed by two
+     rebrand lockup stills. JS in the page body toggles .is-active on
+     one layer at a time; CSS handles the crossfade. */
+  .foundations-after { position: relative; }
+  .foundations-after__layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 520ms ease-in-out;
+    will-change: opacity;
+    pointer-events: none;
+  }
+  .foundations-after__layer.is-active { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .foundations-after__layer { transition: none; }
+  }
+
+  /* ─── 4-slide applications slideshow (section 07) ────────────────
+     Each cell cycles 4 images on a shared 16s loop (4s per slide,
+     with a 1s crossfade overlap). Two cells, 8 images total — split
+     equally between them. */
+  .media__aslide {
+    opacity: 0;
+    animation: applications-slideshow 16s ease-in-out infinite;
+    will-change: opacity;
+  }
+  .media__aslide--1 { animation-delay:  0s; }
+  .media__aslide--2 { animation-delay:  4s; }
+  .media__aslide--3 { animation-delay:  8s; }
+  .media__aslide--4 { animation-delay: 12s; }
+
+  @keyframes applications-slideshow {
+    0%, 100% { opacity: 0; }
+    6.25%    { opacity: 1; }   /* 1s fade-in */
+    25%      { opacity: 1; }   /* 3s hold */
+    31.25%   { opacity: 0; }   /* 1s fade-out, overlaps next slide */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .media__aslide { animation: none; }
+    .media__aslide--1 { opacity: 1; }
+  }
+
+  /* ─── Tangible Forms slideshow (section 08) ──────────────────────
+     Two full-width landscape cells, stacked vertically. Each cell is
+     the size of both earlier half-width cells combined, so each image
+     renders large. object-fit: contain keeps every image fully in
+     view (no edge crop) and lets the cell background show through as
+     a thin matte on mismatched aspect ratios. */
   .tangible-forms {
     grid-template-columns: 1fr !important;
   }
@@ -197,6 +466,13 @@
     object-fit: contain;
     background: var(--bg);
   }
+  /* Only the first slide of the first cell (celebration-01) is
+     zoomed 30% so the envelope reads at a stronger scale; every
+     other image in the slideshow sits at its natural contain size. */
+  .tangible-forms__cell .media__tslide.is-zoomed {
+    transform: scale(1.3);
+    transform-origin: center;
+  }
   .media__tslide {
     opacity: 0;
     transition: opacity 600ms ease-in-out;
@@ -206,9 +482,205 @@
   @media (prefers-reduced-motion: reduce) {
     .media__tslide { transition: none; }
   }
+
+  /* Read-more pulse, scroll-cue, media-tab, caption, .unesco__closing,
+     .statement--closing, .unesco__closing-image and the .pager all
+     live in case-study.css. */
+
+  /* ─── 09 · Printed Atlas — spreads + timeline scrubber ──────────
+     48 PDF pages in the stage (covers single, inner spreads double).
+     Below the stage: a full-width timeline strip. Hovering anywhere
+     along it sets a target page, and the stage crossfades toward
+     that page one step at a time. With no hover, pages auto-advance
+     forward, wrapping at 48 → 1. Two image layers (a/b) alternate
+     front/back so each page swap is a soft crossfade. */
+  .atlas-book {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.85rem, 1.75vh, 1.4rem);
+    width: min(100%, calc(75vh * 1440 / 1008));
+    justify-self: center;
+    margin-inline: auto;
+  }
+  .atlas-book__stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1440 / 1008;
+    /* Default is page-bg so the single-page covers (pg 1 and 48)
+       letterbox invisibly against the site. Inner spreads fill the
+       stage edge-to-edge so this bg is only ever seen on covers. */
+    background: var(--bg, #ffffff);
+    overflow: hidden;
+    transition: background 300ms ease-in-out;
+    /* Promote the stage to its own compositor layer so each page
+       crossfade stays on the GPU — big perf win in Safari where the
+       full-size spreads were causing main-thread repaints. */
+    transform: translateZ(0);
+    contain: layout paint;
+  }
+  /* Inner spreads only — darken the bg under them so any 1px gap
+     between <img> and stage edge during crossfade is unobtrusive. */
+  .atlas-book__stage.is-spread {
+    background: #0a0a0a;
+  }
+  /* Thin delicate gradient hinting at the book's binding. Shown only
+     on inner spreads (pages 2–47); hidden on the single-page covers. */
+  .atlas-book__spine {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 22px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0)    0%,
+      rgba(0, 0, 0, 0.14) 50%,
+      rgba(0, 0, 0, 0)    100%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 240ms ease-in-out;
+    z-index: 3;
+  }
+  .atlas-book__stage.is-spread .atlas-book__spine { opacity: 1; }
+  /* Two stacked image layers; one is always .is-active (opacity 1),
+     the other crossfades in. Both use object-fit: contain so the
+     single-page covers (pages 1 and 48) letterbox inside the spread
+     aspect without stretching. The letterbox bars inherit the stage
+     background, which is tuned to the cover's blue. */
+  .atlas-book__spread {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 340ms ease-in-out;
+    z-index: 1;
+    /* Keep each layer on its own GPU surface so the crossfade is a
+       composite-only animation. backface-visibility: hidden tames
+       Safari's known compositing glitches on stacked <img>. */
+    will-change: opacity;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .atlas-book__spread.is-active {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  /* ─── Timeline thumbnails ─────────────────────────────────────────
+     A strip of 48 small thumbnails directly below the stage. Each
+     cell shows the atlas page it represents, sized to the spread
+     aspect. Hovering a thumb sets the target page; the stage
+     crossfades toward it one step at a time. The current page is
+     highlighted. On narrower viewports the strip stays the same
+     width as the stage so the row still spans the whole book. */
+  .atlas-book__timeline {
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(48, 1fr);
+    gap: 2px;
+    padding: 0;
+    user-select: none;
+    touch-action: pan-x;
+  }
+  .atlas-book__thumb {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    /* 2× the previous height — portrait aspect gives each thumb
+       twice the vertical pixels for the same cell width. Covers fit
+       natively at this ratio; spreads crop in slightly from the
+       sides, still legibly showing the page. */
+    aspect-ratio: 720 / 1008;
+    background-color: #eceae4;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    opacity: 0.42;
+    outline: 0 solid var(--accent);
+    outline-offset: 0;
+    transition:
+      opacity    180ms ease,
+      transform  180ms ease,
+      outline    140ms ease;
+    will-change: opacity, transform;
+  }
+  .atlas-book__thumb:hover,
+  .atlas-book__thumb:focus-visible {
+    opacity: 1;
+    outline: none;
+    transform: translateY(-3px);
+  }
+  .atlas-book__thumb.is-current {
+    opacity: 1;
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    transform: translateY(-4px);
+  }
+  /* Hover tooltip — small page-number bubble that follows the cursor
+     along the timeline, so visitors can see where they're about to
+     jump without squinting at the thumbnails. */
+  .atlas-book__timeline-tooltip {
+    position: absolute;
+    bottom: calc(100% + 0.35rem);
+    left: 0;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    background: var(--page);
+    border: 1px solid currentColor;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 160ms ease-out;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .atlas-book__timeline.is-hovered .atlas-book__timeline-tooltip {
+    opacity: 1;
+  }
+  .atlas-book__counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font: var(--font-eyebrow);
+    letter-spacing: 0.14em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.75;
+  }
+  .atlas-book__counter small {
+    font-size: 0.78em;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 640px) {
+    .atlas-book { width: 100%; }
+    .atlas-book__timeline { gap: 1px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .atlas-book__spread { transition: none; }
+    .atlas-book__thumb { transition: none; }
+    .atlas-book__stage { transition: none; }
+  }
 </style>
 </head>
-<body class="case">
+<body class="unesco">
   <div class="site-bg" aria-hidden="true">
     <div class="site-bg__blob site-bg__blob--cyan-1"></div>
     <div class="site-bg__blob site-bg__blob--cyan-2"></div>
@@ -236,29 +708,40 @@
   <script src="/site-bg.js" defer></script>
   <script src="/case-study.js" defer></script>
 
+  <!-- Scroll incentive — small bouncing arrow + "SCROLL" at the
+       bottom of the first viewport. JS fades it out once the viewer
+       has scrolled past the intro, so it never follows them down. -->
   <div class="scroll-cue" aria-hidden="true">
     <span class="scroll-cue__text">Scroll</span>
     <span class="scroll-cue__arrow">↓</span>
   </div>
 
-  <!-- ══════════════════════ HERO ══════════════════════ -->
-  <section class="case__hero case__grid" aria-label="Ecclesiastes cover">
-    <div class="g-span-1 case__hero-title">
-      <span class="intro__eyebrow">Case Study 02</span>
-      <h1 class="intro__title">Ecclesiastes</h1>
+  <!-- ══════════════════════ HERO ══════════════════════
+       Grid layout like the numbered sections, but with the cover
+       image in cols 2-3 instead of context. Title + eyebrow sit
+       top-left in col 1. No border-top (header's bottom rule already
+       sits in the same spot). The cover is also the morph target for
+       the /work/ cell view-transition. -->
+  <section class="unesco__hero unesco__grid" aria-label="UNESCO cover">
+    <div class="g-span-1 unesco__hero-title">
+      <span class="intro__eyebrow">Case Study 01</span>
+      <h1 class="intro__title">UNESCO</h1>
     </div>
-    <div class="case__hero-media g-span-2">
-      <div class="case__hero-image" role="img" aria-label="Ecclesiastes project cover"></div>
+    <div class="unesco__hero-media g-span-2">
+      <div class="unesco__hero-image" role="img" aria-label="UNESCO project cover"></div>
     </div>
   </section>
 
-  <!-- ══════════════════════ 01 · OVERVIEW ══════════════════════ -->
-  <section class="case__overview case__grid" aria-label="Overview">
+  <!-- ══════════════════════ 01 · OVERVIEW ══════════════════════
+       Standard 3-col grid section: label in col 1, statement +
+       read-more in cols 2-3. Statement inherits the shared .statement
+       size, so the hero context now matches every section below it. -->
+  <section class="unesco__overview unesco__grid" aria-label="Overview">
     <p class="section-label g-span-1"><span class="section-label__num">01</span>Overview</p>
     <div class="g-span-2">
       <p class="statement">
-        TODO: write the lead statement for the Ecclesiastes project.
-        <em>Short editorial line</em>, one or two sentences.
+        The creation of an identity system where UNESCO feels just as
+        <em>human as what it protects</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-overview">
         <span>Read more</span>
@@ -266,27 +749,159 @@
       </button>
       <div class="read-more__panel" id="rm-overview">
         <div class="read-more__inner">
-          <p>TODO: expanded overview copy. Two or three paragraphs explaining the project brief, why it matters, and what the viewer is about to see across the rest of the page.</p>
+          <p>For 80 years, UNESCO has safeguarded what makes us human. Somewhere along the way, it lost touch with the people it serves. Most don&rsquo;t know what UNESCO does, and those who do think it only protects monuments.</p>
+          <p>That gap became my window of opportunity: an identity that speaks to people of every background, culture, and belief, and that feels open and alive instead of rigid and cold. The following is my speculative proposal for a UNESCO rebrand.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════════════ 02 · MOTION (interaction video) ══════════════════════ -->
-  <section class="case__grid" aria-label="Motion">
+  <!-- ══════════════════════ SCANS MARQUEE ══════════════════════
+       Two independent ticker rows of notebook scans sit between the
+       Overview and Foundation sections. Each row loops continuously
+       to the left; hover pauses that row, and a vertical mouse wheel
+       over the carousel scrubs it horizontally. Row 1 carries scans
+       1-15, row 2 carries scans 16-30 (at a different speed so the
+       rows drift out of sync). Each image is duplicated inline so
+       the transform wrap is seamless. White paper is removed via
+       mix-blend-mode: multiply against the white page bg. -->
+  <section class="scans" aria-label="Project scans and process notes">
+    <div class="scans__row scans__row--top" data-speed="0.55">
+      <div class="scans__track">
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-01.jpg" alt="UNESCO project scan 01" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-02.jpg" alt="UNESCO project scan 02" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-03.jpg" alt="UNESCO project scan 03" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-04.jpg" alt="UNESCO project scan 04" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-05.jpg" alt="UNESCO project scan 05" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-06.jpg" alt="UNESCO project scan 06" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-07.jpg" alt="UNESCO project scan 07" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-08.jpg" alt="UNESCO project scan 08" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-09.jpg" alt="UNESCO project scan 09" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-10.jpg" alt="UNESCO project scan 10" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-11.jpg" alt="UNESCO project scan 11" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-12.jpg" alt="UNESCO project scan 12" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-13.jpg" alt="UNESCO project scan 13" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-14.jpg" alt="UNESCO project scan 14" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-15.jpg" alt="UNESCO project scan 15" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-01.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-02.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-03.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-04.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-05.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-06.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-07.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-08.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-09.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-10.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-11.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-12.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-13.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-14.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-15.jpg" alt="" aria-hidden="true" loading="lazy" />
+      </div>
+    </div>
+    <div class="scans__row scans__row--bot" data-speed="0.78">
+      <div class="scans__track">
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-16.jpg" alt="UNESCO project scan 16" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-17.jpg" alt="UNESCO project scan 17" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-18.jpg" alt="UNESCO project scan 18" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-19.jpg" alt="UNESCO project scan 19" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-20.jpg" alt="UNESCO project scan 20" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-21.jpg" alt="UNESCO project scan 21" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-22.jpg" alt="UNESCO project scan 22" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-23.jpg" alt="UNESCO project scan 23" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-24.jpg" alt="UNESCO project scan 24" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-25.jpg" alt="UNESCO project scan 25" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-26.jpg" alt="UNESCO project scan 26" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-27.jpg" alt="UNESCO project scan 27" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-28.jpg" alt="UNESCO project scan 28" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-29.jpg" alt="UNESCO project scan 29" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-30.jpg" alt="UNESCO project scan 30" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-16.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-17.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-18.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-19.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-20.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-21.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-22.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-23.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-24.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-25.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-26.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-27.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-28.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-29.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-30.jpg" alt="" aria-hidden="true" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ 02 · FOUNDATION ══════════════════════
+       Moved up to be the first chapter after the intro. Shares the
+       unesco__grid layout so the section-label | statement | media
+       rhythm stays identical to the chapters below. -->
+  <section class="unesco__foundations unesco__grid" aria-label="Foundation">
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">02</span>Motion</p>
+      <p class="section-label"><span class="section-label__num">02</span>Foundation</p>
       <p class="statement">
-        TODO: statement about the motion piece.
-        <em>One accented phrase</em>.
+        An identity that excludes no one, and <em>invites everyone</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-motion">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-motion">
+      <div class="read-more__panel" id="rm-foundations">
         <div class="read-more__inner">
-          <p>TODO: describe the motion treatment. What it does, how it reads, why it exists.</p>
+          <p>UNESCO&rsquo;s current logo is a Greco-Roman temple. It speaks from a Western point of view, a blind spot common in design, and leaves much of the world outside its frame. It also reinforces the stereotype UNESCO already struggles with: that it only protects monuments. I set out to create a symbol for all of humanity, one that holds Eastern and Western perspectives alike, excludes no one, and invites everyone.</p>
+          <p>I started by looking outward. What connects us as humans? What patterns do we share? Patterns. Shapes. Repetition. Weaving. Seen across humanity, textiles carry our stories, our pasts, and our futures. The interconnectedness of weaving became the emotional anchor of this rebrand.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- BEFORE / AFTER comparison pair. Before: the existing UNESCO
+           flag + temple glyph. After: the logo reveal video (ping-pong
+           forward + reverse) followed by two rebrand lockups,
+           orchestrated by foundations-after JS. -->
+      <div class="foundations-ba">
+        <div class="foundations-ba__col">
+          <p class="section-label foundations-ba__label">Before</p>
+          <figure class="media media--square foundations-ba__media">
+            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/UNESCO/Flag_of_UNESCO.svg.webp" alt="UNESCO existing flag — Greco-Roman temple on blue" />
+          </figure>
+        </div>
+        <div class="foundations-ba__col">
+          <p class="section-label foundations-ba__label">After</p>
+          <figure class="media media--square foundations-ba__media foundations-after">
+            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--fwd is-active"
+                   muted playsinline webkit-playsinline preload="auto"
+                   disablepictureinpicture disableremoteplayback
+                   aria-label="UNESCO logo reveal animation">
+              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
+            </video>
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ 03 · INTERACTION ══════════════════
+       Uses the same 3-col grid structure as the numbered sections. -->
+  <section class="unesco__atlas unesco__grid" aria-label="Interaction">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">03</span>Interaction</p>
+      <p class="statement">
+        A digital window into the world happening <em>all around you</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-atlas">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-atlas">
+        <div class="read-more__inner">
+          <p>To mark UNESCO&rsquo;s 80th anniversary, I designed and built the Digital Atlas, an installation meant to be touched as much as seen. A tabletop map presents the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. When visitors place an icon on the map, the overhead display opens a window into that piece of humanity. The Digital Atlas shows how connected we are, how distinct we are, and why what makes us human is worth preserving.</p>
         </div>
       </div>
     </div>
@@ -296,68 +911,116 @@
         <video class="media__video"
                autoplay muted loop playsinline preload="metadata"
                disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
-               aria-label="Ecclesiastes motion piece">
-          <source src="/ASSETS/IMAGES/ECCLESIASTES/motion.mp4" type="video/mp4">
+               poster="/ASSETS/IMAGES/UNESCO/01.jpg"
+               aria-label="Digital Atlas installation">
+          <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
         </video>
       </figure>
     </div>
   </section>
 
-  <!-- ══════════════════════ FLOATING CAROUSEL ══════════════════════
-       Signature ecclesiastes component — transparent mockup PNGs
-       marquee across the full viewport. JS below drives the track;
-       mobile gets play/pause + prev/next pill controls. -->
-  <section class="ecclesiastes__carousel" aria-label="Project artefacts">
-    <div class="floating-carousel" id="floating-carousel">
-      <div class="floating-carousel__track" id="floating-carousel-track">
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-01.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-02.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-04.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-05.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-06.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-07.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-08.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-09.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-10.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-11.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-12.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-13.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-14.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-15.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-16.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-19.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-20.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-21.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-24.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-25.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-29.png" alt="" />
-        <img class="floating-carousel__slide" src="/ASSETS/IMAGES/ECCLESIASTES/carousel-31.png" alt="" />
+  <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════
+       Foundations (01) now lives above in its own section; the grid
+       picks up at 02 Palette. -->
+  <section class="unesco__grid" aria-label="Case study">
+
+    <!-- ─── 04 · Palette ─────────────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">04</span>Palette</p>
+      <p class="statement" style="text-wrap: pretty;">
+        A hue palette that is an homage to our shared home. <em>Planet Earth</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-palette">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-palette">
+        <div class="read-more__inner">
+          <p>The palette has two sides: what can be seen and what can be felt. World Blue, Vivre Green, and Sol Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
+        </div>
       </div>
     </div>
-    <div class="carousel-controls" aria-hidden="true">
-      <button class="carousel-nav" type="button" id="carousel-prev" aria-label="Previous slide">
-        <svg class="carousel-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
-      </button>
-      <button class="carousel-toggle" type="button" id="carousel-toggle" data-state="playing" aria-label="Pause carousel">
-        <svg class="carousel-toggle__icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
-        <svg class="carousel-toggle__icon icon-play"  viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg>
-      </button>
-      <button class="carousel-nav" type="button" id="carousel-next" aria-label="Next slide">
-        <svg class="carousel-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-      </button>
+
+    <div class="g-span-2 section-media">
+    <!-- Interactive palette — original billboard image as the base,
+         six hover regions overlaid as a single 6-column row. A veil
+         covers each region at the start and fades out in sequence
+         once the grid enters the viewport (via IntersectionObserver
+         → .is-in), so each color "appears" one by one. On hover/focus
+         a soft dark scrim overlays that region and surfaces its name
+         centered. -->
+    <div class="palette-grid" aria-label="UNESCO color palette">
+      <img class="palette-grid__img" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
+      <div class="palette-grid__cells" role="list">
+        <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name"><span>World</span><span>Blue</span></span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Vivre Green" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name"><span>Vivre</span><span>Green</span></span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name"><span>Sol</span><span>Yellow</span></span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Ash Grey" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name"><span>Ash</span><span>Grey</span></span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Umber Brown" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name"><span>Umber</span><span>Brown</span></span>
+        </button>
+        <button class="palette-swatch" type="button" aria-label="Deep Earth" role="listitem">
+          <span class="palette-swatch__veil" aria-hidden="true"></span>
+          <span class="palette-swatch__scrim" aria-hidden="true"></span>
+          <span class="palette-swatch__name"><span>Deep</span><span>Earth</span></span>
+        </button>
+      </div>
     </div>
-  </section>
+    </div><!-- /04 section-media -->
 
-  <!-- ══════════════════════ CASE BODY (3-col grid) ══════════════════════ -->
-  <section class="case__grid" aria-label="Case study">
-
-    <!-- ─── 03 · Typography (mockup pair) ─────────────────────────── -->
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 05 · Iconography ─────────────────────────────────────────
+         Sits directly below Palette so the identity system
+         (color + marks) reads as one continuous chapter. -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">03</span>Typography</p>
+      <p class="section-label"><span class="section-label__num">05</span>Iconography</p>
       <p class="statement">
-        TODO: statement about the typographic system.
-        <em>Short accented phrase</em>.
+        Taken apart and rebuilt, the new logo became
+        <em>so much more than one single asset</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-iconography">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-iconography">
+        <div class="read-more__inner">
+          <p>True to the craft of textiles, I unraveled the logo and wove it back together, using only its own elements. Taken apart and rebuilt, it became icons for the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. Then I pushed it further into a cast of ten characters who live throughout the system. I call them my new little friends.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- Iconography overview, 16:9 -->
+      <figure class="media media--wide">
+        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
+      </figure>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 06 · Typography ────────────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">06</span>Typography</p>
+      <p class="statement">
+        A system must be able to flex. So, how far can the logo
+        <em>be pushed</em>?
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
         <span>Read more</span>
@@ -365,29 +1028,31 @@
       </button>
       <div class="read-more__panel" id="rm-typography">
         <div class="read-more__inner">
-          <p>TODO: describe the type choices, the hierarchy, the voice.</p>
+          <p>Well, I kept asking &ldquo;what if?&rdquo; of the modular logo, holding to one rule: no new shapes, only what the logo is made of. That rule produced two typefaces for the identity system: Building Blocks and Woven Textiles.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
+      <!-- Two custom typefaces side by side. Portrait 2:3 to match
+           the PDF page ratio each was exported from. -->
       <div class="media-pair">
-        <figure class="media" style="aspect-ratio: 3 / 4;">
-          <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-01.jpg" alt="Ecclesiastes typography specimen 01" />
+        <figure class="media" style="aspect-ratio: 2 / 3;">
+          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-01.jpg" alt="Custom Typeface 1 — Building Blocks" />
         </figure>
-        <figure class="media" style="aspect-ratio: 3 / 4;">
-          <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-02.jpg" alt="Ecclesiastes typography specimen 02" />
+        <figure class="media" style="aspect-ratio: 2 / 3;">
+          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-02.jpg" alt="Custom Typeface 2 — Woven Textiles" />
         </figure>
       </div>
     </div>
 
-    <hr class="case__section-rule" aria-hidden="true" />
-    <!-- ─── 04 · Applications (3-poster row + trailer walkthrough) ── -->
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">04</span>Applications</p>
+      <p class="section-label"><span class="section-label__num">07</span>Applications</p>
       <p class="statement">
-        TODO: statement about how the system applies to printed matter.
-        <em>Accented phrase</em>.
+        The system then is carried into both spatial, ephemeral and
+        <em>digital</em> media.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
         <span>Read more</span>
@@ -395,83 +1060,221 @@
       </button>
       <div class="read-more__panel" id="rm-applications">
         <div class="read-more__inner">
-          <p>TODO: describe the printed applications — the posters, their series, their intent.</p>
+          <p><strong>The World Needs U.</strong></p>
+          <p>The slogan plays on the four U&rsquo;s in the logo, but it reaches past UNESCO to the world it serves: us. Organizations like UNESCO exist for the generations that come after us. It&rsquo;s on all of us to carry our stories, cultures, and traditions into the future, not leave them behind. The world needs U.</p>
+          <p><strong>Safeguard Humanity&rsquo;s Inheritance.</strong><br>Our inheritance is all around us, in the identities we hold today. Without intention, it can be lost.</p>
+          <p><strong>Protect/Preserve/Prepare What Makes Us Human.</strong><br>Protect who we are today. Preserve what the past has given us. Prepare what we pass on. This is why the rebrand matters: we cannot forget who we are, or what shaped us.</p>
+          <p>I think, create, and design this way because of my Peruvian and Salvadoran heritage. This is my perspective, and that is the beauty of who we are, as individuals and as a collective. Every perspective is needed to see the whole picture. Without our cultures, our stories, and our identities, humanity would be a shell of itself.</p>
+          <p>As part of the identity system, I also designed a new digital home for UNESCO, one that puts the people, lands, and cultures it protects at the center. I left the corporate look behind for something inviting, youthful, and vibrant. My goal was for every page to offer something new, so visitors would keep wanting to discover more.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 3-across poster row. Stacks to 2-up on mobile. -->
+      <!-- 3 × 2 poster grid — the six macro posters from the series.
+           Visual order: 01, 06, 03, 05, 04, 02 (per user layout). -->
       <div class="section-media__posters">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-01.jpg" alt="Ecclesiastes poster 01" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-02.jpg" alt="Ecclesiastes poster 02" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/poster-03.jpg" alt="Ecclesiastes poster 03" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
       </div>
 
-      <!-- Trailer walkthrough — native play / pause / scrub controls. -->
-      <figure class="media media--wide trailer-walkthrough">
-        <video class="media__video trailer-walkthrough__video"
+      <!-- Each cell cycles 4 images on a shared 16s loop; the two cells
+           split the 8 applications equally. 05 is pinned near the
+           bottom so the UNESCO podium stays visible when the portrait
+           crops into the square cell. See .media__aslide keyframes. -->
+      <div class="section-media__triptych section-media__triptych--pair">
+        <figure class="media media--square">
+          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-02.jpg" alt="UNESCO application — rooftop billboard" />
+          <img class="media__img media__aslide media__aslide--2" style="object-position: center 85%;" src="/ASSETS/IMAGES/UNESCO/application-05.jpg" alt="UNESCO application — Director-General podium" />
+          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-07.jpg" alt="UNESCO application — bridge wheatpaste poster" />
+          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-10.jpg" alt="UNESCO application — cylindrical street kiosk" />
+        </figure>
+        <figure class="media media--square">
+          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-04.jpg" alt="UNESCO application — building-side billboard" />
+          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-09.jpg" alt="UNESCO application — unesco HQ banner" />
+          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-11.jpg" alt="UNESCO application — parking + bike station sign" />
+          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
+        </figure>
+      </div>
+
+      <!-- Walkthrough screen recording — full native video controls so
+           visitors can play / pause / scrub. Uses object-fit: contain
+           + black bg so the full recording frame is always visible. -->
+      <figure class="media media--wide applications-walkthrough">
+        <video class="media__video applications-walkthrough__video"
                controls preload="metadata" playsinline webkit-playsinline
                disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg"
-               aria-label="Ecclesiastes trailer">
-          <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
+               aria-label="UNESCO applications walkthrough">
+          <source src="/ASSETS/IMAGES/UNESCO/applications-walkthrough.mp4" type="video/mp4">
         </video>
       </figure>
     </div>
 
-    <hr class="case__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Tangible Forms (2 stacked mockup slideshows) ─────── -->
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 08 · Tangible Forms ──────────────────────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">05</span>Tangible Forms</p>
+      <p class="section-label"><span class="section-label__num">08</span>Tangible Forms</p>
       <p class="statement">
-        TODO: statement about the physical object.
-        <em>Accented phrase</em>.
+        80 years of human connection.
+        <em>What an accomplishment</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-tangible">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-celebration">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-tangible">
+      <div class="read-more__panel" id="rm-celebration">
         <div class="read-more__inner">
-          <p>TODO: talk about holding the book, the paper, the binding — whatever matters about the physical object.</p>
+          <p>To honor 80 years of UNESCO, I wanted objects you could hold and contemplate, built around what I see as UNESCO&rsquo;s greatest accomplishment: human connection. I commissioned a woven blanket and, wanting in on the fun, I personally hand-sewed a vegetable-tanned leather bag, its icons coming together to form an image of our world. The same image lives in the printed atlas.</p>
+          <p>You never know where one small idea will take you. That&rsquo;s the beauty of design. It is vital to my process to never throw an idea away. I keep it close, in my sketches. Perhaps it returns in a way I hadn&rsquo;t imagined.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Two full-width landscape cells, stacked; each cycles mockups
-           on a shared 5s beat. object-fit: contain so no edge cropping. -->
+      <!-- 2 long portrait cells, side by side on desktop, stacked on
+           mobile. All 15 celebration images are split evenly: cell A
+           cycles 01–08 (8 images), cell B cycles 09–15 (7 images).
+           JS at the bottom of the page toggles .is-active on one
+           slide at a time; CSS handles the crossfade. -->
       <div class="section-media__triptych section-media__triptych--pair tangible-forms">
         <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-01.jpg" alt="Tangible form 01" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-02.jpg" alt="Tangible form 02" />
+          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
         </figure>
         <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/ECCLESIASTES/mockup-03.jpg" alt="Tangible form 03" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Tangible form 04" />
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
         </figure>
+      </div>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 09 · Campaign Direction ───────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">09</span>Campaign Direction</p>
+      <p class="statement">
+        The creation of a campaign hosted by UNESCO,
+        <em>&ldquo;Living Traces&rdquo;</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-campaign">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-campaign">
+        <div class="read-more__inner">
+          <p>In direct contrast to the identity system, I created a campaign about the languages, traditions, and cultures at risk of disappearing. The subject is urgent, so I stripped away all color and made the campaign impossible to ignore.</p>
+          <p>The name Living Traces holds two truths: these cultures are still alive, but only as traces. Once they fade, they may never return. The campaign brings light to what is nearly lost and asks the world to do its part: to protect our cultures, and our neighbors&rsquo;, as we move into the future.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 3 micro posters sit at the top of the Campaign Direction
+           media column: a portrait triptych that previews the
+           Living Traces print campaign. On mobile, the two black
+           posters (01, 03) sit side by side on the top row and the
+           grey poster (02) sits centered beneath. -->
+      <div class="section-media__posters section-media__posters--campaign">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-01.jpg" alt="Living Traces micro poster 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-02.jpg" alt="Living Traces micro poster 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-03.jpg" alt="Living Traces micro poster 03" /></figure>
+      </div>
+
+      <!-- Campaign walkthrough screen recording — native play / pause
+           / scrub controls. Cover-crops to fill the 16:9 cell so no
+           letterbox bars appear. -->
+      <figure class="media media--wide campaign-walkthrough">
+        <video class="media__video campaign-walkthrough__video"
+               controls preload="metadata" playsinline webkit-playsinline
+               disablepictureinpicture disableremoteplayback
+               aria-label="Living Traces campaign walkthrough">
+          <source src="/ASSETS/IMAGES/UNESCO/campaign-walkthrough.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 10 · The Printed Atlas ────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">10</span>The Printed Atlas</p>
+      <p class="statement">
+        Before the <em>Digital Atlas</em>, there was the printed one.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-printed-atlas">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-printed-atlas">
+        <div class="read-more__inner">
+          <p>It begins as a celebration of our differences: the languages we speak, the lands we tend, the rituals we keep, the monuments we raise. But turn the pages, and something quieter surfaces. Somewhere between the words and the traditions, you start to see yourself in a stranger. Because before anything else, you and I are human.</p>
+          <p>Open the atlas and the world unfolds in your hands. Four icons mark the four worlds UNESCO protects. Each world then appears on its own, with a map where every icon carries a number: the page where that place can be found. Each map becomes a table of contents for the globe.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 48-page atlas. Two layered image elements crossfade as the
+           page changes; the timeline below is a hover-scrubber that
+           sets a target page. With no hover, pages auto-advance and
+           wrap at 48 → 1. -->
+      <div class="atlas-book" id="atlas-book">
+        <div class="atlas-book__stage" id="atlas-stage">
+          <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
+          <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
+          <div class="atlas-book__spine" aria-hidden="true"></div>
+        </div>
+        <div
+          class="atlas-book__timeline"
+          id="atlas-timeline"
+          role="toolbar"
+          aria-label="Scrub through the printed atlas"
+        >
+          <!-- 48 .atlas-book__thumb buttons generated by the atlas JS -->
+          <div class="atlas-book__timeline-tooltip" id="atlas-timeline-tooltip" aria-hidden="true">01</div>
+        </div>
+        <div class="atlas-book__counter" aria-hidden="true">
+          <small>Page</small>
+          <span id="atlas-counter">01 / 48</span>
+        </div>
       </div>
     </div>
 
   </section>
 
-  <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════ -->
-  <figure class="case__closing-image" aria-label="Ecclesiastes closing hero">
-    <img src="/ASSETS/IMAGES/ECCLESIASTES/poster.jpg" alt="Ecclesiastes closing poster" />
+  <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════
+       Full-viewport-width hero shot that closes the case study before the
+       pager. The image is shown at its natural aspect so nothing in the
+       composition (billboard type, tote copy, etc.) is cropped. -->
+  <figure class="unesco__closing-image" aria-label="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front">
+    <img src="/ASSETS/IMAGES/UNESCO/closing-hero.jpg" alt="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front" />
   </figure>
 
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
   <nav class="pager" aria-label="Case navigation">
-    <a class="pager__link pager__link--prev" href="/unesco/">
+    <a class="pager__link pager__link--prev" href="/work/">
       <span class="pager__label"><span class="pager__arrow" aria-hidden="true">←</span> Previous</span>
-      <span class="pager__title">UNESCO</span>
-      <span class="pager__sub">Case Study · 01</span>
+      <span class="pager__title">San Diego FC</span>
+      <span class="pager__sub">Case Study · 008</span>
     </a>
-    <a class="pager__link pager__link--next" href="/work/">
+    <a class="pager__link pager__link--next" href="/ecclesiastes/">
       <span class="pager__label">Next <span class="pager__arrow" aria-hidden="true">→</span></span>
-      <span class="pager__title">All Work</span>
-      <span class="pager__sub">Index</span>
+      <span class="pager__title">Ecclesiastes</span>
+      <span class="pager__sub">Case Study · 002</span>
     </a>
   </nav>
 
@@ -496,113 +1299,100 @@
 
   <script>
   /* ════════════════════════════════════════════════════════════════
-     Ecclesiastes-specific interactions. Shared case-study behaviors
-     (read-more toggle, media-tab, scroll-cue fade) live in
-     /case-study.js and run automatically on page load.
+     UNESCO page-specific interactions. Shared case-study behaviors
+     (media-tab expand/collapse, scroll-cue fade, read-more toggle)
+     live in /case-study.js and run automatically on page load.
      ════════════════════════════════════════════════════════════════ */
   (function () {
     'use strict';
 
-    /* ─── Floating carousel marquee ─────────────────────────────────
-       Transparent PNG slides scroll right→left on a continuous loop.
-       Hover modulates speed; vertical mouse wheel over the strip is
-       captured and scrubbed horizontally; mobile prev/next pills
-       nudge the track by a fixed step. The track duplicates its
-       content once in JS so the wrap is seamless. */
-    var carousel = document.getElementById('floating-carousel');
-    var track    = document.getElementById('floating-carousel-track');
-    if (carousel && track) {
-      // Clone every slide once so the duplicate takes over as the
-      // original scrolls past; wrap offset stays within half-width.
-      var slides = Array.prototype.slice.call(track.children);
-      slides.forEach(function (s) {
-        var c = s.cloneNode(true);
-        c.setAttribute('aria-hidden', 'true');
-        track.appendChild(c);
+    /* Scans marquee — two independent rows of notebook scans. Each
+       row loops continuously leftward driven by requestAnimationFrame.
+       Hover pauses that row. A vertical wheel over the row is captured
+       (preventDefault) and translated into horizontal scrub; auto
+       playback resumes 1.5s after the viewer stops wheeling. */
+    (function () {
+      var rows = document.querySelectorAll('.scans__row');
+      if (!rows.length) return;
+      var state = Array.prototype.map.call(rows, function (row) {
+        return {
+          row: row,
+          track: row.querySelector('.scans__track'),
+          speed: parseFloat(row.getAttribute('data-speed') || '0.5'),
+          offset: 0,
+          halfWidth: 0,
+          paused: false,
+          wheelTO: null
+        };
       });
 
-      var offset   = 0;
-      var speed    = 0.65;   // px per frame — gentle drift
-      var halfW    = 0;
-      var paused   = false;
-      var offscreen = false;
-      var wheelTO  = null;
-
-      function measure() { halfW = track.scrollWidth / 2; }
+      function measure() {
+        state.forEach(function (s) {
+          /* The track holds the full set twice; one wrap cycle is
+             half the track's measured scroll width. */
+          s.halfWidth = s.track ? s.track.scrollWidth / 2 : 0;
+        });
+      }
+      /* Measure once images have reported their intrinsic sizes. */
       window.addEventListener('load', measure);
       window.addEventListener('resize', measure);
-      // Re-measure when lazy-loaded PNGs finish decoding.
-      track.querySelectorAll('img').forEach(function (img) {
-        if (!img.complete) img.addEventListener('load', measure, { once: true });
+      /* Also re-measure whenever any scan image finishes loading,
+         since lazy-loaded images change the track width late. */
+      state.forEach(function (s) {
+        s.track && s.track.querySelectorAll('img').forEach(function (img) {
+          if (!img.complete) img.addEventListener('load', measure, { once: true });
+        });
       });
       measure();
 
       function tick() {
-        if (!paused && !offscreen && halfW) {
-          offset -= speed;
-          while (offset <= -halfW) offset += halfW;
-          while (offset > 0) offset -= halfW;
-          track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
-        }
+        state.forEach(function (s) {
+          if (!s.halfWidth) return;
+          if (!s.paused) s.offset -= s.speed;
+          /* Wrap offset into [-halfWidth, 0) so the duplicate set
+             seamlessly takes over as the first one scrolls past. */
+          while (s.offset <= -s.halfWidth) s.offset += s.halfWidth;
+          while (s.offset > 0) s.offset -= s.halfWidth;
+          s.track.style.transform = 'translateX(' + s.offset + 'px)';
+        });
         requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
 
-      carousel.addEventListener('mouseenter', function () { paused = true; });
-      carousel.addEventListener('mouseleave', function () {
-        if (!wheelTO) paused = false;
-      });
-      carousel.addEventListener('wheel', function (e) {
-        var dy = e.deltaY || 0;
-        var dx = e.deltaX || 0;
-        // Only capture horizontal gestures; vertical wheel passes
-        // through so the page keeps scrolling.
-        if (Math.abs(dx) <= Math.abs(dy)) return;
-        e.preventDefault();
-        paused = true;
-        offset -= dx;
-        if (wheelTO) clearTimeout(wheelTO);
-        wheelTO = setTimeout(function () {
-          wheelTO = null;
-          if (!carousel.matches(':hover')) paused = false;
-        }, 1500);
-      }, { passive: false });
-
-      // Pause when offscreen so we're not animating out of view.
-      if ('IntersectionObserver' in window) {
-        var io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (ent) { offscreen = !ent.isIntersecting; });
-        }, { threshold: 0.05 });
-        io.observe(carousel);
-      }
-
-      // Mobile pill controls — pause/resume + prev/next nudge.
-      var toggleBtn = document.getElementById('carousel-toggle');
-      var prevBtn   = document.getElementById('carousel-prev');
-      var nextBtn   = document.getElementById('carousel-next');
-      var userPaused = false;
-      if (toggleBtn) {
-        toggleBtn.addEventListener('click', function () {
-          userPaused = !userPaused;
-          paused = userPaused;
-          toggleBtn.setAttribute('data-state', userPaused ? 'paused' : 'playing');
-          toggleBtn.setAttribute('aria-label', userPaused ? 'Play carousel' : 'Pause carousel');
+      state.forEach(function (s) {
+        s.row.addEventListener('mouseenter', function () { s.paused = true; });
+        s.row.addEventListener('mouseleave', function () {
+          /* Only resume if no wheel scrub is still in its cooldown. */
+          if (!s.wheelTO) s.paused = false;
         });
-      }
-      var NUDGE = 240;
-      function nudge(dir) {
-        offset += dir * NUDGE;
-        while (offset <= -halfW) offset += halfW;
-        while (offset > 0) offset -= halfW;
-        track.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
-      }
-      if (prevBtn) prevBtn.addEventListener('click', function () { nudge(+1); });
-      if (nextBtn) nextBtn.addEventListener('click', function () { nudge(-1); });
-    }
+        s.row.addEventListener('wheel', function (e) {
+          var dy = e.deltaY || 0;
+          var dx = e.deltaX || 0;
+          /* Only capture when the user is scrubbing horizontally
+             (trackpad side-swipe or shift+wheel). A plain vertical
+             wheel passes through so the page keeps scrolling normally
+             even when the pointer is over the marquee. */
+          if (Math.abs(dx) <= Math.abs(dy)) return;
+          e.preventDefault();
+          s.paused = true;
+          s.offset -= dx;
+          if (s.wheelTO) clearTimeout(s.wheelTO);
+          s.wheelTO = setTimeout(function () {
+            s.wheelTO = null;
+            if (!s.row.matches(':hover')) s.paused = false;
+          }, 1500);
+        }, { passive: false });
+      });
+    })();
 
-    /* ─── Tangible Forms (section 05) — two long landscape cells,
-       cycling in lockstep on one shared ticker. Click a cell to hold
-       it on the current image; click outside to resume. */
+    /* Tangible Forms (section 08) — two long cells, each cycling its
+       own stack of celebration stills. All cells share ONE timer so
+       they transition in lockstep (cell A and cell B swap at the
+       same moment, every time). Interval comes from the first cell's
+       data-tangible-interval. The cycle pauses while every cell is
+       offscreen; clicking a cell holds it on its current slide until
+       the viewer clicks outside, at which point it resumes. The
+       other cells keep ticking even while one is held. */
     (function () {
       var cells = document.querySelectorAll('.tangible-forms__cell');
       if (!cells.length) return;
@@ -626,6 +1416,8 @@
         state.idx = (state.idx + 1) % state.slides.length;
         state.slides[state.idx].classList.add('is-active');
       }
+      // Single shared ticker — every cell that isn't offscreen or
+      // user-held advances on the same beat.
       setInterval(function () {
         registry.forEach(function (state) {
           if (!state.offscreen && !state.userHold) advance(state);
@@ -665,6 +1457,317 @@
         }
       });
     })();
+
+    /* Foundation After-cell orchestrated slideshow — the After cell
+       in section 02 stacks three layers: the logo-reveal video and
+       two rebrand-lockup stills. One layer carries .is-active at a
+       time; CSS crossfades between them. The forward video is
+       already an internal ping-pong (blue → logo → blue), so one
+       play per cycle is enough; a separate reverse play would just
+       repeat the same animation visually. Cycle: fwd video plays
+       once → lockup 2 holds → lockup 3 holds → back to fwd. */
+    var fAfter = document.querySelector('.foundations-after');
+    if (fAfter) {
+      var faFwd  = fAfter.querySelector('.foundations-after__video--fwd');
+      var faImg2 = fAfter.querySelector('.foundations-after__img--2');
+      var faImg3 = fAfter.querySelector('.foundations-after__img--3');
+      if (faFwd && faImg2 && faImg3) {
+        var faLayers = [faFwd, faImg2, faImg3];
+        var FA_PAUSE_MS   = 600;    // after video finishes before next layer
+        var FA_IMG_HOLD   = 2800;   // how long each still is shown
+        function faShow(el) {
+          faLayers.forEach(function (l) {
+            if (l === el) l.classList.add('is-active');
+            else l.classList.remove('is-active');
+          });
+        }
+        function faPlayFwd() {
+          faShow(faFwd);
+          try { faFwd.currentTime = 0; } catch (e) {}
+          var p = faFwd.play();
+          if (p && typeof p.catch === 'function') p.catch(function () {});
+        }
+        function faShowImg2() { faShow(faImg2); setTimeout(faShowImg3, FA_IMG_HOLD); }
+        function faShowImg3() { faShow(faImg3); setTimeout(faPlayFwd,  FA_IMG_HOLD); }
+        faFwd.addEventListener('ended', function () { setTimeout(faShowImg2, FA_PAUSE_MS); });
+        /* Mobile Safari refuses .play() for offscreen videos even with
+           muted + playsinline + autoplay, so wait for the cell to
+           intersect the viewport, then start the cycle. */
+        var faKicked = false;
+        var faKick = function () {
+          if (faKicked) return;
+          faKicked = true;
+          faPlayFwd();
+        };
+        if ('IntersectionObserver' in window) {
+          var faIO = new IntersectionObserver(function (entries) {
+            entries.forEach(function (ent) {
+              if (ent.isIntersecting) { faKick(); faIO.disconnect(); }
+            });
+          }, { threshold: 0.15 });
+          faIO.observe(fAfter);
+        } else {
+          faKick();
+        }
+      }
+    }
+
+    /* Palette grid — reveal the swatches in sequence once the grid
+       enters the viewport. Keeps the animation in sync with when the
+       viewer actually arrives at the Palette section. */
+    var paletteGrid = document.querySelector('.palette-grid');
+    if (paletteGrid) {
+      if ('IntersectionObserver' in window) {
+        var pObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              paletteGrid.classList.add('is-in');
+              pObs.disconnect();
+            }
+          });
+        }, { threshold: 0.25 });
+        pObs.observe(paletteGrid);
+      } else {
+        paletteGrid.classList.add('is-in');
+      }
+    }
+
+  })();
+
+  /* ─── 09 · Printed atlas — thumbnail-scrubbed viewer ────────────
+     The stage holds two <img> layers that crossfade on each page
+     change. Below it, a strip of 48 thumbnail buttons (one per
+     page). Hovering a thumb sets a target page; a ticker walks
+     cur one step at a time toward target so the stage visibly
+     "moves toward" the hovered page. With no hover, pages auto-
+     advance forward every AUTO_MS and wrap at 48 → 1. */
+  (function () {
+    var book = document.getElementById('atlas-book');
+    if (!book) return;
+
+    var stage    = document.getElementById('atlas-stage');
+    var layerA   = document.getElementById('atlas-a');
+    var layerB   = document.getElementById('atlas-b');
+    var timeline = document.getElementById('atlas-timeline');
+    var tooltip  = document.getElementById('atlas-timeline-tooltip');
+    var counter  = document.getElementById('atlas-counter');
+
+    var TOTAL    = 48;
+    var AUTO_MS  = 2600;   // dwell when no one is hovering
+    var CHASE_MS = 160;    // one step toward target while hovering
+    var cur       = 1;
+    var target    = 1;
+    var hovered   = false;
+    var paused    = false;
+    var tickTimer = null;
+
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function src(n)      { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-' + pad(n) + '.jpg'; }
+    function thumbSrc(n) { return '/ASSETS/IMAGES/UNESCO/BOOK/atlas-thumb-' + pad(n) + '.jpg'; }
+    function clamp(n) { return Math.max(1, Math.min(TOTAL, n)); }
+    function isCover(n) { return n === 1 || n === TOTAL; }
+
+    // Build the 48 thumbnail buttons once, in order, inside the
+    // timeline. Each thumb carries its page index; CSS covers the
+    // visuals. The tooltip element stays as the last child so it
+    // paints over the thumbs.
+    var thumbs = [];
+    for (var i = 1; i <= TOTAL; i++) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'atlas-book__thumb';
+      btn.setAttribute('aria-label', 'Jump to page ' + i + ' of ' + TOTAL);
+      btn.setAttribute('data-page', String(i));
+      // Dedicated small thumbnail (~240px wide, ~15 KB each) — avoids
+      // asking Safari to downsample 48 copies of the 2400px full-size
+      // JPG for the strip, which was the main source of lag.
+      btn.style.backgroundImage = 'url("' + thumbSrc(i) + '")';
+      timeline.insertBefore(btn, tooltip);
+      thumbs.push(btn);
+    }
+
+    // Two crossfade layers: activeEl is the one currently shown.
+    var activeEl  = layerA;
+    var pendingEl = layerB;
+
+    function setPage(n) {
+      n = clamp(n);
+      if (n === cur) { updateUI(); return; }
+      cur = n;
+      var newImgEl = pendingEl;
+      newImgEl.src = src(n);
+      var swap = function () {
+        newImgEl.classList.add('is-active');
+        activeEl.classList.remove('is-active');
+        var tmp = activeEl;
+        activeEl = newImgEl;
+        pendingEl = tmp;
+        updateUI();
+      };
+      if (newImgEl.complete && newImgEl.naturalWidth) {
+        swap();
+      } else {
+        var done = false;
+        newImgEl.onload = function () { if (!done) { done = true; swap(); } };
+        setTimeout(function () { if (!done) { done = true; swap(); } }, 400);
+      }
+    }
+
+    function updateUI() {
+      counter.textContent = pad(cur) + ' / ' + pad(TOTAL);
+      activeEl.setAttribute('alt', 'Atlas page ' + cur + ' of ' + TOTAL);
+      // Swap stage bg: inner spreads sit on near-black so any 1px
+      // gap during crossfade is invisible; covers sit on the page bg
+      // (white) so the letterbox blends into the site.
+      stage.classList.toggle('is-spread', !isCover(cur));
+      // Mark the current thumb.
+      for (var k = 0; k < thumbs.length; k++) {
+        thumbs[k].classList.toggle('is-current', (k + 1) === cur);
+      }
+    }
+
+    function nextAuto() { return cur === TOTAL ? 1 : cur + 1; }
+
+    function tick() {
+      tickTimer = null;
+      if (paused) return;
+      if (hovered) {
+        if (cur < target)      setPage(cur + 1);
+        else if (cur > target) setPage(cur - 1);
+        tickTimer = setTimeout(tick, CHASE_MS);
+      } else {
+        setPage(nextAuto());
+        tickTimer = setTimeout(tick, AUTO_MS);
+      }
+    }
+
+    function restart() {
+      if (tickTimer) { clearTimeout(tickTimer); tickTimer = null; }
+      tickTimer = setTimeout(tick, hovered ? CHASE_MS : AUTO_MS);
+    }
+
+    function positionTooltip(idx, clientX) {
+      var rect = timeline.getBoundingClientRect();
+      var x = clientX != null
+        ? Math.max(0, Math.min(rect.width, clientX - rect.left))
+        : ((idx - 0.5) / TOTAL) * rect.width;
+      tooltip.style.left = x + 'px';
+      tooltip.textContent = pad(idx);
+    }
+
+    // Any pointermove inside the timeline — figure out which thumb
+    // we're over by hit-testing (not by x/width math) so gap pixels
+    // don't miscount as the neighbouring page.
+    function onMove(e) {
+      hovered = true;
+      timeline.classList.add('is-hovered');
+      var t = e.target;
+      if (t && t.classList && t.classList.contains('atlas-book__thumb')) {
+        var p = parseInt(t.getAttribute('data-page'), 10);
+        if (p >= 1 && p <= TOTAL) {
+          target = p;
+          positionTooltip(p, e.clientX);
+        }
+      }
+      restart();
+    }
+    function onLeave() {
+      hovered = false;
+      timeline.classList.remove('is-hovered');
+      restart();
+    }
+    function onClick(e) {
+      var t = e.target;
+      if (!t || !t.classList || !t.classList.contains('atlas-book__thumb')) return;
+      var p = parseInt(t.getAttribute('data-page'), 10);
+      if (!(p >= 1 && p <= TOTAL)) return;
+      // Direct jump on click/tap — no chase.
+      setPage(p);
+      target = p;
+      positionTooltip(p, e.clientX);
+      restart();
+    }
+    function onKey(e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); setPage(clamp(cur + 1)); restart(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setPage(clamp(cur - 1)); restart(); }
+      else if (e.key === 'Home')     { e.preventDefault(); setPage(1); restart(); }
+      else if (e.key === 'End')      { e.preventDefault(); setPage(TOTAL); restart(); }
+    }
+
+    timeline.addEventListener('pointermove', onMove);
+    timeline.addEventListener('pointerenter', onMove);
+    timeline.addEventListener('pointerleave', onLeave);
+    timeline.addEventListener('click', onClick);
+    timeline.addEventListener('keydown', onKey);
+
+    // ─── Mobile swipe (touch only) ───────────────────────────────
+    // On narrow viewports, swiping across the stage advances or
+    // rewinds by a single page. Guard by touch pointer type so
+    // mouse / trackpad interaction on desktop is unaffected, and
+    // require horizontal delta > vertical so vertical page scroll
+    // through the stage still works.
+    var SWIPE_MIN   = 40;      // px — ignore anything smaller
+    var swipeStartX = 0;
+    var swipeStartY = 0;
+    var swipeActive = false;
+    function isMobile() {
+      return window.matchMedia('(max-width: 640px)').matches;
+    }
+    stage.addEventListener('pointerdown', function (e) {
+      if (!isMobile() || e.pointerType !== 'touch') return;
+      swipeActive  = true;
+      swipeStartX  = e.clientX;
+      swipeStartY  = e.clientY;
+    });
+    stage.addEventListener('pointerup', function (e) {
+      if (!swipeActive) return;
+      swipeActive = false;
+      var dx = e.clientX - swipeStartX;
+      var dy = e.clientY - swipeStartY;
+      if (Math.abs(dx) < SWIPE_MIN) return;
+      if (Math.abs(dy) > Math.abs(dx)) return;   // treat as vertical scroll
+      if (dx < 0) {
+        // Swipe left → next page (wraps 48 → 1).
+        setPage(cur === TOTAL ? 1 : cur + 1);
+      } else {
+        // Swipe right → previous page (wraps 1 → 48).
+        setPage(cur === 1 ? TOTAL : cur - 1);
+      }
+      restart();
+    });
+    stage.addEventListener('pointercancel', function () { swipeActive = false; });
+    // Keep vertical page scroll through the stage working; only
+    // horizontal gestures are claimed as swipes.
+    stage.style.touchAction = 'pan-y';
+
+    // Pause when the stage leaves the viewport or the tab is hidden.
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (ent) {
+        paused = !ent.isIntersecting;
+        if (!paused) restart();
+      });
+    }, { threshold: 0.1 });
+    io.observe(book);
+    document.addEventListener('visibilitychange', function () {
+      paused = document.hidden;
+      if (!paused) restart();
+    });
+
+    // Preload full-size pages for snappy transitions. Opening batch
+    // is small (just the next 3 spreads) and the rest drip in slowly,
+    // so Safari isn't asked to decode 48 full-resolution JPGs in
+    // rapid succession when the section first opens. Dripping pauses
+    // while the tab is hidden or the section is scrolled offscreen.
+    for (var n = 2; n <= 4; n++) { var im = new Image(); im.src = src(n); }
+    var preloadIdx = 5;
+    var preloadTimer = setInterval(function () {
+      if (preloadIdx > TOTAL) { clearInterval(preloadTimer); return; }
+      if (paused) return;  // don't thrash when offscreen / tab hidden
+      var im2 = new Image(); im2.src = src(preloadIdx++);
+    }, 450);
+
+    updateUI();
+    restart();
   })();
   </script>
 </body>
