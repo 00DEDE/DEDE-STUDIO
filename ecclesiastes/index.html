@@ -781,23 +781,27 @@
     margin: clamp(1rem, 2.5vh, 2rem) 0 0;
     padding: 0;
     width: 100%;
-    max-height: 70vh;
+    /* Lock aspect to spread ratio (1200×1028) so solo covers and
+       interior spreads render at the same vertical footprint. */
+    aspect-ratio: 1200 / 1028;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg);
     overflow: hidden;
-    transition: box-shadow 220ms ease;
+    transition: box-shadow 220ms ease, background 180ms ease;
   }
   .book-inspector__img {
     display: block;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 70vh;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     transition: opacity 180ms ease;
   }
+  /* When the inspector is showing the back cover (colophon on black),
+     drop the beige page-edge background so the letterbox blends into
+     the black artwork instead of framing it with cream bars. */
+  .book-inspector.is-back { background: #000; }
   .book-inspector.is-active {
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22),
                 0 4px 10px  rgba(0, 0, 0, 0.12);
@@ -828,6 +832,25 @@
     /* On mobile the grid stacks below the text, so the inspector
        doesn't need to stick — it reads inline. */
     .book-inspector { position: static; }
+  }
+
+  /* ─── Distressed-image grid (section 07) ──────────────────────────
+     7 portrait images laid out 3 + 3 + 1: three per row in rows 1-2,
+     the final image centered on its own third row at the same width
+     as the other cells. */
+  .distress-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+  .distress-grid__lone {
+    grid-column: 2 / 3;    /* centered single cell in the last row */
+  }
+  @media (max-width: 900px) {
+    /* Mobile: 2 cells per row. The lone 7th image wraps naturally
+       into row 4 column 1 (no explicit placement needed). */
+    .distress-grid { grid-template-columns: repeat(2, 1fr); }
+    .distress-grid__lone { grid-column: auto; }
   }
 
   /* ─── Applications posters + mockup (section 05) ──────────────── */
@@ -1124,7 +1147,7 @@
       <p class="section-label"><span class="section-label__num">03</span>Skeletal layout</p>
       <p class="statement">
         5 3 3 12 5 19 9 1 19 20 5 19.<br>
-        The numerical value of <em>ECCLESIASTES</em>.
+        The numerical values of <em>ECCLESIASTES</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-skeletal">
         <span>Read more</span>
@@ -1568,10 +1591,9 @@
     <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">07</span>Applications</p>
+      <p class="section-label"><span class="section-label__num">07</span>The Pull Quotes</p>
       <p class="statement">
-        The system then is carried into both spatial, ephemeral and
-        <em>digital</em> media.
+        Emotion behind the words <em>made visible</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
         <span>Read more</span>
@@ -1579,58 +1601,23 @@
       </button>
       <div class="read-more__panel" id="rm-applications">
         <div class="read-more__inner">
-          <p><strong>The World Needs U.</strong></p>
-          <p>The slogan plays on the four U&rsquo;s in the logo, but it reaches past UNESCO to the world it serves: us. Organizations like UNESCO exist for the generations that come after us. It&rsquo;s on all of us to carry our stories, cultures, and traditions into the future, not leave them behind. The world needs U.</p>
-          <p><strong>Safeguard Humanity&rsquo;s Inheritance.</strong><br>Our inheritance is all around us, in the identities we hold today. Without intention, it can be lost.</p>
-          <p><strong>Protect/Preserve/Prepare What Makes Us Human.</strong><br>Protect who we are today. Preserve what the past has given us. Prepare what we pass on. This is why the rebrand matters: we cannot forget who we are, or what shaped us.</p>
-          <p>I think, create, and design this way because of my Peruvian and Salvadoran heritage. This is my perspective, and that is the beauty of who we are, as individuals and as a collective. Every perspective is needed to see the whole picture. Without our cultures, our stories, and our identities, humanity would be a shell of itself.</p>
-          <p>As part of the identity system, I also designed a new digital home for UNESCO, one that puts the people, lands, and cultures it protects at the center. I left the corporate look behind for something inviting, youthful, and vibrant. My goal was for every page to offer something new, so visitors would keep wanting to discover more.</p>
+          <p>Each image here contains a pull quote from the text. When we speak nothing is stagnant or fixed, through the motion of speaking whether it be you or I, the words fluctuate and change. Language is dynamic. Humans, even more so. I created these textural images to represent that notion.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 3 × 2 poster grid — the six macro posters from the series.
-           Visual order: 01, 06, 03, 05, 04, 02 (per user layout). -->
-      <div class="section-media__posters">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
+      <!-- 7 distressed images laid out as 3 + 3 + 1: three per row
+           in rows 1-2, the last image centered on its own third row. -->
+      <div class="distress-grid">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-01.jpg" alt="Ecclesiastes distressed image 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-02.jpg" alt="Ecclesiastes distressed image 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-03.jpg" alt="Ecclesiastes distressed image 03" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-04.jpg" alt="Ecclesiastes distressed image 04" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-05.jpg" alt="Ecclesiastes distressed image 05" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-06.jpg" alt="Ecclesiastes distressed image 06" /></figure>
+        <figure class="media media--poster distress-grid__lone"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-07.jpg" alt="Ecclesiastes distressed image 07" /></figure>
       </div>
-
-      <!-- Each cell cycles 4 images on a shared 16s loop; the two cells
-           split the 8 applications equally. 05 is pinned near the
-           bottom so the UNESCO podium stays visible when the portrait
-           crops into the square cell. See .media__aslide keyframes. -->
-      <div class="section-media__triptych section-media__triptych--pair">
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-02.jpg" alt="UNESCO application — rooftop billboard" />
-          <img class="media__img media__aslide media__aslide--2" style="object-position: center 85%;" src="/ASSETS/IMAGES/UNESCO/application-05.jpg" alt="UNESCO application — Director-General podium" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-07.jpg" alt="UNESCO application — bridge wheatpaste poster" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-10.jpg" alt="UNESCO application — cylindrical street kiosk" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-04.jpg" alt="UNESCO application — building-side billboard" />
-          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-09.jpg" alt="UNESCO application — unesco HQ banner" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-11.jpg" alt="UNESCO application — parking + bike station sign" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
-        </figure>
-      </div>
-
-      <!-- Walkthrough screen recording — full native video controls so
-           visitors can play / pause / scrub. Uses object-fit: contain
-           + black bg so the full recording frame is always visible. -->
-      <figure class="media media--wide applications-walkthrough">
-        <video class="media__video applications-walkthrough__video"
-               controls preload="metadata" playsinline webkit-playsinline
-               disablepictureinpicture disableremoteplayback
-               aria-label="UNESCO applications walkthrough">
-          <source src="/ASSETS/IMAGES/UNESCO/applications-walkthrough.mp4" type="video/mp4">
-        </video>
-      </figure>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
@@ -1952,6 +1939,10 @@
         // back cover solo pages).
         inspector.classList.toggle('is-spread',
           !cell.classList.contains('book-page--solo'));
+        // Dark background only for the back cover (page-097) so the
+        // mostly-black colophon doesn't sit in a beige letterbox.
+        var src = sourceImg.getAttribute('src') || '';
+        inspector.classList.toggle('is-back', /page-097\.jpg$/.test(src));
       }
       cells.forEach(function (cell) {
         cell.addEventListener('pointerenter', onEnter);
