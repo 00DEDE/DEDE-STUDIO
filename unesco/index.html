@@ -236,6 +236,36 @@
   body.unesco .site-header.is-scrolled .site-header__brand img {
     height: 1.75rem;
   }
+  /* Author credit — hidden by default on every other page, shown
+     only on UNESCO at the header's far-left column (grid col 1). */
+  .site-header__credit { display: none; }
+  body.unesco .site-header__credit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+    margin: 0;
+    padding-left: clamp(0.75rem, 1.25vw, 1.25rem);
+    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--fg);
+    opacity: 0.85;
+    white-space: nowrap;
+  }
+  body.unesco .site-header__credit-sep {
+    opacity: 0.4;
+    padding: 0 0.1rem;
+  }
+  @media (max-width: 640px) {
+    /* On mobile the brand is centered and the header is tight — hide
+       the credit so it doesn't collide with the logo. */
+    body.unesco .site-header__credit { display: none; }
+  }
   .unesco__hero-image {
     position: absolute;
     inset: 0;
@@ -1333,6 +1363,12 @@
   </div>
 
   <header class="site-header">
+    <!-- UNESCO-only credit: author name + title pinned to the far-left
+         column of the header grid. Hidden (via CSS) on any page that
+         doesn't have body.unesco set. -->
+    <p class="site-header__credit" aria-label="David Gomez, Graphic Designer">
+      David Gomez <span class="site-header__credit-sep" aria-hidden="true">|</span> Graphic Designer
+    </p>
     <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
       <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
     </a>
