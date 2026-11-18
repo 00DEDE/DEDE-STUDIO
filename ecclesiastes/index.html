@@ -685,10 +685,9 @@
      on mobile. */
   .book-grid {
     display: grid;
-    /* Grid now lives in the narrower g-span-2 column (same width as
-       section 05's trailer cell), so 12 cells per row packs the full
-       97-page overview into roughly 8 compact rows. */
-    grid-template-columns: repeat(12, 1fr);
+    /* 13 cols × 8 rows = page 97 lands as the 6th of 6 cells in the
+       last row rather than alone. No orphan. */
+    grid-template-columns: repeat(13, 1fr);
     gap: clamp(0.2rem, 0.4vw, 0.4rem);
     align-items: start;
     justify-items: center;
@@ -723,13 +722,6 @@
   /* Solo cells (cover / back cover) sit at half the cell width,
      centered, so they read as isolated pages rather than full spreads. */
   .book-page--solo { width: 50%; }
-  /* Last cell spans whatever remains of its row so the back cover
-     never lands alone on an orphan row. Width + centering stay from
-     .book-page--solo if applied. */
-  .book-grid > .book-page:last-child {
-    grid-column: 1 / -1;
-    justify-self: center;
-  }
   /* Soft spine gradient down the middle of each interior spread —
      skipped on the first and last cells so the book opens and closes
      cleanly. */
@@ -780,6 +772,7 @@
     margin: clamp(1rem, 2.5vh, 2rem) 0 0;
     padding: 0;
     width: 100%;
+    max-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -789,8 +782,9 @@
   }
   .book-inspector__img {
     display: block;
-    width: 100%;
+    width: auto;
     height: auto;
+    max-width: 100%;
     max-height: 70vh;
     object-fit: contain;
     transition: opacity 180ms ease;
@@ -799,6 +793,28 @@
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22),
                 0 4px 10px  rgba(0, 0, 0, 0.12);
   }
+  /* Spine gradient down the middle — mirrors the grid's interior
+     spread treatment. JS adds .is-spread when the hovered page is a
+     spread (anything except the cover and back cover). */
+  .book-inspector::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 6%;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0)     0%,
+      rgba(0, 0, 0, 0.16) 50%,
+      rgba(0, 0, 0, 0)   100%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+    z-index: 2;
+  }
+  .book-inspector.is-spread::after { opacity: 1; }
   @media (max-width: 900px) {
     /* On mobile the grid stacks below the text, so the inspector
        doesn't need to stick — it reads inline. */
@@ -1159,7 +1175,7 @@
          page the viewer is hovering), 97-page grid in cols 2-3 at
          the same column width as section 05's trailer cell below. -->
     <div class="g-span-1 section-text book-section__text">
-      <p class="section-label"><span class="section-label__num">04</span>Book</p>
+      <p class="section-label"><span class="section-label__num">04</span>The Complete Layout</p>
       <figure class="book-inspector" id="book-inspector" aria-hidden="true">
         <img class="book-inspector__img" alt="" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-001.jpg" width="1200" height="2057" />
       </figure>
@@ -1489,7 +1505,7 @@
         <video class="media__video trailer-walkthrough__video"
                controls playsinline webkit-playsinline preload="metadata"
                disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/ECCLESIASTES/hero.jpg"
+               poster="/ASSETS/IMAGES/ECCLESIASTES/trailer-poster.jpg"
                aria-label="Ecclesiastes trailer motion piece">
           <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
         </video>
@@ -1916,12 +1932,17 @@
         var cell = e.currentTarget;
         var sourceImg = cell.querySelector('img');
         if (!sourceImg) return;
-        if (img.getAttribute('src') === sourceImg.getAttribute('src')) return;
-        img.src = sourceImg.src;
-        if (sourceImg.width)  img.setAttribute('width',  sourceImg.width);
-        if (sourceImg.height) img.setAttribute('height', sourceImg.height);
-        img.alt = sourceImg.alt || '';
+        if (img.getAttribute('src') !== sourceImg.getAttribute('src')) {
+          img.src = sourceImg.src;
+          if (sourceImg.width)  img.setAttribute('width',  sourceImg.width);
+          if (sourceImg.height) img.setAttribute('height', sourceImg.height);
+          img.alt = sourceImg.alt || '';
+        }
         inspector.classList.add('is-active');
+        // Spine gradient only for interior spreads (not the cover or
+        // back cover solo pages).
+        inspector.classList.toggle('is-spread',
+          !cell.classList.contains('book-page--solo'));
       }
       cells.forEach(function (cell) {
         cell.addEventListener('pointerenter', onEnter);
