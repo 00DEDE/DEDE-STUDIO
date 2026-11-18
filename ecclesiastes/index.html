@@ -676,6 +676,110 @@
     .atlas-book__stage { transition: none; }
   }
 
+  /* ─── Full book grid (section 04) ─────────────────────────────────
+     All 140 book pages laid out in order. Cover and back cover sit
+     alone (centered, half width); every inner spread shows its two
+     facing pages flush together with a thin gap between spreads so
+     the reader can scan colour and rhythm across the whole book. On
+     mobile the grid collapses to one spread per row and the covers
+     span the single column centered. */
+  .book-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;      /* 2 spreads per row on desktop */
+    gap: clamp(1rem, 2.5vw, 2rem);
+    align-items: start;
+    justify-items: center;
+  }
+  /* Each spread is a sub-grid of two pages flush together, wrapped
+     so we can paint a thin vertical gradient down the middle (the
+     spine) and a subtle drop-shadow underneath. Hover scales the
+     whole spread 1.4× on top of its neighbours. */
+  .book-spread {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    width: 100%;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.18))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center center;
+    z-index: 1;
+  }
+  /* Thin spine gradient running vertically down the gutter of each
+     spread. Darkens toward the middle so the two pages read as a
+     real open book. */
+  .book-spread::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 7%;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0)     0%,
+      rgba(0, 0, 0, 0.18) 50%,
+      rgba(0, 0, 0, 0)   100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  .book-spread .book-page {
+    aspect-ratio: 7 / 12;                /* match the book trim (7 × 12 in) */
+    overflow: hidden;
+  }
+  .book-page {
+    margin: 0;
+    width: 100%;
+    display: block;
+    background: #f4f2ec;                 /* soft page edge so JPG seams blend */
+  }
+  .book-page img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  /* Solo cells (page 1 and page 140) — half-spread width so they read
+     as one open page against a spread's two. Shadow + hover scale
+     mirror the spread treatment. */
+  .book-page--solo {
+    width: 50%;
+    aspect-ratio: 7 / 12;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.18))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center center;
+    z-index: 1;
+  }
+  /* Hover — the spread (or solo page) grows to 140% and lifts above
+     its neighbours via z-index + tighter shadow. */
+  @media (hover: hover) {
+    .book-spread:hover,
+    .book-page--solo:hover {
+      transform: scale(1.4);
+      z-index: 5;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.28))
+              drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .book-spread,
+    .book-page--solo { transition: none; }
+    .book-spread:hover,
+    .book-page--solo:hover { transform: none; }
+  }
+  @media (max-width: 900px) {
+    .book-grid { grid-template-columns: 1fr; }
+    .book-page--solo { width: 50%; }
+  }
+
+  /* ─── Applications posters + mockup (section 05) ──────────────── */
+  .trailer-walkthrough { background: #000; }
+  .trailer-walkthrough__video { object-fit: cover; background: #000; }
+  .app-poster-mockup .media__img { object-fit: cover; }
+
   /* ─── Floating book-page carousel (section 03) ────────────────────
      Transparent PNG mockups scroll on their own; cursor position
      over the strip modulates speed AND direction (centre = slow /
@@ -790,7 +894,7 @@
   <section class="unesco__hero unesco__grid" aria-label="Ecclesiastes cover">
     <div class="g-span-1 unesco__hero-title">
       <span class="intro__eyebrow">Case Study 02</span>
-      <h1 class="intro__title">The Book of<br><span class="decipher" id="hero-decipher" aria-label="Ecclesiastes"></span></h1>
+      <h1 class="intro__title">The<br>Book of <span class="decipher" id="hero-decipher" aria-label="Ecclesiastes"></span></h1>
     </div>
     <div class="unesco__hero-media g-span-2">
       <div class="unesco__hero-image" role="img" aria-label="Ecclesiastes project cover"></div>
@@ -964,8 +1068,8 @@
     <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">03</span>Skeletal layout</p>
       <p class="statement">
-        5 3 3 12 5 19 9 1 19 20 5 19. The numerical value of
-        <em>ECCLESIASTES</em>.
+        5 3 3 12 5 19 9 1 19 20 5 19.<br>
+        The numerical value of <em>ECCLESIASTES</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-skeletal">
         <span>Read more</span>
@@ -974,7 +1078,9 @@
       <div class="read-more__panel" id="rm-skeletal">
         <div class="read-more__inner">
           <p>Numbers are all around us. Some we see, billions we don&rsquo;t. Through the bond between me and this special project, I realized there was a pattern happening. Ecclesiastes is the 21st book in the Bible. Its name contains 12 letters, and when you add up each letter&rsquo;s place in the alphabet, they total 120. Within it are 12 chapters and 222 verses. Throughout the Bible, the numbers 3, 4, 7, and 12 appear again and again. I believe it is no coincidence that 3 + 4 = 7 and 3 &times; 4 = 12.</p>
-          <p>In this book, after every fourth chapter, I insert textural imagery. After the third chapter, I insert 20 images of moments close to my heart: the flowers that bloom in front of my home every summer, and the day my family and I buried our dogs, Nala and Bella. They were like my big sisters. There are a total of 40 images in this composition, intentionally. The book measures 7 inches wide by 12 inches tall.</p>
+          <p>In this book, after every fourth chapter, I insert textural imagery. After the third chapter, I insert 40 images of moments close to my heart: the flowers that bloom in front of my home every summer, and the day my family and I buried our dog, Nala. She was like my big sister.</p>
+          <p>The book measures 7 inches wide by 12 inches tall.</p>
+          <p>I made the book cover&rsquo;s letter E out of 7 lines, intentionally.</p>
         </div>
       </div>
     </div>
@@ -1018,93 +1124,342 @@
        picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
 
-    <!-- ─── 04 · Palette ─────────────────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">04</span>Palette</p>
-      <p class="statement" style="text-wrap: pretty;">
-        A hue palette that is an homage to our shared home. <em>Planet Earth</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-palette">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-palette">
-        <div class="read-more__inner">
-          <p>The palette has two sides: what can be seen and what can be felt. World Blue, Vivre Green, and Sol Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
-        </div>
-      </div>
+    <!-- ─── 04 · Book ─────────────────────────────────────────── -->
+    <div class="g-span-3">
+      <p class="section-label"><span class="section-label__num">04</span>Book</p>
     </div>
 
-    <div class="g-span-2 section-media">
-    <!-- Interactive palette — original billboard image as the base,
-         six hover regions overlaid as a single 6-column row. A veil
-         covers each region at the start and fades out in sequence
-         once the grid enters the viewport (via IntersectionObserver
-         → .is-in), so each color "appears" one by one. On hover/focus
-         a soft dark scrim overlays that region and surfaces its name
-         centered. -->
-    <div class="palette-grid" aria-label="UNESCO color palette">
-      <img class="palette-grid__img" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
-      <div class="palette-grid__cells" role="list">
-        <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>World</span><span>Blue</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Vivre Green" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Vivre</span><span>Green</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Sol</span><span>Yellow</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Ash Grey" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Ash</span><span>Grey</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Umber Brown" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Umber</span><span>Brown</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Deep Earth" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Deep</span><span>Earth</span></span>
-        </button>
+    <div class="g-span-3">
+      <div class="book-grid" aria-label="Full book spreads">
+        <figure class="book-page book-page--solo">
+          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-001.jpg" alt="Ecclesiastes page 1 — front cover" />
+        </figure>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-002.jpg" alt="Ecclesiastes page 2" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-003.jpg" alt="Ecclesiastes page 3" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-004.jpg" alt="Ecclesiastes page 4" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-005.jpg" alt="Ecclesiastes page 5" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-006.jpg" alt="Ecclesiastes page 6" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-007.jpg" alt="Ecclesiastes page 7" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-008.jpg" alt="Ecclesiastes page 8" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-009.jpg" alt="Ecclesiastes page 9" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-010.jpg" alt="Ecclesiastes page 10" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-011.jpg" alt="Ecclesiastes page 11" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-012.jpg" alt="Ecclesiastes page 12" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-013.jpg" alt="Ecclesiastes page 13" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-014.jpg" alt="Ecclesiastes page 14" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-015.jpg" alt="Ecclesiastes page 15" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-016.jpg" alt="Ecclesiastes page 16" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-017.jpg" alt="Ecclesiastes page 17" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-018.jpg" alt="Ecclesiastes page 18" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-019.jpg" alt="Ecclesiastes page 19" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-020.jpg" alt="Ecclesiastes page 20" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-021.jpg" alt="Ecclesiastes page 21" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-022.jpg" alt="Ecclesiastes page 22" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-023.jpg" alt="Ecclesiastes page 23" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-024.jpg" alt="Ecclesiastes page 24" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-025.jpg" alt="Ecclesiastes page 25" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-026.jpg" alt="Ecclesiastes page 26" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-027.jpg" alt="Ecclesiastes page 27" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-028.jpg" alt="Ecclesiastes page 28" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-029.jpg" alt="Ecclesiastes page 29" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-030.jpg" alt="Ecclesiastes page 30" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-031.jpg" alt="Ecclesiastes page 31" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-032.jpg" alt="Ecclesiastes page 32" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-033.jpg" alt="Ecclesiastes page 33" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-034.jpg" alt="Ecclesiastes page 34" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-035.jpg" alt="Ecclesiastes page 35" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-036.jpg" alt="Ecclesiastes page 36" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-037.jpg" alt="Ecclesiastes page 37" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-038.jpg" alt="Ecclesiastes page 38" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-039.jpg" alt="Ecclesiastes page 39" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-040.jpg" alt="Ecclesiastes page 40" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-041.jpg" alt="Ecclesiastes page 41" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-042.jpg" alt="Ecclesiastes page 42" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-043.jpg" alt="Ecclesiastes page 43" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-044.jpg" alt="Ecclesiastes page 44" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-045.jpg" alt="Ecclesiastes page 45" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-046.jpg" alt="Ecclesiastes page 46" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-047.jpg" alt="Ecclesiastes page 47" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-048.jpg" alt="Ecclesiastes page 48" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-049.jpg" alt="Ecclesiastes page 49" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-050.jpg" alt="Ecclesiastes page 50" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-051.jpg" alt="Ecclesiastes page 51" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-052.jpg" alt="Ecclesiastes page 52" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-053.jpg" alt="Ecclesiastes page 53" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-054.jpg" alt="Ecclesiastes page 54" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-055.jpg" alt="Ecclesiastes page 55" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-056.jpg" alt="Ecclesiastes page 56" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-057.jpg" alt="Ecclesiastes page 57" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-058.jpg" alt="Ecclesiastes page 58" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-059.jpg" alt="Ecclesiastes page 59" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-060.jpg" alt="Ecclesiastes page 60" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-061.jpg" alt="Ecclesiastes page 61" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-062.jpg" alt="Ecclesiastes page 62" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-063.jpg" alt="Ecclesiastes page 63" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-064.jpg" alt="Ecclesiastes page 64" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-065.jpg" alt="Ecclesiastes page 65" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-066.jpg" alt="Ecclesiastes page 66" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-067.jpg" alt="Ecclesiastes page 67" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-068.jpg" alt="Ecclesiastes page 68" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-069.jpg" alt="Ecclesiastes page 69" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-070.jpg" alt="Ecclesiastes page 70" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-071.jpg" alt="Ecclesiastes page 71" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-072.jpg" alt="Ecclesiastes page 72" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-073.jpg" alt="Ecclesiastes page 73" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-074.jpg" alt="Ecclesiastes page 74" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-075.jpg" alt="Ecclesiastes page 75" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-076.jpg" alt="Ecclesiastes page 76" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-077.jpg" alt="Ecclesiastes page 77" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-078.jpg" alt="Ecclesiastes page 78" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-079.jpg" alt="Ecclesiastes page 79" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-080.jpg" alt="Ecclesiastes page 80" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-081.jpg" alt="Ecclesiastes page 81" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-082.jpg" alt="Ecclesiastes page 82" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-083.jpg" alt="Ecclesiastes page 83" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-084.jpg" alt="Ecclesiastes page 84" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-085.jpg" alt="Ecclesiastes page 85" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-086.jpg" alt="Ecclesiastes page 86" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-087.jpg" alt="Ecclesiastes page 87" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-088.jpg" alt="Ecclesiastes page 88" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-089.jpg" alt="Ecclesiastes page 89" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-090.jpg" alt="Ecclesiastes page 90" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-091.jpg" alt="Ecclesiastes page 91" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-092.jpg" alt="Ecclesiastes page 92" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-093.jpg" alt="Ecclesiastes page 93" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-094.jpg" alt="Ecclesiastes page 94" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-095.jpg" alt="Ecclesiastes page 95" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-096.jpg" alt="Ecclesiastes page 96" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-097.jpg" alt="Ecclesiastes page 97" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-098.jpg" alt="Ecclesiastes page 98" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-099.jpg" alt="Ecclesiastes page 99" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-100.jpg" alt="Ecclesiastes page 100" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-101.jpg" alt="Ecclesiastes page 101" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-102.jpg" alt="Ecclesiastes page 102" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-103.jpg" alt="Ecclesiastes page 103" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-104.jpg" alt="Ecclesiastes page 104" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-105.jpg" alt="Ecclesiastes page 105" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-106.jpg" alt="Ecclesiastes page 106" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-107.jpg" alt="Ecclesiastes page 107" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-108.jpg" alt="Ecclesiastes page 108" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-109.jpg" alt="Ecclesiastes page 109" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-110.jpg" alt="Ecclesiastes page 110" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-111.jpg" alt="Ecclesiastes page 111" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-112.jpg" alt="Ecclesiastes page 112" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-113.jpg" alt="Ecclesiastes page 113" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-114.jpg" alt="Ecclesiastes page 114" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-115.jpg" alt="Ecclesiastes page 115" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-116.jpg" alt="Ecclesiastes page 116" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-117.jpg" alt="Ecclesiastes page 117" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-118.jpg" alt="Ecclesiastes page 118" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-119.jpg" alt="Ecclesiastes page 119" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-120.jpg" alt="Ecclesiastes page 120" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-121.jpg" alt="Ecclesiastes page 121" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-122.jpg" alt="Ecclesiastes page 122" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-123.jpg" alt="Ecclesiastes page 123" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-124.jpg" alt="Ecclesiastes page 124" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-125.jpg" alt="Ecclesiastes page 125" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-126.jpg" alt="Ecclesiastes page 126" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-127.jpg" alt="Ecclesiastes page 127" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-128.jpg" alt="Ecclesiastes page 128" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-129.jpg" alt="Ecclesiastes page 129" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-130.jpg" alt="Ecclesiastes page 130" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-131.jpg" alt="Ecclesiastes page 131" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-132.jpg" alt="Ecclesiastes page 132" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-133.jpg" alt="Ecclesiastes page 133" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-134.jpg" alt="Ecclesiastes page 134" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-135.jpg" alt="Ecclesiastes page 135" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-136.jpg" alt="Ecclesiastes page 136" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-137.jpg" alt="Ecclesiastes page 137" /></figure>
+        </div>
+        <div class="book-spread">
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-138.jpg" alt="Ecclesiastes page 138" /></figure>
+          <figure class="book-page"><img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-139.jpg" alt="Ecclesiastes page 139" /></figure>
+        </div>
+        <figure class="book-page book-page--solo">
+          <img loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/book/page-140.jpg" alt="Ecclesiastes page 140 — back cover" />
+        </figure>
       </div>
-    </div>
-    </div><!-- /04 section-media -->
+    </div><!-- /04 book-grid -->
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Iconography ─────────────────────────────────────────
-         Sits directly below Palette so the identity system
-         (color + marks) reads as one continuous chapter. -->
+    <!-- ─── 05 · Applications ─────────────────────────────────────
+         Trailer video for the motion piece + three Living Traces
+         posters + subway mockup. Replaces the old Iconography slot. -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">05</span>Iconography</p>
+      <p class="section-label"><span class="section-label__num">05</span>Applications</p>
       <p class="statement">
-        Taken apart and rebuilt, the new logo became
-        <em>so much more than one single asset</em>.
+        Vanity of vanities, <em>all is vanity</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-iconography">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-iconography">
+      <div class="read-more__panel" id="rm-applications">
         <div class="read-more__inner">
-          <p>True to the craft of textiles, I unraveled the logo and wove it back together, using only its own elements. Taken apart and rebuilt, it became icons for the four worlds UNESCO protects: languages, ecosystems, traditions, and monuments. Then I pushed it further into a cast of ten characters who live throughout the system. I call them my new little friends.</p>
+          <p>As an extension to the production and redesign of Ecclesiastes, I created a motion piece that would serve as the marketing for the hypothetical release of the book. Here, I pushed the system established within the book even further. Movement and words blend and bleed into each other.</p>
+          <p>This is wind passing you by.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Iconography overview, 16:9 -->
-      <figure class="media media--wide">
-        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
+      <!-- Trailer motion piece — autoplay muted looped so it reads as
+           a moving still that invites the viewer to stay with it. -->
+      <figure class="media media--wide trailer-walkthrough">
+        <video class="media__video trailer-walkthrough__video"
+               autoplay muted loop playsinline webkit-playsinline preload="metadata"
+               disablepictureinpicture disableremoteplayback
+               poster="/ASSETS/IMAGES/ECCLESIASTES/hero.jpg"
+               aria-label="Ecclesiastes trailer motion piece">
+          <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
+        </video>
+      </figure>
+
+      <!-- Three Living Traces posters in a row. -->
+      <div class="section-media__posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-01.jpg" alt="Ecclesiastes poster — The Book of Ecclesiastes, 07.27.27" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-02.jpg" alt="Ecclesiastes poster — There is nothing new under the sun" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-03.jpg" alt="Ecclesiastes poster — Ecclesiastes 07.27.27" /></figure>
+      </div>
+
+      <!-- Subway mockup showing the poster series in place. -->
+      <figure class="media media--wide app-poster-mockup">
+        <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-mockup.jpg" alt="Ecclesiastes posters in a subway platform mockup" />
       </figure>
     </div>
 
