@@ -403,10 +403,12 @@
      Both cells use contain so the full logo is always visible inside
      the square. case-study.css paints .media__img with a black
      background; we override to transparent so each cell's own color
-     fills the letterbox area. Before = white. After = one of two
-     colors per layer (white for the white-background variants, red
-     #BC3633 for the one-on-red variant) so the sequence never shows
-     black. The After cell layers three wordmark variants that slide
+     fills the letterbox area. Before = white (the before image is a
+     transparent PNG so the cell's white shows through). After = one
+     of two colors per layer (white for the white-background variants,
+     red #F50A41 — the Trader Joe's brand red — for the one-on-red
+     variant) so the sequence never shows black and the red matches
+     the red inside each image seamlessly. The After cell layers three wordmark variants that slide
      horizontally like a wall of panels: the active panel sits at x=0,
      the next incoming panel starts off-screen right and slides to 0
      while the outgoing panel slides to off-screen left. Ease in-out
@@ -420,7 +422,7 @@
 
   .foundations-after { position: relative; overflow: hidden; background: #ffffff; }
   .foundations-after__layer--white { background: #ffffff; }
-  .foundations-after__layer--red   { background: #BC3633; }
+  .foundations-after__layer--red   { background: #F50A41; }
   .foundations-after__layer {
     position: absolute;
     inset: 0;
@@ -450,6 +452,81 @@
     .foundations-after__layer.is-active,
     .foundations-after__layer.is-past { animation: none; }
     .foundations-after__layer.is-active { transform: translate3d(0, 0, 0); }
+  }
+
+  /* ─── 04 · The Full Lineup grid + hover preview ───────────────────
+     18 product photos in a 3 × 6 grid. On hover, the lineup-preview
+     element (position: fixed, viewport-centered) pops with the full
+     image at a comfortable reading scale. Touch devices + mobile skip
+     the preview; the grid alone works there. */
+  .lineup-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+  }
+  .lineup-cell {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #0a0a0a;
+    cursor: zoom-in;
+  }
+  .lineup-cell__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .lineup-cell:hover .lineup-cell__img,
+  .lineup-cell:focus-within .lineup-cell__img {
+    transform: scale(1.04);
+  }
+
+  .lineup-preview {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(78vw, 1200px);
+    max-height: 80vh;
+    aspect-ratio: 3 / 2;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+    transition:
+      opacity 220ms ease,
+      transform 260ms cubic-bezier(.2, 0, .1, 1);
+    z-index: 200;
+    background: #0a0a0a;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+  .lineup-preview.is-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .lineup-preview__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 760px) {
+    .lineup-grid { gap: 0.35rem; }
+    .lineup-cell { cursor: default; }
+    .lineup-preview { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lineup-cell__img,
+    .lineup-preview { transition: opacity 120ms linear; transform: none; }
+    .lineup-preview.is-visible { transform: translate(-50%, -50%); }
+    .lineup-cell:hover .lineup-cell__img,
+    .lineup-cell:focus-within .lineup-cell__img { transform: none; }
   }
 
   /* ─── 4-slide applications slideshow (section 07) ────────────────
@@ -885,7 +962,7 @@
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">Before</p>
           <figure class="media media--square foundations-ba__media">
-            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/TRADER%20JOES/before.jpg" alt="Trader Joe&rsquo;s existing serif wordmark" />
+            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/TRADER%20JOES/before.png" alt="Trader Joe&rsquo;s existing serif wordmark" />
           </figure>
         </div>
         <div class="foundations-ba__col">
@@ -933,11 +1010,11 @@
        picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
 
-    <!-- ─── 04 · Palette ─────────────────────────────────────────── -->
+    <!-- ─── 04 · The Full Lineup ─────────────────────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">04</span>Palette</p>
+      <p class="section-label"><span class="section-label__num">04</span>The Full Lineup</p>
       <p class="statement" style="text-wrap: pretty;">
-        A hue palette that is an homage to our shared home. <em>Planet Earth</em>.
+        Meet <em>the family</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-palette">
         <span>Read more</span>
@@ -945,55 +1022,55 @@
       </button>
       <div class="read-more__panel" id="rm-palette">
         <div class="read-more__inner">
-          <p>The palette has two sides: what can be seen and what can be felt. World Blue, Vivre Green, and Sol Yellow stand for knowledge, life, and culture. Ash Grey, Umber Brown, and Deep Earth stand for memory, ancestry, and heritage. Together they hold the vibrancy of human expression and the depth of human experience: the hues of our shared home, woven into the fabric of humanity.</p>
+          <p>Meet the family: Joey the orange juice, Julie the apple juice, Chloe the strawberry gummies, and Louie the sweet banana chips. Each character has their own hero product, and together they come home on one cereal box: Tiny Fruity Cuties.</p>
+          <p>My favorite is Chloe. Her &ldquo;freckles&rdquo; are the seeds of a strawberry.</p>
+          <p>To bring the rebrand and this new world to life, I carried the characters onto the activity products. One is playing paddleball, another becomes the face of a frisbee.</p>
+          <p>Family is important to me. At the time of this project, my family was going through a loss, and I was away from them. This project was made in their honor. Each character represents a member of my family.</p>
+          <p>It is vital to my process to give purpose to a project, no matter how big or small. The project is a person, not an extension of me. I must talk to it and bond with it so I can understand what we can give each other.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-    <!-- Interactive palette — original billboard image as the base,
-         six hover regions overlaid as a single 6-column row. A veil
-         covers each region at the start and fades out in sequence
-         once the grid enters the viewport (via IntersectionObserver
-         → .is-in), so each color "appears" one by one. On hover/focus
-         a soft dark scrim overlays that region and surfaces its name
-         centered. -->
-    <div class="palette-grid" aria-label="UNESCO color palette">
-      <img class="palette-grid__img" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
-      <div class="palette-grid__cells" role="list">
-        <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>World</span><span>Blue</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Vivre Green" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Vivre</span><span>Green</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Sol</span><span>Yellow</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Ash Grey" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Ash</span><span>Grey</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Umber Brown" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Umber</span><span>Brown</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Deep Earth" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Deep</span><span>Earth</span></span>
-        </button>
+      <!-- Lineup grid — 3 cols × 6 rows (18 product photos). Rows are
+           grouped by character / hero product so each row reads as one
+           family member's story. Hovering a cell shows that image at
+           full scale, centered over the viewport. Touch devices skip
+           the preview and just show the grid. -->
+      <div class="lineup-grid" aria-label="Full product lineup">
+        <!-- Row 1 · Joey (orange juice) -->
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/orange1.jpg" alt="Joey orange juice carton, angle 1" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/orange2.jpg" alt="Joey orange juice carton, angle 2" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/orange3.jpg" alt="Joey orange juice carton, angle 3" loading="lazy" decoding="async" /></figure>
+        <!-- Row 2 · Louie (banana chips) -->
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/yellow1.jpg" alt="Louie banana chips packaging, angle 1" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/yellow2.jpg" alt="Louie banana chips packaging, angle 2" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/yellow3.jpg" alt="Louie banana chips packaging, angle 3" loading="lazy" decoding="async" /></figure>
+        <!-- Row 3 · Julie (apple juice) -->
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/red1.jpg" alt="Julie apple juice carton, angle 1" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/red2.jpg" alt="Julie apple juice carton, angle 2" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/red3.jpg" alt="Julie apple juice carton, angle 3" loading="lazy" decoding="async" /></figure>
+        <!-- Row 4 · Chloe (strawberry gummies) -->
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/pink1.jpg" alt="Chloe strawberry gummies packaging, angle 1" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/pink2.jpg" alt="Chloe strawberry gummies packaging, angle 2" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/pink3.jpg" alt="Chloe strawberry gummies packaging, angle 3" loading="lazy" decoding="async" /></figure>
+        <!-- Row 5 · Tiny Fruity Cuties cereal -->
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/blue1.jpg" alt="Tiny Fruity Cuties cereal carton, angle 1" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/blue2.jpg" alt="Tiny Fruity Cuties cereal carton, angle 2" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/blue3.jpg" alt="Tiny Fruity Cuties cereal carton, angle 3" loading="lazy" decoding="async" /></figure>
+        <!-- Row 6 · The family together -->
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/together1.jpg" alt="The full product family together, angle 1" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/together2.jpg" alt="The full product family together, angle 2" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/PRODUCTS/web/together3.jpg" alt="The full product family together, angle 3" loading="lazy" decoding="async" /></figure>
       </div>
-    </div>
     </div><!-- /04 section-media -->
+
+    <!-- Lineup hover preview — a fixed, centered overlay that shows
+         the hovered thumbnail at full scale. Lives outside the grid so
+         it is positioned relative to the viewport, not the cell. -->
+    <div class="lineup-preview" aria-hidden="true">
+      <img class="lineup-preview__img" alt="" />
+    </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
     <!-- ─── 05 · Iconography ─────────────────────────────────────────
@@ -1512,6 +1589,40 @@
         }
       }
     }
+
+    /* Lineup grid hover preview — on pointerenter (non-touch), copy
+       the hovered thumbnail into the fixed centered preview element
+       and fade it in. pointerleave hides it. Touch devices are
+       ignored so the grid alone drives the experience on mobile. */
+    (function initLineupPreview() {
+      var grid = document.querySelector('.lineup-grid');
+      var preview = document.querySelector('.lineup-preview');
+      if (!grid || !preview) return;
+      var previewImg = preview.querySelector('.lineup-preview__img');
+      if (!previewImg) return;
+      var imgs = grid.querySelectorAll('.lineup-cell__img');
+      var hideTimer;
+      imgs.forEach(function (img) {
+        img.addEventListener('pointerenter', function (e) {
+          if (e.pointerType === 'touch') return;
+          clearTimeout(hideTimer);
+          if (previewImg.src !== img.src) previewImg.src = img.src;
+          previewImg.alt = img.alt || '';
+          preview.classList.add('is-visible');
+        });
+        img.addEventListener('pointerleave', function (e) {
+          if (e.pointerType === 'touch') return;
+          hideTimer = setTimeout(function () {
+            preview.classList.remove('is-visible');
+          }, 60);
+        });
+      });
+      // Also hide when the pointer leaves the grid entirely.
+      grid.addEventListener('pointerleave', function (e) {
+        if (e.pointerType === 'touch') return;
+        preview.classList.remove('is-visible');
+      });
+    })();
 
     /* Palette grid — reveal the swatches in sequence once the grid
        enters the viewport. Keeps the animation in sync with when the
