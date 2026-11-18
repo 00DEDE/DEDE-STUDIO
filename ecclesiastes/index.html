@@ -831,12 +831,9 @@
   @media (max-width: 640px) {
     /* Mobile: hide the back-cover thumbnail (last image in the grid). */
     .book-grid > .book-page:last-child { display: none; }
-    /* Mobile: push section 4 (first two grid items of the case body)
-       past every other section. The parent grid is 1-col on mobile,
-       so items stack in DOM order by default; raising section 4's
-       `order` moves its text column and media column to the end. */
-    .unesco__grid[aria-label="Case study"] > :nth-child(1),
-    .unesco__grid[aria-label="Case study"] > :nth-child(2) { order: 999; }
+    /* Mobile: cap visible grid to ~3 rows (rest scrolls internally),
+       so the preview above stays visible for the entire browse. */
+    .book-grid { max-height: 25vh; }
   }
 
   /* ─── Foundation hero (section 02) — 16:9 cell (matching section
@@ -1272,13 +1269,199 @@
        Foundations (01) now lives above in its own section; the grid
        picks up at 02 Palette. -->
   <section class="unesco__grid" aria-label="Case study">
+<hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 05 · Applications ─────────────────────────────────────
+         Trailer video for the motion piece + three Living Traces
+         posters + subway mockup. Replaces the old Iconography slot. -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">04</span>Applications</p>
+      <p class="statement">
+        Vanity of vanities, <em>all is vanity</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-applications">
+        <div class="read-more__inner">
+          <p>As an extension to the production and redesign of Ecclesiastes, I created a motion piece that would serve as the marketing for the hypothetical release of the book. Here, I pushed the system established within the book even further. Movement and words blend and bleed into each other.</p>
+          <p>This is wind passing you by.</p>
+        </div>
+      </div>
+    </div>
 
-    <!-- ─── 04 · Book ──────────────────────────────────────────────
+    <div class="g-span-2 section-media">
+      <!-- Trailer motion piece — native controls so the viewer can
+           play / pause and scrub. Sound on; no loop. -->
+      <figure class="media media--wide trailer-walkthrough">
+        <video class="media__video trailer-walkthrough__video"
+               controls playsinline webkit-playsinline preload="metadata"
+               disablepictureinpicture disableremoteplayback
+               poster="/ASSETS/IMAGES/ECCLESIASTES/trailer-poster.jpg"
+               aria-label="Ecclesiastes trailer motion piece">
+          <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
+        </video>
+      </figure>
+
+      <!-- Three Living Traces posters in a row. Order: 02, 01, 03. -->
+      <div class="section-media__posters applications-posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-02.jpg" alt="Ecclesiastes poster — There is nothing new under the sun" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-01.jpg" alt="Ecclesiastes poster — The Book of Ecclesiastes, 07.27.27" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-03.jpg" alt="Ecclesiastes poster — Ecclesiastes 07.27.27" /></figure>
+      </div>
+
+      <!-- Subway mockup showing the poster series in place. -->
+      <figure class="media media--wide app-poster-mockup">
+        <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-mockup.jpg" alt="Ecclesiastes posters in a subway platform mockup" />
+      </figure>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 06 · The Pull Quotes ──────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">05</span>The Pull Quotes</p>
+      <p class="statement">
+        Emotion behind the words <em>made visible</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-pull-quotes">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-pull-quotes">
+        <div class="read-more__inner">
+          <p>Each image here contains a pull quote from the text. When we speak nothing is stagnant or fixed, through the motion of speaking whether it be you or I, the words fluctuate and change. Language is dynamic. Humans, even more so. I created these textural images to represent that notion.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 6 distressed images laid out as two rows of three. Order:
+           01, 02, 03 / 04, 07, 06. (distress-05 removed per user;
+           distress-07 fills its slot.) -->
+      <div class="distress-grid">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-01.jpg" alt="Ecclesiastes distressed image 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-02.jpg" alt="Ecclesiastes distressed image 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-03.jpg" alt="Ecclesiastes distressed image 03" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-04.jpg" alt="Ecclesiastes distressed image 04" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-07.jpg" alt="Ecclesiastes distressed image 07" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-06.jpg" alt="Ecclesiastes distressed image 06" /></figure>
+      </div>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 07 · Cyano Scraps ──────────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">06</span>Cyano Scraps</p>
+      <p class="statement">
+        A first time <em>collaboration</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-cyano">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-cyano">
+        <div class="read-more__inner">
+          <p>From discarded pieces of cyanotype photography, I color graded, expanded, and wove together a larger series of images. Placed throughout the book, they act as interludes: a pause for the reader to think, to breathe, to contemplate.</p>
+          <p>Thank you again to you my childhood friend, Adrian for your generosity and openness to my ideas.</p>
+          <p>Adrian Anguiano is a recent grad from CalArts.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- Each cell stacks two cyanotype scraps: a full-size base
+           (jpg) with a smaller transparent overlay centered on top
+           at ~40% size. Both from Adrian Anguiano. -->
+      <div class="cyano-grid">
+        <figure class="cyano-cell">
+          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-01.jpg" alt="Cyanotype base 01" />
+          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-01.png"       alt="Cyanotype overlay 01" />
+        </figure>
+        <figure class="cyano-cell">
+          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-02.jpg" alt="Cyanotype base 02" />
+          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-02.png"       alt="Cyanotype overlay 02" />
+        </figure>
+        <figure class="cyano-cell">
+          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-03.jpg" alt="Cyanotype base 03" />
+          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.png"       alt="Cyanotype overlay 03" />
+        </figure>
+      </div>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 08 · Personal Snapshots ──────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">07</span>Personal Snapshots</p>
+      <p class="statement">
+        Documentation of <em>my life</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-snapshots">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-snapshots">
+        <div class="read-more__inner">
+          <p>My intention with this book was to envelop myself in its words and, in turn, for its words to weave themselves into my memories. That is why, at the heart of the composition, I use my own photography. These are my experiences, my thoughts, my failures and triumphs, becoming one with the words.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 9 xerox images in a 3×3 grid. Order: chapter images 4, 7,
+           8, 9, 10, 11, 12 followed by color images 1.2 and 14.2. -->
+      <div class="xerox-grid">
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-01.jpg" alt="Chapter 4 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-02.jpg" alt="Chapter 7 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-03.jpg" alt="Chapter 8 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-04.jpg" alt="Chapter 9 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-05.jpg" alt="Chapter 10 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-06.jpg" alt="Chapter 11 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-07.jpg" alt="Chapter 12 image" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-08.jpg" alt="Color image 1.2" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-09.jpg" alt="Color image 14.2" /></figure>
+      </div>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 09 · Midjourney Exploration ──────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">08</span>Midjourney Exploration</p>
+      <p class="statement">
+        What does ai think of <em>God</em>?
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-midjourney">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-midjourney">
+        <div class="read-more__inner">
+          <p>I close this book with two addendums. The first is a commentary by E.G. White on King Solomon, who is believed to be the author of Ecclesiastes. The second is my own quiet observation of what happens when you prompt Midjourney V7, an AI image generator, to imagine divine figures and motifs.</p>
+          <p>I thought it would be paradoxically interesting to see what a human creation would generate when asked to imagine the creators of humanity. The third level imagining the first, guided by the second: us. The results were both surprising and captivating.</p>
+          <p>My prompts were simple: &ldquo;Imagine ___. What do you see?&rdquo;</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 6 Midjourney images in a 3-col × 2-row grid: God, Heaven,
+           Holy Spirit, Humanity, Jesus, Tree of Good and Evil. -->
+      <div class="ai-grid">
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-01.jpg" alt="Midjourney — God" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-02.jpg" alt="Midjourney — Heaven" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-03.jpg" alt="Midjourney — Holy Spirit" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-04.jpg" alt="Midjourney — Humanity" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-05.jpg" alt="Midjourney — Jesus" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-06.jpg" alt="Midjourney — Tree of Good and Evil" /></figure>
+      </div>
+    </div>
+
+    <hr class="unesco__section-rule" aria-hidden="true" />
+<!-- ─── 04 · Book ──────────────────────────────────────────────
          Section label in col 1, 97-page grid in cols 2-3. Preview
          image below the label shows an enlarged version of whichever
          page the viewer is hovering in the grid. -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">04</span>The Complete Layout</p>
+      <p class="section-label"><span class="section-label__num">09</span>The Complete Layout</p>
       <figure id="book-preview" class="book-preview" aria-hidden="true">
         <img class="book-preview__img" alt="" />
       </figure>
@@ -1580,192 +1763,6 @@
       </div>
     </div><!-- /04 book section-media -->
 
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 05 · Applications ─────────────────────────────────────
-         Trailer video for the motion piece + three Living Traces
-         posters + subway mockup. Replaces the old Iconography slot. -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">05</span>Applications</p>
-      <p class="statement">
-        Vanity of vanities, <em>all is vanity</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-applications">
-        <div class="read-more__inner">
-          <p>As an extension to the production and redesign of Ecclesiastes, I created a motion piece that would serve as the marketing for the hypothetical release of the book. Here, I pushed the system established within the book even further. Movement and words blend and bleed into each other.</p>
-          <p>This is wind passing you by.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- Trailer motion piece — native controls so the viewer can
-           play / pause and scrub. Sound on; no loop. -->
-      <figure class="media media--wide trailer-walkthrough">
-        <video class="media__video trailer-walkthrough__video"
-               controls playsinline webkit-playsinline preload="metadata"
-               disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/ECCLESIASTES/trailer-poster.jpg"
-               aria-label="Ecclesiastes trailer motion piece">
-          <source src="/ASSETS/IMAGES/ECCLESIASTES/trailer.mp4" type="video/mp4">
-        </video>
-      </figure>
-
-      <!-- Three Living Traces posters in a row. Order: 02, 01, 03. -->
-      <div class="section-media__posters applications-posters">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-02.jpg" alt="Ecclesiastes poster — There is nothing new under the sun" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-01.jpg" alt="Ecclesiastes poster — The Book of Ecclesiastes, 07.27.27" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-03.jpg" alt="Ecclesiastes poster — Ecclesiastes 07.27.27" /></figure>
-      </div>
-
-      <!-- Subway mockup showing the poster series in place. -->
-      <figure class="media media--wide app-poster-mockup">
-        <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/app-poster-mockup.jpg" alt="Ecclesiastes posters in a subway platform mockup" />
-      </figure>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 06 · The Pull Quotes ──────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">06</span>The Pull Quotes</p>
-      <p class="statement">
-        Emotion behind the words <em>made visible</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-pull-quotes">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-pull-quotes">
-        <div class="read-more__inner">
-          <p>Each image here contains a pull quote from the text. When we speak nothing is stagnant or fixed, through the motion of speaking whether it be you or I, the words fluctuate and change. Language is dynamic. Humans, even more so. I created these textural images to represent that notion.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 6 distressed images laid out as two rows of three. Order:
-           01, 02, 03 / 04, 07, 06. (distress-05 removed per user;
-           distress-07 fills its slot.) -->
-      <div class="distress-grid">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-01.jpg" alt="Ecclesiastes distressed image 01" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-02.jpg" alt="Ecclesiastes distressed image 02" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-03.jpg" alt="Ecclesiastes distressed image 03" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-04.jpg" alt="Ecclesiastes distressed image 04" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-07.jpg" alt="Ecclesiastes distressed image 07" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/distress-06.jpg" alt="Ecclesiastes distressed image 06" /></figure>
-      </div>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 07 · Cyano Scraps ──────────────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">07</span>Cyano Scraps</p>
-      <p class="statement">
-        A first time <em>collaboration</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-cyano">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-cyano">
-        <div class="read-more__inner">
-          <p>From discarded pieces of cyanotype photography, I color graded, expanded, and wove together a larger series of images. Placed throughout the book, they act as interludes: a pause for the reader to think, to breathe, to contemplate.</p>
-          <p>Thank you again to you my childhood friend, Adrian for your generosity and openness to my ideas.</p>
-          <p>Adrian Anguiano is a recent grad from CalArts.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- Each cell stacks two cyanotype scraps: a full-size base
-           (jpg) with a smaller transparent overlay centered on top
-           at ~40% size. Both from Adrian Anguiano. -->
-      <div class="cyano-grid">
-        <figure class="cyano-cell">
-          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-01.jpg" alt="Cyanotype base 01" />
-          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-01.png"       alt="Cyanotype overlay 01" />
-        </figure>
-        <figure class="cyano-cell">
-          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-02.jpg" alt="Cyanotype base 02" />
-          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-02.png"       alt="Cyanotype overlay 02" />
-        </figure>
-        <figure class="cyano-cell">
-          <img class="cyano-base"    loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-base-03.jpg" alt="Cyanotype base 03" />
-          <img class="cyano-overlay" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/cyano-03.png"       alt="Cyanotype overlay 03" />
-        </figure>
-      </div>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 08 · Personal Snapshots ──────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">08</span>Personal Snapshots</p>
-      <p class="statement">
-        Documentation of <em>my life</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-snapshots">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-snapshots">
-        <div class="read-more__inner">
-          <p>My intention with this book was to envelop myself in its words and, in turn, for its words to weave themselves into my memories. That is why, at the heart of the composition, I use my own photography. These are my experiences, my thoughts, my failures and triumphs, becoming one with the words.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 9 xerox images in a 3×3 grid. Order: chapter images 4, 7,
-           8, 9, 10, 11, 12 followed by color images 1.2 and 14.2. -->
-      <div class="xerox-grid">
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-01.jpg" alt="Chapter 4 image" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-02.jpg" alt="Chapter 7 image" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-03.jpg" alt="Chapter 8 image" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-04.jpg" alt="Chapter 9 image" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-05.jpg" alt="Chapter 10 image" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-06.jpg" alt="Chapter 11 image" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-07.jpg" alt="Chapter 12 image" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-08.jpg" alt="Color image 1.2" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/xerox-09.jpg" alt="Color image 14.2" /></figure>
-      </div>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 09 · Midjourney Exploration ──────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">09</span>Midjourney Exploration</p>
-      <p class="statement">
-        What does ai think of <em>God</em>?
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-midjourney">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-midjourney">
-        <div class="read-more__inner">
-          <p>I close this book with two addendums. The first is a commentary by E.G. White on King Solomon, who is believed to be the author of Ecclesiastes. The second is my own quiet observation of what happens when you prompt Midjourney V7, an AI image generator, to imagine divine figures and motifs.</p>
-          <p>I thought it would be paradoxically interesting to see what a human creation would generate when asked to imagine the creators of humanity. The third level imagining the first, guided by the second: us. The results were both surprising and captivating.</p>
-          <p>My prompts were simple: &ldquo;Imagine ___. What do you see?&rdquo;</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 6 Midjourney images in a 3-col × 2-row grid: God, Heaven,
-           Holy Spirit, Humanity, Jesus, Tree of Good and Evil. -->
-      <div class="ai-grid">
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-01.jpg" alt="Midjourney — God" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-02.jpg" alt="Midjourney — Heaven" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-03.jpg" alt="Midjourney — Holy Spirit" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-04.jpg" alt="Midjourney — Humanity" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-05.jpg" alt="Midjourney — Jesus" /></figure>
-        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-06.jpg" alt="Midjourney — Tree of Good and Evil" /></figure>
-      </div>
-    </div>
-
   </section>
 
   <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════
@@ -1938,61 +1935,70 @@
       }
     })();
 
-    /* Book grid (section 04) — on hover, paint the hovered page into
-       #book-preview below the section label. Single-page cells
+    /* Book grid (section 04) — on hover/tap, paint the hovered page
+       into #book-preview below the section label. Single-page cells
        render at 50% width (height matches a spread's height),
        spreads render at full column width with a soft spine gradient
-       down the gutter. */
+       down the gutter.
+       Mobile also supports scroll-to-scrub: swipe vertically inside
+       the preview to advance to the next/previous page. */
     (function () {
       var preview = document.getElementById('book-preview');
       if (!preview) return;
       var img = preview.querySelector('img');
-      document.querySelectorAll('.book-grid .book-page').forEach(function (cell) {
+      var cells = Array.from(document.querySelectorAll('.book-grid .book-page'));
+      var currentIdx = 0;
+
+      function showCell(i) {
+        if (i < 0 || i >= cells.length) return;
+        currentIdx = i;
+        var cell = cells[i];
         var src = cell.querySelector('img');
         if (!src) return;
-        cell.addEventListener('pointerenter', function () {
-          img.src = src.src;
-          var isSolo = cell.classList.contains('book-page--solo');
-          preview.classList.add('is-active');
-          preview.classList.toggle('is-single', isSolo);
-          preview.classList.toggle('is-spread', !isSolo);
-        });
+        img.src = src.src;
+        var isSolo = cell.classList.contains('book-page--solo');
+        preview.classList.add('is-active');
+        preview.classList.toggle('is-single', isSolo);
+        preview.classList.toggle('is-spread', !isSolo);
+      }
+
+      cells.forEach(function (cell, i) {
+        cell.addEventListener('pointerenter', function () { showCell(i); });
+        cell.addEventListener('click',        function () { showCell(i); });
       });
+
+      /* Scroll-to-scrub inside the preview (mobile mainly, but it
+         works everywhere). Vertical swipe / wheel advances pages;
+         horizontal gestures are ignored. */
+      var SWIPE_THRESHOLD = 32;   // px per step
+      var WHEEL_THRESHOLD = 40;
+      var wheelCooldown = false;
+      preview.addEventListener('wheel', function (e) {
+        if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+        if (Math.abs(e.deltaY) < WHEEL_THRESHOLD) return;
+        e.preventDefault();
+        if (wheelCooldown) return;
+        wheelCooldown = true;
+        showCell(currentIdx + (e.deltaY > 0 ? 1 : -1));
+        setTimeout(function () { wheelCooldown = false; }, 120);
+      }, { passive: false });
+
+      var touchStartY = null;
+      preview.addEventListener('touchstart', function (e) {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      preview.addEventListener('touchmove', function (e) {
+        if (touchStartY === null) return;
+        var dy = e.touches[0].clientY - touchStartY;
+        if (Math.abs(dy) < SWIPE_THRESHOLD) return;
+        e.preventDefault();
+        showCell(currentIdx + (dy < 0 ? 1 : -1));
+        touchStartY = e.touches[0].clientY;
+      }, { passive: false });
+      preview.addEventListener('touchend',   function () { touchStartY = null; });
+      preview.addEventListener('touchcancel',function () { touchStartY = null; });
     })();
 
-    /* Mobile section renumber — when section 4 is moved to the end of
-       the case body (via CSS order on narrow viewports), relabel each
-       section's number so visual order reads 04, 05, 06, 07, 08, 09. */
-    (function () {
-      var grid = document.querySelector('.unesco__grid[aria-label="Case study"]');
-      if (!grid) return;
-      var labels = grid.querySelectorAll('.section-label__num');
-      if (labels.length < 6) return;
-      // Original DOM order of labels: [s4, s5, s6, s7, s8, s9]
-      // Mobile visual order:          [s5, s6, s7, s8, s9, s4]
-      // So mobile numbers per label:   09, 04, 05, 06, 07, 08
-      var mq = window.matchMedia('(max-width: 640px)');
-      function apply() {
-        if (mq.matches) {
-          labels[0].textContent = '09';
-          labels[1].textContent = '04';
-          labels[2].textContent = '05';
-          labels[3].textContent = '06';
-          labels[4].textContent = '07';
-          labels[5].textContent = '08';
-        } else {
-          labels[0].textContent = '04';
-          labels[1].textContent = '05';
-          labels[2].textContent = '06';
-          labels[3].textContent = '07';
-          labels[4].textContent = '08';
-          labels[5].textContent = '09';
-        }
-      }
-      apply();
-      if (mq.addEventListener) mq.addEventListener('change', apply);
-      else if (mq.addListener) mq.addListener(apply);
-    })();
 
     /* Floating book-page carousel (section 03) — cursor-dictated
        speed. Auto-scrolls at a slow base rate; when the pointer is

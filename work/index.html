@@ -153,6 +153,12 @@
   @media (hover: hover) {
     .cell:hover .cell__cover-img { opacity: 0.4; transform: scale(1.02); }
   }
+  /* Ecclesiastes cell — desktop uses cover.jpg (focal 60% 50%),
+     mobile uses the poster anchored to the top. */
+  .cell__cover-img--ecclesiastes { object-position: 60% 50%; }
+  @media (max-width: 640px) {
+    .cell__cover-img--ecclesiastes { object-position: center top; }
+  }
 
   /* ─── cover cells (single-image variant) — legacy CSS-bg path ─── */
   .cell--cover::before {
@@ -393,7 +399,12 @@
 
       <!-- 4. ECCLESIASTES — mirrors the home page cell. -->
       <a class="cell cell--ecclesiastes" href="/ecclesiastes/">
-        <img class="cell__cover-img" src="/ASSETS/IMAGES/ECCLESIASTES/ecclesiastes-cell.jpg" alt="Ecclesiastes cover — The Book of Ecclesiastes, 07.27.27" decoding="async" loading="lazy" style="object-position: center top" />
+        <!-- Desktop: original cover.jpg (focal 60% 50%). Mobile: poster
+             anchored to top so the title stays fully visible. -->
+        <picture>
+          <source media="(min-width: 641px)" srcset="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg" />
+          <img class="cell__cover-img cell__cover-img--ecclesiastes" src="/ASSETS/IMAGES/ECCLESIASTES/ecclesiastes-cell.jpg" alt="Ecclesiastes cover" decoding="async" loading="lazy" />
+        </picture>
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>

@@ -206,6 +206,13 @@
   @media (hover: hover) {
     .work:hover .work__cover-img { opacity: 0.78; transform: scale(1.01); }
   }
+  /* Ecclesiastes cell — desktop uses cover.jpg (focal 60% 50%),
+     mobile uses the poster anchored to the top so "THE BOOK OF
+     ECCLESIASTES" stays fully visible. */
+  .work__cover-img--ecclesiastes { object-position: 60% 50%; }
+  @media (max-width: 640px) {
+    .work__cover-img--ecclesiastes { object-position: center top; }
+  }
 
   /* Legacy background-image cover rule — kept for pages still on the
      old markup, unused on home now. */
@@ -677,7 +684,14 @@
     <!-- 4. ECCLESIASTES ─ single cover. -->
     <a class="work work--ecclesiastes" href="/ecclesiastes/">
       <div class="work__media">
-        <img class="work__cover-img" src="/ASSETS/IMAGES/ECCLESIASTES/ecclesiastes-cell.jpg" alt="Ecclesiastes cover — The Book of Ecclesiastes, 07.27.27" decoding="async" loading="lazy" style="object-position: center top" />
+        <!-- Desktop: original cover.jpg (focal point 60% 50%).
+             Mobile (<=640px): poster (anchored to top so the title
+             stays fully visible). Object-position is handled in CSS
+             further down the page per breakpoint. -->
+        <picture>
+          <source media="(min-width: 641px)" srcset="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg" />
+          <img class="work__cover-img work__cover-img--ecclesiastes" src="/ASSETS/IMAGES/ECCLESIASTES/ecclesiastes-cell.jpg" alt="Ecclesiastes cover" decoding="async" loading="lazy" />
+        </picture>
       </div>
       <div class="work__meta">
         <h2 class="work__title">Ecclesiastes</h2>
