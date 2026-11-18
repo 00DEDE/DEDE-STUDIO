@@ -159,6 +159,13 @@
   @media (max-width: 640px) {
     .cell__cover-img--ecclesiastes { object-position: center top; }
   }
+  /* Trader Joe's cell — zoom in 15% and shift the focal point down
+     so more of the carton/table is visible at the bottom. */
+  .cell--trader-joes .cell__cover-img {
+    object-position: center 75%;
+    transform: scale(1.15);
+    transform-origin: center 75%;
+  }
 
   /* ─── cover cells (single-image variant) — legacy CSS-bg path ─── */
   .cell--cover::before {
