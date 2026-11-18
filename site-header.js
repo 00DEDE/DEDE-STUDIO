@@ -259,8 +259,32 @@
   var scrollTop    = document.querySelector('.scroll-top');
   var scrollCue    = document.querySelector('.home-scroll-cue');
 
+  // Scroll-direction state — body.is-scrolling-down is flipped on
+  // every scroll frame so UNESCO's left-side credit (and open nav
+  // titles) can fade out on down-scroll and fade back in on up-scroll.
+  var lastScrollY   = window.scrollY;
+  var scrollDir     = 'up';
+  var SCROLL_DELTA  = 6;    // px — ignore jitter below this
+
   function update() {
     var y = window.scrollY;
+
+    // Direction tracking — only flip when movement exceeds the delta
+    // and we're past the very top of the page.
+    if (Math.abs(y - lastScrollY) >= SCROLL_DELTA) {
+      var dir = (y > lastScrollY && y > 24) ? 'down' : 'up';
+      if (dir !== scrollDir) {
+        scrollDir = dir;
+        document.body.classList.toggle('is-scrolling-down', dir === 'down');
+      }
+      lastScrollY = y;
+    }
+    // Always treat the very top of the page as "up" so the credit is
+    // visible on load.
+    if (y <= 24 && scrollDir !== 'up') {
+      scrollDir = 'up';
+      document.body.classList.remove('is-scrolling-down');
+    }
 
     var shouldBeScrolled = y > THRESHOLD;
     if (shouldBeScrolled !== isScrolled) {
@@ -320,15 +344,16 @@
   pingStyle.textContent =
     '.site-click-ping{' +
       'position:fixed;pointer-events:none;' +
-      /* 28px → 17px (-40%); margin centres the ring on the cursor. */
-      'width:17px;height:17px;margin:-8.5px 0 0 -8.5px;' +
+      /* +15% from 17px → 20px for a slightly more visible glow;
+         margin centres the ring on the cursor. */
+      'width:20px;height:20px;margin:-10px 0 0 -10px;' +
       'border:2px solid #34dede;border-radius:50%;' +
       'opacity:1;transform:scale(0.35);' +
       'z-index:2147483646;' +
       'animation:site-click-ping 520ms cubic-bezier(0.2,0.8,0.2,1) forwards;' +
       'will-change:transform,opacity,filter;' +
-      /* Blur bumped +50% (5.6px → 8.4px) — softer cyan haze. */
-      'filter:blur(8.4px);' +
+      /* Blur scales with size (+15%): 8.4 → 9.7px — still a soft haze. */
+      'filter:blur(9.7px);' +
     '}' +
     '@keyframes site-click-ping{' +
       '0%{opacity:1;transform:scale(0.35);}' +
