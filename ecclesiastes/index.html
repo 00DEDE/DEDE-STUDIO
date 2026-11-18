@@ -715,20 +715,23 @@
     content-visibility: auto;
     contain-intrinsic-size: 1px 80px;
   }
-  /* No forced aspect on the cell — spreads render at their native
-     landscape aspect (1200×1028), solos render at native portrait
-     (1200×2057). No object-fit means no cropping and no distortion.
-     Because a solo at 50% cell width has the same rendered HEIGHT as
-     a spread at 100% cell width (0.5 × 1.714 == 1.0 × 0.857), rows
-     line up vertically between portraits and landscapes. */
+  /* Explicit aspect-ratio per orientation class so each cell is
+     locked to the exact aspect of its image — no distortion, no
+     stretch, no cover-crop. Solo cells are half-width + portrait
+     aspect, which works out to the same rendered HEIGHT as a
+     spread at full-width + landscape aspect (0.5 × 1.714 == 1.0 ×
+     0.857), so rows line up vertically. */
+  .book-page--spread { aspect-ratio: 1200 / 1028; }
+  .book-page--solo   {
+    width: 50%;
+    aspect-ratio: 1200 / 2057;
+  }
   .book-page img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: fill;      /* cell aspect matches image aspect exactly — fill = no distortion */
     display: block;
   }
-  /* Solo cells sit at half the cell width so their portrait height
-     matches a spread's height exactly. */
-  .book-page--solo { width: 50%; }
   /* Soft spine gradient down the middle of each interior spread —
      skipped on the first and last cells so the book opens and closes
      cleanly. */
