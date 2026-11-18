@@ -236,6 +236,24 @@
   body.unesco .site-header.is-scrolled .site-header__brand img {
     height: 1.75rem;
   }
+  /* Pill sits INSIDE the UNESCO header on the far right, vertically
+     aligned with the brand mark (not straddling the header's bottom
+     edge like the shared desktop placement). Overrides the shared
+     `top: calc(var(--header-safe-top) - 1.25rem)` default. */
+  @media (min-width: 641px) {
+    body.unesco .site-menu-btn {
+      top: 0.55rem !important;
+      right: clamp(1rem, 2vw, 1.75rem) !important;
+    }
+    body.unesco .site-menu-btn.is-placed {
+      /* Keep the pill locked to the UNESCO header on this page — the
+         sitewide drag/persist moves are suppressed here so the pill
+         always reads as part of the header, not a floating chip. */
+      top: 0.55rem !important;
+      right: clamp(1rem, 2vw, 1.75rem) !important;
+      left: auto !important;
+    }
+  }
   /* Author credit — hidden by default on every other page, shown
      only on UNESCO at the header's far-left column (grid col 1). */
   .site-header__credit { display: none; }
