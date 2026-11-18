@@ -406,7 +406,7 @@
      fills the letterbox area. Before = white (the before image is a
      transparent PNG so the cell's white shows through). After = one
      of two colors per layer (white for the white-background variants,
-     red #F50A41 — the Trader Joe's brand red — for the one-on-red
+     red #D20000 — the Trader Joe's documented brand red — for the one-on-red
      variant) so the sequence never shows black and the red matches
      the red inside each image seamlessly. The After cell layers three wordmark variants that slide
      horizontally like a wall of panels: the active panel sits at x=0,
@@ -422,7 +422,7 @@
 
   .foundations-after { position: relative; overflow: hidden; background: #ffffff; }
   .foundations-after__layer--white { background: #ffffff; }
-  .foundations-after__layer--red   { background: #F50A41; }
+  .foundations-after__layer--red   { background: #D20000; }
   .foundations-after__layer {
     position: absolute;
     inset: 0;
@@ -593,6 +593,13 @@
     .deliverables-cell:hover .deliverables-cell__img,
     .deliverables-cell:focus-within .deliverables-cell__img { transform: none; }
   }
+
+  /* ─── 06 · Identity poster cell ───────────────────────────────────
+     case-study.css paints .media__img with a black background. Here
+     we want white behind the poster instead so any edge trim reads
+     as a clean white border, matching the poster's own page color. */
+  .identity-poster       { background: #ffffff; }
+  .identity-poster__img  { background: #ffffff; object-fit: contain; }
   @media (prefers-reduced-motion: reduce) {
     .lineup-cell__img,
     .lineup-preview { transition: opacity 120ms linear; transform: none; }
@@ -1194,12 +1201,11 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 06 · Typography ────────────────────────────────────────── -->
+    <!-- ─── 06 · Identity System ─────────────────────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">06</span>Typography</p>
+      <p class="section-label"><span class="section-label__num">06</span>Identity System</p>
       <p class="statement">
-        A system must be able to flex. So, how far can the logo
-        <em>be pushed</em>?
+        A world seen through <em>Good Guy Joe&rsquo;s</em> eyes.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-typography">
         <span>Read more</span>
@@ -1207,240 +1213,29 @@
       </button>
       <div class="read-more__panel" id="rm-typography">
         <div class="read-more__inner">
-          <p>Well, I kept asking &ldquo;what if?&rdquo; of the modular logo, holding to one rule: no new shapes, only what the logo is made of. That rule produced two typefaces for the identity system: Building Blocks and Woven Textiles.</p>
+          <p>This is perhaps my most youthful project: imaginative, tangible, and maximalist. I am open-minded and versatile. I am not bound to one style. One thing that defines my work is my affinity for color. The world is beautiful, and I have been given the gift of experiencing its colors.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Two custom typefaces side by side. Portrait 2:3 to match
-           the PDF page ratio each was exported from. -->
-      <div class="media-pair">
-        <figure class="media" style="aspect-ratio: 2 / 3;">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-01.jpg" alt="Custom Typeface 1 — Building Blocks" />
-        </figure>
-        <figure class="media" style="aspect-ratio: 2 / 3;">
-          <img class="media__img" src="/ASSETS/IMAGES/UNESCO/typeface-02.jpg" alt="Custom Typeface 2 — Woven Textiles" />
-        </figure>
-      </div>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 07 · Applications (three-image row) ──────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">07</span>Applications</p>
-      <p class="statement">
-        The system then is carried into both spatial, ephemeral and
-        <em>digital</em> media.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-applications">
-        <div class="read-more__inner">
-          <p><strong>The World Needs U.</strong></p>
-          <p>The slogan plays on the four U&rsquo;s in the logo, but it reaches past UNESCO to the world it serves: us. Organizations like UNESCO exist for the generations that come after us. It&rsquo;s on all of us to carry our stories, cultures, and traditions into the future, not leave them behind. The world needs U.</p>
-          <p><strong>Safeguard Humanity&rsquo;s Inheritance.</strong><br>Our inheritance is all around us, in the identities we hold today. Without intention, it can be lost.</p>
-          <p><strong>Protect/Preserve/Prepare What Makes Us Human.</strong><br>Protect who we are today. Preserve what the past has given us. Prepare what we pass on. This is why the rebrand matters: we cannot forget who we are, or what shaped us.</p>
-          <p>I think, create, and design this way because of my Peruvian and Salvadoran heritage. This is my perspective, and that is the beauty of who we are, as individuals and as a collective. Every perspective is needed to see the whole picture. Without our cultures, our stories, and our identities, humanity would be a shell of itself.</p>
-          <p>As part of the identity system, I also designed a new digital home for UNESCO, one that puts the people, lands, and cultures it protects at the center. I left the corporate look behind for something inviting, youthful, and vibrant. My goal was for every page to offer something new, so visitors would keep wanting to discover more.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 3 × 2 poster grid — the six macro posters from the series.
-           Visual order: 01, 06, 03, 05, 04, 02 (per user layout). -->
-      <div class="section-media__posters">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
-      </div>
-
-      <!-- Each cell cycles 4 images on a shared 16s loop; the two cells
-           split the 8 applications equally. 05 is pinned near the
-           bottom so the UNESCO podium stays visible when the portrait
-           crops into the square cell. See .media__aslide keyframes. -->
-      <div class="section-media__triptych section-media__triptych--pair">
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-02.jpg" alt="UNESCO application — rooftop billboard" />
-          <img class="media__img media__aslide media__aslide--2" style="object-position: center 85%;" src="/ASSETS/IMAGES/UNESCO/application-05.jpg" alt="UNESCO application — Director-General podium" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-07.jpg" alt="UNESCO application — bridge wheatpaste poster" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-10.jpg" alt="UNESCO application — cylindrical street kiosk" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-04.jpg" alt="UNESCO application — building-side billboard" />
-          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-09.jpg" alt="UNESCO application — unesco HQ banner" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-11.jpg" alt="UNESCO application — parking + bike station sign" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
-        </figure>
-      </div>
-
-      <!-- Walkthrough screen recording — full native video controls so
-           visitors can play / pause / scrub. Uses object-fit: contain
-           + black bg so the full recording frame is always visible. -->
-      <figure class="media media--wide applications-walkthrough">
-        <video class="media__video applications-walkthrough__video"
-               controls preload="metadata" playsinline webkit-playsinline
-               disablepictureinpicture disableremoteplayback
-               aria-label="UNESCO applications walkthrough">
-          <source src="/ASSETS/IMAGES/UNESCO/applications-walkthrough.mp4" type="video/mp4">
-        </video>
+      <!-- Solo identity system poster — portrait 2:3 matches the PDF's
+           native page ratio. The designer attribution in the footer bar
+           is painted over with matching #D20000 at export time. White
+           backdrop + contain fit so any tiny edge trim shows as white,
+           not the case-study.css default black. -->
+      <figure class="media identity-poster" style="aspect-ratio: 2 / 3;">
+        <img class="media__img identity-poster__img" src="/ASSETS/IMAGES/TRADER%20JOES/identity-hero.jpg" alt="Trader Joe&rsquo;s identity system poster: key drivers, taglines, concept, typography, materials, target audience, and color palette" />
       </figure>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 08 · Tangible Forms ──────────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">08</span>Tangible Forms</p>
-      <p class="statement">
-        80 years of human connection.
-        <em>What an accomplishment</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-celebration">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-celebration">
-        <div class="read-more__inner">
-          <p>To honor 80 years of UNESCO, I wanted objects you could hold and contemplate, built around what I see as UNESCO&rsquo;s greatest accomplishment: human connection. I commissioned a woven blanket and, wanting in on the fun, I personally hand-sewed a vegetable-tanned leather bag, its icons coming together to form an image of our world. The same image lives in the printed atlas.</p>
-          <p>You never know where one small idea will take you. That&rsquo;s the beauty of design. It is vital to my process to never throw an idea away. I keep it close, in my sketches. Perhaps it returns in a way I hadn&rsquo;t imagined.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 2 long portrait cells, side by side on desktop, stacked on
-           mobile. All 15 celebration images are split evenly: cell A
-           cycles 01–08 (8 images), cell B cycles 09–15 (7 images).
-           JS at the bottom of the page toggles .is-active on one
-           slide at a time; CSS handles the crossfade. -->
-      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
-        </figure>
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
-        </figure>
-      </div>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 09 · Campaign Direction ───────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">09</span>Campaign Direction</p>
-      <p class="statement">
-        The creation of a campaign hosted by UNESCO,
-        <em>&ldquo;Living Traces&rdquo;</em>.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-campaign">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-campaign">
-        <div class="read-more__inner">
-          <p>In direct contrast to the identity system, I created a campaign about the languages, traditions, and cultures at risk of disappearing. The subject is urgent, so I stripped away all color and made the campaign impossible to ignore.</p>
-          <p>The name Living Traces holds two truths: these cultures are still alive, but only as traces. Once they fade, they may never return. The campaign brings light to what is nearly lost and asks the world to do its part: to protect our cultures, and our neighbors&rsquo;, as we move into the future.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 3 micro posters sit at the top of the Campaign Direction
-           media column: a portrait triptych that previews the
-           Living Traces print campaign. On mobile, the two black
-           posters (01, 03) sit side by side on the top row and the
-           grey poster (02) sits centered beneath. -->
-      <div class="section-media__posters section-media__posters--campaign">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-01.jpg" alt="Living Traces micro poster 01" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-02.jpg" alt="Living Traces micro poster 02" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-03.jpg" alt="Living Traces micro poster 03" /></figure>
-      </div>
-
-      <!-- Campaign walkthrough screen recording — native play / pause
-           / scrub controls. Cover-crops to fill the 16:9 cell so no
-           letterbox bars appear. -->
-      <figure class="media media--wide campaign-walkthrough">
-        <video class="media__video campaign-walkthrough__video"
-               controls preload="metadata" playsinline webkit-playsinline
-               disablepictureinpicture disableremoteplayback
-               aria-label="Living Traces campaign walkthrough">
-          <source src="/ASSETS/IMAGES/UNESCO/campaign-walkthrough.mp4" type="video/mp4">
-        </video>
-      </figure>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 10 · The Printed Atlas ────────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">10</span>The Printed Atlas</p>
-      <p class="statement">
-        Before the <em>Digital Atlas</em>, there was the printed one.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-printed-atlas">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-printed-atlas">
-        <div class="read-more__inner">
-          <p>It begins as a celebration of our differences: the languages we speak, the lands we tend, the rituals we keep, the monuments we raise. But turn the pages, and something quieter surfaces. Somewhere between the words and the traditions, you start to see yourself in a stranger. Because before anything else, you and I are human.</p>
-          <p>Open the atlas and the world unfolds in your hands. Four icons mark the four worlds UNESCO protects. Each world then appears on its own, with a map where every icon carries a number: the page where that place can be found. Each map becomes a table of contents for the globe.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 48-page atlas. Two layered image elements crossfade as the
-           page changes; the timeline below is a hover-scrubber that
-           sets a target page. With no hover, pages auto-advance and
-           wrap at 48 → 1. -->
-      <div class="atlas-book" id="atlas-book">
-        <div class="atlas-book__stage" id="atlas-stage">
-          <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
-          <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
-          <div class="atlas-book__spine" aria-hidden="true"></div>
-        </div>
-        <div
-          class="atlas-book__timeline"
-          id="atlas-timeline"
-          role="toolbar"
-          aria-label="Scrub through the printed atlas"
-        >
-          <!-- 48 .atlas-book__thumb buttons generated by the atlas JS -->
-          <div class="atlas-book__timeline-tooltip" id="atlas-timeline-tooltip" aria-hidden="true">01</div>
-        </div>
-        <div class="atlas-book__counter" aria-hidden="true">
-          <small>Page</small>
-          <span id="atlas-counter">01 / 48</span>
-        </div>
-      </div>
     </div>
 
   </section>
 
   <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════
-       Full-viewport-width hero shot that closes the case study before the
-       pager. The image is shown at its natural aspect so nothing in the
-       composition (billboard type, tote copy, etc.) is cropped. -->
-  <figure class="unesco__closing-image" aria-label="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front">
-    <img src="/ASSETS/IMAGES/UNESCO/closing-hero.jpg" alt="UNESCO 'The World Needs U.' billboard on a city building with two children embracing in front" />
+       Full-width wordmark card that closes the case study. Shown at its
+       natural aspect so the rebrand wordmark reads edge to edge. -->
+  <figure class="unesco__closing-image" aria-label="Trader Joe&rsquo;s rebrand wordmark, white on red">
+    <img src="/ASSETS/IMAGES/TRADER%20JOES/closing-hero.jpg" alt="Trader Joe&rsquo;s rebrand wordmark, white on red" />
   </figure>
 
   <!-- ══════════════════════ PREV / NEXT ══════════════════════ -->
