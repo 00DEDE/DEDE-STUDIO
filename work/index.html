@@ -25,8 +25,10 @@
   @view-transition { navigation: auto; }
   .cell--unesco       { view-transition-name: unesco-hero; }
   .cell--ecclesiastes { view-transition-name: ecclesiastes-hero; }
+  .cell--memoirs      { view-transition-name: memoirs-hero; }
   ::view-transition-group(unesco-hero),
-  ::view-transition-group(ecclesiastes-hero) {
+  ::view-transition-group(ecclesiastes-hero),
+  ::view-transition-group(memoirs-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
@@ -432,8 +434,8 @@
       </a>
 
       <!-- 6. MEMOIRS -->
-      <a class="cell" href="#">
-        <img class="cell__cover-img" src="/ASSETS/IMAGES/MEMOIRS.jpg" alt="Memoirs cover" decoding="async" loading="lazy" />
+      <a class="cell cell--memoirs" href="/memoirs/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/MEMOIRS/cell.jpg" alt="Memoirs — 3D render of large hands and books in a pastel landscape" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>MEMOIRS</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>

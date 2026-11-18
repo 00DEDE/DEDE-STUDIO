@@ -30,8 +30,10 @@
      shared across every page and live in theme.css. */
   .work--unesco       .work__media { view-transition-name: unesco-hero; }
   .work--ecclesiastes .work__media { view-transition-name: ecclesiastes-hero; }
+  .work--memoirs      .work__media { view-transition-name: memoirs-hero; }
   ::view-transition-group(unesco-hero),
-  ::view-transition-group(ecclesiastes-hero) {
+  ::view-transition-group(ecclesiastes-hero),
+  ::view-transition-group(memoirs-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
@@ -752,9 +754,9 @@
     </a>
 
     <!-- 6. MEMOIRS ─ single cover -->
-    <a class="work" href="#">
+    <a class="work work--memoirs" href="/memoirs/">
       <div class="work__media">
-        <img class="work__cover-img" src="/ASSETS/IMAGES/MEMOIRS.jpg" alt="Memoirs cover" decoding="async" loading="lazy" />
+        <img class="work__cover-img" src="/ASSETS/IMAGES/MEMOIRS/cell.jpg" alt="Memoirs — 3D render of large hands and books in a pastel landscape" decoding="async" loading="lazy" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">Memoirs</h2>
