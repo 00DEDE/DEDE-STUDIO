@@ -399,12 +399,13 @@
     background: #000;
   }
 
-  /* ─── Foundation After-cell orchestrated slideshow (section 02) ──
-     The After cell now carries three layers stacked: the logo reveal
-     video (ping-pong forward + reverse once through), followed by two
-     rebrand lockup stills. JS in the page body toggles .is-active on
-     one layer at a time; CSS handles the crossfade. */
-  .foundations-after { position: relative; }
+  /* ─── Foundation After-cell dynamic slideshow (section 02) ────────
+     The After cell stacks four wordmark-variant stills. JS toggles
+     .is-active on one layer at a time; CSS crossfades each incoming
+     layer with a subtle Ken-Burns drift so the sequence reads as
+     motion rather than a static dissolve. Outgoing layers fade and
+     settle back; the active layer slowly drifts scale + offset. */
+  .foundations-after { position: relative; overflow: hidden; }
   .foundations-after__layer {
     position: absolute;
     inset: 0;
@@ -412,14 +413,37 @@
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transition: opacity 520ms ease-in-out;
-    will-change: opacity;
+    transform: scale(1.06) translate3d(0, 0, 0);
+    transition:
+      opacity 700ms cubic-bezier(.4, 0, .2, 1),
+      transform 700ms cubic-bezier(.4, 0, .2, 1);
+    will-change: opacity, transform;
     pointer-events: none;
   }
-  .foundations-after__layer.is-active { opacity: 1; }
+  .foundations-after__layer.is-active {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+    animation: foundationsDriftA 3400ms ease-in-out both;
+  }
+  .foundations-after__layer:nth-child(even).is-active {
+    animation-name: foundationsDriftB;
+  }
+  @keyframes foundationsDriftA {
+    0%   { transform: scale(1.05) translate3d(-1.4%,  0.8%, 0); }
+    100% { transform: scale(1.00) translate3d( 1.4%, -0.8%, 0); }
+  }
+  @keyframes foundationsDriftB {
+    0%   { transform: scale(1.00) translate3d( 1.2%,  0.6%, 0); }
+    100% { transform: scale(1.05) translate3d(-1.2%, -0.6%, 0); }
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    .foundations-after__layer { transition: none; }
+    .foundations-after__layer {
+      transition: opacity 320ms linear;
+      transform: none;
+      animation: none;
+    }
+    .foundations-after__layer.is-active { transform: none; animation: none; }
   }
 
   /* ─── 4-slide applications slideshow (section 07) ────────────────
@@ -831,7 +855,7 @@
     <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">02</span>Foundation</p>
       <p class="statement">
-        An identity that excludes no one, and <em>invites everyone</em>.
+        Iconic treats, <em>reimagined for today&rsquo;s world</em>.
       </p>
       <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-foundations">
         <span>Read more</span>
@@ -839,35 +863,32 @@
       </button>
       <div class="read-more__panel" id="rm-foundations">
         <div class="read-more__inner">
-          <p>UNESCO&rsquo;s current logo is a Greco-Roman temple. It speaks from a Western point of view, a blind spot common in design, and leaves much of the world outside its frame. It also reinforces the stereotype UNESCO already struggles with: that it only protects monuments. I set out to create a symbol for all of humanity, one that holds Eastern and Western perspectives alike, excludes no one, and invites everyone.</p>
-          <p>I started by looking outward. What connects us as humans? What patterns do we share? Patterns. Shapes. Repetition. Weaving. Seen across humanity, textiles carry our stories, our pasts, and our futures. The interconnectedness of weaving became the emotional anchor of this rebrand.</p>
+          <p>Trader Joe&rsquo;s has few items that awaken the senses of children, or of the inner child in each and every one of us.</p>
+          <p>This line extension introduces a family of products that are playful, educational, and a blast from the past, all while keeping our planet in mind. Inspired by the vibrant spirit of the 1970s, it takes kids on a colorful and flavorful adventure through iconic treats, reimagined for today&rsquo;s world.</p>
+          <p>With eco-friendly packaging and responsibly sourced ingredients, it shows how families can enjoy the classics of the past while protecting the planet for their children&rsquo;s future.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- BEFORE / AFTER comparison pair. Before: the existing UNESCO
-           flag + temple glyph. After: the logo reveal video (ping-pong
-           forward + reverse) followed by two rebrand lockups,
-           orchestrated by foundations-after JS. -->
+      <!-- BEFORE / AFTER comparison pair. Before: the existing Trader
+           Joe's serif wordmark. After: three rebrand wordmark variants
+           crossfading on a fixed cadence, orchestrated by
+           foundations-after JS. -->
       <div class="foundations-ba">
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">Before</p>
           <figure class="media media--square foundations-ba__media">
-            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/UNESCO/Flag_of_UNESCO.svg.webp" alt="UNESCO existing flag — Greco-Roman temple on blue" />
+            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/TRADER%20JOES/before.jpg" alt="Trader Joe&rsquo;s existing serif wordmark" />
           </figure>
         </div>
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">After</p>
           <figure class="media media--square foundations-ba__media foundations-after">
-            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--fwd is-active"
-                   muted playsinline webkit-playsinline preload="auto"
-                   disablepictureinpicture disableremoteplayback
-                   aria-label="UNESCO logo reveal animation">
-              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-            </video>
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--1 is-active" src="/ASSETS/IMAGES/TRADER%20JOES/after-01.jpg" alt="Trader Joe&rsquo;s rebrand wordmark, red on white" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/TRADER%20JOES/after-02.jpg" alt="Trader Joe&rsquo;s rebrand wordmark, white on red" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/TRADER%20JOES/after-03.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, red on white" />
+            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--4" src="/ASSETS/IMAGES/TRADER%20JOES/after-04.jpg" alt="Trader Joe&rsquo;s rebrand wordmark with since 1967 tag, white on red" />
           </figure>
         </div>
       </div>
@@ -1446,45 +1467,34 @@
     })();
 
     /* Foundation After-cell orchestrated slideshow — the After cell
-       in section 02 stacks three layers: the logo-reveal video and
-       two rebrand-lockup stills. One layer carries .is-active at a
-       time; CSS crossfades between them. The forward video is
-       already an internal ping-pong (blue → logo → blue), so one
-       play per cycle is enough; a separate reverse play would just
-       repeat the same animation visually. Cycle: fwd video plays
-       once → lockup 2 holds → lockup 3 holds → back to fwd. */
+       in section 02 stacks three wordmark-variant stills. One layer
+       carries .is-active at a time; CSS crossfades between them on a
+       fixed cadence once the cell enters the viewport. */
     var fAfter = document.querySelector('.foundations-after');
     if (fAfter) {
-      var faFwd  = fAfter.querySelector('.foundations-after__video--fwd');
-      var faImg2 = fAfter.querySelector('.foundations-after__img--2');
-      var faImg3 = fAfter.querySelector('.foundations-after__img--3');
-      if (faFwd && faImg2 && faImg3) {
-        var faLayers = [faFwd, faImg2, faImg3];
-        var FA_PAUSE_MS   = 600;    // after video finishes before next layer
-        var FA_IMG_HOLD   = 2800;   // how long each still is shown
-        function faShow(el) {
-          faLayers.forEach(function (l) {
-            if (l === el) l.classList.add('is-active');
+      var faLayers = Array.prototype.slice.call(
+        fAfter.querySelectorAll('.foundations-after__layer')
+      );
+      if (faLayers.length) {
+        var FA_HOLD_MS = 1900;
+        var faIdx = 0;
+        function faShow(i) {
+          faLayers.forEach(function (l, k) {
+            if (k === i) l.classList.add('is-active');
             else l.classList.remove('is-active');
           });
         }
-        function faPlayFwd() {
-          faShow(faFwd);
-          try { faFwd.currentTime = 0; } catch (e) {}
-          var p = faFwd.play();
-          if (p && typeof p.catch === 'function') p.catch(function () {});
+        function faTick() {
+          faIdx = (faIdx + 1) % faLayers.length;
+          faShow(faIdx);
+          setTimeout(faTick, FA_HOLD_MS);
         }
-        function faShowImg2() { faShow(faImg2); setTimeout(faShowImg3, FA_IMG_HOLD); }
-        function faShowImg3() { faShow(faImg3); setTimeout(faPlayFwd,  FA_IMG_HOLD); }
-        faFwd.addEventListener('ended', function () { setTimeout(faShowImg2, FA_PAUSE_MS); });
-        /* Mobile Safari refuses .play() for offscreen videos even with
-           muted + playsinline + autoplay, so wait for the cell to
-           intersect the viewport, then start the cycle. */
         var faKicked = false;
         var faKick = function () {
           if (faKicked) return;
           faKicked = true;
-          faPlayFwd();
+          faShow(0);
+          setTimeout(faTick, FA_HOLD_MS);
         };
         if ('IntersectionObserver' in window) {
           var faIO = new IntersectionObserver(function (entries) {
