@@ -1097,31 +1097,12 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- BEFORE / AFTER comparison pair. Before: the existing UNESCO
-           flag + temple glyph. After: the logo reveal video (ping-pong
-           forward + reverse) followed by two rebrand lockups,
-           orchestrated by foundations-after JS. -->
-      <div class="foundations-ba">
-        <div class="foundations-ba__col">
-          <p class="section-label foundations-ba__label">Before</p>
-          <figure class="media media--square foundations-ba__media">
-            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/UNESCO/Flag_of_UNESCO.svg.webp" alt="UNESCO existing flag — Greco-Roman temple on blue" />
-          </figure>
-        </div>
-        <div class="foundations-ba__col">
-          <p class="section-label foundations-ba__label">After</p>
-          <figure class="media media--square foundations-ba__media foundations-after">
-            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--fwd is-active"
-                   muted playsinline webkit-playsinline preload="auto"
-                   disablepictureinpicture disableremoteplayback
-                   aria-label="UNESCO logo reveal animation">
-              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-            </video>
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
-          </figure>
-        </div>
-      </div>
+      <!-- Single Foundation image spanning the full media column.
+           Aspect locked to the source (1800×2700 = 2:3 portrait) so
+           the full photo renders with no cropping. -->
+      <figure class="media foundation-hero" style="aspect-ratio: 2 / 3;">
+        <img class="media__img" src="/ASSETS/IMAGES/ECCLESIASTES/foundation-hero.jpg" alt="The Book of Ecclesiastes — embossed leather cover on textile" />
+      </figure>
     </div>
   </section>
 
