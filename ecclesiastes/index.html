@@ -685,14 +685,15 @@
      on mobile. */
   .book-grid {
     display: grid;
-    /* 8 cells per row — each cell is 60% of the previous 5-col sizing
-       (12.5% of container width, vs. 20%). */
-    grid-template-columns: repeat(8, 1fr);
-    gap: clamp(0.35rem, 0.7vw, 0.65rem);
+    /* 16 cells per row — each cell is 50% smaller than the previous
+       8-col sizing (6.25% of container width, vs. 12.5%). */
+    grid-template-columns: repeat(16, 1fr);
+    gap: clamp(0.2rem, 0.4vw, 0.4rem);
     align-items: start;
     justify-items: center;
   }
   .book-page {
+    position: relative;
     margin: 0;
     width: 100%;
     display: block;
@@ -712,14 +713,33 @@
      cell width, centered, so they read as isolated pages rather than
      full spreads. */
   .book-page--solo { width: 50%; }
-  /* Hover — lift above neighbours, grow 150% (to 2.5× base size),
-     deepen the shadow. */
+  /* Soft spine gradient down the middle of each interior spread —
+     skipped on the first and last cells so the book opens and closes
+     cleanly. Darkens from fully transparent to ~14% black at center. */
+  .book-grid > .book-page:not(:first-child):not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 6%;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0)     0%,
+      rgba(0, 0, 0, 0.14) 50%,
+      rgba(0, 0, 0, 0)   100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* Hover — lift above neighbours, scale up 5× (another 200% on top
+     of the previous 2.5×), deepen the shadow. */
   @media (hover: hover) {
     .book-page:hover {
-      transform: scale(2.5);
+      transform: scale(5);
       z-index: 5;
-      filter: drop-shadow(0 28px 54px rgba(0, 0, 0, 0.32))
-              drop-shadow(0 6px 14px rgba(0, 0, 0, 0.16));
+      filter: drop-shadow(0 36px 70px rgba(0, 0, 0, 0.36))
+              drop-shadow(0 8px 20px rgba(0, 0, 0, 0.18));
     }
   }
   @media (prefers-reduced-motion: reduce) {
