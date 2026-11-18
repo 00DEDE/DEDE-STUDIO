@@ -741,6 +741,19 @@
     pointer-events: none;
     z-index: 2;
   }
+  /* Hover preview — sits below the "The Complete Layout" label.
+     Hidden until JS sets a src. Renders at the image's natural
+     aspect so singles are portrait and spreads are landscape. */
+  .book-preview {
+    display: none;
+    width: 100%;
+    height: auto;
+    margin-top: clamp(1rem, 2.5vh, 2rem);
+    position: sticky;
+    top: clamp(5rem, 10vh, 7rem);
+  }
+  .book-preview[src] { display: block; }
+
   /* Subtle in-place hover cue on grid cells — small lift + deeper shadow. */
   @media (hover: hover) {
     .book-page:hover {
@@ -759,13 +772,25 @@
   }
 
   /* ─── Foundation hero (section 02) — portrait photo inside a
-     16:9 cell (matching section 05's trailer). object-fit: contain
-     shows the full image centered, dark bg matches the photo's
-     backdrop so the letterbox blends in. */
+     16:9 cell (matching section 05's trailer). object-fit: cover
+     zooms the image so it fills the cell edge-to-edge with no empty
+     space (crops the top/bottom of the portrait). */
   .foundation-hero { background: #1a1a1a; }
   .foundation-hero .media__img {
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
     background: #1a1a1a;
+  }
+
+  /* ─── AI grid (section 09) — 6 Midjourney images in a 3×2 grid
+     on desktop, 2 cols on mobile. */
+  .ai-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+  @media (max-width: 900px) {
+    .ai-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   /* ─── Xerox grid (section 08) — 9 chapter + color images in a
@@ -1181,10 +1206,12 @@
   <section class="unesco__grid" aria-label="Case study">
 
     <!-- ─── 04 · Book ──────────────────────────────────────────────
-         Section label in col 1, 97-page grid in cols 2-3 at the same
-         column width as section 05's trailer cell below. -->
+         Section label in col 1, 97-page grid in cols 2-3. Preview
+         image below the label shows an enlarged version of whichever
+         page the viewer is hovering in the grid. -->
     <div class="g-span-1 section-text">
       <p class="section-label"><span class="section-label__num">04</span>The Complete Layout</p>
+      <img id="book-preview" class="book-preview" alt="" />
     </div>
 
     <div class="g-span-2 section-media">
@@ -1537,11 +1564,11 @@
       <p class="statement">
         Emotion behind the words <em>made visible</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-applications">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-pull-quotes">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-applications">
+      <div class="read-more__panel" id="rm-pull-quotes">
         <div class="read-more__inner">
           <p>Each image here contains a pull quote from the text. When we speak nothing is stagnant or fixed, through the motion of speaking whether it be you or I, the words fluctuate and change. Language is dynamic. Humans, even more so. I created these textural images to represent that notion.</p>
         </div>
@@ -1657,73 +1684,15 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 3 micro posters sit at the top of the Campaign Direction
-           media column: a portrait triptych that previews the
-           Living Traces print campaign. On mobile, the two black
-           posters (01, 03) sit side by side on the top row and the
-           grey poster (02) sits centered beneath. -->
-      <div class="section-media__posters section-media__posters--campaign">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-01.jpg" alt="Living Traces micro poster 01" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-02.jpg" alt="Living Traces micro poster 02" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-03.jpg" alt="Living Traces micro poster 03" /></figure>
-      </div>
-
-      <!-- Campaign walkthrough screen recording — native play / pause
-           / scrub controls. Cover-crops to fill the 16:9 cell so no
-           letterbox bars appear. -->
-      <figure class="media media--wide campaign-walkthrough">
-        <video class="media__video campaign-walkthrough__video"
-               controls preload="metadata" playsinline webkit-playsinline
-               disablepictureinpicture disableremoteplayback
-               aria-label="Living Traces campaign walkthrough">
-          <source src="/ASSETS/IMAGES/UNESCO/campaign-walkthrough.mp4" type="video/mp4">
-        </video>
-      </figure>
-    </div>
-
-    <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 10 · The Printed Atlas ────────────────────────────────── -->
-    <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">10</span>The Printed Atlas</p>
-      <p class="statement">
-        Before the <em>Digital Atlas</em>, there was the printed one.
-      </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-printed-atlas">
-        <span>Read more</span>
-        <span class="read-more__line" aria-hidden="true"></span>
-      </button>
-      <div class="read-more__panel" id="rm-printed-atlas">
-        <div class="read-more__inner">
-          <p>It begins as a celebration of our differences: the languages we speak, the lands we tend, the rituals we keep, the monuments we raise. But turn the pages, and something quieter surfaces. Somewhere between the words and the traditions, you start to see yourself in a stranger. Because before anything else, you and I are human.</p>
-          <p>Open the atlas and the world unfolds in your hands. Four icons mark the four worlds UNESCO protects. Each world then appears on its own, with a map where every icon carries a number: the page where that place can be found. Each map becomes a table of contents for the globe.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="g-span-2 section-media">
-      <!-- 48-page atlas. Two layered image elements crossfade as the
-           page changes; the timeline below is a hover-scrubber that
-           sets a target page. With no hover, pages auto-advance and
-           wrap at 48 → 1. -->
-      <div class="atlas-book" id="atlas-book">
-        <div class="atlas-book__stage" id="atlas-stage">
-          <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
-          <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
-          <div class="atlas-book__spine" aria-hidden="true"></div>
-        </div>
-        <div
-          class="atlas-book__timeline"
-          id="atlas-timeline"
-          role="toolbar"
-          aria-label="Scrub through the printed atlas"
-        >
-          <!-- 48 .atlas-book__thumb buttons generated by the atlas JS -->
-          <div class="atlas-book__timeline-tooltip" id="atlas-timeline-tooltip" aria-hidden="true">01</div>
-        </div>
-        <div class="atlas-book__counter" aria-hidden="true">
-          <small>Page</small>
-          <span id="atlas-counter">01 / 48</span>
-        </div>
+      <!-- 6 Midjourney images in a 3-col × 2-row grid: God, Heaven,
+           Holy Spirit, Humanity, Jesus, Tree of Good and Evil. -->
+      <div class="ai-grid">
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-01.jpg" alt="Midjourney — God" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-02.jpg" alt="Midjourney — Heaven" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-03.jpg" alt="Midjourney — Holy Spirit" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-04.jpg" alt="Midjourney — Humanity" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-05.jpg" alt="Midjourney — Jesus" /></figure>
+        <figure class="media media--poster"><img class="media__img" loading="lazy" src="/ASSETS/IMAGES/ECCLESIASTES/ai-06.jpg" alt="Midjourney — Tree of Good and Evil" /></figure>
       </div>
     </div>
 
@@ -1897,6 +1866,19 @@
           holdTimer = setTimeout(cycle, HOLD_MS);
         });
       }
+    })();
+
+    /* Book grid (section 04) — on hover, copy the hovered page's
+       src into #book-preview so an enlarged version appears below
+       the section label in the left column. */
+    (function () {
+      var preview = document.getElementById('book-preview');
+      if (!preview) return;
+      document.querySelectorAll('.book-grid .book-page img').forEach(function (img) {
+        img.parentElement.addEventListener('pointerenter', function () {
+          preview.src = img.src;
+        });
+      });
     })();
 
     /* Floating book-page carousel (section 03) — cursor-dictated
