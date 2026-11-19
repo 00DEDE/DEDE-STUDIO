@@ -200,3 +200,21 @@ html { background: var(--bg); }
 }
 body { background: transparent; }
 a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
+
+/* ─── Full-bleed images: NEVER rounded ────────────────────────────
+   Site-wide rule — any image or media cell that spans the viewport
+   edge-to-edge (home work cells, case-study closing heroes, any
+   element tagged .is-full-bleed or [data-full-bleed]) must render
+   with square corners. The subtle corner rounding applied to inset
+   media cells (clamp(4px, 0.4vw, 8px)) is explicitly reset here.
+   Use the .is-full-bleed utility class on any new full-bleed media
+   going forward so the rule applies automatically. */
+.is-full-bleed,
+[data-full-bleed],
+.work__media,
+.case__closing-image,
+.case__closing-image img,
+.unesco__closing-image,
+.unesco__closing-image img {
+  border-radius: 0 !important;
+}
