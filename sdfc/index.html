@@ -151,6 +151,16 @@
     background: #000;
   }
 
+  /* SDFC — tighter gaps on every image-cell grid across the page
+     (half of the shared case-study.css default of
+     clamp(0.75rem, 1.5vw, 1.25rem)). */
+  .section-media__posters,
+  .section-media__triptych,
+  .section-media__triptych--pair,
+  .media-pair {
+    gap: clamp(0.375rem, 0.75vw, 0.625rem);
+  }
+
   /* Mobile reshuffle for every 3-item .section-media__posters row:
      first two cells go in the top row, the third sits centered in a
      second row at half-width — avoids the ugly bottom-left orphan the
@@ -161,7 +171,7 @@
     .section-media__posters > :nth-child(3) {
       grid-column: 1 / -1;
       grid-row: 2;
-      width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
+      width: calc(50% - (clamp(0.375rem, 0.75vw, 0.625rem) / 2));
       justify-self: center;
     }
   }
@@ -1220,7 +1230,7 @@
       <div class="section-media__posters">
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-08.jpg" alt="Soul Tide 2025 — asset 08" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-09.jpg" alt="Soul Tide 2025 — asset 09" loading="lazy" decoding="async" /></figure>
-        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" style="object-fit: cover; object-position: center bottom; transform: scale(1.15); transform-origin: center bottom;" /></figure>
+        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" style="object-fit: cover; object-position: center 72%; transform: scale(1.15); transform-origin: center 72%;" /></figure>
       </div>
 
       <figure class="media" style="aspect-ratio: 3 / 2; background: #0a0a0a;">
