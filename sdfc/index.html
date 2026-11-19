@@ -151,10 +151,14 @@
     background: #000;
   }
 
+  /* Mobile reshuffle for every 3-item .section-media__posters row:
+     first two cells go in the top row, the third sits centered in a
+     second row at half-width — avoids the ugly bottom-left orphan the
+     default 2-col grid produces when the child count isn't even. */
   @media (max-width: 900px) {
-    .section-media__posters--campaign > :nth-child(1) { grid-column: 1; grid-row: 1; }
-    .section-media__posters--campaign > :nth-child(3) { grid-column: 2; grid-row: 1; }
-    .section-media__posters--campaign > :nth-child(2) {
+    .section-media__posters > :nth-child(1) { grid-column: 1; grid-row: 1; }
+    .section-media__posters > :nth-child(2) { grid-column: 2; grid-row: 1; }
+    .section-media__posters > :nth-child(3) {
       grid-column: 1 / -1;
       grid-row: 2;
       width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
@@ -1190,7 +1194,7 @@
 
     <div class="g-span-2 section-media">
       <figure class="media" style="aspect-ratio: 3 / 2; background: #0a0a0a;">
-        <img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/hero.jpg" alt="Soul Tide 2025 — Keeping a clean sheet on our beaches, San Diego FC beach clean-up crew group photo" />
+        <img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/hero.jpg" alt="Soul Tide 2025 — flat lay of campaign collateral, badge, brochures and cleanup photos" />
       </figure>
 
       <div class="section-media__posters">
@@ -1204,9 +1208,9 @@
       </figure>
 
       <div class="section-media__posters">
-        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-04.jpg" alt="Soul Tide 2025 — asset 04" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-05.jpg" alt="Soul Tide 2025 — asset 05" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-06.jpg" alt="Soul Tide 2025 — asset 06" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-07.jpg" alt="Soul Tide 2025 — asset 07" loading="lazy" decoding="async" style="object-fit: cover; object-position: left center;" /></figure>
       </div>
 
       <figure class="media" style="aspect-ratio: 3 / 2; background: #0a0a0a;">
@@ -1214,23 +1218,13 @@
       </figure>
 
       <div class="section-media__posters">
-        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-07.jpg" alt="Soul Tide 2025 — asset 07" loading="lazy" decoding="async" style="object-fit: cover; object-position: left center;" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-08.jpg" alt="Soul Tide 2025 — asset 08" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-09.jpg" alt="Soul Tide 2025 — asset 09" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" style="object-fit: cover; object-position: center bottom; transform: scale(1.15); transform-origin: center bottom;" /></figure>
       </div>
 
       <figure class="media" style="aspect-ratio: 3 / 2; background: #0a0a0a;">
         <img class="media__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-14.jpg" alt="Soul Tide 2025 — in-world application 14" />
-      </figure>
-
-      <div class="section-media__posters">
-        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" style="object-fit: cover; object-position: center bottom; transform: scale(1.15); transform-origin: center bottom;" /></figure>
-        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-11.jpg" alt="Soul Tide 2025 — asset 11" loading="lazy" decoding="async" /></figure>
-        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-12.jpg" alt="Soul Tide 2025 — asset 12" loading="lazy" decoding="async" /></figure>
-      </div>
-
-      <figure class="media" style="aspect-ratio: 3 / 2; background: #0a0a0a;">
-        <img class="media__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-18.jpg" alt="Soul Tide 2025 — in-world application 18" />
       </figure>
     </div>
 
