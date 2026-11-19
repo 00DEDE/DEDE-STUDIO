@@ -572,61 +572,8 @@
     /* No hover state on touch — the VIEW CASE overlay is meaningless. */
     .work__view { display: none; }
   }
-  /* ─── Mobile identity banner ────────────────────────────────────────
-     A thin edge-to-edge strip that hangs off the bottom of the header
-     once the UNESCO cell is ~50% in view. Cycles through three
-     greetings every 7s. Mobile-only (hidden above 640px). */
-  .home-tag {
-    position: fixed;
-    /* Flush with the header's live bottom edge — no gap. */
-    top: var(--header-safe-top, 5rem);
-    left: 0; right: 0;
-    z-index: 40;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem clamp(0.75rem, 3vw, 1.25rem);
-    /* Semi-transparent white strip, flanked by two hairline rules —
-       the top rule caps the header, the bottom rule closes the banner.
-       Edge-to-edge horizontally; text sits in black. */
-    border-radius: 0;
-    background: rgba(255, 255, 255, 0.72);
-    -webkit-backdrop-filter: blur(10px) saturate(1.2);
-            backdrop-filter: blur(10px) saturate(1.2);
-    border-top:    1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    color: #000;
-    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.68rem, 0.82vw, 0.78rem);
-    letter-spacing: 0;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-6px);
-    transition:
-      opacity    260ms var(--ease-standard),
-      transform  260ms var(--ease-out-expo),
-      visibility 0s 260ms;
-  }
-  .home-tag[data-active="true"] {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    transition:
-      opacity    260ms var(--ease-standard),
-      transform  260ms var(--ease-out-expo),
-      visibility 0s 0s;
-  }
-  .home-tag__text {
-    display: inline-block;
-    transition: opacity 220ms var(--ease-standard);
-  }
-  .home-tag.is-swapping .home-tag__text { opacity: 0; }
-  /* Desktop: hide entirely — this is a mobile affordance. */
-  @media (min-width: 641px) { .home-tag { display: none; } }
 </style>
+<link rel="stylesheet" href="/identity-banner.css" />
 </head>
 <body class="home">
   <div class="site-bg" aria-hidden="true">
@@ -639,6 +586,10 @@
   <!-- Mobile identity tag — rendered once; JS toggles data-active + swaps text. -->
   <div class="home-tag" data-active="false" aria-live="polite">
     <span class="home-tag__text">David Gomez. Graphic Designer.</span>
+  </div>
+  <!-- Desktop identity text — pinned to the header's left side. -->
+  <div class="header-tag" data-active="false" aria-live="polite">
+    <span class="header-tag__text">David Gomez. Graphic Designer.</span>
   </div>
 
   <header class="site-header">
@@ -703,7 +654,7 @@
     <!-- 1. UNESCO ─ single cover — links to case-study page.
          The .work__media below is view-transition-named "unesco-hero"
          so the browser morphs it into the destination page's hero. -->
-    <a class="work work--unesco" href="/unesco/">
+    <a class="work work--unesco" href="/unesco/" data-banner-anchor>
       <div class="work__media">
         <img class="work__cover-img" src="/ASSETS/IMAGES/UNESCO/01.jpg" alt="UNESCO cover" decoding="async" fetchpriority="high" />
       </div>
@@ -962,68 +913,6 @@
     /* Touch: single tap navigates directly (no two-tap preview). */
   })();
   </script>
-  <script>
-  /* ─── Mobile identity tag — shows below the header once the
-     "David Gomez" hero words scroll off-viewport, and cycles through
-     three greetings every 5 seconds. Mobile-only (hidden above 640px
-     via CSS; the IntersectionObserver still runs but is a no-op). */
-  (function () {
-    'use strict';
-    var tag = document.querySelector('.home-tag');
-    if (!tag) return;
-    var textEl = tag.querySelector('.home-tag__text');
-
-    /* Reveal rule (latched): the banner first appears once the UNESCO
-       cell is ≥50% in view; from then on it stays visible until the
-       page is scrolled back near the very top, at which point it fades
-       out again. So scrolling past UNESCO back down into the footer
-       keeps the banner on. */
-    var anchor = document.querySelector('.work--unesco');
-    if (!anchor) return;
-
-    var latched = false;
-    var TOP_HIDE = 80;   // px from top of document — below this it hides
-
-    function setActive(on) {
-      tag.setAttribute('data-active', on ? 'true' : 'false');
-    }
-
-    function onScroll() {
-      if (latched && window.scrollY <= TOP_HIDE) {
-        latched = false;
-        setActive(false);
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!latched && e.isIntersecting && e.intersectionRatio >= 0.5) {
-            latched = true;
-            setActive(true);
-          }
-        });
-      }, { threshold: [0, 0.5, 1] });
-      io.observe(anchor);
-    }
-
-    var messages = [
-      'David Gomez. Graphic Designer.',
-      'Dede is pronounced day-day.',
-      'David Gomez. Diseñador Gráfico.'
-    ];
-    textEl.textContent = messages[0];
-    var idx = 0;
-    setInterval(function () {
-      idx = (idx + 1) % messages.length;
-      tag.classList.add('is-swapping');
-      setTimeout(function () {
-        textEl.textContent = messages[idx];
-        tag.classList.remove('is-swapping');
-      }, 240);
-    }, 12000);
-  })();
-  </script>
+  <script src="/identity-banner.js" defer></script>
 </body>
 </html>

@@ -17,13 +17,22 @@
 <link rel="stylesheet" href="/site-mobile.css" />
 <link rel="stylesheet" href="/case-study.css" />
 <link rel="stylesheet" href="/happiness.css" />
+<link rel="stylesheet" href="/identity-banner.css" />
 </head>
-<body class="happiness happiness--bllcrw">
+<body class="happiness happiness--bllcrw" data-banner-always>
   <div class="site-bg" aria-hidden="true">
     <div class="site-bg__blob site-bg__blob--cyan-1"></div>
     <div class="site-bg__blob site-bg__blob--cyan-2"></div>
     <div class="site-bg__blob site-bg__blob--dark-1"></div>
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
+  <!-- Desktop identity text — pinned to the header's left side. -->
+  <div class="header-tag" data-active="false" aria-live="polite">
+    <span class="header-tag__text">David Gomez. Graphic Designer.</span>
+  </div>
+  <!-- Mobile identity banner — hangs off the header. -->
+  <div class="home-tag" data-active="false" aria-live="polite">
+    <span class="home-tag__text">David Gomez. Graphic Designer.</span>
   </div>
 
   <header class="site-header">
@@ -581,5 +590,6 @@
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 
   <script src="/happiness-marquee.js" defer></script>
+  <script src="/identity-banner.js" defer></script>
 </body>
 </html>

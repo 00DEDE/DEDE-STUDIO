@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="/site-footer.css" />
 <link rel="stylesheet" href="/site-bg.css" />
 <link rel="stylesheet" href="/site-mobile.css" />
+<link rel="stylesheet" href="/identity-banner.css" />
 <style>
   /* Per-page cursor — overrides theme.css site-wide default. */
 
@@ -374,7 +375,7 @@
   }
 </style>
 </head>
-<body>
+<body data-banner-always>
   <div class="site-bg" aria-hidden="true">
     <div class="site-bg__blob site-bg__blob--cyan-1"></div>
     <div class="site-bg__blob site-bg__blob--cyan-2"></div>
@@ -382,6 +383,15 @@
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
   </div>
   <div class="selections">
+    <!-- Mobile identity banner — rendered once; JS toggles data-active + swaps text. -->
+    <div class="home-tag" data-active="false" aria-live="polite">
+      <span class="home-tag__text">David Gomez. Graphic Designer.</span>
+    </div>
+  <!-- Desktop identity text — pinned to the header's left side. -->
+  <div class="header-tag" data-active="false" aria-live="polite">
+    <span class="header-tag__text">David Gomez. Graphic Designer.</span>
+  </div>
+
     <header class="site-header">
       <a class="site-header__brand" href="/home/" aria-label="DEDE STUDIO — home">
         <img class="theme-img theme-img--dark" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" /><img class="theme-img theme-img--light" src="/ASSETS/LOGO/DEDE-WORDMARK/dede-wordmark-black.png" alt="DEDE STUDIO" />
@@ -407,7 +417,7 @@
            texture during fast scroll. -->
 
       <!-- 1. UNESCO — mirrors the home page cell. -->
-      <a class="cell cell--unesco" href="/unesco/">
+      <a class="cell cell--unesco" href="/unesco/" data-banner-anchor>
         <img class="cell__cover-img" src="/ASSETS/IMAGES/UNESCO/01.jpg" alt="UNESCO cover" decoding="async" fetchpriority="high" />
         <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>UNESCO</strong> BRANDING &amp; INTERACTION</div>
@@ -606,5 +616,6 @@
   })();
   </script>
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
+  <script src="/identity-banner.js" defer></script>
 </body>
 </html>

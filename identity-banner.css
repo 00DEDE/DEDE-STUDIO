@@ -1,0 +1,146 @@
+/* ═══════════════════════════════════════════════════════════════════
+   IDENTITY BANNER — shared by /home/, /work/, /play/ and every page a
+   work- or play-cell links to. Two surfaces:
+
+   • MOBILE (<=640px) — `.home-tag`: thin edge-to-edge strip that hangs
+     off the bottom edge of the header.
+   • DESKTOP (>=641px) — `.header-tag`: identity text pinned to the
+     left side of the header, vertically aligned with the brand mark.
+
+   Visibility rules:
+   • Latched (home only): appears once a `[data-banner-anchor]` cell
+     crosses the 50% visibility threshold; retracts when the viewer
+     scrolls back near the top.
+   • Always-on (any page whose `<body>` has `data-banner-always`):
+     the banner is visible from the moment the page loads.
+
+   Both surfaces cycle through three greetings every 12 seconds.
+   Companion script: /identity-banner.js
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── MOBILE strip ───────────────────────────────────────────────── */
+.home-tag {
+  position: fixed;
+  top: var(--header-safe-top, 5rem);
+  left: 0; right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Left padding +2% nudges the centered text ~1% of the banner width
+     to the right (optical alignment). */
+  padding: 0.5rem clamp(0.75rem, 3vw, 1.25rem) 0.5rem calc(clamp(0.75rem, 3vw, 1.25rem) + 2%);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+          backdrop-filter: blur(10px) saturate(1.2);
+  border-top:    1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: #000;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+  letter-spacing: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity    260ms var(--ease-standard),
+    transform  260ms var(--ease-out-expo),
+    visibility 0s 260ms;
+}
+.home-tag[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    opacity    260ms var(--ease-standard),
+    transform  260ms var(--ease-out-expo),
+    visibility 0s 0s;
+}
+.home-tag__text {
+  display: inline-block;
+  transition: opacity 220ms var(--ease-standard);
+}
+.home-tag.is-swapping .home-tag__text { opacity: 0; }
+/* Desktop: strip is hidden; its text role moves to .header-tag. */
+@media (min-width: 641px) { .home-tag { display: none; } }
+
+/* ─── DESKTOP header-left identity text ──────────────────────────── */
+.header-tag {
+  position: fixed;
+  z-index: 181; /* above the header (180) */
+  /* Vertically aligned with the enlarged brand mark. Formula:
+     padding-top + (logo height / 2) = clamp(1.8rem, 3vw, 3rem) + clamp(1.375rem, 3vw, 2.25rem).
+     We then subtract ~0.6em to center the text's optical center on
+     that y, rather than its top edge. */
+  top: calc(clamp(1.8rem, 3vw, 3rem) + clamp(1.375rem, 3vw, 2.25rem) - 0.6em);
+  left: clamp(1rem, 2vw, 1.75rem);
+  color: rgba(var(--fg-rgb), 0.5);
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+  letter-spacing: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity    260ms var(--ease-standard),
+    top        var(--dur-medium) var(--ease-out-expo),
+    visibility 0s 260ms;
+}
+.header-tag[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity    260ms var(--ease-standard),
+    top        var(--dur-medium) var(--ease-out-expo),
+    visibility 0s 0s;
+}
+.header-tag__text {
+  display: inline-block;
+  transition: opacity 220ms var(--ease-standard);
+}
+.header-tag.is-swapping .header-tag__text { opacity: 0; }
+/* Compact-header pages (either via live .is-scrolled, or pages that
+   lock the compact variant at page level — body.unesco / body.happiness)
+   get a tighter top so the text stays vertically centered on the
+   smaller 1.75rem logo. */
+body:has(.site-header.is-scrolled) .header-tag,
+body.unesco                     .header-tag,
+body.happiness                  .header-tag {
+  top: calc(1.15rem + 0.875rem - 0.6em);
+}
+@media (max-width: 640px) { .header-tag { display: none; } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   DESKTOP NAV PILL LOCK — on wide screens, pin the hamburger pill to
+   the header's right side, vertically centered against the brand mark
+   (both enlarged + compact states). Drag is disabled; the pill ignores
+   any inline `left` the drag JS may have written to localStorage.
+   ═══════════════════════════════════════════════════════════════════ */
+@media (min-width: 641px) {
+  .site-menu-btn,
+  .site-menu-btn.is-placed {
+    animation: none !important;
+    cursor: pointer !important;
+    left: auto !important;
+    right: clamp(1rem, 2vw, 1.75rem) !important;
+    transform: none !important;
+    /* Enlarged header: center pill against the enlarged logo. */
+    top: calc(clamp(1.8rem, 3vw, 3rem) + clamp(1.375rem, 3vw, 2.25rem) - 1.25rem) !important;
+  }
+  /* Compact header: via live .is-scrolled, or pages that lock the
+     compact variant at page level (body.unesco / body.happiness). */
+  body:has(.site-header.is-scrolled) .site-menu-btn,
+  body:has(.site-header.is-scrolled) .site-menu-btn.is-placed,
+  body.unesco                        .site-menu-btn,
+  body.unesco                        .site-menu-btn.is-placed,
+  body.happiness                     .site-menu-btn,
+  body.happiness                     .site-menu-btn.is-placed {
+    top: 0.55rem !important;
+  }
+}
