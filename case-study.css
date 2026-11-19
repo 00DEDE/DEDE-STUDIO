@@ -173,7 +173,7 @@ body.unesco .section-label {
 .section-media {
   display: flex;
   flex-direction: column;
-  gap: clamp(1.5rem, 3vh, 2.5rem);
+  gap: clamp(0.375rem, 0.75vw, 0.625rem);
   min-width: 0;
 }
 .section-media > * { width: 100%; }
@@ -182,7 +182,7 @@ body.unesco .section-label {
 .section-media__triptych {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  gap: clamp(0.375rem, 0.75vw, 0.625rem);
 }
 .section-media__triptych--pair {
   grid-template-columns: repeat(2, 1fr);
@@ -191,12 +191,22 @@ body.unesco .section-label {
 .section-media__posters {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  gap: clamp(0.375rem, 0.75vw, 0.625rem);
 }
 @media (max-width: 900px) {
   .section-media__triptych { grid-template-columns: 1fr; }
   .section-media__triptych--pair { grid-template-columns: 1fr; }
   .section-media__posters { grid-template-columns: repeat(2, 1fr); }
+  /* On mobile, any 3-item poster grid places the 3rd cell centered
+     under the first two instead of orphaning it bottom-left. */
+  .section-media__posters > :nth-child(1) { grid-column: 1; grid-row: 1; }
+  .section-media__posters > :nth-child(2) { grid-column: 2; grid-row: 1; }
+  .section-media__posters > :nth-child(3) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: calc(50% - (clamp(0.375rem, 0.75vw, 0.625rem) / 2));
+    justify-self: center;
+  }
 }
 
 /* ─── Section label (numbered eyebrow) ──────────────────────────── */
@@ -340,7 +350,7 @@ body.unesco .section-label {
   display: block;
   width: 100%;
   margin: 0;
-  border-radius: 0;
+  border-radius: clamp(4px, 0.4vw, 8px);
   overflow: hidden;
   aspect-ratio: 4 / 3;
 }
@@ -375,7 +385,7 @@ body.unesco .section-label {
 .media-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(0.85rem, 1.75vh, 1.4rem) calc(var(--page-x) * 2);
+  gap: clamp(0.375rem, 0.75vw, 0.625rem);
   width: 80%;
   justify-self: center;
   margin-inline: auto;
@@ -392,7 +402,7 @@ body.unesco .section-label {
 .foundations-ba {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(0.85rem, 1.75vh, 1.4rem) calc(var(--page-x) * 2);
+  gap: clamp(0.375rem, 0.75vw, 0.625rem);
 }
 .foundations-ba__col {
   display: flex;

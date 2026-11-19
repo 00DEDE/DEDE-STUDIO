@@ -151,36 +151,22 @@
     background: #000;
   }
 
-  /* SDFC — tighter gaps on every image-cell grid across the page
-     (half of the shared case-study.css default of
-     clamp(0.75rem, 1.5vw, 1.25rem)). */
-  .section-media__posters,
-  .section-media__triptych,
-  .section-media__triptych--pair,
-  .media-pair {
-    gap: clamp(0.375rem, 0.75vw, 0.625rem);
-  }
-  /* Also tighten the vertical gap between stacked rows inside each
-     section-media column so it matches the horizontal cell gap above
-     (default was clamp(1.5rem, 3vh, 2.5rem) — 4× larger). */
-  .section-media {
-    gap: clamp(0.375rem, 0.75vw, 0.625rem);
-  }
-
-  /* Mobile reshuffle for every 3-item .section-media__posters row:
-     first two cells go in the top row, the third sits centered in a
-     second row at half-width — avoids the ugly bottom-left orphan the
-     default 2-col grid produces when the child count isn't even. */
+  /* Mobile-only overrides for Section 9's rhythmic small rows and the
+     Section 8 jersey strip. Gap values and the sitewide 3-cell centre
+     fallback now live in case-study.css. */
   @media (max-width: 900px) {
-    .section-media__posters > :nth-child(1) { grid-column: 1; grid-row: 1; }
-    .section-media__posters > :nth-child(2) { grid-column: 2; grid-row: 1; }
-    .section-media__posters > :nth-child(3) {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      width: calc(50% - (clamp(0.375rem, 0.75vw, 0.625rem) / 2));
-      justify-self: center;
+    /* Section 9 — in each rhythm row, hide the 3rd thumbnail so the
+       small images stay as a tidy pair before every big break. */
+    .section-media__posters--rhythm > :nth-child(3) { display: none; }
+    .section-media__posters--rhythm > :nth-child(1),
+    .section-media__posters--rhythm > :nth-child(2) {
+      grid-row: 1;
+      width: auto;
+      justify-self: stretch;
     }
   }
+  /* Jersey mobile responsive rules live with the .jersey-strip
+     definition further down this stylesheet. */
 
   .unesco__intro .read-more__inner {
     max-width: var(--prose-max);
@@ -375,7 +361,13 @@
       aspect-ratio: 2 / 5;
     }
   }
-  @media (max-width: 560px) {
+  @media (max-width: 640px) {
+    /* Mobile — 2 kits per row (3 rows total) and the whole strip
+       shrinks to 70% width so each uniform renders ~30% smaller. */
+    .jersey-strip {
+      width: 70%;
+      margin-inline: auto;
+    }
     .jersey-strip__img {
       flex: 0 0 50%;
       width: 50%;
@@ -1134,7 +1126,7 @@
       </button>
       <div class="read-more__panel" id="rm-graphics">
         <div class="read-more__inner">
-          <p>The shapes are derived from the corners of the &ldquo;S&rdquo; and &ldquo;D&rdquo; in the hero logo. While studying the double-crested cormorant, I noticed the thin feathers at the back of its head. These are called filoplumes, and I was drawn to their thinness. I carried that thought back into the system: the graphic elements only ever appear as strokes, never fills, and are enlarged so they feel like visual guides throughout the composition.</p>
+          <p>The shapes are derived from the corners of the &ldquo;S&rdquo; and &ldquo;D&rdquo; in the hero logo. While studying the double-crested cormorant, I noticed the thin feathers at the back of its head. These are called filoplumes, and I was drawn to their thinness. I carried that thought back into the system: the graphic elements for the most part appear as strokes, with no fill, and are enlarged so they feel like visual guides throughout the composition.</p>
           <p><strong>18 cities. 5 regions. 1 club.</strong></p>
           <p>The slogan calls to mind the numbers that make up San Diego County as a whole. 18 unique cities. 5 distinct regions, each with its own style and flair. Then, the number 1. Read in sequence, it narrows. First, the audience sees themselves as part of a big group, then a smaller one, and finally, they see themselves. Just one person. Just one leaf on a tree of many leaves.</p>
           <p><strong>Welcome Home.</strong></p>
@@ -1213,7 +1205,7 @@
         <img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/hero.jpg" alt="Soul Tide 2025 — flat lay of campaign collateral, badge, brochures and cleanup photos" />
       </figure>
 
-      <div class="section-media__posters">
+      <div class="section-media__posters section-media__posters--rhythm">
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-01.jpg" alt="Soul Tide 2025 — asset 01" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-02.jpg" alt="Soul Tide 2025 — asset 02" loading="lazy" decoding="async" style="object-fit: cover; transform: scale(1.15) translateX(-7.5%); transform-origin: center center;" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-03.jpg" alt="Soul Tide 2025 — asset 03" loading="lazy" decoding="async" /></figure>
@@ -1223,7 +1215,7 @@
         <img class="media__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-06.jpg" alt="Soul Tide 2025 — in-world application 06" />
       </figure>
 
-      <div class="section-media__posters">
+      <div class="section-media__posters section-media__posters--rhythm">
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-05.jpg" alt="Soul Tide 2025 — asset 05" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-06.jpg" alt="Soul Tide 2025 — asset 06" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-07.jpg" alt="Soul Tide 2025 — asset 07" loading="lazy" decoding="async" style="object-fit: cover; object-position: left center;" /></figure>
@@ -1233,7 +1225,7 @@
         <img class="media__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-11.jpg" alt="Soul Tide 2025 — in-world application 11" />
       </figure>
 
-      <div class="section-media__posters">
+      <div class="section-media__posters section-media__posters--rhythm">
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-08.jpg" alt="Soul Tide 2025 — asset 08" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-09.jpg" alt="Soul Tide 2025 — asset 09" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" style="object-fit: cover; object-position: center 92%; transform: scale(1.15); transform-origin: center 92%;" /></figure>
