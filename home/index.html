@@ -572,6 +572,51 @@
     /* No hover state on touch — the VIEW CASE overlay is meaningless. */
     .work__view { display: none; }
   }
+  /* ─── Mobile identity tag ──────────────────────────────────────────
+     A rounded pill that drops just below the header once the "David
+     Gomez" hero words scroll out of view. Cycles through three
+     greetings on a 5s interval. Mobile-only (hidden above 640px). */
+  .home-tag {
+    position: fixed;
+    top: calc(var(--header-safe-top, 5rem) + 0.45rem);
+    left: 50%;
+    transform: translate(-50%, -6px);
+    z-index: 40;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(var(--bg-tint-rgb), 0.92);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+            backdrop-filter: blur(10px) saturate(1.2);
+    color: rgba(var(--fg-rgb), 0.5);
+    font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+    letter-spacing: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity   260ms var(--ease-standard),
+      transform 260ms var(--ease-out-expo),
+      visibility 0s 260ms;
+  }
+  .home-tag[data-active="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    transition:
+      opacity   260ms var(--ease-standard),
+      transform 260ms var(--ease-out-expo),
+      visibility 0s 0s;
+  }
+  .home-tag__text {
+    display: inline-block;
+    transition: opacity 220ms var(--ease-standard);
+  }
+  .home-tag.is-swapping .home-tag__text { opacity: 0; }
+  /* Desktop: hide entirely — this is a mobile affordance. */
+  @media (min-width: 641px) { .home-tag { display: none; } }
 </style>
 </head>
 <body class="home">
@@ -580,6 +625,11 @@
     <div class="site-bg__blob site-bg__blob--cyan-2"></div>
     <div class="site-bg__blob site-bg__blob--dark-1"></div>
     <div class="site-bg__blob site-bg__blob--dark-2"></div>
+  </div>
+
+  <!-- Mobile identity tag — rendered once; JS toggles data-active + swaps text. -->
+  <div class="home-tag" data-active="false" aria-live="polite">
+    <span class="home-tag__text">David Gomez | Graphic Designer</span>
   </div>
 
   <header class="site-header">
@@ -901,6 +951,48 @@
     }
 
     /* Touch: single tap navigates directly (no two-tap preview). */
+  })();
+  </script>
+  <script>
+  /* ─── Mobile identity tag — shows below the header once the
+     "David Gomez" hero words scroll off-viewport, and cycles through
+     three greetings every 5 seconds. Mobile-only (hidden above 640px
+     via CSS; the IntersectionObserver still runs but is a no-op). */
+  (function () {
+    'use strict';
+    var tag = document.querySelector('.home-tag');
+    if (!tag) return;
+    var textEl = tag.querySelector('.home-tag__text');
+
+    /* Anchor: the "Gomez." word in the first hero quote. When it leaves
+       the viewport, the pill drops into view; when it comes back, it
+       retracts. */
+    var anchor = document.querySelector('.home-quote .word[style*="--i:3"]');
+    if (!anchor) return;
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          tag.setAttribute('data-active', e.isIntersecting ? 'false' : 'true');
+        });
+      }, { threshold: 0 });
+      io.observe(anchor);
+    }
+
+    var messages = [
+      'David Gomez | Graphic Designer',
+      'Dede is pronounced day-day',
+      'David Gomez | Diseñador Gráfico'
+    ];
+    var idx = 0;
+    setInterval(function () {
+      idx = (idx + 1) % messages.length;
+      tag.classList.add('is-swapping');
+      setTimeout(function () {
+        textEl.textContent = messages[idx];
+        tag.classList.remove('is-swapping');
+      }, 240);
+    }, 5000);
   })();
   </script>
 </body>
