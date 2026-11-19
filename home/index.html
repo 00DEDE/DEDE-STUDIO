@@ -585,10 +585,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Asymmetric horizontal padding (20% / 0) with justify-center
-       shifts the centered text ~10% of the banner width to the right,
-       the optical-alignment nudge requested. */
-    padding: 0.5rem 0 0.5rem 20%;
+    padding: 0.5rem clamp(0.75rem, 3vw, 1.25rem);
     /* Pure rectangle — no rounding. Edge-to-edge horizontally,
        flush with the header above so they read as one unit. */
     border-radius: 0;

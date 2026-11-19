@@ -359,10 +359,10 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
      overlay opened by the bottom-centre hamburger. */
   .site-header {
     grid-template-rows: auto;
-    /* Mobile top/bottom padding expanded +40% around the brand mark
-       (1rem→1.4rem, 1.5rem→2.1rem). Horizontal padding stays at
-       --page-x and is written once so left = right. */
-    padding: clamp(1.4rem, 5.6vw, 2.1rem) var(--page-x, 12px);
+    /* Mobile: top padding stays at the original 1.4–2.1rem; bottom
+       padding is doubled (2.8–4.2rem) so the logo sits well clear
+       of the header's bottom edge. Horizontal uses --page-x. */
+    padding: clamp(1.4rem, 5.6vw, 2.1rem) var(--page-x, 12px) clamp(2.8rem, 11.2vw, 4.2rem);
   }
   .site-header__brand img { height: clamp(1.75rem, 7vw, 2.75rem); }
   .site-header__nav       { display: none; }   /* collapsed until overlay opens */
