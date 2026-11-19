@@ -246,7 +246,18 @@
     transform: scale(1.02);
   }
 
-  /* ─── overlays: tag + VIEW CASE label ────────────────────────────── */
+  /* ─── overlays: scrim + tag + VIEW CASE label ───────────────────── */
+  /* Subtle dark scrim along the bottom, beneath the tag — keeps the
+     label legible over bright or busy covers. */
+  .cell-scrim {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
   .cell-tags {
     position: absolute;
     left: 1.25rem;
@@ -398,6 +409,7 @@
       <!-- 1. UNESCO — mirrors the home page cell. -->
       <a class="cell cell--unesco" href="/unesco/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/UNESCO/01.jpg" alt="UNESCO cover" decoding="async" fetchpriority="high" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>UNESCO</strong> BRANDING &amp; INTERACTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -405,6 +417,7 @@
       <!-- 2. SAN DIEGO FOOTBALL CLUB -->
       <a class="cell cell--sdfc" href="/sdfc/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/SDFC/cell.jpg" alt="San Diego Football Club Soul Tide 2025 campaign merchandise flat lay" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>SAN DIEGO F.C.</strong> BRANDING &amp; MOTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -417,6 +430,7 @@
           <source media="(min-width: 641px)" srcset="/ASSETS/IMAGES/ECCLESIASTES/cover.jpg" />
           <img class="cell__cover-img cell__cover-img--ecclesiastes" src="/ASSETS/IMAGES/ECCLESIASTES/ecclesiastes-cell.jpg" alt="Ecclesiastes cover" decoding="async" loading="lazy" />
         </picture>
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>ECCLESIASTES</strong> COMPOSITIONAL DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -424,6 +438,7 @@
       <!-- 4. TRADER JOE'S -->
       <a class="cell cell--trader-joes" href="/trader-joes/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/TRADER%20JOES/joey-cell.jpg" alt="Trader Joe’s JOEY orange juice cartons on a yellow backdrop" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>TRADER JOE&rsquo;S</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -431,6 +446,7 @@
       <!-- 5. MEMOIRS -->
       <a class="cell cell--memoirs" href="/memoirs/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/MEMOIRS/cell.jpg" alt="Memoirs — 3D render of large hands and books in a pastel landscape" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>MEMOIRS</strong> MOTION DESIGN</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
@@ -438,6 +454,7 @@
       <!-- 6. CAFÉ BUSTELO (closes the series) -->
       <a class="cell" href="#">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/CAFE%20BUSTELO/cafe-bustelo-cover.jpg" alt="Café Bustelo cover" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>CAFÉ BUSTELO</strong> PACKAGING &amp; BRANDING</div>
         <div class="cell__view">VIEW CASE</div>
       </a>

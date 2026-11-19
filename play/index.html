@@ -142,9 +142,25 @@
     .cell:hover .cell__cover-img { opacity: 0.4; transform: scale(1.02); }
   }
   .cell.is-active .cell__cover-img { opacity: 0.4; }
+  /* Mobile: shift the focal point 20% to the right so the subject
+     reads better in the tighter 3:4 portrait crop. */
+  @media (max-width: 640px) {
+    .cell__cover-img { object-position: 70% 50%; }
+  }
 
-  /* Tags sit above the cover; pop to --bg so they read on photos. */
-  .cell__cover-img ~ .cell-tags { color: #fff; z-index: 3; mix-blend-mode: difference; }
+  /* Subtle dark scrim along the bottom of each cell, beneath the text
+     layer — keeps the tag legible over bright or busy photos. */
+  .cell__cover-img ~ .cell-scrim {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Tags sit above the cover + scrim. */
+  .cell__cover-img ~ .cell-tags { color: #fff; z-index: 3; }
 
   /* Breathing room between the last cell row and the footer. */
   .selections-grid { padding-bottom: clamp(3rem, 7vh, 6rem); }
@@ -240,6 +256,7 @@
       <!-- 1 · Top-left -->
             <a class="cell" href="/hulu/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/HULU/hero.jpg" alt="Person next to a giant green hulu sign" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>HULU</strong> EXPERIENCE</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
@@ -247,6 +264,7 @@
       <!-- 2 · Top-right -->
             <a class="cell" href="/bllcrw/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/BC/hero.jpg" alt="BLLCRW crew group portrait outdoors" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>BLLCRW.</strong> RELEASES</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
@@ -254,6 +272,7 @@
       <!-- 3 · Bottom-left -->
             <a class="cell" href="/analog-daydreaming/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/ANALOG%20SKETCHES/hero.jpg" alt="Hand-lettered Cristo napkin sketch" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>ANALOG</strong> DAYDREAMING</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
@@ -261,6 +280,7 @@
       <!-- 4 · Bottom-right -->
             <a class="cell" href="/organic-conversation/">
         <img class="cell__cover-img" src="/ASSETS/IMAGES/ORGANIC/hero.jpg" alt="Laser-cut leather world map, Protect What Makes Us Human" decoding="async" loading="lazy" />
+        <div class="cell-scrim" aria-hidden="true"></div>
         <div class="cell-tags"><strong>ORGANIC</strong> CONVERSATIONS</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
@@ -295,7 +315,6 @@
     'use strict';
 
     const cells = document.querySelectorAll('.cell');
-    const isTouch = window.matchMedia('(hover: none)').matches;
 
     /* ─── scroll-in reveal for below-fold cells — identical mechanic
        to mind.html: IntersectionObserver batches entries, sorts them
@@ -332,26 +351,8 @@
     }
 
     /* Touch: 1st tap reveals VIEW CASE; 2nd tap navigates. */
-    if (isTouch) {
-      let activeCell = null, timer = null;
-      const RESET_MS = 2000;
-      function reset() {
-        if (activeCell) activeCell.classList.remove('is-active');
-        activeCell = null;
-        clearTimeout(timer);
-        timer = null;
-      }
-      cells.forEach((cell) => {
-        cell.addEventListener('click', (e) => {
-          if (activeCell === cell) { reset(); return; }
-          e.preventDefault();
-          reset();
-          activeCell = cell;
-          cell.classList.add('is-active');
-          timer = setTimeout(reset, RESET_MS);
-        });
-      });
-    }
+    /* On touch devices, taps navigate directly — no first-tap reveal.
+       The cell's VIEW HAPPINESS overlay is a hover affordance only. */
 
     /* Scroll cue fade-out — same threshold as mind. */
     const cue = document.querySelector('.scroll-cue');

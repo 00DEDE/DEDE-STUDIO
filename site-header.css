@@ -332,7 +332,10 @@ body:has(.site-header) {
 .site-menu-btn span {
   display: block;
   width: 1.3rem;
-  height: 1.5px;
+  /* Integer pixel height so all three bars render identically crisp
+     (1.5px lands on a half-pixel and the middle bar snapped lighter
+     than the outer two on some displays). */
+  height: 2px;
   background: var(--fg);
   transform-origin: center;
   transition:
