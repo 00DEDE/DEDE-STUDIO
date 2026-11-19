@@ -116,6 +116,18 @@
     mix-blend-mode: multiply;
     background: transparent;
   }
+/* ── scans track videos */
+  /* ── scans track videos — identical sizing to images, no blend-mode
+     (multiply would wash out live footage). Pointer-events keep the
+     native controls off since none are rendered. */
+  .scans__track > video {
+    height: clamp(220px, 30vh, 320px);
+    width: auto;
+    display: block;
+    user-select: none;
+    background: #000;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body class="happiness happiness--daydream">
@@ -144,6 +156,7 @@
   </header>
   <script src="/site-header.js" defer></script>
   <script src="/site-bg.js" defer></script>
+  <script src="/case-study.js" defer></script>
 
   <div class="scroll-cue" aria-hidden="true">
     <span class="scroll-cue__text">Scroll</span>
@@ -186,6 +199,7 @@
   <section class="scans" aria-label="Project images">
     <div class="scans__row scans__row--1" data-speed="0.55">
       <div class="scans__track">
+
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-001.jpg" alt="sketch 001" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-002.jpg" alt="sketch 002" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-003.jpg" alt="sketch 003" loading="lazy" />
@@ -200,6 +214,7 @@
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-012.jpg" alt="sketch 012" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-013.jpg" alt="sketch 013" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-014.jpg" alt="sketch 014" loading="lazy" />
+        <video src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-vid-01.mp4" autoplay muted loop playsinline preload="metadata"></video>
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-001.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-002.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-003.jpg" alt="" aria-hidden="true" loading="lazy" />
@@ -214,10 +229,13 @@
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-012.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-013.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-014.jpg" alt="" aria-hidden="true" loading="lazy" />
+      
+        <video src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-vid-01.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
       </div>
     </div>
     <div class="scans__row scans__row--2" data-speed="0.78">
       <div class="scans__track">
+
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-015.jpg" alt="sketch 015" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-016.jpg" alt="sketch 016" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-017.jpg" alt="sketch 017" loading="lazy" />
@@ -231,6 +249,7 @@
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-025.jpg" alt="sketch 025" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-026.jpg" alt="sketch 026" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-027.jpg" alt="sketch 027" loading="lazy" />
+        <video src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-vid-02.mp4" autoplay muted loop playsinline preload="metadata"></video>
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-015.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-016.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-017.jpg" alt="" aria-hidden="true" loading="lazy" />
@@ -244,6 +263,8 @@
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-025.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-026.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-027.jpg" alt="" aria-hidden="true" loading="lazy" />
+      
+        <video src="/ASSETS/IMAGES/ANALOG%20SKETCHES/web/sketch-vid-02.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
       </div>
     </div>
     <div class="scans__row scans__row--3" data-speed="0.65">
