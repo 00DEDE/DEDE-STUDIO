@@ -586,13 +586,16 @@
     align-items: center;
     justify-content: center;
     padding: 0.5rem clamp(0.75rem, 3vw, 1.25rem);
-    /* Pure rectangle — no rounding. Edge-to-edge horizontally,
-       flush with the header above so they read as one unit. */
+    /* Semi-transparent white strip, flanked by two hairline rules —
+       the top rule caps the header, the bottom rule closes the banner.
+       Edge-to-edge horizontally; text sits in black. */
     border-radius: 0;
-    background: rgba(0, 0, 0, 0.72);
+    background: rgba(255, 255, 255, 0.72);
     -webkit-backdrop-filter: blur(10px) saturate(1.2);
             backdrop-filter: blur(10px) saturate(1.2);
-    color: #34dede;
+    border-top:    1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: #000;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(0.68rem, 0.82vw, 0.78rem);
