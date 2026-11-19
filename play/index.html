@@ -123,6 +123,32 @@
     }
   }
 
+
+  /* ─── Cell cover image — mirrors /work/ pattern. Image sits behind the
+     tag + VIEW HAPPINESS overlay; the overlay still dims the image on
+     hover via the existing .cell:hover / .cell.is-active transitions. */
+  .cell__cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    z-index: 1;
+    transition: opacity var(--dur-medium) var(--ease-standard),
+                transform var(--dur-cinematic) var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .cell:hover .cell__cover-img { opacity: 0.4; transform: scale(1.02); }
+  }
+  .cell.is-active .cell__cover-img { opacity: 0.4; }
+
+  /* Tags sit above the cover; pop to --bg so they read on photos. */
+  .cell__cover-img ~ .cell-tags { color: #fff; z-index: 3; mix-blend-mode: difference; }
+
+  /* Breathing room between the last cell row and the footer. */
+  .selections-grid { padding-bottom: clamp(3rem, 7vh, 6rem); }
+
   .cell__view {
     position: absolute;
     inset: 0;
@@ -212,26 +238,30 @@
 
     <div class="selections-grid">
       <!-- 1 · Top-left -->
-      <a class="cell" href="/hulu/">
+            <a class="cell" href="/hulu/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/HULU/hero.jpg" alt="Person next to a giant green hulu sign" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>HULU</strong> EXPERIENCE</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
 
       <!-- 2 · Top-right -->
-      <a class="cell" href="/bllcrw/">
+            <a class="cell" href="/bllcrw/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/BC/hero.jpg" alt="BLLCRW crew group portrait outdoors" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>BLLCRW.</strong> RELEASES</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
 
       <!-- 3 · Bottom-left -->
-      <a class="cell" href="/analog-daydreaming/">
+            <a class="cell" href="/analog-daydreaming/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/ANALOG%20SKETCHES/hero.jpg" alt="Hand-lettered Cristo napkin sketch" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>ANALOG</strong> DAYDREAMING</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
 
       <!-- 4 · Bottom-right -->
-      <a class="cell" href="/organic-conversation/">
-        <div class="cell-tags"><strong>ORGANIC</strong> CONVERSATION</div>
+            <a class="cell" href="/organic-conversation/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/ORGANIC/hero.jpg" alt="Laser-cut leather world map, Protect What Makes Us Human" decoding="async" loading="lazy" />
+        <div class="cell-tags"><strong>ORGANIC</strong> CONVERSATIONS</div>
         <div class="cell__view">VIEW HAPPINESS</div>
       </a>
     </div>
