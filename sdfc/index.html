@@ -160,6 +160,12 @@
   .media-pair {
     gap: clamp(0.375rem, 0.75vw, 0.625rem);
   }
+  /* Also tighten the vertical gap between stacked rows inside each
+     section-media column so it matches the horizontal cell gap above
+     (default was clamp(1.5rem, 3vh, 2.5rem) — 4× larger). */
+  .section-media {
+    gap: clamp(0.375rem, 0.75vw, 0.625rem);
+  }
 
   /* Mobile reshuffle for every 3-item .section-media__posters row:
      first two cells go in the top row, the third sits centered in a
