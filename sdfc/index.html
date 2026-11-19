@@ -319,23 +319,59 @@
     background: #000;
   }
 
-  /* ─── Foundation After-cell orchestrated slideshow (section 02) ── */
-  .foundations-after { position: relative; }
-  .foundations-after__layer {
+  /* ─── Sliding-wall slideshow (section 02 after cell, section 04) ─
+     Panels stack inside a container and slide horizontally like a
+     wall of posters: the active panel sits at x=0; on tick it slides
+     off-screen left (.is-past) while the next panel slides in from
+     off-screen right (.is-active). All other panels wait at 100%.
+     4s hold per panel, ease in-out via the CSS cubic-bezier. */
+  .slide-wall { position: relative; overflow: hidden; background: #000; }
+  .slide-wall__layer {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 520ms ease-in-out;
-    will-change: opacity;
+    object-fit: contain;
+    background: transparent;
+    transform: translate3d(100%, 0, 0);
+    will-change: transform;
     pointer-events: none;
   }
-  .foundations-after__layer.is-active { opacity: 1; }
-
+  .slide-wall__layer--teal      { background: #00beb4; }
+  .slide-wall__layer--teal-dark { background: #008c82; }
+  .slide-wall__layer--black     { background: #000000; }
+  .slide-wall__layer.is-active {
+    animation: slideWallIn 900ms cubic-bezier(.65, 0, .35, 1) both;
+  }
+  .slide-wall__layer.is-past {
+    animation: slideWallOut 900ms cubic-bezier(.65, 0, .35, 1) both;
+  }
+  @keyframes slideWallIn {
+    from { transform: translate3d(100%, 0, 0); }
+    to   { transform: translate3d(0,    0, 0); }
+  }
+  @keyframes slideWallOut {
+    from { transform: translate3d(0,     0, 0); }
+    to   { transform: translate3d(-100%, 0, 0); }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .foundations-after__layer { transition: none; }
+    .slide-wall__layer,
+    .slide-wall__layer.is-active,
+    .slide-wall__layer.is-past { animation: none; }
+    .slide-wall__layer.is-active { transform: translate3d(0, 0, 0); }
+  }
+
+  /* Section 2 before cell — SDFC existing shield on its dark navy bg */
+  .foundations-ba__media--navy { background: #02152b; }
+  .foundations-ba__media--navy .foundations-ba__img { object-fit: contain; }
+
+  /* Section 4 — slide-wall sized to match the section-media column
+     (same 16:9 footprint the palette-grid used to occupy). */
+  .breakdown-slides {
+    width: min(100%, calc(75vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    justify-self: center;
+    margin-inline: auto;
   }
 
   /* ─── 4-slide applications slideshow (section 07) ──────────────── */
@@ -703,21 +739,16 @@
       <div class="foundations-ba">
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">Before</p>
-          <figure class="media media--square foundations-ba__media">
-            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/UNESCO/Flag_of_UNESCO.svg.webp" alt="UNESCO existing flag — Greco-Roman temple on blue" />
+          <figure class="media media--square foundations-ba__media foundations-ba__media--navy">
+            <img class="media__img foundations-ba__img" src="/ASSETS/IMAGES/SDFC/SDFC_OLD%20LOGO.png" alt="San Diego FC existing shield logo on dark navy" />
           </figure>
         </div>
         <div class="foundations-ba__col">
           <p class="section-label foundations-ba__label">After</p>
-          <figure class="media media--square foundations-ba__media foundations-after">
-            <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--fwd is-active"
-                   muted playsinline webkit-playsinline preload="auto"
-                   disablepictureinpicture disableremoteplayback
-                   aria-label="UNESCO logo reveal animation">
-              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-            </video>
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
-            <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
+          <figure class="media media--square foundations-ba__media slide-wall">
+            <img class="media__img slide-wall__layer slide-wall__layer--teal is-active" src="/ASSETS/IMAGES/SDFC/SDFC_LOGOS-04.png" alt="SDFC rebrand — monogram on teal" />
+            <img class="media__img slide-wall__layer slide-wall__layer--teal-dark" src="/ASSETS/IMAGES/SDFC/SDFC_LOGOS-07.png" alt="SDFC rebrand — monogram on deep teal" />
+            <img class="media__img slide-wall__layer slide-wall__layer--black" src="/ASSETS/IMAGES/SDFC/SDFC_LOGOS-08.png" alt="SDFC rebrand — monogram on black" />
           </figure>
         </div>
       </div>
@@ -747,11 +778,10 @@
     <div class="g-span-2 section-media">
       <figure class="media media--wide">
         <video class="media__video"
-               autoplay muted loop playsinline preload="metadata"
+               controls preload="metadata" playsinline webkit-playsinline
                disablepictureinpicture disableremoteplayback
-               poster="/ASSETS/IMAGES/UNESCO/01.jpg"
-               aria-label="Digital Atlas installation">
-          <source src="/ASSETS/IMAGES/UNESCO/interactive-atlas.mp4" type="video/mp4">
+               aria-label="San Diego FC brand reveal">
+          <source src="/ASSETS/IMAGES/SDFC/logo-reveal.mp4" type="video/mp4">
         </video>
       </figure>
     </div>
@@ -780,41 +810,10 @@
     </div>
 
     <div class="g-span-2 section-media">
-    <div class="palette-grid" aria-label="UNESCO color palette">
-      <img class="palette-grid__img" src="/ASSETS/IMAGES/UNESCO/17.jpg" alt="UNESCO palette billboard mockup" />
-      <div class="palette-grid__cells" role="list">
-        <button class="palette-swatch" type="button" aria-label="World Blue" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>World</span><span>Blue</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Vivre Green" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Vivre</span><span>Green</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Sol Yellow" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Sol</span><span>Yellow</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Ash Grey" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Ash</span><span>Grey</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Umber Brown" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Umber</span><span>Brown</span></span>
-        </button>
-        <button class="palette-swatch" type="button" aria-label="Deep Earth" role="listitem">
-          <span class="palette-swatch__veil" aria-hidden="true"></span>
-          <span class="palette-swatch__scrim" aria-hidden="true"></span>
-          <span class="palette-swatch__name"><span>Deep</span><span>Earth</span></span>
-        </button>
-      </div>
-    </div>
+      <figure class="media slide-wall breakdown-slides" aria-label="SDFC rebrand logo lockups">
+        <img class="media__img slide-wall__layer slide-wall__layer--teal is-active" src="/ASSETS/IMAGES/SDFC/SDFC_LOGOS-05.png" alt="SDFC rebrand — San Diego Football Club horizontal lockup on teal" />
+        <img class="media__img slide-wall__layer slide-wall__layer--teal-dark" src="/ASSETS/IMAGES/SDFC/SDFC_LOGOS-06.png" alt="SDFC rebrand — SDFC short lockup on deep teal" />
+      </figure>
     </div><!-- /04 section-media -->
 
     <hr class="unesco__section-rule" aria-hidden="true" />
@@ -1248,67 +1247,48 @@
       });
     })();
 
-    /* Foundation After-cell orchestrated slideshow. */
-    var fAfter = document.querySelector('.foundations-after');
-    if (fAfter) {
-      var faFwd  = fAfter.querySelector('.foundations-after__video--fwd');
-      var faImg2 = fAfter.querySelector('.foundations-after__img--2');
-      var faImg3 = fAfter.querySelector('.foundations-after__img--3');
-      if (faFwd && faImg2 && faImg3) {
-        var faLayers = [faFwd, faImg2, faImg3];
-        var FA_PAUSE_MS   = 600;
-        var FA_IMG_HOLD   = 2800;
-        function faShow(el) {
-          faLayers.forEach(function (l) {
-            if (l === el) l.classList.add('is-active');
-            else l.classList.remove('is-active');
-          });
-        }
-        function faPlayFwd() {
-          faShow(faFwd);
-          try { faFwd.currentTime = 0; } catch (e) {}
-          var p = faFwd.play();
-          if (p && typeof p.catch === 'function') p.catch(function () {});
-        }
-        function faShowImg2() { faShow(faImg2); setTimeout(faShowImg3, FA_IMG_HOLD); }
-        function faShowImg3() { faShow(faImg3); setTimeout(faPlayFwd,  FA_IMG_HOLD); }
-        faFwd.addEventListener('ended', function () { setTimeout(faShowImg2, FA_PAUSE_MS); });
-        var faKicked = false;
-        var faKick = function () {
-          if (faKicked) return;
-          faKicked = true;
-          faPlayFwd();
-        };
-        if ('IntersectionObserver' in window) {
-          var faIO = new IntersectionObserver(function (entries) {
-            entries.forEach(function (ent) {
-              if (ent.isIntersecting) { faKick(); faIO.disconnect(); }
-            });
-          }, { threshold: 0.15 });
-          faIO.observe(fAfter);
-        } else {
-          faKick();
-        }
+    /* Sliding-wall slideshow — every .slide-wall on the page runs its
+       own independent 4s loop. Active panel slides off-screen left
+       (.is-past) while the next slides in from off-screen right
+       (.is-active). Starts once the container enters the viewport so
+       the viewer catches the first transition, not the reset state. */
+    document.querySelectorAll('.slide-wall').forEach(function (wall) {
+      var layers = Array.prototype.slice.call(
+        wall.querySelectorAll('.slide-wall__layer')
+      );
+      if (layers.length < 2) return;
+      var HOLD_MS = 4000;
+      var idx = 0;
+      function show(next) {
+        var prev = idx;
+        layers.forEach(function (l, k) {
+          l.classList.remove('is-active', 'is-past');
+          if (k === next) l.classList.add('is-active');
+          else if (k === prev) l.classList.add('is-past');
+        });
+        idx = next;
       }
-    }
-
-    /* Palette grid reveal on viewport entry. */
-    var paletteGrid = document.querySelector('.palette-grid');
-    if (paletteGrid) {
+      function tick() {
+        show((idx + 1) % layers.length);
+        setTimeout(tick, HOLD_MS);
+      }
+      var kicked = false;
+      var kick = function () {
+        if (kicked) return;
+        kicked = true;
+        setTimeout(tick, HOLD_MS);
+      };
       if ('IntersectionObserver' in window) {
-        var pObs = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              paletteGrid.classList.add('is-in');
-              pObs.disconnect();
-            }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (ent) {
+            if (ent.isIntersecting) { kick(); io.disconnect(); }
           });
-        }, { threshold: 0.25 });
-        pObs.observe(paletteGrid);
+        }, { threshold: 0.15 });
+        io.observe(wall);
       } else {
-        paletteGrid.classList.add('is-in');
+        kick();
       }
-    }
+    });
 
   })();
 
