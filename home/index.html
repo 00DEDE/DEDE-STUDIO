@@ -572,22 +572,27 @@
     /* No hover state on touch — the VIEW CASE overlay is meaningless. */
     .work__view { display: none; }
   }
-  /* ─── Mobile identity tag ──────────────────────────────────────────
-     A rounded pill that drops just below the header once the "David
-     Gomez" hero words scroll out of view. Cycles through three
-     greetings on a 5s interval. Mobile-only (hidden above 640px). */
+  /* ─── Mobile identity banner ────────────────────────────────────────
+     A thin edge-to-edge strip that hangs off the bottom of the header
+     once the UNESCO cell is ~50% in view. Cycles through three
+     greetings every 7s. Mobile-only (hidden above 640px). */
   .home-tag {
     position: fixed;
-    top: calc(var(--header-safe-top, 5rem) + 0.45rem);
-    left: 50%;
-    transform: translate(-50%, -6px);
+    /* Flush with the header's live bottom edge — no gap. */
+    top: var(--header-safe-top, 5rem);
+    left: 0; right: 0;
     z-index: 40;
-    padding: 0.5rem 0.95rem;
-    border-radius: 999px;
-    background: rgba(var(--bg-tint-rgb), 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem clamp(0.75rem, 3vw, 1.25rem);
+    /* Pure rectangle — no rounding. Edge-to-edge horizontally,
+       flush with the header above so they read as one unit. */
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.72);
     -webkit-backdrop-filter: blur(10px) saturate(1.2);
             backdrop-filter: blur(10px) saturate(1.2);
-    color: rgba(var(--fg-rgb), 0.5);
+    color: #34dede;
     font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
     font-size: clamp(0.68rem, 0.82vw, 0.78rem);
@@ -596,18 +601,19 @@
     pointer-events: none;
     opacity: 0;
     visibility: hidden;
+    transform: translateY(-6px);
     transition:
-      opacity   260ms var(--ease-standard),
-      transform 260ms var(--ease-out-expo),
+      opacity    260ms var(--ease-standard),
+      transform  260ms var(--ease-out-expo),
       visibility 0s 260ms;
   }
   .home-tag[data-active="true"] {
     opacity: 1;
     visibility: visible;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
     transition:
-      opacity   260ms var(--ease-standard),
-      transform 260ms var(--ease-out-expo),
+      opacity    260ms var(--ease-standard),
+      transform  260ms var(--ease-out-expo),
       visibility 0s 0s;
   }
   .home-tag__text {
@@ -964,18 +970,19 @@
     if (!tag) return;
     var textEl = tag.querySelector('.home-tag__text');
 
-    /* Anchor: the "Gomez." word in the first hero quote. When it leaves
-       the viewport, the pill drops into view; when it comes back, it
-       retracts. */
-    var anchor = document.querySelector('.home-quote .word[style*="--i:3"]');
+    /* Anchor: the UNESCO cell (first .work on the home page). The
+       banner reveals once that cell is at least 50% visible and
+       retracts once less than 50% is on screen again. */
+    var anchor = document.querySelector('.work--unesco');
     if (!anchor) return;
 
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          tag.setAttribute('data-active', e.isIntersecting ? 'false' : 'true');
+          var reveal = e.isIntersecting && e.intersectionRatio >= 0.5;
+          tag.setAttribute('data-active', reveal ? 'true' : 'false');
         });
-      }, { threshold: 0 });
+      }, { threshold: [0, 0.5, 1] });
       io.observe(anchor);
     }
 
@@ -992,7 +999,7 @@
         textEl.textContent = messages[idx];
         tag.classList.remove('is-swapping');
       }, 240);
-    }, 5000);
+    }, 7000);
   })();
   </script>
 </body>
