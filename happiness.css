@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════════════
+   HAPPINESS SUB-PAGES — shared styles.
+
+   Four pages use this layout (hulu / bllcrw / analog-daydreaming /
+   organic-conversation). They share a UNESCO-style hero + overview
+   grid and a multi-row horizontally-drifting scans marquee. Per-page
+   differences — hero photo, scans band palette — are scoped under the
+   body modifier classes at the bottom of this file.
+
+   Companion script: /happiness-marquee.js handles row drift + hover
+   pause + horizontal-wheel scrub.
+   ═══════════════════════════════════════════════════════════════════ */
+
+body.happiness {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+  color: var(--fg);
+  overflow-x: clip;
+  font-family: "ABC Oracle", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  cursor: var(--cursor-url) 12 12, auto;
+}
+
+/* ─── Section rhythm ───────────────────────────────────────────────
+   The overview, scans and footer each get a hairline separator from
+   the band above them; the hero drops its top border since the page
+   header already closes with a rule. */
+.happiness__overview,
+.scans,
+body.happiness > .site-footer {
+  border-top: 1px solid var(--line);
+}
+.happiness__hero.unesco__grid { border-top: 0; }
+
+/* ─── Hero — same geometry as UNESCO/SDFC ──────────────────────── */
+.happiness__hero.unesco__grid {
+  padding-top:    var(--stack-top);
+  /* Tightened padding-bottom so the Overview label peeks into the
+     hero's first viewport, matching the UNESCO page's rhythm. */
+  padding-bottom: clamp(1rem, 2vh, 1.75rem);
+}
+.happiness__overview.unesco__grid {
+  padding-top: clamp(1rem, 2vh, 1.75rem);
+}
+.happiness__hero-title {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.9rem, 2vh, 1.5rem);
+}
+.happiness__hero-title .intro__eyebrow,
+.happiness__hero-title .intro__title { margin-bottom: 0; }
+.happiness__hero-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  max-height: 60vh;
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+}
+.happiness__hero-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  /* background-image set per-page in the modifier rules below. */
+}
+
+/* ─── Compact site-header (matches UNESCO/SDFC) ────────────────── */
+body.happiness .site-header,
+body.happiness .site-header.is-scrolled { padding: 1.15rem 0 0.65rem; }
+body.happiness .site-header .site-header__brand img,
+body.happiness .site-header.is-scrolled .site-header__brand img { height: 1.75rem; }
+@media (min-width: 641px) {
+  body.happiness .site-menu-btn {
+    top: 0.55rem !important;
+    right: clamp(1rem, 2vw, 1.75rem) !important;
+  }
+  body.happiness .site-menu-btn.is-placed {
+    top: 0.55rem !important;
+    right: clamp(1rem, 2vw, 1.75rem) !important;
+    left: auto !important;
+  }
+}
+
+/* ─── Scans marquee ─────────────────────────────────────────────── */
+.scans {
+  padding: var(--stack-y) 0;
+  overflow: hidden;
+  border-top:    1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  /* Default: paper-white band (scan-art pages). BLLCRW overrides to
+     the theme bg since its row is photographic. */
+  background: #fff;
+}
+.scans__row {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.scans__row + .scans__row {
+  margin-top: clamp(0.75rem, 1.5vh, 1.25rem);
+}
+.scans__track {
+  display: flex;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  width: max-content;
+  will-change: transform;
+}
+.scans__track > img,
+.scans__track > video {
+  height: clamp(220px, 30vh, 320px);
+  width: auto;
+  display: block;
+  user-select: none;
+  /* Subtle rounded corners, matching the rest of the site's inset
+     media treatment. Full-bleed assets elsewhere stay square via the
+     theme-wide !important override. */
+  border-radius: clamp(4px, 0.4vw, 8px);
+}
+.scans__track > img {
+  -webkit-user-drag: none;
+  /* Scan-paper default: multiply blends the matte against the band. */
+  mix-blend-mode: multiply;
+  background: transparent;
+}
+.scans__track > video {
+  background: #000;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PER-PAGE VARIANTS — hero photo + marquee palette.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 001 · Hulu Experience */
+body.happiness--hulu .happiness__hero-image {
+  background-image: url("/ASSETS/IMAGES/HULU/hero.jpg");
+}
+
+/* 002 · Bllcrw. Releases — photographic marquee (no blend, dark letterbox). */
+body.happiness--bllcrw .happiness__hero-image {
+  background-image: url("/ASSETS/IMAGES/BC/hero.jpg");
+}
+body.happiness--bllcrw .scans { background: var(--bg); }
+body.happiness--bllcrw .scans__track > img {
+  mix-blend-mode: normal;
+  background: #000;
+}
+
+/* 003 · Analog Daydreaming */
+body.happiness--daydream .happiness__hero-image {
+  background-image: url("/ASSETS/IMAGES/ANALOG%20SKETCHES/hero.jpg");
+}
+
+/* 004 · Organic Conversations */
+body.happiness--organic .happiness__hero-image {
+  background-image: url("/ASSETS/IMAGES/ORGANIC/hero.jpg");
+}
