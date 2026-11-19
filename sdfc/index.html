@@ -319,6 +319,85 @@
     background: #000;
   }
 
+  /* ─── Section 09 · Applications grid + hover preview ─────────────
+     Thumbnail grid of 37 brand-application photos/mockups. On hover
+     (non-touch), the hovered thumbnail pops into a fixed centered
+     preview overlay at a comfortable reading size. Touch/mobile skip
+     the preview; the grid alone works there. Mirrors the Trader
+     Joe's Full Lineup pattern. */
+  .lineup-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.45rem;
+    width: 100%;
+  }
+  .lineup-cell {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #0a0a0a;
+    cursor: zoom-in;
+  }
+  .lineup-cell__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .lineup-cell:hover .lineup-cell__img,
+  .lineup-cell:focus-within .lineup-cell__img {
+    transform: scale(1.04);
+  }
+
+  .lineup-preview {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(78vw, 1200px);
+    max-height: 80vh;
+    aspect-ratio: 3 / 2;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+    transition:
+      opacity 220ms ease,
+      transform 260ms cubic-bezier(.2, 0, .1, 1);
+    z-index: 200;
+    background: #0a0a0a;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+  .lineup-preview.is-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .lineup-preview__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #0a0a0a;
+    display: block;
+  }
+  @media (max-width: 900px) {
+    .lineup-grid { grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
+  }
+  @media (max-width: 640px) {
+    .lineup-grid { grid-template-columns: repeat(3, 1fr); gap: 0.3rem; }
+    .lineup-cell { cursor: default; }
+    .lineup-preview { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lineup-cell__img,
+    .lineup-preview { transition: opacity 120ms linear; transform: none; }
+    .lineup-preview.is-visible { transform: translate(-50%, -50%); }
+    .lineup-cell:hover .lineup-cell__img,
+    .lineup-cell:focus-within .lineup-cell__img { transform: none; }
+  }
+
   /* ─── Sliding-wall slideshow (section 02 after cell, section 04) ─
      Panels stack inside a container and slide horizontally like a
      wall of posters: the active panel sits at x=0; on tick it slides
@@ -675,9 +754,15 @@
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-22.jpg" alt="SDFC sketch 22" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-23.jpg" alt="SDFC sketch 23" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-24.jpg" alt="SDFC sketch 24" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-25.jpg" alt="SDFC sketch 25" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-26.jpg" alt="SDFC sketch 26" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-27.jpg" alt="SDFC sketch 27" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-31.jpg" alt="SDFC sketch 31" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-34.jpg" alt="SDFC sketch 34" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-37.jpg" alt="SDFC sketch 37" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-38.jpg" alt="SDFC sketch 38" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-39.jpg" alt="SDFC sketch 39" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-40.jpg" alt="SDFC sketch 40" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-41.jpg" alt="SDFC sketch 41" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-42.jpg" alt="SDFC sketch 42" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-01.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-02.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-03.jpg" alt="" aria-hidden="true" loading="lazy" />
@@ -702,28 +787,19 @@
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-22.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-23.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-24.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-25.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-26.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-27.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-31.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-34.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-37.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-38.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-39.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-40.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-41.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-42.jpg" alt="" aria-hidden="true" loading="lazy" />
       </div>
     </div>
     <div class="scans__row scans__row--bot" data-speed="0.78">
       <div class="scans__track">
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-28.jpg" alt="SDFC sketch 28" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-29.jpg" alt="SDFC sketch 29" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-30.jpg" alt="SDFC sketch 30" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-31.jpg" alt="SDFC sketch 31" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-32.jpg" alt="SDFC sketch 32" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-33.jpg" alt="SDFC sketch 33" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-34.jpg" alt="SDFC sketch 34" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-35.jpg" alt="SDFC sketch 35" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-36.jpg" alt="SDFC sketch 36" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-37.jpg" alt="SDFC sketch 37" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-38.jpg" alt="SDFC sketch 38" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-39.jpg" alt="SDFC sketch 39" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-40.jpg" alt="SDFC sketch 40" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-41.jpg" alt="SDFC sketch 41" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-42.jpg" alt="SDFC sketch 42" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-43.jpg" alt="SDFC sketch 43" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-44.jpg" alt="SDFC sketch 44" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-45.jpg" alt="SDFC sketch 45" loading="lazy" />
@@ -736,21 +812,27 @@
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-52.jpg" alt="SDFC sketch 52" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-53.jpg" alt="SDFC sketch 53" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-54.jpg" alt="SDFC sketch 54" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-28.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-29.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-30.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-31.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-32.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-33.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-34.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-35.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-36.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-37.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-38.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-39.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-40.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-41.jpg" alt="" aria-hidden="true" loading="lazy" />
-        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-42.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-55.jpg" alt="SDFC sketch 55" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-56.jpg" alt="SDFC sketch 56" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-57.jpg" alt="SDFC sketch 57" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-58.jpg" alt="SDFC sketch 58" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-59.jpg" alt="SDFC sketch 59" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-60.jpg" alt="SDFC sketch 60" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-61.jpg" alt="SDFC sketch 61" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-62.jpg" alt="SDFC sketch 62" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-63.jpg" alt="SDFC sketch 63" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-64.jpg" alt="SDFC sketch 64" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-65.jpg" alt="SDFC sketch 65" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-66.jpg" alt="SDFC sketch 66" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-67.jpg" alt="SDFC sketch 67" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-68.jpg" alt="SDFC sketch 68" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-69.jpg" alt="SDFC sketch 69" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-70.jpg" alt="SDFC sketch 70" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-71.jpg" alt="SDFC sketch 71" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-72.jpg" alt="SDFC sketch 72" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-73.jpg" alt="SDFC sketch 73" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-74.jpg" alt="SDFC sketch 74" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-75.jpg" alt="SDFC sketch 75" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-43.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-44.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-45.jpg" alt="" aria-hidden="true" loading="lazy" />
@@ -763,6 +845,27 @@
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-52.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-53.jpg" alt="" aria-hidden="true" loading="lazy" />
         <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-54.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-55.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-56.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-57.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-58.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-59.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-60.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-61.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-62.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-63.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-64.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-65.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-66.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-67.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-68.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-69.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-70.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-71.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-72.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-73.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-74.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <img src="/ASSETS/IMAGES/SDFC/SKETCHES/web/sketch-75.jpg" alt="" aria-hidden="true" loading="lazy" />
       </div>
     </div>
   </section>
@@ -948,37 +1051,10 @@
 
     <div class="g-span-2 section-media">
       <div class="section-media__posters">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-05.jpg" alt="UNESCO macro poster — The World That Sustains, Moves, Remembers, and is Built Through Us" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-04.jpg" alt="UNESCO macro poster — Protect What Makes Us Human" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-02.jpg" alt="UNESCO macro poster — Protect. Preserve. Prepare." /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/photography-01.jpg" alt="SDFC photography — community portrait 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/photography-02.jpg" alt="SDFC photography — community portrait 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/photography-03.jpg" alt="SDFC photography — community portrait 03" /></figure>
       </div>
-
-      <div class="section-media__triptych section-media__triptych--pair">
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-02.jpg" alt="UNESCO application — rooftop billboard" />
-          <img class="media__img media__aslide media__aslide--2" style="object-position: center 85%;" src="/ASSETS/IMAGES/UNESCO/application-05.jpg" alt="UNESCO application — Director-General podium" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-07.jpg" alt="UNESCO application — bridge wheatpaste poster" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-10.jpg" alt="UNESCO application — cylindrical street kiosk" />
-        </figure>
-        <figure class="media media--square">
-          <img class="media__img media__aslide media__aslide--1" src="/ASSETS/IMAGES/UNESCO/application-04.jpg" alt="UNESCO application — building-side billboard" />
-          <img class="media__img media__aslide media__aslide--2" src="/ASSETS/IMAGES/UNESCO/application-09.jpg" alt="UNESCO application — unesco HQ banner" />
-          <img class="media__img media__aslide media__aslide--3" src="/ASSETS/IMAGES/UNESCO/application-11.jpg" alt="UNESCO application — parking + bike station sign" />
-          <img class="media__img media__aslide media__aslide--4" src="/ASSETS/IMAGES/UNESCO/application-12.jpg" alt="UNESCO application — The World Needs U. kiosk" />
-        </figure>
-      </div>
-
-      <figure class="media media--wide applications-walkthrough">
-        <video class="media__video applications-walkthrough__video"
-               controls preload="metadata" playsinline webkit-playsinline
-               disablepictureinpicture disableremoteplayback
-               aria-label="UNESCO applications walkthrough">
-          <source src="/ASSETS/IMAGES/UNESCO/applications-walkthrough.mp4" type="video/mp4">
-        </video>
-      </figure>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
@@ -1053,11 +1129,46 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <div class="section-media__posters section-media__posters--campaign">
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-01.jpg" alt="Living Traces micro poster 01" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-02.jpg" alt="Living Traces micro poster 02" /></figure>
-        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/micro-poster-03.jpg" alt="Living Traces micro poster 03" /></figure>
+      <div class="lineup-grid" aria-label="SDFC brand applications">
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-01.jpg" alt="SDFC brand application 01" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-02.jpg" alt="SDFC brand application 02" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-03.jpg" alt="SDFC brand application 03" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-04.jpg" alt="SDFC brand application 04" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-05.jpg" alt="SDFC brand application 05" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-06.jpg" alt="SDFC brand application 06" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-07.jpg" alt="SDFC brand application 07" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-08.jpg" alt="SDFC brand application 08" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-09.jpg" alt="SDFC brand application 09" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-10.jpg" alt="SDFC brand application 10" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-11.jpg" alt="SDFC brand application 11" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-12.jpg" alt="SDFC brand application 12" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-13.jpg" alt="SDFC brand application 13" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-14.jpg" alt="SDFC brand application 14" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-15.jpg" alt="SDFC brand application 15" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-16.jpg" alt="SDFC brand application 16" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-17.jpg" alt="SDFC brand application 17" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-18.jpg" alt="SDFC brand application 18" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-19.jpg" alt="SDFC brand application 19" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-20.jpg" alt="SDFC brand application 20" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-21.jpg" alt="SDFC brand application 21" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-22.jpg" alt="SDFC brand application 22" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-23.jpg" alt="SDFC brand application 23" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-24.jpg" alt="SDFC brand application 24" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-25.jpg" alt="SDFC brand application 25" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-26.jpg" alt="SDFC brand application 26" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-27.jpg" alt="SDFC brand application 27" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-28.jpg" alt="SDFC brand application 28" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-29.jpg" alt="SDFC brand application 29" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-30.jpg" alt="SDFC brand application 30" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-31.jpg" alt="SDFC brand application 31" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-32.jpg" alt="SDFC brand application 32" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-33.jpg" alt="SDFC brand application 33" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-34.jpg" alt="SDFC brand application 34" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-35.jpg" alt="SDFC brand application 35" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-36.jpg" alt="SDFC brand application 36" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/SDFC/APPLICATIONS/web/app-37.jpg" alt="SDFC brand application 37" loading="lazy" decoding="async" /></figure>
       </div>
+    </div>
 
       <figure class="media media--wide campaign-walkthrough">
         <video class="media__video campaign-walkthrough__video"
@@ -1090,24 +1201,26 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <div class="atlas-book" id="atlas-book">
-        <div class="atlas-book__stage" id="atlas-stage">
-          <img class="atlas-book__spread atlas-book__spread--a is-active" id="atlas-a" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-01.jpg" alt="Atlas page 1 of 48" />
-          <img class="atlas-book__spread atlas-book__spread--b" id="atlas-b" src="/ASSETS/IMAGES/UNESCO/BOOK/atlas-02.jpg" alt="" aria-hidden="true" />
-          <div class="atlas-book__spine" aria-hidden="true"></div>
-        </div>
-        <div
-          class="atlas-book__timeline"
-          id="atlas-timeline"
-          role="toolbar"
-          aria-label="Scrub through the printed atlas"
-        >
-          <div class="atlas-book__timeline-tooltip" id="atlas-timeline-tooltip" aria-hidden="true">01</div>
-        </div>
-        <div class="atlas-book__counter" aria-hidden="true">
-          <small>Page</small>
-          <span id="atlas-counter">01 / 48</span>
-        </div>
+      <!-- Hero: Soul Tide 2025 group photo, sits alone, full-width 3:2. -->
+      <figure class="media" style="aspect-ratio: 3 / 2; background: #0a0a0a;">
+        <img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/hero.jpg" alt="Soul Tide 2025 — Keeping a clean sheet on our beaches, San Diego FC beach clean-up crew group photo" />
+      </figure>
+
+      <!-- 13 campaign assets in a 3-col grid (4 full rows + 1 orphan). -->
+      <div class="section-media__posters">
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-01.jpg" alt="Soul Tide 2025 — asset 01" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-02.jpg" alt="Soul Tide 2025 — asset 02" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-03.jpg" alt="Soul Tide 2025 — asset 03" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-04.jpg" alt="Soul Tide 2025 — asset 04" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-05.jpg" alt="Soul Tide 2025 — asset 05" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-06.jpg" alt="Soul Tide 2025 — asset 06" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-07.jpg" alt="Soul Tide 2025 — asset 07" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-08.jpg" alt="Soul Tide 2025 — asset 08" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-09.jpg" alt="Soul Tide 2025 — asset 09" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-11.jpg" alt="Soul Tide 2025 — asset 11" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-12.jpg" alt="Soul Tide 2025 — asset 12" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-13.jpg" alt="Soul Tide 2025 — asset 13" loading="lazy" decoding="async" /></figure>
       </div>
     </div>
 
@@ -1173,6 +1286,14 @@
   </footer>
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 
+  <!-- Hover-preview overlay for the section 09 Applications grid.
+       Hidden until a .lineup-cell__img fires pointerenter; the JS swaps
+       the source and toggles .is-visible. position: fixed so it always
+       sits viewport-centered over whatever the viewer has scrolled to. -->
+  <div class="lineup-preview" aria-hidden="true">
+    <img class="lineup-preview__img" alt="" />
+  </div>
+
   <script>
   (function () {
     'use strict';
@@ -1237,6 +1358,39 @@
             if (!s.row.matches(':hover')) s.paused = false;
           }, 1500);
         }, { passive: false });
+      });
+    })();
+
+    /* Hover-preview for the Applications lineup grid. On pointerenter
+       (non-touch), copies the hovered thumbnail into the fixed centered
+       preview and fades it in; pointerleave hides. */
+    (function initHoverPreview() {
+      var preview = document.querySelector('.lineup-preview');
+      if (!preview) return;
+      var previewImg = preview.querySelector('.lineup-preview__img');
+      if (!previewImg) return;
+      var grid = document.querySelector('.lineup-grid');
+      if (!grid) return;
+      var imgs = grid.querySelectorAll('.lineup-cell__img');
+      var hideTimer;
+      imgs.forEach(function (img) {
+        img.addEventListener('pointerenter', function (e) {
+          if (e.pointerType === 'touch') return;
+          clearTimeout(hideTimer);
+          if (previewImg.src !== img.src) previewImg.src = img.src;
+          previewImg.alt = img.alt || '';
+          preview.classList.add('is-visible');
+        });
+        img.addEventListener('pointerleave', function (e) {
+          if (e.pointerType === 'touch') return;
+          hideTimer = setTimeout(function () {
+            preview.classList.remove('is-visible');
+          }, 60);
+        });
+      });
+      grid.addEventListener('pointerleave', function (e) {
+        if (e.pointerType === 'touch') return;
+        preview.classList.remove('is-visible');
       });
     })();
 
