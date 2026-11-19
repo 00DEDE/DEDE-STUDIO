@@ -319,32 +319,47 @@
     background: #000;
   }
 
-  /* ─── Section 08 · Jersey row ─────────────────────────────────────
-     Six kit renders (home/away/third × front/back) in a single row of
-     tall-portrait cells. The source PNGs are 1400×1400 with the kit
-     centered vertically on a black field, so a tall ~2:5 cell crops
-     off the empty left/right matte and keeps the full jersey visible.
-     Mobile ramps down from 6→3→2 cols so cells never collapse. */
-  .jersey-row {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 0.4rem;
+  /* ─── Section 08 · Jersey strip ───────────────────────────────────
+     All six kit renders packed into ONE black cell, laid out as a
+     single flex strip with no gaps — eliminates the white seams that
+     a separate-cells grid would produce. Same overall footprint as
+     before (~12:5 ratio). On narrower screens the strip wraps so
+     each jersey keeps a legible size. */
+  .jersey-strip {
+    display: flex;
+    flex-wrap: nowrap;
+    aspect-ratio: 12 / 5;
     width: 100%;
-  }
-  .jersey-cell {
-    aspect-ratio: 2 / 5;
     background: #000;
     overflow: hidden;
+    gap: 0;
   }
-  .jersey-cell .media__img {
+  .jersey-strip__img {
+    flex: 1 1 0;
+    width: 0;
+    height: 100%;
     object-fit: cover;
     object-position: center center;
+    display: block;
+    background: #000;
   }
   @media (max-width: 900px) {
-    .jersey-row { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .jersey-strip {
+      flex-wrap: wrap;
+      aspect-ratio: auto;
+    }
+    .jersey-strip__img {
+      flex: 0 0 33.3333%;
+      width: 33.3333%;
+      height: auto;
+      aspect-ratio: 2 / 5;
+    }
   }
   @media (max-width: 560px) {
-    .jersey-row { grid-template-columns: repeat(2, 1fr); }
+    .jersey-strip__img {
+      flex: 0 0 50%;
+      width: 50%;
+    }
   }
 
   /* ─── Section 09 · Applications grid + hover preview ─────────────
@@ -1139,17 +1154,17 @@
         <img class="media__img" src="/ASSETS/IMAGES/SDFC/laptop.jpg" alt="SDFC rebrand web homepage shown on a laptop held up against a bright sky" style="object-fit: cover; transform: scale(1.2); transform-origin: center center;" />
       </figure>
 
-      <!-- Row 5: six kits in a single tall-portrait row (home front/back,
-           away front/back, third front/back). Mobile stacks to 3-col
-           then 2-col so the cells never shrink below legibility. -->
-      <div class="jersey-row">
-        <figure class="media jersey-cell"><img class="media__img" src="/ASSETS/IMAGES/SDFC/jersey-01.jpg" alt="SDFC home kit — teal front with DIRECTV sponsor" /></figure>
-        <figure class="media jersey-cell"><img class="media__img" src="/ASSETS/IMAGES/SDFC/jersey-02.jpg" alt="SDFC home kit — teal back with GOMEZ 7" /></figure>
-        <figure class="media jersey-cell"><img class="media__img" src="/ASSETS/IMAGES/SDFC/jersey-03.jpg" alt="SDFC away kit — teal and black camo front with DIRECTV sponsor" /></figure>
-        <figure class="media jersey-cell"><img class="media__img" src="/ASSETS/IMAGES/SDFC/jersey-04.jpg" alt="SDFC away kit — teal and black camo back with GOMEZ 7" /></figure>
-        <figure class="media jersey-cell"><img class="media__img" src="/ASSETS/IMAGES/SDFC/jersey-05.jpg" alt="SDFC third kit — deep teal front with DIRECTV sponsor" /></figure>
-        <figure class="media jersey-cell"><img class="media__img" src="/ASSETS/IMAGES/SDFC/jersey-06.jpg" alt="SDFC third kit — deep teal back with GOMEZ 7" /></figure>
-      </div>
+      <!-- Row 5: all six kit renders in a single black cell so there are
+           no white lines between jerseys. Internal flex lays them out in
+           one strip (desktop); wraps to 3- then 2-wide on smaller screens. -->
+      <figure class="media jersey-strip">
+        <img class="jersey-strip__img" src="/ASSETS/IMAGES/SDFC/jersey-01.jpg" alt="SDFC home kit — teal front with DIRECTV sponsor" />
+        <img class="jersey-strip__img" src="/ASSETS/IMAGES/SDFC/jersey-02.jpg" alt="SDFC home kit — teal back with GOMEZ 7" />
+        <img class="jersey-strip__img" src="/ASSETS/IMAGES/SDFC/jersey-03.jpg" alt="SDFC away kit — teal and black camo front with DIRECTV sponsor" />
+        <img class="jersey-strip__img" src="/ASSETS/IMAGES/SDFC/jersey-04.jpg" alt="SDFC away kit — teal and black camo back with GOMEZ 7" />
+        <img class="jersey-strip__img" src="/ASSETS/IMAGES/SDFC/jersey-05.jpg" alt="SDFC third kit — deep teal front with DIRECTV sponsor" />
+        <img class="jersey-strip__img" src="/ASSETS/IMAGES/SDFC/jersey-06.jpg" alt="SDFC third kit — deep teal back with GOMEZ 7" />
+      </figure>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
@@ -1180,7 +1195,7 @@
 
       <div class="section-media__posters">
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-01.jpg" alt="Soul Tide 2025 — asset 01" loading="lazy" decoding="async" /></figure>
-        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-02.jpg" alt="Soul Tide 2025 — asset 02" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-02.jpg" alt="Soul Tide 2025 — asset 02" loading="lazy" decoding="async" style="object-fit: cover; transform: scale(1.15) translateX(-7.5%); transform-origin: center center;" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-03.jpg" alt="Soul Tide 2025 — asset 03" loading="lazy" decoding="async" /></figure>
       </div>
 
@@ -1199,7 +1214,7 @@
       </figure>
 
       <div class="section-media__posters">
-        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-07.jpg" alt="Soul Tide 2025 — asset 07" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-07.jpg" alt="Soul Tide 2025 — asset 07" loading="lazy" decoding="async" style="object-fit: cover; object-position: left center;" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-08.jpg" alt="Soul Tide 2025 — asset 08" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-09.jpg" alt="Soul Tide 2025 — asset 09" loading="lazy" decoding="async" /></figure>
       </div>
@@ -1209,7 +1224,7 @@
       </figure>
 
       <div class="section-media__posters">
-        <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" /></figure>
+        <figure class="media media--square" style="overflow: hidden;"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-10.jpg" alt="Soul Tide 2025 — asset 10" loading="lazy" decoding="async" style="object-fit: cover; object-position: center bottom; transform: scale(1.15); transform-origin: center bottom;" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-11.jpg" alt="Soul Tide 2025 — asset 11" loading="lazy" decoding="async" /></figure>
         <figure class="media media--square"><img class="media__img" src="/ASSETS/IMAGES/SDFC/SOUL%20TIDE/web/soultide-12.jpg" alt="Soul Tide 2025 — asset 12" loading="lazy" decoding="async" /></figure>
       </div>
