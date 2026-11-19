@@ -31,9 +31,11 @@
   .work--unesco       .work__media { view-transition-name: unesco-hero; }
   .work--ecclesiastes .work__media { view-transition-name: ecclesiastes-hero; }
   .work--memoirs      .work__media { view-transition-name: memoirs-hero; }
+  .work--sdfc         .work__media { view-transition-name: sdfc-hero; }
   ::view-transition-group(unesco-hero),
   ::view-transition-group(ecclesiastes-hero),
-  ::view-transition-group(memoirs-hero) {
+  ::view-transition-group(memoirs-hero),
+  ::view-transition-group(sdfc-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
@@ -687,9 +689,9 @@
     </h2>
 
     <!-- 3. SAN DIEGO FOOTBALL CLUB ─ single cover -->
-    <a class="work" href="#">
+    <a class="work work--sdfc" href="/sdfc/">
       <div class="work__media">
-        <img class="work__cover-img" src="/ASSETS/IMAGES/POSTER_MOCKUP.jpg" alt="San Diego Football Club cover" decoding="async" loading="lazy" />
+        <img class="work__cover-img" src="/ASSETS/IMAGES/SDFC/cell.jpg" alt="San Diego Football Club Soul Tide 2025 campaign merchandise flat lay" decoding="async" loading="lazy" />
       </div>
       <div class="work__meta">
         <h2 class="work__title">San Diego Football Club</h2>

@@ -26,9 +26,11 @@
   .cell--unesco       { view-transition-name: unesco-hero; }
   .cell--ecclesiastes { view-transition-name: ecclesiastes-hero; }
   .cell--memoirs      { view-transition-name: memoirs-hero; }
+  .cell--sdfc         { view-transition-name: sdfc-hero; }
   ::view-transition-group(unesco-hero),
   ::view-transition-group(ecclesiastes-hero),
-  ::view-transition-group(memoirs-hero) {
+  ::view-transition-group(memoirs-hero),
+  ::view-transition-group(sdfc-hero) {
     animation-duration: 620ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
@@ -408,8 +410,8 @@
       </a>
 
       <!-- 3. SAN DIEGO FOOTBALL CLUB -->
-      <a class="cell" href="#">
-        <img class="cell__cover-img" src="/ASSETS/IMAGES/POSTER_MOCKUP.jpg" alt="San Diego F.C. cover" decoding="async" loading="lazy" />
+      <a class="cell cell--sdfc" href="/sdfc/">
+        <img class="cell__cover-img" src="/ASSETS/IMAGES/SDFC/cell.jpg" alt="San Diego Football Club Soul Tide 2025 campaign merchandise flat lay" decoding="async" loading="lazy" />
         <div class="cell-tags"><strong>SAN DIEGO F.C.</strong> BRANDING &amp; MOTION</div>
         <div class="cell__view">VIEW CASE</div>
       </a>
