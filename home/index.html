@@ -585,7 +585,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem clamp(0.75rem, 3vw, 1.25rem);
+    /* Asymmetric horizontal padding (20% / 0) with justify-center
+       shifts the centered text ~10% of the banner width to the right,
+       the optical-alignment nudge requested. */
+    padding: 0.5rem 0 0.5rem 20%;
     /* Pure rectangle — no rounding. Edge-to-edge horizontally,
        flush with the header above so they read as one unit. */
     border-radius: 0;
@@ -635,7 +638,7 @@
 
   <!-- Mobile identity tag — rendered once; JS toggles data-active + swaps text. -->
   <div class="home-tag" data-active="false" aria-live="polite">
-    <span class="home-tag__text">David Gomez | Graphic Designer</span>
+    <span class="home-tag__text">David Gomez. Graphic Designer.</span>
   </div>
 
   <header class="site-header">
@@ -970,27 +973,47 @@
     if (!tag) return;
     var textEl = tag.querySelector('.home-tag__text');
 
-    /* Anchor: the UNESCO cell (first .work on the home page). The
-       banner reveals once that cell is at least 50% visible and
-       retracts once less than 50% is on screen again. */
+    /* Reveal rule (latched): the banner first appears once the UNESCO
+       cell is ≥50% in view; from then on it stays visible until the
+       page is scrolled back near the very top, at which point it fades
+       out again. So scrolling past UNESCO back down into the footer
+       keeps the banner on. */
     var anchor = document.querySelector('.work--unesco');
     if (!anchor) return;
+
+    var latched = false;
+    var TOP_HIDE = 80;   // px from top of document — below this it hides
+
+    function setActive(on) {
+      tag.setAttribute('data-active', on ? 'true' : 'false');
+    }
+
+    function onScroll() {
+      if (latched && window.scrollY <= TOP_HIDE) {
+        latched = false;
+        setActive(false);
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          var reveal = e.isIntersecting && e.intersectionRatio >= 0.5;
-          tag.setAttribute('data-active', reveal ? 'true' : 'false');
+          if (!latched && e.isIntersecting && e.intersectionRatio >= 0.5) {
+            latched = true;
+            setActive(true);
+          }
         });
       }, { threshold: [0, 0.5, 1] });
       io.observe(anchor);
     }
 
     var messages = [
-      'David Gomez | Graphic Designer',
-      'Dede is pronounced day-day',
-      'David Gomez | Diseñador Gráfico'
+      'David Gomez. Graphic Designer.',
+      'Dede is pronounced day-day.',
+      'David Gomez. Diseñador Gráfico.'
     ];
+    textEl.textContent = messages[0];
     var idx = 0;
     setInterval(function () {
       idx = (idx + 1) % messages.length;
@@ -999,7 +1022,7 @@
         textEl.textContent = messages[idx];
         tag.classList.remove('is-swapping');
       }, 240);
-    }, 7000);
+    }, 12000);
   })();
   </script>
 </body>
