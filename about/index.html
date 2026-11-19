@@ -16,13 +16,9 @@
 <link rel="stylesheet" href="/site-bg.css" />
 <link rel="stylesheet" href="/site-mobile.css" />
 <style>
-  /* Per-page cursor — overrides theme.css site-wide default. */
-
   /* ─── Page layout tokens (same system as the case-study pages) ─── */
   :root {
     --page-x:    clamp(10px, 1.25vw, 20px);
-    /* About section top padding (clearance under header) reduced 50%:
-       was clamp(6rem, 14vh, 10rem). Same on mobile via the shared token. */
     --stack-top: clamp(3rem, 7vh, 5rem);
     --stack-y:   clamp(4rem, 8vh, 6rem);
   }
@@ -42,42 +38,38 @@
   a, button, [role="button"] { cursor: var(--cursor-url) 12 12, pointer; }
 
   /* ═══════════════════════════════════════════════════════════════════
-     COMBINED PROFILE + CONTACT — 3-column grid, respecting the same
-     column system used across the site. About Me lives in column 1;
-     Contact Me + Resume stack in columns 2–3. Mobile collapses to a
-     single stacked column.
+     PROFILE + CONTACT + RÉSUMÉ
+     Top band: headshot (col 1) + stacked (about → contact) (col 2–3).
+     Below that: résumé takes the full page width so every row has room
+     to breathe without the earlier narrow right-column squeeze.
      ═══════════════════════════════════════════════════════════════════ */
   .profile-contact {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--stack-y) calc(var(--page-x) * 2);
-    /* Comfortable editorial breathing room above the intro paragraph,
-       scaling with viewport height. Tighter than the old --stack-top
-       (which felt cavernous) but no longer flush to the header rule. */
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-y);
     padding: clamp(2.5rem, 5vh, 4rem) var(--page-x) var(--stack-y);
     box-sizing: border-box;
   }
-  /* Flatten the two column containers so their children render as
-     direct grid items. This lets the headshot and the resume share
-     a row — Resume title top-aligns with the top of the image. */
-  .profile-contact__about,
-  .profile-contact__right { display: contents; }
+  .profile-contact__top {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--stack-y) calc(var(--page-x) * 2);
+    align-items: start;
+  }
+  /* Right-side text column stacks About above Contact so Contact
+     sits in the space the résumé used to occupy. */
+  .profile-contact__text-column {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 4vh, 3rem);
+  }
 
-  /* Layout: image top-left, about top-right, contact bottom-left,
-     resume bottom-right. */
-  .profile-contact__headshot   { grid-column: 1;      grid-row: 1; }
-  .profile-contact__about-text { grid-column: 2 / -1; grid-row: 1; }
-  .profile-contact__contact    { grid-column: 1;      grid-row: 2; }
-  .resume                      { grid-column: 2 / -1; grid-row: 2; align-self: start; }
-
-  /* Headshot — full image visible (not cropped). Sizes to the image's
-     natural aspect, aligned to the top of the row so no empty space
-     is painted beneath when the sibling (resume) is taller. */
+  /* Headshot — natural aspect, cell rounded. */
   .profile-contact__headshot {
     margin: 0;
     align-self: start;
     overflow: hidden;
-    border-radius: 0;
+    border-radius: clamp(4px, 0.4vw, 8px);
     background: transparent;
   }
   .profile-contact__headshot img {
@@ -88,26 +80,14 @@
   }
 
   @media (max-width: 900px) {
-    /* Flatten the two containers so their children stack as one
-       single column, then reorder on mobile: headshot → about →
-       contact → resume. */
-    .profile-contact {
-      display: flex;
-      flex-direction: column;
-      gap: var(--stack-y);
+    /* Mobile stack order: headshot → about → contact → résumé. */
+    .profile-contact__top {
+      grid-template-columns: 1fr;
+      gap: clamp(2.5rem, 5vh, 4rem);
     }
-    .profile-contact__about,
-    .profile-contact__right { display: contents; }
-    .profile-contact__headshot   { order: 1; }
-    .profile-contact__about-text { order: 2; }
-    .profile-contact__contact    { order: 3; }
-    .resume                      { order: 4; }
   }
 
-  /* ─── Section titles ("ABOUT", "CONTACT", "RESUME") ───────────────
-     One typography for all three section heads: bold Oracle 700,
-     uppercase, no tracking flourish, full --fg colour. The three
-     titles must read as a matched set. */
+  /* ─── Section titles ("ABOUT", "CONTACT", "RÉSUMÉ") ───────────────── */
   .profile-contact__label,
   .resume .profile-contact__label {
     margin: 0 0 clamp(1rem, 2vh, 1.5rem);
@@ -121,11 +101,8 @@
     color: var(--fg);
   }
 
-  /* ─── Body copy — About Me + Contact Me share typography:
-     regular weight (400), tracking at -0.025em (user's requested
-     "25% tighter than default 0% tracking"), comfortable reading
-     size that works inside the narrow left column. */
-  .profile-contact__about p,
+  /* ─── Body copy — About + Contact share the same editorial read. */
+  .profile-contact__about-text p,
   .profile-contact__contact p {
     margin: 0 0 1.25em;
     font-family: "ABC Oracle",
@@ -137,10 +114,9 @@
     color: var(--fg);
     text-wrap: pretty;
   }
-  .profile-contact__about p:last-child,
+  .profile-contact__about-text p:last-child,
   .profile-contact__contact p:last-child { margin-bottom: 0; }
 
-  /* Inline links keep the quiet-to-accent treatment used elsewhere. */
   .profile-contact__contact a {
     color: inherit;
     text-decoration: none;
@@ -155,7 +131,7 @@
       0 0 0.4em rgba(var(--accent-rgb), 0.18);
   }
 
-  /* 4-block sequential reveal — About, Contact, Headshot, Resume
+  /* 4-block sequential reveal — About, Contact, Headshot, Résumé
      each fade + rise as a unit, one after another on page load. */
   .reveal-block {
     opacity: 0;
@@ -168,22 +144,18 @@
     opacity: 1;
     transform: translateY(0);
   }
-
   @media (prefers-reduced-motion: reduce) {
     .reveal-block { opacity: 1; transform: none; transition: none; }
   }
 
-  /* ─── Resume / info block ───────────────────────────────────────
-     Same visual language as before (1:2:4 column ratio, hairlines,
-     monospace-feeling layout) but living inside the right column
-     of this combined page. Padding reduced since the surrounding
-     grid already provides edge gutter. */
+  /* ─── Résumé / info block — now full page width so each 3-col row
+     has comfortable room; same visual language as before. */
   .resume {
     color: var(--fg);
     font-family: "ABC Oracle",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-size: clamp(0.72rem, 0.85vw, 0.95rem);
+    font-size: clamp(0.78rem, 0.9vw, 1rem);
     line-height: 1.5;
     letter-spacing: 0;
     box-sizing: border-box;
@@ -192,8 +164,6 @@
   }
   .resume__contact {
     display: grid;
-    /* Column 1 doubled (was 1fr) so the name + title read on fewer
-       lines; column 3 narrowed slightly to give column 1 the room. */
     grid-template-columns: 2fr 2fr 3fr;
     gap: clamp(1rem, 2vw, 2.5rem);
     padding: 0 0 clamp(2rem, 4vh, 3rem);
@@ -205,7 +175,6 @@
     gap: clamp(1rem, 2vw, 2.5rem);
     padding: clamp(1rem, 2vh, 1.5rem) 0;
   }
-  /* Download PDF link — small tracked button in resume row 1 col 3. */
   .resume__download {
     align-self: start;
     font-size: 0.72rem;
@@ -253,10 +222,9 @@
       0 0 0.4em rgba(var(--accent-rgb), 0.18);
   }
 
-  /* Mobile — resume collapses to single column (3-across is too
-     tight at phone widths). About + contact simply stack above. */
+  /* Mobile — résumé rows collapse to single column. */
   @media (max-width: 640px) {
-    .resume { font-size: 0.78rem; }
+    .resume { font-size: 0.82rem; }
     .resume__contact,
     .resume__row {
       grid-template-columns: 1fr;
@@ -293,195 +261,195 @@
   <script src="/site-header.js" defer></script>
   <script src="/site-bg.js" defer></script>
 
-  <!-- ══════════════════════ COMBINED PROFILE + CONTACT ══════════════════════ -->
-  <section class="profile-contact" aria-label="Profile and Contact">
+  <!-- ══════════════════════ PROFILE + CONTACT + RÉSUMÉ ══════════════════════ -->
+  <section class="profile-contact" aria-label="Profile, Contact and Résumé">
 
-    <!-- ─── Column 1: About Me (text block) + Headshot (separate block) ── -->
-    <div class="profile-contact__about">
-      <div class="profile-contact__about-text reveal-block">
-        <p class="profile-contact__label">About</p>
-        <p>I did not speak until I was six years old. My first attempts were simple: &ldquo;Day... Day...&rdquo; My mother writes it as &ldquo;Dede.&rdquo;</p>
-        <p>Before words, I communicated with my hands, and this has never left me. Today, I think, feel, and tell stories through creating work that exists between both the digital and the analog. I trace connections between people, places, and ideas the way a child might trace lines in the sand, until their own world begins to emerge.</p>
-        <p>I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today a day where you and I create something meaningful.</p>
-      </div>
+    <!-- Top band: headshot (col 1) + stacked about/contact (col 2–3) -->
+    <div class="profile-contact__top">
       <figure class="profile-contact__headshot reveal-block">
         <img src="/ASSETS/IMAGES/headshot.jpg" alt="Portrait of David Gomez" />
       </figure>
+
+      <div class="profile-contact__text-column">
+        <div class="profile-contact__about-text reveal-block">
+          <p class="profile-contact__label">About</p>
+          <p>I did not speak until I was six years old. My first attempts were simple: &ldquo;Day... Day...&rdquo; My mother writes it as &ldquo;Dede.&rdquo;</p>
+          <p>Before words, I communicated with my hands, and this has never left me. Today, I think, feel, and tell stories through creating work that exists between both the digital and the analog. I trace connections between people, places, and ideas the way a child might trace lines in the sand, until their own world begins to emerge.</p>
+          <p>I am David Gomez. In closer company, I am Dede. It&rsquo;s good to meet you. Let&rsquo;s make today a day where you and I create something meaningful.</p>
+        </div>
+
+        <div class="profile-contact__contact reveal-block">
+          <p class="profile-contact__label">Contact</p>
+          <p>Let&rsquo;s get to work!</p>
+          <p><a href="mailto:hello@iamdede.com">hello@iamdede.com</a></p>
+        </div>
+      </div>
     </div>
 
-    <!-- ─── Column 2 + 3: Contact Me block (top) and Resume block (below) ── -->
-    <div class="profile-contact__right">
+    <!-- Full-width résumé band below the top row -->
+    <section class="resume reveal-block" aria-label="Résumé">
+      <p class="profile-contact__label">Résumé</p>
 
-      <div class="profile-contact__contact reveal-block">
-        <p class="profile-contact__label">Contact</p>
-        <p>Let&rsquo;s get to work!</p>
-        <p><a href="mailto:hello@iamdede.com">hello@iamdede.com</a></p>
+      <div class="resume__contact">
+        <div>
+          <strong>David A. Gomez Grillo</strong>
+          <span>Graphic Designer | Diseñador Gráfico</span>
+        </div>
+        <div class="resume__desc">
+          <a href="tel:+16614357379">+1 661 435 7379</a><br>
+          <a href="mailto:hello@iamdede.com">hello@iamdede.com</a><br>
+          <a href="https://iamdede.com">iamdede.com</a>
+        </div>
+        <div>
+          <a class="resume__download"
+             href="/ASSETS/IMAGES/RESUME/DAVID%20GOMEZ_FINAL%20RESUME.pdf"
+             download="David-Gomez_Resume.pdf">Download PDF</a>
+        </div>
       </div>
 
-      <section class="resume reveal-block" aria-label="Resume">
-        <p class="profile-contact__label">Resume</p>
-        <div class="resume__contact">
-          <div>
-            <strong>David A. Gomez Grillo</strong>
-            <span>Graphic Designer | Diseñador Gráfico</span>
-          </div>
-          <div class="resume__desc">
-            <a href="tel:+16614357379">+1 661 435 7379</a><br>
-            <a href="mailto:hello@iamdede.com">hello@iamdede.com</a><br>
-            <a href="https://iamdede.com">iamdede.com</a>
-          </div>
-          <div>
-            <a class="resume__download"
-               href="/ASSETS/IMAGES/DAVID%20GOMEZ_WEEK%2009_RESUME.pdf"
-               download="David-Gomez_Resume.pdf">Download PDF</a>
-          </div>
+      <div class="resume__row resume__row--start">
+        <div class="resume__section">Education</div>
+        <div class="resume__meta">
+          <strong>ArtCenter College of Design</strong>
+          <span>09.2023–12.2026</span>
+          <span>Pasadena, CA</span>
         </div>
-
-        <div class="resume__row resume__row--start">
-          <div class="resume__section">Education</div>
-          <div class="resume__meta">
-            <strong>ArtCenter College of Design</strong>
-            <span>09.2023–12.2026</span>
-            <span>Pasadena, CA</span>
-          </div>
-          <div class="resume__desc">
-            BFA in Graphic Design with Honors — Specialization in Identity Systems, and Packaging Design
-          </div>
+        <div class="resume__desc">
+          BFA in Graphic Design with Honors — Specialization in Identity Systems, and Packaging Design
         </div>
+      </div>
 
-        <div class="resume__row">
-          <div class="resume__section"></div>
-          <div class="resume__meta">
-            <strong>Antelope Valley College</strong>
-            <span>09.2019–05.2023</span>
-            <span>Lancaster, CA</span>
-          </div>
-          <div class="resume__desc">
-            AA in Graphic Design<br>
-            AA in Art History
-          </div>
+      <div class="resume__row">
+        <div class="resume__section"></div>
+        <div class="resume__meta">
+          <strong>Antelope Valley College</strong>
+          <span>09.2019–05.2023</span>
+          <span>Lancaster, CA</span>
         </div>
-
-        <div class="resume__row resume__row--start">
-          <div class="resume__section">Experience</div>
-          <div class="resume__meta">
-            <strong>Co-Owner</strong>
-            <span>BLLCRW.</span>
-            <span>04.2020–Present</span>
-            <span>Los Angeles, CA</span>
-          </div>
-          <div class="resume__desc">
-            Currently directing the creative vision for BLLCRW., leading apparel design, overseas supplier partnerships, and brand strategy. Developing collections from concept all the way through production while maintaining a cohesive identity across products, campaigns and brand communications.
-          </div>
+        <div class="resume__desc">
+          AA in Graphic Design<br>
+          AA in Art History
         </div>
+      </div>
 
-        <div class="resume__row">
-          <div class="resume__section"></div>
-          <div class="resume__meta">
-            <strong>Creative Design Intern</strong>
-            <span>Hulu (The Walt Disney Co.)</span>
-            <span>06.2025–01.2026</span>
-            <span>Santa Monica, CA</span>
-          </div>
-          <div class="resume__desc">
-            Assisted in the development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all their touchpoints, which included refreshing campaign assets, creating presentation decks, designing brand merchandise, and designing references for both Hulu&rsquo;s original programming, and its overarching brand.
-          </div>
+      <div class="resume__row resume__row--start">
+        <div class="resume__section">Experience</div>
+        <div class="resume__meta">
+          <strong>Co-Owner</strong>
+          <span>BLLCRW.</span>
+          <span>04.2020–Present</span>
+          <span>Los Angeles, CA</span>
         </div>
-
-        <div class="resume__row">
-          <div class="resume__section"></div>
-          <div class="resume__meta">
-            <strong>Freelance Designer</strong>
-            <span>Adobe Inc.</span>
-            <span>09.2025–12.2025</span>
-            <span>Los Angeles, CA</span>
-          </div>
-          <div class="resume__desc">
-            Contracted to produce videos showcasing the debut of a new mobile video app from Adobe, with original content. Collaborated with, and learned from Luis Callegari, current Creative Director for EA Sports.
-          </div>
+        <div class="resume__desc">
+          Currently directing the creative vision for BLLCRW., leading apparel design, overseas supplier partnerships, and brand strategy. Developing collections from concept all the way through production while maintaining a cohesive identity across products, campaigns and brand communications.
         </div>
+      </div>
 
-        <div class="resume__row">
-          <div class="resume__section"></div>
-          <div class="resume__meta">
-            <strong>Graphic Designer</strong>
-            <span>Humanities and Sciences Department</span>
-            <span>ArtCenter College of Design</span>
-            <span>01.2025–12.2025</span>
-            <span>Pasadena, CA</span>
-          </div>
-          <div class="resume__desc">
-            Designed print and digital communications for ArtCenter&rsquo;s Humanities and Sciences Department, including posters, infographics, signage, pamphlets, curriculum maps, and student-facing guides. Collaborated with multiple department leaders to develop clear, engaging materials that supported academic programs, and student success.
-          </div>
+      <div class="resume__row">
+        <div class="resume__section"></div>
+        <div class="resume__meta">
+          <strong>Creative Design Intern</strong>
+          <span>Hulu (The Walt Disney Co.)</span>
+          <span>06.2025–01.2026</span>
+          <span>Santa Monica, CA</span>
         </div>
-
-        <div class="resume__row resume__row--start">
-          <div class="resume__section">Scholarships</div>
-          <div class="resume__meta">
-            <strong>ArtCenter College of Design</strong>
-            <span>Pasadena, CA</span>
-          </div>
-          <div class="resume__desc">
-            Honda Endowed Scholarship (09.2025–12.2026)<br>
-            M.A. Larsen Endowed Scholarship (09.2025–12.2026)<br>
-            Martha Chandler Scholarship (09.2025–12.2026)<br>
-            Siras Greiner Memorial Endowed Scholarship (09.2025–05.2026)<br>
-            UG Diversity Scholarship (09.2024–12.2026)<br>
-            Transfer Student Scholarship (09.2024–12.2026)
-          </div>
+        <div class="resume__desc">
+          Assisted in the development of Hulu&rsquo;s evolving brand identity while maintaining a cohesive design language across all their touchpoints, which included refreshing campaign assets, creating presentation decks, designing brand merchandise, and designing references for both Hulu&rsquo;s original programming, and its overarching brand.
         </div>
+      </div>
 
-        <div class="resume__row">
-          <div class="resume__section"></div>
-          <div class="resume__meta">
-            <strong>The Ebell Scholarship Program</strong>
-            <span>Los Angeles, CA</span>
-          </div>
-          <div class="resume__desc">
-            Ebell/Flint Scholarship (05.2025–12.2026)
-          </div>
+      <div class="resume__row">
+        <div class="resume__section"></div>
+        <div class="resume__meta">
+          <strong>Freelance Designer</strong>
+          <span>Adobe Inc.</span>
+          <span>09.2025–12.2025</span>
+          <span>Los Angeles, CA</span>
         </div>
-
-        <div class="resume__row resume__row--start">
-          <div class="resume__section">Expertise</div>
-          <div class="resume__meta">
-            <strong>Proficient In</strong>
-          </div>
-          <div class="resume__desc">
-            Illustrator, After Effects, Photoshop, InDesign, Premiere Pro, Lightroom, Media Encoder, Bridge, Acrobat, Procreate, MadMapper, Claude Code, Keynote, Microsoft PowerPoint, Google Workspace, Weavy, Krea.
-          </div>
+        <div class="resume__desc">
+          Contracted to produce videos showcasing the debut of a new mobile video app from Adobe, with original content. Collaborated with, and learned from Luis Callegari, current Creative Director for EA Sports.
         </div>
+      </div>
 
-        <div class="resume__row">
-          <div class="resume__section"></div>
-          <div class="resume__meta">
-            <strong>Familiar With</strong>
-          </div>
-          <div class="resume__desc">
-            SolidWorks, KeyShot, Adobe Neo, Visual Studio Code, Figma, Cinema 4D, Redshift.
-          </div>
+      <div class="resume__row">
+        <div class="resume__section"></div>
+        <div class="resume__meta">
+          <strong>Graphic Designer</strong>
+          <span>Humanities and Sciences Department</span>
+          <span>ArtCenter College of Design</span>
+          <span>01.2025–12.2025</span>
+          <span>Pasadena, CA</span>
         </div>
-
-        <div class="resume__row">
-          <div class="resume__section"></div>
-          <div class="resume__meta">
-            <strong>Abilities</strong>
-          </div>
-          <div class="resume__desc">
-            Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial and Print, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packs, Product Development, Storytelling, Rapid Prototyping, Handcrafting, Leatherwork.
-          </div>
+        <div class="resume__desc">
+          Designed print and digital communications for ArtCenter&rsquo;s Humanities and Sciences Department, including posters, infographics, signage, pamphlets, curriculum maps, and student-facing guides. Collaborated with multiple department leaders to develop clear, engaging materials that supported academic programs, and student success.
         </div>
+      </div>
 
-        <div class="resume__row resume__row--start">
-          <div class="resume__section">Languages</div>
-          <div class="resume__meta"></div>
-          <div class="resume__desc">
-            Fluent in Spanish and English.
-          </div>
+      <div class="resume__row resume__row--start">
+        <div class="resume__section">Scholarships</div>
+        <div class="resume__meta">
+          <strong>ArtCenter College of Design</strong>
+          <span>Pasadena, CA</span>
         </div>
-      </section>
+        <div class="resume__desc">
+          Honda Endowed Scholarship (09.2025–12.2026)<br>
+          M.A. Larsen Endowed Scholarship (09.2025–12.2026)<br>
+          Martha Chandler Scholarship (09.2025–12.2026)<br>
+          Siras Greiner Memorial Endowed Scholarship (09.2025–05.2026)<br>
+          UG Diversity Scholarship (09.2024–12.2026)<br>
+          Transfer Student Scholarship (09.2024–12.2026)
+        </div>
+      </div>
 
-    </div>
+      <div class="resume__row">
+        <div class="resume__section"></div>
+        <div class="resume__meta">
+          <strong>The Ebell Scholarship Program</strong>
+          <span>Los Angeles, CA</span>
+        </div>
+        <div class="resume__desc">
+          Ebell/Flint Scholarship (05.2025–12.2026)
+        </div>
+      </div>
+
+      <div class="resume__row resume__row--start">
+        <div class="resume__section">Expertise</div>
+        <div class="resume__meta">
+          <strong>Proficient In</strong>
+        </div>
+        <div class="resume__desc">
+          Illustrator, After Effects, Photoshop, InDesign, Premiere Pro, Lightroom, Media Encoder, Bridge, Acrobat, Procreate, MadMapper, Claude Code, Keynote, Microsoft PowerPoint, Google Workspace, Weavy, Krea.
+        </div>
+      </div>
+
+      <div class="resume__row">
+        <div class="resume__section"></div>
+        <div class="resume__meta">
+          <strong>Familiar With</strong>
+        </div>
+        <div class="resume__desc">
+          SolidWorks, KeyShot, Neo, Visual Studio Code, Figma, Cinema 4D, Redshift.
+        </div>
+      </div>
+
+      <div class="resume__row">
+        <div class="resume__section"></div>
+        <div class="resume__meta">
+          <strong>Abilities</strong>
+        </div>
+        <div class="resume__desc">
+          Art Direction, Identity Systems, Packaging Design, Experiential Design, Editorial and Print, Illustration, Motion Design, Creative Coding, Projection Mapping, Tech Packs, Product Development, Storytelling, Rapid Prototyping, Handcrafting, Leatherwork.
+        </div>
+      </div>
+
+      <div class="resume__row resume__row--start">
+        <div class="resume__section">Languages</div>
+        <div class="resume__meta"></div>
+        <div class="resume__desc">
+          Fluent in Spanish and English.
+        </div>
+      </div>
+    </section>
 
   </section>
 
@@ -505,22 +473,16 @@
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 
   <script>
-  /* 4-block sequential reveal.
-     Reveals in the exact order the user specified:
-       1. About Me (text block)   2. Contact Me
-       3. Profile pic (headshot)  4. Resume
-     Each block fades + rises as a unit, 500ms apart. On reduced-motion
-     the blocks are made visible immediately. */
+  /* Sequential reveal of the four blocks, in order:
+     1. Headshot   2. About   3. Contact   4. Résumé  */
   (function () {
     'use strict';
-
     var sequence = [
+      '.profile-contact__headshot',
       '.profile-contact__about-text',
       '.profile-contact__contact',
-      '.profile-contact__headshot',
       '.resume'
     ];
-
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       sequence.forEach(function (sel) {
         var el = document.querySelector(sel);
@@ -528,9 +490,8 @@
       });
       return;
     }
-
-    var START_MS  = 200;   // small lead-in so the first block doesn't fire mid-paint
-    var STEP_MS   = 500;   // gap between each block's reveal
+    var START_MS = 200;
+    var STEP_MS  = 500;
     sequence.forEach(function (sel, i) {
       var el = document.querySelector(sel);
       if (!el) return;
