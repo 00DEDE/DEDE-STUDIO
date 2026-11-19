@@ -340,6 +340,10 @@
   .slide-wall__layer--teal      { background: #00beb4; }
   .slide-wall__layer--teal-dark { background: #008c82; }
   .slide-wall__layer--black     { background: #000000; }
+  /* Photographic slide fills the frame edge-to-edge (cover), since the
+     source is already cropped 16:9 around the subject, so cover won't
+     crop it further — just guarantees no sliver of cell bg shows. */
+  .slide-wall__layer--photo     { object-fit: cover; background: #0b1f1d; }
   .slide-wall__layer.is-active {
     animation: slideWallIn 900ms cubic-bezier(.65, 0, .35, 1) both;
   }
@@ -810,8 +814,9 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <figure class="media slide-wall breakdown-slides" aria-label="SDFC rebrand logo lockups">
+      <figure class="media slide-wall breakdown-slides" aria-label="SDFC rebrand logo lockups and cormorant reference">
         <img class="media__img slide-wall__layer slide-wall__layer--teal is-active" src="/ASSETS/IMAGES/SDFC/SDFC_LOGOS-05.png" alt="SDFC rebrand — San Diego Football Club horizontal lockup on teal" />
+        <img class="media__img slide-wall__layer slide-wall__layer--photo" src="/ASSETS/IMAGES/SDFC/cormorant-wings.jpg" alt="Double-crested cormorant drying its outstretched wings on a lakeside post" />
         <img class="media__img slide-wall__layer slide-wall__layer--teal-dark" src="/ASSETS/IMAGES/SDFC/SDFC_LOGOS-06.png" alt="SDFC rebrand — SDFC short lockup on deep teal" />
       </figure>
     </div><!-- /04 section-media -->
@@ -855,9 +860,9 @@
       </button>
       <div class="read-more__panel" id="rm-type">
         <div class="read-more__inner">
-          <p>Radio Grotesk (Regular and Bold) will serve as our &ldquo;workhorses,&rdquo; used for body copy and when our voice is informative, i.e. secondary to tertiary information.</p>
-          <p>Manuka (Medium) Majuscule will serve as our leading typeface, used for both headlines and taglines and when our voice is direct, i.e. primary information.</p>
-          <p>Beast Mode (Regular) Majuscule will serve as our awareness typeface, used specifically with ongoing campaigns and when our voice is most expressive, i.e. posters, print collateral, social.</p>
+          <p>Radio Grotesk (Regular and Bold) serves as the &ldquo;workhorse,&rdquo; used for body copy and when the brand&rsquo;s voice is informative.</p>
+          <p>Manuka (Medium) Majuscule serves as the primary typeface, used for both headlines and taglines and when the brand&rsquo;s voice is direct.</p>
+          <p>Beast Mode (Regular) Majuscule serves as the hero typeface, used specifically with ongoing campaigns and when the brand&rsquo;s voice is most expressive and unruly.</p>
         </div>
       </div>
     </div>
@@ -948,27 +953,31 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
-        </figure>
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
-        </figure>
+      <!-- Row 1: isolated cormorant head close-up (the cormorant's
+           filoplumes were the inspiration for the stroke-only graphic
+           elements the copy describes above). -->
+      <figure class="media" style="aspect-ratio: 2000 / 1353; background: #1a1613;">
+        <img class="media__img" src="/ASSETS/IMAGES/SDFC/cormorant-head.jpg" alt="Double-crested cormorant head close-up — teal-blue eye and wispy filoplumes behind the cheek" style="object-fit: cover;" />
+      </figure>
+
+      <!-- Row 2: 3 campaign posters -->
+      <div class="section-media__posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/poster-01.jpg" alt="SDFC graphic-element campaign poster 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/poster-02.jpg" alt="SDFC graphic-element campaign poster 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/poster-03.jpg" alt="SDFC graphic-element campaign poster 03" /></figure>
       </div>
+
+      <!-- Row 3: 3 social media posts -->
+      <div class="section-media__posters">
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/social-01.jpg" alt="SDFC social media post 01" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/social-02.jpg" alt="SDFC social media post 02" /></figure>
+        <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/SDFC/social-03.jpg" alt="SDFC social media post 03" /></figure>
+      </div>
+
+      <!-- Row 4: isolated web homepage splash -->
+      <figure class="media" style="aspect-ratio: 2000 / 1294; background: #0b1f1d;">
+        <img class="media__img" src="/ASSETS/IMAGES/SDFC/splash-page.jpg" alt="SDFC rebrand web homepage splash" />
+      </figure>
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
@@ -1180,70 +1189,6 @@
             if (!s.row.matches(':hover')) s.paused = false;
           }, 1500);
         }, { passive: false });
-      });
-    })();
-
-    /* Tangible Forms (section 08) — two long cells, each cycling its own stack. */
-    (function () {
-      var cells = document.querySelectorAll('.tangible-forms__cell');
-      if (!cells.length) return;
-      var interval = parseInt(cells[0].getAttribute('data-tangible-interval'), 10) || 5000;
-      var registry = [];
-      cells.forEach(function (cell) {
-        var slides = cell.querySelectorAll('.media__tslide');
-        if (slides.length < 2) return;
-        registry.push({
-          cell: cell,
-          slides: slides,
-          idx: 0,
-          offscreen: true,
-          userHold: false
-        });
-      });
-      if (!registry.length) return;
-
-      function advance(state) {
-        state.slides[state.idx].classList.remove('is-active');
-        state.idx = (state.idx + 1) % state.slides.length;
-        state.slides[state.idx].classList.add('is-active');
-      }
-      setInterval(function () {
-        registry.forEach(function (state) {
-          if (!state.offscreen && !state.userHold) advance(state);
-        });
-      }, interval);
-
-      if ('IntersectionObserver' in window) {
-        registry.forEach(function (state) {
-          var io = new IntersectionObserver(function (entries) {
-            entries.forEach(function (ent) { state.offscreen = !ent.isIntersecting; });
-          }, { threshold: 0.1 });
-          io.observe(state.cell);
-        });
-      } else {
-        registry.forEach(function (state) { state.offscreen = false; });
-      }
-
-      registry.forEach(function (state) {
-        state.cell.addEventListener('click', function (e) {
-          e.stopPropagation();
-          state.userHold = true;
-          state.cell.classList.add('is-user-held');
-        });
-      });
-      document.addEventListener('click', function (e) {
-        registry.forEach(function (state) {
-          if (!state.userHold) return;
-          if (!state.cell.contains(e.target)) {
-            state.userHold = false;
-            state.cell.classList.remove('is-user-held');
-          }
-        });
-      });
-      document.addEventListener('visibilitychange', function () {
-        if (document.hidden) {
-          registry.forEach(function (state) { state.offscreen = true; });
-        }
       });
     })();
 
