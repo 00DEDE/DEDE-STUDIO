@@ -126,8 +126,19 @@
     display: block;
     user-select: none;
     background: #000;
-    pointer-events: none;
-  }
+}
+
+  /* ── spacing + marquee polish */
+  /* Tighter gap between hero and overview so the Overview label peeks
+     into the hero's first viewport, matching the UNESCO page's rhythm. */
+  .happiness__hero.unesco__grid     { padding-bottom: clamp(1rem, 2vh, 1.75rem); }
+  .happiness__overview.unesco__grid { padding-top:    clamp(1rem, 2vh, 1.75rem); }
+
+  /* Subtle rounded corners on every marquee media item (matches the
+     rest of the site's inset image treatment). Full-bleed assets elsewhere
+     stay square via the theme-wide !important override. */
+  .scans__track > img,
+  .scans__track > video { border-radius: clamp(4px, 0.4vw, 8px); }
 </style>
 </head>
 <body class="happiness happiness--hulu">
@@ -356,10 +367,14 @@
   <button class="scroll-top" aria-label="Scroll to top">&uarr;</button>
 
   <script>
-  /* Scans marquee — 4 rows, each loops leftward on its own
-     requestAnimationFrame beat. Hover pauses that row; a horizontal
-     wheel/trackpad scrub drives the offset manually, then auto
-     playback resumes 1.5s after the viewer stops. */
+  /* ── Scans marquee — one rAF loop per row.
+     Pause rule: the pointer must be over a media item (img/video). The
+     gaps between items don't fire, so sitting the cursor between two
+     items keeps the row drifting.
+     Videos autoplay continuously; nothing ever pauses them (hover
+     pauses only the row's horizontal scroll, not the video playback).
+     A horizontal wheel/trackpad scrub drives the offset manually, then
+     auto playback resumes 1.5s after the viewer stops. */
   (function () {
     var rows = document.querySelectorAll('.scans__row');
     if (!rows.length) return;
@@ -368,9 +383,11 @@
         row: row,
         track: row.querySelector('.scans__track'),
         speed: parseFloat(row.getAttribute('data-speed') || '0.5'),
-        offset: 0, halfWidth: 0, paused: false, wheelTO: null
+        offset: 0, halfWidth: 0, paused: false, wheelTO: null,
+        hoverCount: 0
       };
     });
+
     function measure() {
       state.forEach(function (s) {
         s.halfWidth = s.track ? s.track.scrollWidth / 2 : 0;
@@ -384,6 +401,7 @@
       });
     });
     measure();
+
     function tick() {
       state.forEach(function (s) {
         if (!s.halfWidth) return;
@@ -395,11 +413,21 @@
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
+
     state.forEach(function (s) {
-      s.row.addEventListener('mouseenter', function () { s.paused = true; });
-      s.row.addEventListener('mouseleave', function () {
-        if (!s.wheelTO) s.paused = false;
+      if (!s.track) return;
+      var items = s.track.querySelectorAll('img, video');
+      items.forEach(function (el) {
+        el.addEventListener('mouseenter', function () {
+          s.hoverCount++;
+          s.paused = true;
+        });
+        el.addEventListener('mouseleave', function () {
+          s.hoverCount = Math.max(0, s.hoverCount - 1);
+          if (s.hoverCount === 0 && !s.wheelTO) s.paused = false;
+        });
       });
+
       s.row.addEventListener('wheel', function (e) {
         var dy = e.deltaY || 0, dx = e.deltaX || 0;
         if (Math.abs(dx) <= Math.abs(dy)) return;
@@ -409,7 +437,7 @@
         if (s.wheelTO) clearTimeout(s.wheelTO);
         s.wheelTO = setTimeout(function () {
           s.wheelTO = null;
-          if (!s.row.matches(':hover')) s.paused = false;
+          if (s.hoverCount === 0) s.paused = false;
         }, 1500);
       }, { passive: false });
     });
