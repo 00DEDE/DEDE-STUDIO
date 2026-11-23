@@ -441,6 +441,19 @@
      rebrand lockup stills. JS in the page body toggles .is-active on
      one layer at a time; CSS handles the crossfade. */
   .foundations-after { position: relative; }
+  /* Hide Safari's native "autoplay refused" overlay play button
+     (and any other default media chrome) on the after-cell video.
+     We never want controls here — the JS cycle + autoplay drive it. */
+  .foundations-after__video::-webkit-media-controls,
+  .foundations-after__video::-webkit-media-controls-enclosure,
+  .foundations-after__video::-webkit-media-controls-panel,
+  .foundations-after__video::-webkit-media-controls-overlay-play-button,
+  .foundations-after__video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
   .foundations-after__layer {
     position: absolute;
     inset: 0;
@@ -1784,13 +1797,18 @@ z-index: 199;
         /* If Safari still refuses (low-power mode, Energy Saver), the
            first viewer tap/click or pointer-move anywhere on the page
            guarantees a play() in response to a user gesture. */
+        var GESTURE_EVENTS = ['pointerdown', 'pointermove', 'touchstart', 'scroll', 'wheel', 'keydown'];
         function faKickFromGesture() {
           faKick();
-          document.removeEventListener('pointerdown', faKickFromGesture);
-          document.removeEventListener('touchstart',  faKickFromGesture);
+          GESTURE_EVENTS.forEach(function (ev) {
+            document.removeEventListener(ev, faKickFromGesture);
+            window.removeEventListener(ev, faKickFromGesture);
+          });
         }
-        document.addEventListener('pointerdown', faKickFromGesture, { once: true, passive: true });
-        document.addEventListener('touchstart',  faKickFromGesture, { once: true, passive: true });
+        GESTURE_EVENTS.forEach(function (ev) {
+          document.addEventListener(ev, faKickFromGesture, { once: true, passive: true });
+          window.addEventListener(ev, faKickFromGesture, { once: true, passive: true });
+        });
       }
     }
 
