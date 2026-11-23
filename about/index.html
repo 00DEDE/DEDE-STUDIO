@@ -108,9 +108,12 @@
     color: var(--fg);
   }
 
-  /* ─── Body copy — About + Contact share the same editorial read. */
-  .profile-contact__about-text p,
-  .profile-contact__contact p {
+  /* ─── Body copy — About + Contact share the same editorial read.
+     `:not(.profile-contact__label)` exempts the "ABOUT" / "CONTACT"
+     label from this rule so the label's own tighter margin-bottom
+     (above) applies — matching the RESUME label's spacing. */
+  .profile-contact__about-text p:not(.profile-contact__label),
+  .profile-contact__contact p:not(.profile-contact__label) {
     margin: 0 0 1.25em;
     font-family: "ABC Oracle",
                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
@@ -121,8 +124,8 @@
     color: var(--fg);
     text-wrap: pretty;
   }
-  .profile-contact__about-text p:last-child,
-  .profile-contact__contact p:last-child { margin-bottom: 0; }
+  .profile-contact__about-text p:not(.profile-contact__label):last-child,
+  .profile-contact__contact p:not(.profile-contact__label):last-child { margin-bottom: 0; }
 
   .profile-contact__contact a {
     color: inherit;

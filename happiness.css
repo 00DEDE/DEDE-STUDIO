@@ -40,6 +40,13 @@ body.happiness > .site-footer {
      hero's first viewport, matching the UNESCO page's rhythm. */
   padding-bottom: clamp(1rem, 2vh, 1.75rem);
 }
+/* Desktop: pad-top bumped so the header → eyebrow distance on happiness
+   pages matches the SDFC reference. Mobile keeps the tight base above. */
+@media (min-width: 641px) {
+  .happiness__hero.unesco__grid {
+    padding-top: calc(var(--stack-top) + clamp(2.5rem, 4.5vh, 4rem));
+  }
+}
 .happiness__overview.unesco__grid {
   padding-top: clamp(1rem, 2vh, 1.75rem);
 }
