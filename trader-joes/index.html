@@ -501,8 +501,7 @@
       opacity 220ms ease,
       transform 260ms cubic-bezier(.2, 0, .1, 1);
     z-index: 200;
-    background: #0a0a0a;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    background: transparent;
     overflow: hidden;
   }
   .lineup-preview.is-visible {
@@ -520,7 +519,7 @@
      mode the container drops its fixed 3/2 aspect so it shrinks to
      hug the asset's native aspect instead of showing wide white
      margins for portrait or square artwork. */
-  .lineup-preview.is-mode-cover   { background: #0a0a0a; }
+  .lineup-preview.is-mode-cover   { background: transparent; }
   .lineup-preview.is-mode-cover   .lineup-preview__img { object-fit: cover; }
   .lineup-preview.is-mode-contain {
     background: #ffffff;
@@ -557,7 +556,7 @@
   }
   .lineup-scrim {
     position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: transparent;
     -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
     z-index: 199;
@@ -1551,33 +1550,43 @@
       var scrim = document.querySelector('.lineup-scrim');
       if (!previewImg) return;
 
-      function open(img, mode) {
+      /* Tracks the grid + index of the image currently latched in the
+         lightbox so ArrowRight / ArrowLeft advance within the SAME
+         grid (lineup vs deliverables), wrapping at the ends. */
+      var currentImgs = [];
+      var currentIdx  = -1;
+      var currentMode = 'cover';
+
+      function open(img, mode, imgsList, idx) {
         preview.classList.remove('is-mode-cover', 'is-mode-contain');
         preview.classList.add(mode === 'contain' ? 'is-mode-contain' : 'is-mode-cover');
         if (previewImg.src !== img.src) previewImg.src = img.src;
         previewImg.alt = img.alt || '';
         preview.classList.add('is-open', 'is-visible');
         if (scrim) scrim.classList.add('is-open');
+        currentImgs = imgsList;
+        currentIdx  = idx;
+        currentMode = mode;
       }
       function close() {
         preview.classList.remove('is-open', 'is-visible');
         if (scrim) scrim.classList.remove('is-open');
+        currentImgs = [];
+        currentIdx  = -1;
       }
 
       function bind(grid, cellImgSel, mode) {
         if (!grid) return;
-        var imgs = grid.querySelectorAll(cellImgSel);
+        var imgs = Array.prototype.slice.call(grid.querySelectorAll(cellImgSel));
         var hideTimer;
-        imgs.forEach(function (img) {
+        imgs.forEach(function (img, idx) {
           /* Click/tap: open as a dismissable lightbox (works on both
-             desktop and touch — this is the primary gesture per the
-             user's request). */
+             desktop and touch). */
           img.addEventListener('click', function (e) {
             e.preventDefault();
-            open(img, mode);
+            open(img, mode, imgs, idx);
           });
-          /* Desktop hover: preview as a transient pop. Skipped on
-             touch so it never competes with the click lightbox. */
+          /* Desktop hover: transient preview pop. */
           img.addEventListener('pointerenter', function (e) {
             if (e.pointerType === 'touch') return;
             if (preview.classList.contains('is-open')) return;
@@ -1607,11 +1616,22 @@
       bind(document.querySelector('.deliverables-grid'), '.deliverables-cell__img', 'contain');
 
       /* Dismiss the lightbox: tap the preview itself, tap the scrim,
-         or hit Escape. */
+         or hit Escape. Arrow keys navigate within the open grid. */
       preview.addEventListener('click', close);
       if (scrim) scrim.addEventListener('click', close);
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && preview.classList.contains('is-open')) close();
+        if (!preview.classList.contains('is-open')) return;
+        if (e.key === 'Escape') { close(); return; }
+        if (!currentImgs.length) return;
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          var nextIdx = (currentIdx + 1) % currentImgs.length;
+          open(currentImgs[nextIdx], currentMode, currentImgs, nextIdx);
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          var prevIdx = (currentIdx - 1 + currentImgs.length) % currentImgs.length;
+          open(currentImgs[prevIdx], currentMode, currentImgs, prevIdx);
+        }
       });
     })();
 

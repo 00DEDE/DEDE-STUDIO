@@ -1124,8 +1124,7 @@
       opacity 220ms ease,
       transform 260ms cubic-bezier(.2, 0, .1, 1);
     z-index: 200;
-    background: #0a0a0a;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    background: transparent;
     overflow: hidden;
   }
   .lineup-preview.is-visible,
@@ -1145,7 +1144,7 @@
   }
   .lineup-scrim {
     position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: transparent;
     -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
     z-index: 199;
@@ -2854,10 +2853,10 @@
     restart();
   })();
 
-    /* ─── Section 10 Final Deliverable — exact clone of Trader
-       Joe's section 04 lineup-grid preview: hover enlarges a fixed
-       centered preview on desktop; click latches it as a dismissible
-       lightbox on all devices. Dismiss via preview, scrim, or Esc. */
+    /* ─── Section 10 Final Deliverable — Trader-Joe's-style lineup
+       preview: hover enlarges on desktop; click latches lightbox on
+       all devices. While lightbox is open, ArrowRight/ArrowLeft
+       advance through the grid (wraps at ends). */
     (function initFinalDeliverable() {
       var preview = document.querySelector('.lineup-preview');
       if (!preview) return;
@@ -2865,7 +2864,15 @@
       var scrim = document.querySelector('.lineup-scrim');
       if (!previewImg) return;
 
-      function open(img) {
+      var grid = document.querySelector('.lineup-grid');
+      if (!grid) return;
+      var imgs = Array.prototype.slice.call(grid.querySelectorAll('.lineup-cell__img'));
+      var currentIdx = -1;
+
+      function open(idx) {
+        if (idx < 0 || idx >= imgs.length) return;
+        currentIdx = idx;
+        var img = imgs[idx];
         if (previewImg.src !== img.src) previewImg.src = img.src;
         previewImg.alt = img.alt || '';
         preview.classList.add('is-open', 'is-visible');
@@ -2874,16 +2881,14 @@
       function close() {
         preview.classList.remove('is-open', 'is-visible');
         if (scrim) scrim.classList.remove('is-open');
+        currentIdx = -1;
       }
 
-      var grid = document.querySelector('.lineup-grid');
-      if (!grid) return;
-      var imgs = grid.querySelectorAll('.lineup-cell__img');
       var hideTimer;
-      imgs.forEach(function (img) {
+      imgs.forEach(function (img, idx) {
         img.addEventListener('click', function (e) {
           e.preventDefault();
-          open(img);
+          open(idx);
         });
         img.addEventListener('pointerenter', function (e) {
           if (e.pointerType === 'touch') return;
@@ -2910,7 +2915,15 @@
       preview.addEventListener('click', close);
       if (scrim) scrim.addEventListener('click', close);
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && preview.classList.contains('is-open')) close();
+        if (!preview.classList.contains('is-open')) return;
+        if (e.key === 'Escape') { close(); return; }
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          open((currentIdx + 1) % imgs.length);
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          open((currentIdx - 1 + imgs.length) % imgs.length);
+        }
       });
     })();
   </script>
