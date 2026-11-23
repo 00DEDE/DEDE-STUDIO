@@ -136,13 +136,15 @@
     max-width: 100%;
     margin-inline: 0;
     /* Parallax: main sits ABOVE a fixed footer with its own opaque
-       background. Bottom margin reveals the footer as the last cell
-       scrolls past (the footer is pinned to the viewport bottom
-       behind this layer, so content slides up over it). */
+       background. Padding-bottom (NOT margin — margin doesn't extend
+       the sticky parent bounds) gives the last .home-quote enough
+       scroll room past its natural position to release from `sticky`
+       before the page ends, so the footer's scroll-up arrow is
+       uncovered when the user reaches the bottom. */
     position: relative;
     z-index: 1;
     background: var(--bg);
-    margin-bottom: clamp(20rem, 42vh, 30rem);
+    padding-bottom: clamp(50rem, 110vh, 90rem);
   }
   /* Pin the footer to the viewport bottom behind main. As .home-work
      scrolls past its own bottom edge, the footer is uncovered — not
