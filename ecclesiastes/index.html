@@ -1078,6 +1078,98 @@
   @media (prefers-reduced-motion: reduce) {
     .decipher { animation: none; }
   }
+  /* ─── 10 · Final Deliverable — lineup grid + click lightbox ─────
+     29 final-product photos in a 3-col grid. Click/tap a cell to open
+     the image full-size as a dismissible lightbox (click preview,
+     click scrim, or press Escape to close). Mirrors the Trader Joe's
+     Full Lineup pattern. */
+  .lineup-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+  }
+  .lineup-cell {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #0a0a0a;
+    cursor: zoom-in;
+  }
+  .lineup-cell__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .lineup-cell:hover .lineup-cell__img,
+  .lineup-cell:focus-within .lineup-cell__img {
+    transform: scale(1.04);
+  }
+  .lineup-preview {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(78vw, 1200px);
+    max-height: 80vh;
+    aspect-ratio: 3 / 2;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+    transition:
+      opacity 220ms ease,
+      transform 260ms cubic-bezier(.2, 0, .1, 1);
+    z-index: 200;
+    background: #0a0a0a;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+  .lineup-preview.is-visible,
+  .lineup-preview.is-open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .lineup-preview.is-open {
+    pointer-events: auto;
+    cursor: zoom-out;
+  }
+  .lineup-preview__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .lineup-scrim {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+    z-index: 199;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms ease, visibility 0s 220ms;
+    cursor: zoom-out;
+  }
+  .lineup-scrim.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 220ms ease, visibility 0s 0s;
+  }
+  @media (max-width: 760px) {
+    .lineup-grid { gap: 0.35rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lineup-cell__img,
+    .lineup-preview { transition: opacity 120ms linear; transform: none; }
+    .lineup-preview.is-visible,
+    .lineup-preview.is-open { transform: translate(-50%, -50%); }
+    .lineup-cell:hover .lineup-cell__img,
+    .lineup-cell:focus-within .lineup-cell__img { transform: none; }
+  }
 </style>
 <link rel="stylesheet" href="/identity-banner.css" />
 </head>
@@ -1865,6 +1957,69 @@
       </div>
     </div><!-- /04 book section-media -->
 
+  </section>
+
+
+  <!-- ══════════════════════ 10 · FINAL DELIVERABLE ══════════════════════
+       29 final-product photos in a 3-col lineup grid. Click/tap any
+       cell to open the image as a dismissible lightbox (same pattern
+       as Trader Joe's Full Lineup). -->
+  <section class="unesco__atlas unesco__grid" aria-label="Final Deliverable">
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">10</span>Final Deliverable</p>
+      <p class="statement">
+        Sacred words sewn together. Cradled by <em>my identity</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-final-deliverable">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-final-deliverable">
+        <div class="read-more__inner">
+          <p>This is what the book came to be. If you have come this far, you now realize this project was never about making a book. It was about giving form to reason, to confusion, to faith, to grief, to success, and to failure. The items in these images are close to my heart. A pillow from my childhood home cradles the text. Rocks gathered from rivers on hikes with my father and brother. Bracelets that never leave my wrists. I am Dede, and this is the book of Ecclesiastes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <div class="lineup-grid" aria-label="Final deliverable gallery">
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-01.jpg" alt="Ecclesiastes final deliverable, photo 01" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-02.jpg" alt="Ecclesiastes final deliverable, photo 02" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-03.jpg" alt="Ecclesiastes final deliverable, photo 03" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-04.jpg" alt="Ecclesiastes final deliverable, photo 04" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-05.jpg" alt="Ecclesiastes final deliverable, photo 05" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-06.jpg" alt="Ecclesiastes final deliverable, photo 06" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-07.jpg" alt="Ecclesiastes final deliverable, photo 07" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-08.jpg" alt="Ecclesiastes final deliverable, photo 08" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-09.jpg" alt="Ecclesiastes final deliverable, photo 09" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-10.jpg" alt="Ecclesiastes final deliverable, photo 10" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-11.jpg" alt="Ecclesiastes final deliverable, photo 11" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-12.jpg" alt="Ecclesiastes final deliverable, photo 12" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-13.jpg" alt="Ecclesiastes final deliverable, photo 13" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-14.jpg" alt="Ecclesiastes final deliverable, photo 14" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-15.jpg" alt="Ecclesiastes final deliverable, photo 15" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-16.jpg" alt="Ecclesiastes final deliverable, photo 16" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-17.jpg" alt="Ecclesiastes final deliverable, photo 17" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-18.jpg" alt="Ecclesiastes final deliverable, photo 18" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-19.jpg" alt="Ecclesiastes final deliverable, photo 19" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-20.jpg" alt="Ecclesiastes final deliverable, photo 20" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-21.jpg" alt="Ecclesiastes final deliverable, photo 21" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-22.jpg" alt="Ecclesiastes final deliverable, photo 22" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-23.jpg" alt="Ecclesiastes final deliverable, photo 23" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-24.jpg" alt="Ecclesiastes final deliverable, photo 24" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-25.jpg" alt="Ecclesiastes final deliverable, photo 25" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-26.jpg" alt="Ecclesiastes final deliverable, photo 26" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-27.jpg" alt="Ecclesiastes final deliverable, photo 27" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-28.jpg" alt="Ecclesiastes final deliverable, photo 28" loading="lazy" decoding="async" /></figure>
+        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/ECCLESIASTES/web/ecc-final-29.jpg" alt="Ecclesiastes final deliverable, photo 29" loading="lazy" decoding="async" /></figure>
+      </div>
+    </div>
+
+    <!-- Shared lightbox overlay for the lineup-grid above. -->
+    <div class="lineup-scrim" aria-hidden="true"></div>
+    <div class="lineup-preview" aria-hidden="true">
+      <img class="lineup-preview__img" alt="" />
+    </div>
   </section>
 
   <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════
@@ -2698,6 +2853,41 @@
     updateUI();
     restart();
   })();
+
+    /* ─── Section 10 Final Deliverable — lineup grid lightbox ─────
+       Mirrors the Trader Joe's pattern: click a cell to open its
+       image full-size. Dismiss by clicking the preview itself, the
+       scrim, or pressing Escape. */
+    (function initFinalDeliverable() {
+      var preview = document.querySelector('.lineup-preview');
+      if (!preview) return;
+      var previewImg = preview.querySelector('.lineup-preview__img');
+      var scrim = document.querySelector('.lineup-scrim');
+      if (!previewImg) return;
+
+      function open(img) {
+        if (previewImg.src !== img.src) previewImg.src = img.src;
+        previewImg.alt = img.alt || '';
+        preview.classList.add('is-open', 'is-visible');
+        if (scrim) scrim.classList.add('is-open');
+      }
+      function close() {
+        preview.classList.remove('is-open', 'is-visible');
+        if (scrim) scrim.classList.remove('is-open');
+      }
+
+      document.querySelectorAll('.lineup-grid .lineup-cell__img').forEach(function (img) {
+        img.addEventListener('click', function (e) {
+          e.preventDefault();
+          open(img);
+        });
+      });
+      preview.addEventListener('click', close);
+      if (scrim) scrim.addEventListener('click', close);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && preview.classList.contains('is-open')) close();
+      });
+    })();
   </script>
   <script src="/identity-banner.js" defer></script>
 </body>

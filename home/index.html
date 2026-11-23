@@ -138,11 +138,14 @@
     /* Parallax: main sits ABOVE a fixed footer with its own opaque
        background. Bottom margin reveals the footer as the last cell
        scrolls past (the footer is pinned to the viewport bottom
-       behind this layer, so content slides up over it). */
+       behind this layer, so content slides up over it). Margin bumped
+       up to 100vh so at page end the full footer uncovers — including
+       the scroll-up arrow at the footer's top, which was previously
+       being painted over by the main's bottom edge. */
     position: relative;
     z-index: 1;
     background: var(--bg);
-    margin-bottom: clamp(20rem, 42vh, 30rem);
+    margin-bottom: 100vh;
   }
   /* Pin the footer to the viewport bottom behind main. As .home-work
      scrolls past its own bottom edge, the footer is uncovered — not
