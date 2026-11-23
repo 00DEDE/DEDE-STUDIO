@@ -470,6 +470,7 @@
     margin: 0;
     aspect-ratio: 3 / 2;
     overflow: hidden;
+    border-radius: clamp(4px, 0.4vw, 8px);
     background: #0a0a0a;
     cursor: zoom-in;
   }
@@ -503,6 +504,7 @@
     z-index: 200;
     background: transparent;
     overflow: hidden;
+    border-radius: clamp(4px, 0.4vw, 8px);
   }
   .lineup-preview.is-visible {
     opacity: 1;
@@ -589,6 +591,7 @@
     aspect-ratio: 1 / 1;
     background: #ffffff;
     overflow: hidden;
+    border-radius: clamp(4px, 0.4vw, 8px);
     cursor: zoom-in;
     display: grid;
     place-items: center;
@@ -911,6 +914,20 @@
     .atlas-book__spread { transition: none; }
     .atlas-book__thumb { transition: none; }
     .atlas-book__stage { transition: none; }
+  }
+
+  /* Hover (transient) triggers the same scrim/blur as a click-latched
+     lightbox, so the page blurs the moment a user previews an image. */
+  body:has(.lineup-preview.is-visible) .lineup-scrim {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 220ms ease, visibility 0s 0s;
+  }
+  /* Keep the +DEDE logo crisp above the scrim while the rest of the
+     header + page content blurs behind it. */
+  .site-header__brand {
+    position: relative;
+    z-index: 210;
   }
 </style>
 <link rel="stylesheet" href="/identity-banner.css" />
@@ -1245,9 +1262,7 @@
         <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-coloringbook-cover.png" alt="Groovy coloring book cover" loading="lazy" decoding="async" /></figure>
         <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-coloringbook-inside.png" alt="Coloring book interior pages" loading="lazy" decoding="async" /></figure>
         <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-poster.png" alt="Groovy character poster" loading="lazy" decoding="async" /></figure>
-        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-paddleball.png" alt="Paddleball print designs" loading="lazy" decoding="async" /></figure>
         <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-stickers.png" alt="Die-cut character stickers" loading="lazy" decoding="async" /></figure>
-        <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-pencils-case.png" alt="Colored pencils case" loading="lazy" decoding="async" /></figure>
         <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/print-bowl.png" alt="Cereal bowl illustration" loading="lazy" decoding="async" /></figure>
         <!-- Characters -->
         <figure class="deliverables-cell"><img class="deliverables-cell__img" src="/ASSETS/IMAGES/TRADER%20JOES/ASSETS/web/char-jumping.png" alt="Four characters jumping" loading="lazy" decoding="async" /></figure>

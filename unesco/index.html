@@ -729,6 +729,7 @@
     margin: 0;
     aspect-ratio: 3 / 2;
     overflow: hidden;
+    border-radius: clamp(4px, 0.4vw, 8px);
     background: #0a0a0a;
     cursor: zoom-in;
   }
@@ -759,6 +760,7 @@
     z-index: 200;
     background: transparent;
     overflow: hidden;
+    border-radius: clamp(4px, 0.4vw, 8px);
   }
   .lineup-preview.is-visible,
   .lineup-preview.is-open {
@@ -826,6 +828,20 @@
   @media (prefers-reduced-motion: reduce) {
     .media__iconslide { animation: none; }
     .media__iconslide--1 { opacity: 1; }
+  }
+
+  /* Hover (transient) triggers the same scrim/blur as a click-latched
+     lightbox, so the page blurs the moment a user previews an image. */
+  body:has(.lineup-preview.is-visible) .lineup-scrim {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 220ms ease, visibility 0s 0s;
+  }
+  /* Keep the +DEDE logo crisp above the scrim while the rest of the
+     header + page content blurs behind it. */
+  .site-header__brand {
+    position: relative;
+    z-index: 210;
   }
 </style>
 <link rel="stylesheet" href="/identity-banner.css" />
@@ -1452,42 +1468,31 @@
            click latches a dismissible lightbox with ArrowLeft /
            ArrowRight nav between images. -->
       <div class="lineup-grid" aria-label="UNESCO identity applications in context">
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-01.jpg" alt="UNESCO identity applied in context, photo 01" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-02.jpg" alt="UNESCO identity applied in context, photo 02" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-03.jpg" alt="UNESCO identity applied in context, photo 03" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-04.jpg" alt="UNESCO identity applied in context, photo 04" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-05.jpg" alt="UNESCO identity applied in context, photo 05" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-06.jpg" alt="UNESCO identity applied in context, photo 06" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-07.jpg" alt="UNESCO identity applied in context, photo 07" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-08.jpg" alt="UNESCO identity applied in context, photo 08" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-09.jpg" alt="UNESCO identity applied in context, photo 09" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-10.jpg" alt="UNESCO identity applied in context, photo 10" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-11.jpg" alt="UNESCO identity applied in context, photo 11" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-12.jpg" alt="UNESCO identity applied in context, photo 12" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-13.jpg" alt="UNESCO identity applied in context, photo 13" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-14.jpg" alt="UNESCO identity applied in context, photo 14" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-15.jpg" alt="UNESCO identity applied in context, photo 15" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-16.jpg" alt="UNESCO identity applied in context, photo 16" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-17.jpg" alt="UNESCO identity applied in context, photo 17" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-18.jpg" alt="UNESCO identity applied in context, photo 18" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-19.jpg" alt="UNESCO identity applied in context, photo 19" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-20.jpg" alt="UNESCO identity applied in context, photo 20" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-21.jpg" alt="UNESCO identity applied in context, photo 21" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-22.jpg" alt="UNESCO identity applied in context, photo 22" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-23.jpg" alt="UNESCO identity applied in context, photo 23" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-24.jpg" alt="UNESCO identity applied in context, photo 24" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-25.jpg" alt="UNESCO identity applied in context, photo 25" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-26.jpg" alt="UNESCO identity applied in context, photo 26" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-27.jpg" alt="UNESCO identity applied in context, photo 27" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-28.jpg" alt="UNESCO identity applied in context, photo 28" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-29.jpg" alt="UNESCO identity applied in context, photo 29" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-30.jpg" alt="UNESCO identity applied in context, photo 30" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-31.jpg" alt="UNESCO identity applied in context, photo 31" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-32.jpg" alt="UNESCO identity applied in context, photo 32" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-33.jpg" alt="UNESCO identity applied in context, photo 33" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-34.jpg" alt="UNESCO identity applied in context, photo 34" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-35.jpg" alt="UNESCO identity applied in context, photo 35" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-36.jpg" alt="UNESCO identity applied in context, photo 36" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-37.jpg" alt="UNESCO identity applied in context, photo 37" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-38.jpg" alt="UNESCO identity applied in context, photo 38" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-39.jpg" alt="UNESCO identity applied in context, photo 39" loading="lazy" decoding="async" /></figure>
@@ -1495,8 +1500,7 @@
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-41.jpg" alt="UNESCO identity applied in context, photo 41" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-42.jpg" alt="UNESCO identity applied in context, photo 42" loading="lazy" decoding="async" /></figure>
         <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-43.jpg" alt="UNESCO identity applied in context, photo 43" loading="lazy" decoding="async" /></figure>
-        <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-44.jpg" alt="UNESCO identity applied in context, photo 44" loading="lazy" decoding="async" /></figure>
-      </div>
+            </div>
     </div>
 
     <!-- Shared lightbox overlay for the lineup-grid above. -->
