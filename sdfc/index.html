@@ -1379,70 +1379,6 @@
   <script>
   (function () {
     'use strict';
-
-    /* Scans marquee — two independent rows of notebook scans. */
-    (function () {
-      var rows = document.querySelectorAll('.scans__row');
-      if (!rows.length) return;
-      var state = Array.prototype.map.call(rows, function (row) {
-        return {
-          row: row,
-          track: row.querySelector('.scans__track'),
-          speed: parseFloat(row.getAttribute('data-speed') || '0.5'),
-          offset: 0,
-          halfWidth: 0,
-          paused: false,
-          wheelTO: null
-        };
-      });
-
-      function measure() {
-        state.forEach(function (s) {
-          s.halfWidth = s.track ? s.track.scrollWidth / 2 : 0;
-        });
-      }
-      window.addEventListener('load', measure);
-      window.addEventListener('resize', measure);
-      state.forEach(function (s) {
-        s.track && s.track.querySelectorAll('img').forEach(function (img) {
-          if (!img.complete) img.addEventListener('load', measure, { once: true });
-        });
-      });
-      measure();
-
-      function tick() {
-        state.forEach(function (s) {
-          if (!s.halfWidth) return;
-          if (!s.paused) s.offset -= s.speed;
-          while (s.offset <= -s.halfWidth) s.offset += s.halfWidth;
-          while (s.offset > 0) s.offset -= s.halfWidth;
-          s.track.style.transform = 'translateX(' + s.offset + 'px)';
-        });
-        requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-
-      state.forEach(function (s) {
-        s.row.addEventListener('mouseenter', function () { s.paused = true; });
-        s.row.addEventListener('mouseleave', function () {
-          if (!s.wheelTO) s.paused = false;
-        });
-        s.row.addEventListener('wheel', function (e) {
-          var dy = e.deltaY || 0;
-          var dx = e.deltaX || 0;
-          if (Math.abs(dx) <= Math.abs(dy)) return;
-          e.preventDefault();
-          s.paused = true;
-          s.offset -= dx;
-          if (s.wheelTO) clearTimeout(s.wheelTO);
-          s.wheelTO = setTimeout(function () {
-            s.wheelTO = null;
-            if (!s.row.matches(':hover')) s.paused = false;
-          }, 1500);
-        }, { passive: false });
-      });
-    })();
-
     /* Hover-preview for the Applications lineup grid. On pointerenter
        (non-touch), copies the hovered thumbnail into the fixed centered
        preview and fades it in; pointerleave hides. */
@@ -1719,6 +1655,7 @@
     restart();
   })();
   </script>
+  <script src="/happiness-marquee.js" defer></script>
   <script src="/identity-banner.js" defer></script>
 </body>
 </html>

@@ -2412,86 +2412,6 @@ z-index: 199;
       bindBoost(document.querySelector('.carousel-nav--prev'), -1);
       bindBoost(document.querySelector('.carousel-nav--next'), +1);
     })();
-
-    /* Scans marquee — two independent rows of notebook scans. Each
-       row loops continuously leftward driven by requestAnimationFrame.
-       Hover pauses that row. A vertical wheel over the row is captured
-       (preventDefault) and translated into horizontal scrub; auto
-       playback resumes 1.5s after the viewer stops wheeling. */
-    (function () {
-      var rows = document.querySelectorAll('.scans__row');
-      if (!rows.length) return;
-      var state = Array.prototype.map.call(rows, function (row) {
-        return {
-          row: row,
-          track: row.querySelector('.scans__track'),
-          speed: parseFloat(row.getAttribute('data-speed') || '0.5'),
-          offset: 0,
-          halfWidth: 0,
-          paused: false,
-          wheelTO: null
-        };
-      });
-
-      function measure() {
-        state.forEach(function (s) {
-          /* The track holds the full set twice; one wrap cycle is
-             half the track's measured scroll width. */
-          s.halfWidth = s.track ? s.track.scrollWidth / 2 : 0;
-        });
-      }
-      /* Measure once images have reported their intrinsic sizes. */
-      window.addEventListener('load', measure);
-      window.addEventListener('resize', measure);
-      /* Also re-measure whenever any scan image finishes loading,
-         since lazy-loaded images change the track width late. */
-      state.forEach(function (s) {
-        s.track && s.track.querySelectorAll('img').forEach(function (img) {
-          if (!img.complete) img.addEventListener('load', measure, { once: true });
-        });
-      });
-      measure();
-
-      function tick() {
-        state.forEach(function (s) {
-          if (!s.halfWidth) return;
-          if (!s.paused) s.offset -= s.speed;
-          /* Wrap offset into [-halfWidth, 0) so the duplicate set
-             seamlessly takes over as the first one scrolls past. */
-          while (s.offset <= -s.halfWidth) s.offset += s.halfWidth;
-          while (s.offset > 0) s.offset -= s.halfWidth;
-          s.track.style.transform = 'translateX(' + s.offset + 'px)';
-        });
-        requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-
-      state.forEach(function (s) {
-        s.row.addEventListener('mouseenter', function () { s.paused = true; });
-        s.row.addEventListener('mouseleave', function () {
-          /* Only resume if no wheel scrub is still in its cooldown. */
-          if (!s.wheelTO) s.paused = false;
-        });
-        s.row.addEventListener('wheel', function (e) {
-          var dy = e.deltaY || 0;
-          var dx = e.deltaX || 0;
-          /* Only capture when the user is scrubbing horizontally
-             (trackpad side-swipe or shift+wheel). A plain vertical
-             wheel passes through so the page keeps scrolling normally
-             even when the pointer is over the marquee. */
-          if (Math.abs(dx) <= Math.abs(dy)) return;
-          e.preventDefault();
-          s.paused = true;
-          s.offset -= dx;
-          if (s.wheelTO) clearTimeout(s.wheelTO);
-          s.wheelTO = setTimeout(function () {
-            s.wheelTO = null;
-            if (!s.row.matches(':hover')) s.paused = false;
-          }, 1500);
-        }, { passive: false });
-      });
-    })();
-
     /* Tangible Forms (section 08) — two long cells, each cycling its
        own stack of celebration stills. All cells share ONE timer so
        they transition in lockstep (cell A and cell B swap at the
@@ -2951,6 +2871,7 @@ z-index: 199;
       });
     })();
   </script>
+  <script src="/happiness-marquee.js" defer></script>
   <script src="/identity-banner.js" defer></script>
 </body>
 </html>
