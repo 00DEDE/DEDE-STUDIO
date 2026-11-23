@@ -2050,7 +2050,7 @@
     </a>
     <div class="site-footer__meta">
       <div class="site-footer__meta-left">
-        <span>DAVID GOMEZ © 2026 ALL RIGHTS RESERVED.</span>
+        <span>© 2026 David Gomez. All Rights Reserved.</span>
       </div>
       <div class="site-footer__meta-center">
         <span>Let&rsquo;s create something meaningful. <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></span>
@@ -2854,10 +2854,10 @@
     restart();
   })();
 
-    /* ─── Section 10 Final Deliverable — lineup grid lightbox ─────
-       Mirrors the Trader Joe's pattern: click a cell to open its
-       image full-size. Dismiss by clicking the preview itself, the
-       scrim, or pressing Escape. */
+    /* ─── Section 10 Final Deliverable — exact clone of Trader
+       Joe's section 04 lineup-grid preview: hover enlarges a fixed
+       centered preview on desktop; click latches it as a dismissible
+       lightbox on all devices. Dismiss via preview, scrim, or Esc. */
     (function initFinalDeliverable() {
       var preview = document.querySelector('.lineup-preview');
       if (!preview) return;
@@ -2876,12 +2876,37 @@
         if (scrim) scrim.classList.remove('is-open');
       }
 
-      document.querySelectorAll('.lineup-grid .lineup-cell__img').forEach(function (img) {
+      var grid = document.querySelector('.lineup-grid');
+      if (!grid) return;
+      var imgs = grid.querySelectorAll('.lineup-cell__img');
+      var hideTimer;
+      imgs.forEach(function (img) {
         img.addEventListener('click', function (e) {
           e.preventDefault();
           open(img);
         });
+        img.addEventListener('pointerenter', function (e) {
+          if (e.pointerType === 'touch') return;
+          if (preview.classList.contains('is-open')) return;
+          clearTimeout(hideTimer);
+          if (previewImg.src !== img.src) previewImg.src = img.src;
+          previewImg.alt = img.alt || '';
+          preview.classList.add('is-visible');
+        });
+        img.addEventListener('pointerleave', function (e) {
+          if (e.pointerType === 'touch') return;
+          if (preview.classList.contains('is-open')) return;
+          hideTimer = setTimeout(function () {
+            preview.classList.remove('is-visible');
+          }, 60);
+        });
       });
+      grid.addEventListener('pointerleave', function (e) {
+        if (e.pointerType === 'touch') return;
+        if (preview.classList.contains('is-open')) return;
+        preview.classList.remove('is-visible');
+      });
+
       preview.addEventListener('click', close);
       if (scrim) scrim.addEventListener('click', close);
       document.addEventListener('keydown', function (e) {

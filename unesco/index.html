@@ -713,6 +713,97 @@
     .atlas-book__stage { transition: none; }
   }
 
+  /* ─── 08 · In Context — Trader-Joe's-style lineup grid + hover
+     preview + click-to-latch lightbox. Exact copy of trader-joes
+     section 04's visuals: 3-col grid, 3:2 cells, hover enlarges a
+     fixed centered preview; clicking latches it as a dismissible
+     lightbox. */
+  .lineup-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+  }
+  .lineup-cell {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #0a0a0a;
+    cursor: zoom-in;
+  }
+  .lineup-cell__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .lineup-cell:hover .lineup-cell__img,
+  .lineup-cell:focus-within .lineup-cell__img { transform: scale(1.04); }
+  .lineup-preview {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(78vw, 1200px);
+    max-height: 80vh;
+    aspect-ratio: 3 / 2;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.98);
+    transition:
+      opacity 220ms ease,
+      transform 260ms cubic-bezier(.2, 0, .1, 1);
+    z-index: 200;
+    background: #0a0a0a;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+  .lineup-preview.is-visible,
+  .lineup-preview.is-open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .lineup-preview.is-open {
+    pointer-events: auto;
+    cursor: zoom-out;
+  }
+  .lineup-preview__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .lineup-scrim {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+    z-index: 199;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms ease, visibility 0s 220ms;
+    cursor: zoom-out;
+  }
+  .lineup-scrim.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 220ms ease, visibility 0s 0s;
+  }
+  @media (max-width: 760px) {
+    .lineup-grid { gap: 0.35rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lineup-cell__img,
+    .lineup-preview { transition: opacity 120ms linear; transform: none; }
+    .lineup-preview.is-visible,
+    .lineup-preview.is-open { transform: translate(-50%, -50%); }
+    .lineup-cell:hover .lineup-cell__img,
+    .lineup-cell:focus-within .lineup-cell__img { transform: none; }
+  }
+
   /* ─── 05 · Iconography — 5-slide crossfade slideshow ─────────────
      20s loop, 4s per slide, 1s fade-in/hold-3s/1s fade-out per slide
      with a 1s overlap crossfade onto the next. Each slide's delay is
@@ -1031,7 +1122,7 @@
     <div class="g-span-2 section-media">
       <figure class="media media--wide">
         <video class="media__video"
-               autoplay muted loop playsinline preload="metadata"
+               autoplay muted loop playsinline controls preload="metadata"
                disablepictureinpicture disableremoteplayback
                poster="/ASSETS/IMAGES/UNESCO/01.jpg"
                aria-label="Digital Atlas installation">
@@ -1245,52 +1336,76 @@
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
-    <!-- ─── 08 · Tangible Forms ──────────────────────────────────── -->
+    <!-- ─── 08 · In Context ──────────────────────────────────────── -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">08</span>Tangible Forms</p>
+      <p class="section-label"><span class="section-label__num">08</span>In Context</p>
       <p class="statement">
-        80 years of human connection.
-        <em>What an accomplishment</em>.
+        Carried out of the studio and <em>into the world</em>.
       </p>
-      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-celebration">
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-in-context">
         <span>Read more</span>
         <span class="read-more__line" aria-hidden="true"></span>
       </button>
-      <div class="read-more__panel" id="rm-celebration">
+      <div class="read-more__panel" id="rm-in-context">
         <div class="read-more__inner">
-          <p>To honor 80 years of UNESCO, I wanted objects you could hold and contemplate, built around what I see as UNESCO&rsquo;s greatest accomplishment: human connection. I commissioned a woven blanket and, wanting in on the fun, I personally hand-sewed a vegetable-tanned leather bag, its icons coming together to form an image of our world. The same image lives in the printed atlas.</p>
-          <p>You never know where one small idea will take you. That&rsquo;s the beauty of design. It is vital to my process to never throw an idea away. I keep it close, in my sketches. Perhaps it returns in a way I hadn&rsquo;t imagined.</p>
+          <p>The identity system off the page: 44 moments of the rebrand lived in. Hover any image to enlarge it.</p>
         </div>
       </div>
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- 2 long portrait cells, side by side on desktop, stacked on
-           mobile. All 15 celebration images are split evenly: cell A
-           cycles 01–08 (8 images), cell B cycles 09–15 (7 images).
-           JS at the bottom of the page toggles .is-active on one
-           slide at a time; CSS handles the crossfade. -->
-      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
-        </figure>
-        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
-          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
-          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
-        </figure>
+      <div class="lineup-grid" aria-label="UNESCO identity applications in context">
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-01.jpg" alt="UNESCO identity applied in context, photo 01" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-02.jpg" alt="UNESCO identity applied in context, photo 02" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-03.jpg" alt="UNESCO identity applied in context, photo 03" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-04.jpg" alt="UNESCO identity applied in context, photo 04" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-05.jpg" alt="UNESCO identity applied in context, photo 05" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-06.jpg" alt="UNESCO identity applied in context, photo 06" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-07.jpg" alt="UNESCO identity applied in context, photo 07" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-08.jpg" alt="UNESCO identity applied in context, photo 08" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-09.jpg" alt="UNESCO identity applied in context, photo 09" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-10.jpg" alt="UNESCO identity applied in context, photo 10" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-11.jpg" alt="UNESCO identity applied in context, photo 11" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-12.jpg" alt="UNESCO identity applied in context, photo 12" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-13.jpg" alt="UNESCO identity applied in context, photo 13" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-14.jpg" alt="UNESCO identity applied in context, photo 14" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-15.jpg" alt="UNESCO identity applied in context, photo 15" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-16.jpg" alt="UNESCO identity applied in context, photo 16" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-17.jpg" alt="UNESCO identity applied in context, photo 17" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-18.jpg" alt="UNESCO identity applied in context, photo 18" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-19.jpg" alt="UNESCO identity applied in context, photo 19" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-20.jpg" alt="UNESCO identity applied in context, photo 20" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-21.jpg" alt="UNESCO identity applied in context, photo 21" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-22.jpg" alt="UNESCO identity applied in context, photo 22" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-23.jpg" alt="UNESCO identity applied in context, photo 23" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-24.jpg" alt="UNESCO identity applied in context, photo 24" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-25.jpg" alt="UNESCO identity applied in context, photo 25" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-26.jpg" alt="UNESCO identity applied in context, photo 26" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-27.jpg" alt="UNESCO identity applied in context, photo 27" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-28.jpg" alt="UNESCO identity applied in context, photo 28" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-29.jpg" alt="UNESCO identity applied in context, photo 29" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-30.jpg" alt="UNESCO identity applied in context, photo 30" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-31.jpg" alt="UNESCO identity applied in context, photo 31" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-32.jpg" alt="UNESCO identity applied in context, photo 32" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-33.jpg" alt="UNESCO identity applied in context, photo 33" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-34.jpg" alt="UNESCO identity applied in context, photo 34" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-35.jpg" alt="UNESCO identity applied in context, photo 35" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-36.jpg" alt="UNESCO identity applied in context, photo 36" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-37.jpg" alt="UNESCO identity applied in context, photo 37" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-38.jpg" alt="UNESCO identity applied in context, photo 38" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-39.jpg" alt="UNESCO identity applied in context, photo 39" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-40.jpg" alt="UNESCO identity applied in context, photo 40" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-41.jpg" alt="UNESCO identity applied in context, photo 41" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-42.jpg" alt="UNESCO identity applied in context, photo 42" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-43.jpg" alt="UNESCO identity applied in context, photo 43" loading="lazy" decoding="async" /></figure>
+          <figure class="lineup-cell"><img class="lineup-cell__img" src="/ASSETS/IMAGES/UNESCO/web/apps-grid-44.jpg" alt="UNESCO identity applied in context, photo 44" loading="lazy" decoding="async" /></figure>
       </div>
+    </div>
+
+    <!-- Shared lightbox overlay for the lineup-grid above. -->
+    <div class="lineup-scrim" aria-hidden="true"></div>
+    <div class="lineup-preview" aria-hidden="true">
+      <img class="lineup-preview__img" alt="" />
     </div>
 
     <hr class="unesco__section-rule" aria-hidden="true" />
@@ -1384,6 +1499,56 @@
       </div>
     </div>
 
+  
+    <hr class="unesco__section-rule" aria-hidden="true" />
+    <!-- ─── 11 · Tangible Forms ──────────────────────────────────── -->
+    <div class="g-span-1 section-text">
+      <p class="section-label"><span class="section-label__num">11</span>Tangible Forms</p>
+      <p class="statement">
+        80 years of human connection.
+        <em>What an accomplishment</em>.
+      </p>
+      <button class="read-more" type="button" aria-expanded="false" aria-controls="rm-celebration">
+        <span>Read more</span>
+        <span class="read-more__line" aria-hidden="true"></span>
+      </button>
+      <div class="read-more__panel" id="rm-celebration">
+        <div class="read-more__inner">
+          <p>To honor 80 years of UNESCO, I wanted objects you could hold and contemplate, built around what I see as UNESCO&rsquo;s greatest accomplishment: human connection. I commissioned a woven blanket and, wanting in on the fun, I personally hand-sewed a vegetable-tanned leather bag, its icons coming together to form an image of our world. The same image lives in the printed atlas.</p>
+          <p>You never know where one small idea will take you. That&rsquo;s the beauty of design. It is vital to my process to never throw an idea away. I keep it close, in my sketches. Perhaps it returns in a way I hadn&rsquo;t imagined.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-span-2 section-media">
+      <!-- 2 long portrait cells, side by side on desktop, stacked on
+           mobile. All 15 celebration images are split evenly: cell A
+           cycles 01–08 (8 images), cell B cycles 09–15 (7 images).
+           JS at the bottom of the page toggles .is-active on one
+           slide at a time; CSS handles the crossfade. -->
+      <div class="section-media__triptych section-media__triptych--pair tangible-forms">
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-zoomed is-active" src="/ASSETS/IMAGES/UNESCO/celebration-01.jpg" alt="Tangible form 01" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-02.jpg" alt="Tangible form 02" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-03.jpg" alt="Tangible form 03" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-04.jpg" alt="Tangible form 04" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-05.jpg" alt="Tangible form 05" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-06.jpg" alt="Tangible form 06" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-07.jpg" alt="Tangible form 07" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-08.jpg" alt="Tangible form 08" />
+        </figure>
+        <figure class="media tangible-forms__cell" data-tangible-interval="5000" style="aspect-ratio: 3 / 2;">
+          <img class="media__img media__tslide is-active" src="/ASSETS/IMAGES/UNESCO/celebration-09.jpg" alt="Tangible form 09" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-10.jpg" alt="Tangible form 10" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-11.jpg" alt="Tangible form 11" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-12.jpg" alt="Tangible form 12" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-13.jpg" alt="Tangible form 13" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-14.jpg" alt="Tangible form 14" />
+          <img class="media__img media__tslide" src="/ASSETS/IMAGES/UNESCO/celebration-15.jpg" alt="Tangible form 15" />
+        </figure>
+      </div>
+    </div>
+
   </section>
 
   <!-- ══════════════════════ CLOSING IMAGE (full bleed) ══════════════════════
@@ -1414,7 +1579,7 @@
     </a>
     <div class="site-footer__meta">
       <div class="site-footer__meta-left">
-        <span>DAVID GOMEZ © 2026 ALL RIGHTS RESERVED.</span>
+        <span>© 2026 David Gomez. All Rights Reserved.</span>
       </div>
       <div class="site-footer__meta-center">
         <span>Let&rsquo;s create something meaningful. <a href="mailto:hello@iamdede.com">hello@iamdede.com</a></span>
@@ -1898,6 +2063,66 @@
 
     updateUI();
     restart();
+  })();
+
+  /* ─── Section 08 In Context — lineup grid preview + lightbox.
+     Exact clone of Trader Joe's section 04 initPreview: hover shows
+     a transient fixed preview (desktop), click latches it as a
+     dismissible lightbox (works on both desktop and touch). */
+  (function initInContext() {
+    var preview = document.querySelector('.lineup-preview');
+    if (!preview) return;
+    var previewImg = preview.querySelector('.lineup-preview__img');
+    var scrim = document.querySelector('.lineup-scrim');
+    if (!previewImg) return;
+
+    function open(img) {
+      if (previewImg.src !== img.src) previewImg.src = img.src;
+      previewImg.alt = img.alt || '';
+      preview.classList.add('is-open', 'is-visible');
+      if (scrim) scrim.classList.add('is-open');
+    }
+    function close() {
+      preview.classList.remove('is-open', 'is-visible');
+      if (scrim) scrim.classList.remove('is-open');
+    }
+
+    var grid = document.querySelector('.lineup-grid');
+    if (!grid) return;
+    var imgs = grid.querySelectorAll('.lineup-cell__img');
+    var hideTimer;
+    imgs.forEach(function (img) {
+      img.addEventListener('click', function (e) {
+        e.preventDefault();
+        open(img);
+      });
+      img.addEventListener('pointerenter', function (e) {
+        if (e.pointerType === 'touch') return;
+        if (preview.classList.contains('is-open')) return;
+        clearTimeout(hideTimer);
+        if (previewImg.src !== img.src) previewImg.src = img.src;
+        previewImg.alt = img.alt || '';
+        preview.classList.add('is-visible');
+      });
+      img.addEventListener('pointerleave', function (e) {
+        if (e.pointerType === 'touch') return;
+        if (preview.classList.contains('is-open')) return;
+        hideTimer = setTimeout(function () {
+          preview.classList.remove('is-visible');
+        }, 60);
+      });
+    });
+    grid.addEventListener('pointerleave', function (e) {
+      if (e.pointerType === 'touch') return;
+      if (preview.classList.contains('is-open')) return;
+      preview.classList.remove('is-visible');
+    });
+
+    preview.addEventListener('click', close);
+    if (scrim) scrim.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && preview.classList.contains('is-open')) close();
+    });
   })();
   </script>
   <script src="/identity-banner.js" defer></script>
