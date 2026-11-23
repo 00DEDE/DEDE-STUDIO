@@ -136,15 +136,13 @@
     max-width: 100%;
     margin-inline: 0;
     /* Parallax: main sits ABOVE a fixed footer with its own opaque
-       background. Padding-bottom (NOT margin — margin doesn't extend
-       the sticky parent bounds) gives the last .home-quote enough
-       scroll room past its natural position to release from `sticky`
-       before the page ends, so the footer's scroll-up arrow is
-       uncovered when the user reaches the bottom. */
+       background. Bottom margin reveals the footer as the last cell
+       scrolls past (the footer is pinned to the viewport bottom
+       behind this layer, so content slides up over it). */
     position: relative;
     z-index: 1;
     background: var(--bg);
-    padding-bottom: clamp(50rem, 110vh, 90rem);
+    margin-bottom: clamp(20rem, 42vh, 30rem);
   }
   /* Pin the footer to the viewport bottom behind main. As .home-work
      scrolls past its own bottom edge, the footer is uncovered — not
@@ -456,6 +454,14 @@
     justify-content: center;
     background: var(--bg);
     color: var(--fg);
+  }
+  /* The closing-credo quote is the last element in .home-work, so it
+     has no cell after it to scroll it out of view. Keep it in normal
+     flow (not sticky) so it scrolls up naturally at page end and the
+     pinned footer underneath is uncovered — scroll-up arrow included. */
+  .home-work > .home-quote:last-of-type {
+    position: static;
+    top: auto;
   }
   .home-quote__inner {
     display: block;
