@@ -355,7 +355,7 @@
     /* No overscroll-behavior: contain — vertical wheel must chain
        through to the page so users can keep scrolling down. The JS
        handler only preventDefaults on horizontal gestures. */
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
   .scans__row + .scans__row {
     margin-top: clamp(0.75rem, 1.5vh, 1.25rem);
@@ -542,8 +542,34 @@
 
   @media (max-width: 760px) {
     .lineup-grid { gap: 0.35rem; }
-    .lineup-cell { cursor: default; }
-    .lineup-preview { display: none; }
+    /* Preview stays available on mobile — tap a cell to open, tap the
+       preview (or outside it) to dismiss. */
+  }
+
+  /* Click-to-open mode — JS toggles .is-open on .lineup-preview when
+     a cell is tapped. Preview becomes clickable so tapping it closes.
+     A scrim catches outside-taps to dismiss. */
+  .lineup-preview.is-open {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+    cursor: zoom-out;
+  }
+  .lineup-scrim {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+    z-index: 199;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms ease, visibility 0s 220ms;
+    cursor: zoom-out;
+  }
+  .lineup-scrim.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 220ms ease, visibility 0s 0s;
   }
 
   /* ─── 05 · Deliverables grid ──────────────────────────────────────
@@ -978,7 +1004,7 @@
        the transform wrap is seamless. White paper is removed via
        mix-blend-mode: multiply against the white page bg. -->
   <section class="scans" aria-label="Trader Joe’s process scraps">
-    <div class="scans__row scans__row--top" data-speed="0.28">
+    <div class="scans__row scans__row--top" data-speed="0.34">
       <div class="scans__track">
         <img src="/ASSETS/IMAGES/TRADER%20JOES/scrap/scrap-01.jpg" alt="Trader Joe’s process scrap 01" loading="lazy" />
         <img src="/ASSETS/IMAGES/TRADER%20JOES/scrap/scrap-02.jpg" alt="Trader Joe’s process scrap 02" loading="lazy" />
@@ -1008,7 +1034,7 @@
         <img src="/ASSETS/IMAGES/TRADER%20JOES/scrap/scrap-13.jpg" alt="" aria-hidden="true" loading="lazy" />
       </div>
     </div>
-    <div class="scans__row scans__row--bot" data-speed="0.40">
+    <div class="scans__row scans__row--bot" data-speed="0.48">
       <div class="scans__track">
         <img src="/ASSETS/IMAGES/TRADER%20JOES/scrap/scrap-14.jpg" alt="Trader Joe’s process scrap 14" loading="lazy" />
         <img src="/ASSETS/IMAGES/TRADER%20JOES/scrap/scrap-15.jpg" alt="Trader Joe’s process scrap 15" loading="lazy" />
@@ -1175,6 +1201,7 @@
     <!-- Lineup hover preview — a fixed, centered overlay that shows
          the hovered thumbnail at full scale. Lives outside the grid so
          it is positioned relative to the viewport, not the cell. -->
+    <div class="lineup-scrim" aria-hidden="true"></div>
     <div class="lineup-preview" aria-hidden="true">
       <img class="lineup-preview__img" alt="" />
     </div>
@@ -1187,7 +1214,7 @@
          "specimens." Hover any cell to see it full size, centered
          (shares the lineup-preview mechanism from section 04). -->
     <div class="g-span-1 section-text">
-      <p class="section-label"><span class="section-label__num">05</span>Deliverables</p>
+      <p class="section-label"><span class="section-label__num">05</span>Explorations</p>
       <p class="statement">
         A more complete look at <em>the whole picture</em>.
       </p>
@@ -1512,19 +1539,43 @@
        grid (section 04, cover-fit on dark) and the deliverables
        grid (section 05, contain-fit on white). A mode class on the
        preview switches background and object-fit for each. */
-    (function initHoverPreview() {
+    (function initPreview() {
       var preview = document.querySelector('.lineup-preview');
       if (!preview) return;
       var previewImg = preview.querySelector('.lineup-preview__img');
+      var scrim = document.querySelector('.lineup-scrim');
       if (!previewImg) return;
+
+      function open(img, mode) {
+        preview.classList.remove('is-mode-cover', 'is-mode-contain');
+        preview.classList.add(mode === 'contain' ? 'is-mode-contain' : 'is-mode-cover');
+        if (previewImg.src !== img.src) previewImg.src = img.src;
+        previewImg.alt = img.alt || '';
+        preview.classList.add('is-open', 'is-visible');
+        if (scrim) scrim.classList.add('is-open');
+      }
+      function close() {
+        preview.classList.remove('is-open', 'is-visible');
+        if (scrim) scrim.classList.remove('is-open');
+      }
 
       function bind(grid, cellImgSel, mode) {
         if (!grid) return;
         var imgs = grid.querySelectorAll(cellImgSel);
         var hideTimer;
         imgs.forEach(function (img) {
+          /* Click/tap: open as a dismissable lightbox (works on both
+             desktop and touch — this is the primary gesture per the
+             user's request). */
+          img.addEventListener('click', function (e) {
+            e.preventDefault();
+            open(img, mode);
+          });
+          /* Desktop hover: preview as a transient pop. Skipped on
+             touch so it never competes with the click lightbox. */
           img.addEventListener('pointerenter', function (e) {
             if (e.pointerType === 'touch') return;
+            if (preview.classList.contains('is-open')) return;
             clearTimeout(hideTimer);
             preview.classList.remove('is-mode-cover', 'is-mode-contain');
             preview.classList.add(mode === 'contain' ? 'is-mode-contain' : 'is-mode-cover');
@@ -1534,6 +1585,7 @@
           });
           img.addEventListener('pointerleave', function (e) {
             if (e.pointerType === 'touch') return;
+            if (preview.classList.contains('is-open')) return;
             hideTimer = setTimeout(function () {
               preview.classList.remove('is-visible');
             }, 60);
@@ -1541,12 +1593,21 @@
         });
         grid.addEventListener('pointerleave', function (e) {
           if (e.pointerType === 'touch') return;
+          if (preview.classList.contains('is-open')) return;
           preview.classList.remove('is-visible');
         });
       }
 
       bind(document.querySelector('.lineup-grid'),      '.lineup-cell__img',       'cover');
       bind(document.querySelector('.deliverables-grid'), '.deliverables-cell__img', 'contain');
+
+      /* Dismiss the lightbox: tap the preview itself, tap the scrim,
+         or hit Escape. */
+      preview.addEventListener('click', close);
+      if (scrim) scrim.addEventListener('click', close);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && preview.classList.contains('is-open')) close();
+      });
     })();
 
     /* Palette grid — reveal the swatches in sequence once the grid

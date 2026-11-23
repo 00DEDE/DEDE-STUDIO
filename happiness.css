@@ -97,7 +97,7 @@ body.happiness .site-header.is-scrolled .site-header__brand img { height: 1.75re
 .scans__row {
   position: relative;
   overflow: hidden;
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
 }
 .scans__row + .scans__row {
   margin-top: clamp(0.75rem, 1.5vh, 1.25rem);

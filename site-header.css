@@ -359,11 +359,13 @@ body.is-nav-open .site-menu-btn span:nth-child(3) { transform: translateY(-6.5px
      overlay opened by the bottom-centre hamburger. */
   .site-header {
     grid-template-rows: auto;
-    /* Mobile: top padding stays at the original 1.4–2.1rem; bottom
-       padding is 2.5× the previously-doubled value (so 5× the original
-       1.4–2.1rem baseline) for generous breathing room under the logo.
-       Horizontal uses --page-x. */
-    padding: clamp(1.4rem, 5.6vw, 2.1rem) var(--page-x, 12px) clamp(7rem, 28vw, 10.5rem);
+    /* Mobile: compact header padding matching the UNESCO/happiness
+       page override (`body.unesco / body.happiness` set 1.15rem top,
+       0.65rem bottom). Unifying the baseline here means every page
+       (home, about, work, play + case studies) carries the same
+       header footprint under the logo on mobile. Horizontal uses
+       --page-x. */
+    padding: 1.15rem var(--page-x, 12px) 0.65rem;
   }
   .site-header__brand img { height: clamp(1.75rem, 7vw, 2.75rem); }
   .site-header__nav       { display: none; }   /* collapsed until overlay opens */

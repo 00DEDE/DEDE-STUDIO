@@ -185,13 +185,47 @@
      mobile layout in case-study.css (which stacks posters into a
      2-col grid at <=900px). */
   @media (max-width: 900px) {
-    .section-media__posters--campaign > :nth-child(1) { grid-column: 1; grid-row: 1; }
-    .section-media__posters--campaign > :nth-child(3) { grid-column: 2; grid-row: 1; }
+    .section-media__posters--campaign > :nth-child(1) {
+      grid-column: 1; grid-row: 1;
+      width: auto; justify-self: auto;
+    }
+    .section-media__posters--campaign > :nth-child(3) {
+      /* Explicit width/justify-self reset — the generic 3rd-item
+         centered-below rule in case-study.css was leaving poster 3
+         at 50% width, making it look shrunk against poster 1. */
+      grid-column: 2; grid-row: 1;
+      width: auto; justify-self: auto;
+    }
     .section-media__posters--campaign > :nth-child(2) {
       grid-column: 1 / -1;
       grid-row: 2;
       width: calc(50% - (clamp(0.75rem, 1.5vw, 1.25rem) / 2));
       justify-self: center;
+    }
+  }
+
+  /* Section 7 Applications — six-poster grid reshuffled on mobile to
+     3 rows of 2: [1,2] / [3,6] / [4,5]. The generic
+     .section-media__posters mobile rule (built for 3-item grids with
+     item 3 centered below) is explicitly overridden here per item. */
+  @media (max-width: 900px) {
+    .section-media__posters--sixup > :nth-child(1) {
+      grid-column: 1; grid-row: 1; width: auto; justify-self: auto;
+    }
+    .section-media__posters--sixup > :nth-child(2) {
+      grid-column: 2; grid-row: 1; width: auto; justify-self: auto;
+    }
+    .section-media__posters--sixup > :nth-child(3) {
+      grid-column: 1; grid-row: 2; width: auto; justify-self: auto;
+    }
+    .section-media__posters--sixup > :nth-child(6) {
+      grid-column: 2; grid-row: 2;
+    }
+    .section-media__posters--sixup > :nth-child(4) {
+      grid-column: 1; grid-row: 3;
+    }
+    .section-media__posters--sixup > :nth-child(5) {
+      grid-column: 2; grid-row: 3;
     }
   }
 
@@ -357,7 +391,7 @@
     /* No overscroll-behavior: contain — vertical wheel must chain
        through to the page so users can keep scrolling down. The JS
        handler only preventDefaults on horizontal gestures. */
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
   .scans__row + .scans__row {
     margin-top: clamp(0.75rem, 1.5vh, 1.25rem);
@@ -775,7 +809,7 @@
        the transform wrap is seamless. White paper is removed via
        mix-blend-mode: multiply against the white page bg. -->
   <section class="scans" aria-label="Project scans and process notes">
-    <div class="scans__row scans__row--top" data-speed="0.28">
+    <div class="scans__row scans__row--top" data-speed="0.34">
       <div class="scans__track">
         <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-01.jpg" alt="UNESCO project scan 01" loading="lazy" />
         <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-02.jpg" alt="UNESCO project scan 02" loading="lazy" />
@@ -837,7 +871,7 @@
         <img src="/ASSETS/IMAGES/UNESCO/web/unesco-photo-14.jpg" alt="" aria-hidden="true" loading="lazy" />
       </div>
     </div>
-    <div class="scans__row scans__row--bot" data-speed="0.40">
+    <div class="scans__row scans__row--bot" data-speed="0.48">
       <div class="scans__track">
         <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-16.jpg" alt="UNESCO project scan 16" loading="lazy" />
         <img src="/ASSETS/IMAGES/UNESCO/SCANS/scan-17.jpg" alt="UNESCO project scan 17" loading="lazy" />
@@ -1136,7 +1170,7 @@
     <div class="g-span-2 section-media">
       <!-- 3 × 2 poster grid — the six macro posters from the series.
            Visual order: 01, 06, 03, 05, 04, 02 (per user layout). -->
-      <div class="section-media__posters">
+      <div class="section-media__posters section-media__posters--sixup">
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-01.jpg" alt="UNESCO macro poster — Safeguard Humanity's Inheritance" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-06.jpg" alt="UNESCO macro poster — United Nations Educational, Scientific And Cultural Organization" /></figure>
         <figure class="media media--poster"><img class="media__img" src="/ASSETS/IMAGES/UNESCO/poster-03.jpg" alt="UNESCO macro poster — The World Needs U, 1946–2026" /></figure>

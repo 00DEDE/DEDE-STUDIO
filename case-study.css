@@ -244,8 +244,13 @@ body.unesco .section-label {
   line-height: 1.15;
   letter-spacing: -0.025em;
   color: var(--fg);
-  text-wrap: pretty;
+  /* No orphans + no widows: balance evenly distributes lines so no
+     line ends with a lonely word and no line starts with one. */
+  text-wrap: balance;
 }
+/* Hero + section titles use balance too (short strings; must never
+   widow or orphan). */
+.intro__title { text-wrap: balance; }
 .statement em { font-weight: 400; color: var(--accent); }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -334,6 +339,9 @@ body.unesco .section-label {
   line-height: 1.7;
   letter-spacing: -0.005em;
   color: rgba(var(--fg-rgb), 0.78);
+  /* No orphans + no widows: `pretty` keeps body paragraphs from
+     ending on a lonely last word or starting on a lonely first one. */
+  text-wrap: pretty;
 }
 .read-more__inner p:last-child { margin-bottom: 0; }
 
@@ -596,7 +604,11 @@ body.unesco .section-label {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  .pager__link--next { align-items: flex-start; text-align: left; }
+  /* Mobile stacking order: Next on top, Previous below. The markup
+     stays prev-then-next (semantically correct) — grid-row flips the
+     visual order. */
+  .pager__link--next { grid-row: 1; align-items: flex-start; text-align: left; }
+  .pager__link--prev { grid-row: 2; }
   .pager__link--next:hover .pager__arrow { transform: translateX(0.25rem); }
 }
 
