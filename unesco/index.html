@@ -1113,10 +1113,9 @@ z-index: 199;
           <figure class="media media--square foundations-ba__media foundations-after">
             <video class="media__video foundations-after__layer foundations-after__video foundations-after__video--fwd is-active"
                    autoplay muted playsinline webkit-playsinline preload="auto"
+                   src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4"
                    disablepictureinpicture disableremoteplayback
-                   aria-label="UNESCO logo reveal animation">
-              <source src="/ASSETS/IMAGES/UNESCO/logo-reveal.mp4" type="video/mp4">
-            </video>
+                   aria-label="UNESCO logo reveal animation"></video>
             <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--2" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO2.png" alt="UNESCO rebrand — horizontal wordmark" />
             <img class="media__img foundations-ba__img foundations-after__layer foundations-after__img foundations-after__img--3" src="/ASSETS/IMAGES/UNESCO/UNESCO_LOGO3.png" alt="UNESCO rebrand — long-form signature" />
           </figure>
@@ -1755,25 +1754,43 @@ z-index: 199;
         function faShowImg2() { faShow(faImg2); setTimeout(faShowImg3, FA_IMG_HOLD); }
         function faShowImg3() { faShow(faImg3); setTimeout(faPlayFwd,  FA_IMG_HOLD); }
         faFwd.addEventListener('ended', function () { setTimeout(faShowImg2, FA_PAUSE_MS); });
-        /* Mobile Safari refuses .play() for offscreen videos even with
-           muted + playsinline + autoplay, so wait for the cell to
-           intersect the viewport, then start the cycle. */
+        /* Safari refuses .play() unreliably for muted + playsinline +
+           autoplay videos below the fold, and its IntersectionObserver
+           callbacks can lag seconds behind the actual intersection.
+           Kick via EVERY signal we can get: canplay, loadeddata,
+           intersection (threshold: 0), and a fallback setTimeout. */
         var faKicked = false;
         var faKick = function () {
           if (faKicked) return;
           faKicked = true;
           faPlayFwd();
         };
+        faFwd.addEventListener('canplay',   faKick, { once: true });
+        faFwd.addEventListener('canplaythrough', faKick, { once: true });
+        faFwd.addEventListener('loadeddata', faKick, { once: true });
+        if (faFwd.readyState >= 2) faKick();  // already buffered
         if ('IntersectionObserver' in window) {
           var faIO = new IntersectionObserver(function (entries) {
             entries.forEach(function (ent) {
               if (ent.isIntersecting) { faKick(); faIO.disconnect(); }
             });
-          }, { threshold: 0.15 });
+          }, { threshold: 0, rootMargin: '200px 0px' });
           faIO.observe(fAfter);
-        } else {
-          faKick();
         }
+        /* Final belt-and-suspenders: if nothing else fired within 1.5s,
+           call play() anyway. Safari ignores .play() rejections silently
+           so this is harmless in the worst case. */
+        setTimeout(faKick, 1500);
+        /* If Safari still refuses (low-power mode, Energy Saver), the
+           first viewer tap/click or pointer-move anywhere on the page
+           guarantees a play() in response to a user gesture. */
+        function faKickFromGesture() {
+          faKick();
+          document.removeEventListener('pointerdown', faKickFromGesture);
+          document.removeEventListener('touchstart',  faKickFromGesture);
+        }
+        document.addEventListener('pointerdown', faKickFromGesture, { once: true, passive: true });
+        document.addEventListener('touchstart',  faKickFromGesture, { once: true, passive: true });
       }
     }
 
