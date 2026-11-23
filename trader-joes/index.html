@@ -632,6 +632,12 @@
     display: grid;
     place-items: center;
     box-sizing: border-box;
+    /* 40% grey, 1pt stroke on the poster frame so it reads as a
+       framed print instead of floating in the page bg. On the
+       container (not the img) so .media's overflow:hidden can't
+       clip it, and so it hugs the poster whatever its natural
+       aspect. */
+    border: 1px solid rgba(0, 0, 0, 0.4);
   }
   .identity-poster__img {
     position: relative;
@@ -644,7 +650,6 @@
     max-height: 100%;
     object-fit: contain;
     background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.4);  /* 40% grey, 1pt stroke */
   }
   @media (prefers-reduced-motion: reduce) {
     .lineup-cell__img,
