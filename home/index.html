@@ -539,6 +539,14 @@
        already scales down smoothly, no size override needed. */
     .home-quote .brk-desk { display: none; }
     .home-quote .brk-mob  { display: inline; }
+
+    /* Opening hero quote: pull the text up so the gap between the
+       +DEDE header and the first word is about half what the centered
+       100vh block previously produced. */
+    .home-work > .home-quote:first-child {
+      align-items: flex-start;
+      padding-top: calc(var(--header-safe-top, 5rem) + clamp(2rem, 7vh, 4.5rem));
+    }
   }
 
   /* ─── Mobile ─ perf-tuned ────────────────────────────────────── */

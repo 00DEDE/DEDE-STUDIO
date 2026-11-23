@@ -117,10 +117,12 @@
 }
 
 @media (max-width: 640px) {
-  /* Mobile: top padding tight; bottom padding bumped so the fixed
-     hamburger pill (bottom-centre, ~4rem tall-plus-inset) has clear
-     breathing room above the last line of footer meta. */
-  .site-footer { padding: clamp(5rem, 14vh, 9rem) var(--page-x, 1rem) clamp(6rem, 10vh, 7rem); }
+  /* Mobile: generous top padding so the scroll-up arrow sits well
+     above the bottom-centre hamburger pill (which is fixed at the
+     viewport bottom and would otherwise crop the arrow as the footer
+     scrolls into view). Bottom padding keeps the pill clear of the
+     meta lines. */
+  .site-footer { padding: clamp(9rem, 22vh, 14rem) var(--page-x, 1rem) clamp(6rem, 10vh, 7rem); }
   .site-footer__meta {
     grid-template-columns: 1fr;
     justify-items: center;

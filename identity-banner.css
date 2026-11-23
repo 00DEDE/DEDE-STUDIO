@@ -116,6 +116,15 @@ body.happiness                  .header-tag {
 }
 @media (max-width: 640px) { .header-tag { display: none; } }
 
+/* Mobile: on pages where the banner is always visible, push the page
+   content down below the banner strip so the first numbered section
+   ("Happiness 001", "Case Study 02", etc.) isn't tucked behind it. */
+@media (max-width: 640px) {
+  body[data-banner-always] {
+    padding-top: calc(var(--header-safe-top, 5rem) + clamp(2.5rem, 7vh, 4rem));
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    DESKTOP NAV PILL LOCK — on wide screens, pin the hamburger pill to
    the header's right side, vertically centered against the brand mark

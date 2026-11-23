@@ -86,6 +86,12 @@
       gap: clamp(2.5rem, 5vh, 4rem);
     }
   }
+  @media (max-width: 640px) {
+    /* Mobile: no breathing room above the headshot — it sits directly
+       under the header. The body's own padding-top (= header height)
+       is the only spacing. */
+    .profile-contact { padding-top: 0; }
+  }
 
   /* ─── Section titles ("ABOUT", "CONTACT", "RÉSUMÉ") ───────────────── */
   .profile-contact__label,
