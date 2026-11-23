@@ -650,15 +650,15 @@
   .identity-poster__img {
     position: relative;
     inset: auto;
-    width: 50%;
+    /* Fills the grid column so the poster reads at proper scale next
+       to the section text, instead of shrinking to half-width and
+       leaving an awkward gap. */
+    width: 100%;
     height: auto;
     max-height: 100%;
     object-fit: contain;
     background: transparent;
     border: 1px solid rgba(0, 0, 0, 0.4);  /* 40% grey, 1pt stroke */
-  }
-  @media (max-width: 760px) {
-    .identity-poster__img { width: 100%; }
   }
   @media (prefers-reduced-motion: reduce) {
     .lineup-cell__img,
