@@ -471,6 +471,9 @@
     aspect-ratio: 3 / 2;
     overflow: hidden;
     border-radius: clamp(4px, 0.4vw, 8px);
+    /* Safari perf: skip rendering off-screen cells. */
+    content-visibility: auto;
+    contain-intrinsic-size: 0 clamp(180px, 20vw, 320px);
     background: #0a0a0a;
     cursor: zoom-in;
   }
@@ -557,19 +560,24 @@
     cursor: zoom-out;
   }
   .lineup-scrim {
+    pointer-events: none;  /* hover-visible scrim must not steal clicks from the grid */
+    contain: layout paint;  /* perf */
+    will-change: opacity;
     position: fixed; inset: 0;
     background: transparent;
-    -webkit-backdrop-filter: blur(4px);
-            backdrop-filter: blur(4px);
-    z-index: 199;
+    /* Safari: backdrop-filter only in active state (below). */
+z-index: 199;
     opacity: 0;
     visibility: hidden;
     transition: opacity 220ms ease, visibility 0s 220ms;
     cursor: zoom-out;
   }
   .lineup-scrim.is-open {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;  /* click-latched scrim can be clicked to dismiss */
     transition: opacity 220ms ease, visibility 0s 0s;
   }
 
@@ -592,6 +600,8 @@
     background: #ffffff;
     overflow: hidden;
     border-radius: clamp(4px, 0.4vw, 8px);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 clamp(180px, 20vw, 320px);
     cursor: zoom-in;
     display: grid;
     place-items: center;
@@ -919,6 +929,8 @@
   /* Hover (transient) triggers the same scrim/blur as a click-latched
      lightbox, so the page blurs the moment a user previews an image. */
   body:has(.lineup-preview.is-visible) .lineup-scrim {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
     opacity: 1;
     visibility: visible;
     transition: opacity 220ms ease, visibility 0s 0s;
