@@ -712,6 +712,31 @@
     .atlas-book__thumb { transition: none; }
     .atlas-book__stage { transition: none; }
   }
+
+  /* ─── 05 · Iconography — 5-slide crossfade slideshow ─────────────
+     20s loop, 4s per slide, 1s fade-in/hold-3s/1s fade-out per slide
+     with a 1s overlap crossfade onto the next. Each slide's delay is
+     offset 4s so they take turns being the visible layer. */
+  .media__iconslide {
+    opacity: 0;
+    animation: iconography-slideshow 20s ease-in-out infinite;
+    will-change: opacity;
+  }
+  .media__iconslide--1 { animation-delay:  0s; }
+  .media__iconslide--2 { animation-delay:  4s; }
+  .media__iconslide--3 { animation-delay:  8s; }
+  .media__iconslide--4 { animation-delay: 12s; }
+  .media__iconslide--5 { animation-delay: 16s; }
+  @keyframes iconography-slideshow {
+    0%, 100% { opacity: 0; }
+    5%       { opacity: 1; }   /* 1s fade-in */
+    20%      { opacity: 1; }   /* 3s hold */
+    25%      { opacity: 0; }   /* 1s fade-out, overlaps next slide's fade-in */
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .media__iconslide { animation: none; }
+    .media__iconslide--1 { opacity: 1; }
+  }
 </style>
 <link rel="stylesheet" href="/identity-banner.css" />
 </head>
@@ -767,7 +792,7 @@
        the /work/ cell view-transition. -->
   <section class="unesco__hero unesco__grid" aria-label="UNESCO cover">
     <div class="g-span-1 unesco__hero-title">
-      <span class="intro__eyebrow">Case Study 01</span>
+      <span class="intro__eyebrow">Case Study · 001</span>
       <h1 class="intro__title">UNESCO</h1>
     </div>
     <div class="unesco__hero-media g-span-2">
@@ -1105,9 +1130,17 @@
     </div>
 
     <div class="g-span-2 section-media">
-      <!-- Iconography overview, 16:9 -->
-      <figure class="media media--wide">
-        <img class="media__img" src="/ASSETS/IMAGES/UNESCO/iconography.jpg" alt="UNESCO iconography system" />
+      <!-- Iconography overview: 5 slides cycling in sequence —
+           Monuments → Ecosystems → Traditions → Languages → Friends.
+           Each slide holds for ~3s with 1s crossfades on either side
+           over a 20s loop. Classes use the shared .media__iconslide
+           helper + per-index animation-delay below. -->
+      <figure class="media" style="aspect-ratio: 2400 / 1552;">
+        <img class="media__img media__iconslide media__iconslide--1" src="/ASSETS/IMAGES/UNESCO/iconography-01.jpg" alt="UNESCO iconography — Monuments" />
+        <img class="media__img media__iconslide media__iconslide--2" src="/ASSETS/IMAGES/UNESCO/iconography-02.jpg" alt="UNESCO iconography — Ecosystems" />
+        <img class="media__img media__iconslide media__iconslide--3" src="/ASSETS/IMAGES/UNESCO/iconography-03.jpg" alt="UNESCO iconography — Traditions" />
+        <img class="media__img media__iconslide media__iconslide--4" src="/ASSETS/IMAGES/UNESCO/iconography-04.jpg" alt="UNESCO iconography — Languages" />
+        <img class="media__img media__iconslide media__iconslide--5" src="/ASSETS/IMAGES/UNESCO/iconography-05.jpg" alt="UNESCO iconography — Friends" />
       </figure>
     </div>
 
